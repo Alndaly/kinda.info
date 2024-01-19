@@ -2,9 +2,6 @@ import { allPages, type Page } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/mdx-components';
 
-export const generateStaticParams = async () =>
-	allPages.map((page) => ({ slug: page._raw.flattenedPath }));
-
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	const page = allPages.find(
 		(page) => page._raw.flattenedPath === 'pages/' + params.slug

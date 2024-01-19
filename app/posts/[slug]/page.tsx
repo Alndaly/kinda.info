@@ -4,9 +4,6 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/mdx-components';
 
-export const generateStaticParams = async () =>
-	allPosts.map((post) => ({ slug: post._raw.flattenedPath }));
-
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	const post = allPosts.find(
 		(post) => post._raw.flattenedPath === 'posts/' + params.slug
