@@ -35,15 +35,17 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
 					fill
 					style={{ objectFit: 'cover' }}
 				/>
-				<div className='bg-white/50 dark:bg-black/50 shadow-lg rounded max-w-prose prose-lg w-full absolute z-100 mx-auto clear-both py-5 text-center backdrop-blur-sm top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
-					{post.title && (
-						<h1 className='text-5xl font-bold mb-5'>{post.title}</h1>
-					)}
-					<div className='mb-2 text-sm'>
-						{format(parseISO(post.date), 'yyyy-MM-dd')}
-					</div>
-					<div className='text-sm'>
-						预计需 {post.readingTime.minutes} 分钟
+				<div className='px-8 sm:px-0 max-w-prose lg:prose-lg w-full absolute z-100 mx-auto clear-both text-center top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
+					<div className='py-5 backdrop-blur-sm box-border bg-white/50 dark:bg-black/50 shadow rounded'>
+						{post.title && (
+							<h1 className='text-5xl font-bold mb-5'>{post.title}</h1>
+						)}
+						<div className='mb-2 text-sm'>
+							{format(parseISO(post.date), 'yyyy-MM-dd')}
+						</div>
+						<div className='text-sm'>
+							预计需 {post.readingTime.minutes} 分钟
+						</div>
 					</div>
 				</div>
 			</div>
@@ -58,7 +60,9 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
 					'hover:prose-a:border-b-2',
 					'prose-a:font-bold',
 					'mx-auto',
-					'py-8'
+					'py-8',
+					'px-8',
+					'md:px-0'
 				)}>
 				<Mdx code={post.body.code}></Mdx>
 			</article>
