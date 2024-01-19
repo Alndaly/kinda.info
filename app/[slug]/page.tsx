@@ -1,8 +1,10 @@
 import { allPages, type Page } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/mdx-components';
+import cls from 'classnames';
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
+	if (params.slug.endsWith('js')) return;
 	const page = allPages.find(
 		(page) => page._raw.flattenedPath === 'pages/' + params.slug
 	);
@@ -20,8 +22,20 @@ const Page = ({ params }: { params: { slug: string } }) => {
 	if (!page) notFound();
 
 	return (
-		<article className='prose dark:prose-invert mx-auto max-w-xl py-8 relative'>
-			<h1 className='text-3xl font-bold'>{page.title}</h1>
+		<article
+			className={cls(
+				'dark:prose-invert',
+				'prose-table:break-all',
+				'prose-a:no-underline',
+				'prose-a:border-b',
+				'hover:prose-a:border-b-2',
+				'prose-a:font-bold',
+				'mx-auto',
+				{ prose: page.style !== 'website' },
+				{ 'lg:prose-lg': page.style !== 'website' },
+				{ 'max-w-none': page.style === 'website' }
+			)}>
+			{page.title && <h1 className='text-5xl font-bold'>{page.title}</h1>}
 			<Mdx code={page.body.code}></Mdx>
 		</article>
 	);

@@ -2,6 +2,7 @@ import { format, parseISO } from 'date-fns';
 import { allPosts, type Post } from 'contentlayer/generated';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import cls from 'classnames';
 import { Mdx } from '@/app/mdx-components';
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
@@ -23,7 +24,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
 
 	return (
 		<>
-			<div className='w-full h-96 relative top-0'>
+			<div className='w-full h-96 relative top-0 relative'>
 				<Image
 					src={
 						post?.bgImage
@@ -34,13 +35,31 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
 					fill
 					style={{ objectFit: 'cover' }}
 				/>
-			</div>
-			<article className='prose dark:prose-invert mx-auto max-w-xl py-8 relative'>
-				<h1 className='text-3xl font-bold'>{post.title}</h1>
-				<div className='mb-8 text-xs text-gray-600 flex flex-row space-x-5'>
-					<div>{format(parseISO(post.date), 'LLLL d, yyyy')}</div>
-					<div>{post.readingTime.text}</div>
+				<div className='bg-white/50 dark:bg-black/50 shadow-lg rounded max-w-prose prose-lg w-full absolute z-100 mx-auto clear-both py-5 text-center backdrop-blur-sm top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
+					{post.title && (
+						<h1 className='text-5xl font-bold mb-5'>{post.title}</h1>
+					)}
+					<div className='mb-2 text-sm'>
+						{format(parseISO(post.date), 'yyyy-MM-dd')}
+					</div>
+					<div className='text-sm'>
+						预计需 {post.readingTime.minutes} 分钟
+					</div>
 				</div>
+			</div>
+			<article
+				className={cls(
+					'prose',
+					'lg:prose-lg',
+					'dark:prose-invert',
+					'prose-table:break-all',
+					'prose-a:no-underline',
+					'prose-a:border-b',
+					'hover:prose-a:border-b-2',
+					'prose-a:font-bold',
+					'mx-auto',
+					'py-8'
+				)}>
 				<Mdx code={post.body.code}></Mdx>
 			</article>
 		</>

@@ -1,7 +1,9 @@
 import Image from 'next/image';
+import type { MDXComponents } from 'mdx/types';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 
-const components = {
+// Define your custom MDX components.
+const mdxComponents: MDXComponents = {
 	Image,
 };
 
@@ -11,5 +13,5 @@ interface MdxProps {
 
 export function Mdx({ code }: MdxProps) {
 	const Component = useMDXComponent(code);
-	return <Component components={components} />;
+	return <Component components={mdxComponents} />;
 }

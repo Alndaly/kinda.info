@@ -18,15 +18,15 @@ export default function RootLayout({
 		<html lang='zh'>
 			<body>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					<header className='sticky w-full top-0 backdrop-blur-md'>
+					<header className='sticky w-full top-0 backdrop-blur-md z-10'>
 						<div className='flex items-center justify-between py-5 px-6'>
-							<nav className='space-x-5'>
+							<nav className='flex space-x-5 items-center'>
 								<Link href='/'>
-									首页
+									<h1 className='inline-block text-center text-2xl font-black '>
+										kinda.info
+									</h1>
 								</Link>
-								<Link href='/about-me'>
-									关于我
-								</Link>
+								<Link href='/about-me'>关于我</Link>
 							</nav>
 							<ModeToggle />
 						</div>
