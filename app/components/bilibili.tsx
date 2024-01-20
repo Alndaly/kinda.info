@@ -11,19 +11,26 @@ interface Video {
 
 const BiliBili = (props: Video) => {
 	const { title, src } = props;
+	const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
-	const iframeRef = useRef(null);
-	const size = useSize(document.querySelector('body'));
-
-	const [height, setHeight] = useState<any>(null);
+	const [height, setHeight] = useState<any>();
 
 	const changeVideoIframe = () => {
-		iframeRef.current && setHeight((iframeRef.current.offsetWidth * 9) / 16);
+		if (iframeRef?.current) {
+			setHeight((iframeRef.current.offsetWidth * 9) / 16);
+		}
 	};
 
 	useEffect(() => {
+		window.addEventListener('resize', changeVideoIframe);
+		return () => {
+			window.removeEventListener('resize', changeVideoIframe);
+		};
+	}, []);
+
+	useEffect(() => {
 		changeVideoIframe();
-	}, [size]);
+	}, []);
 
 	return (
 		<iframe
