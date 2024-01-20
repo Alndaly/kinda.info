@@ -37,7 +37,7 @@ export default function Home() {
 				title=''
 			/>
 			<p className='text-center italic text-xl pt-8'>
-				{'"天空生而蔚蓝，我们生而自由"'}
+				{'"天空生而蔚蓝，我们生而自由。"'}
 			</p>
 			<div className='px-4 py-8 md:px-6 md:py-10 lg:py-12'>
 				{posts.map((post, idx) => (

@@ -27,6 +27,7 @@ export const Page = defineDocumentType(() => ({
     contentType: "mdx",
     fields: {
         title: { type: 'string', required: false },
+        bgImage: { type: 'string', required: false },
         style: { type: 'string', required: false }
     },
     computedFields: {
