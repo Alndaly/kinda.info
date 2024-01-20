@@ -11,12 +11,12 @@ interface Video {
 const Youtube = (props: Video) => {
 	const { title, src } = props;
 
-	const iframeRef = useRef(null);
+	const iframeRef = useRef<any>();
 
 	const [height, setHeight] = useState<any>(null);
 
 	const changeVideoIframe = () => {
-		iframeRef.current && setHeight((iframeRef.current.offsetWidth * 9) / 16);
+		iframeRef?.current && setHeight((iframeRef.current.offsetWidth * 9) / 16);
 	};
 
 	useEffect(() => {
