@@ -19,7 +19,7 @@ export default function RootLayout({
 			<body>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 					<header className='sticky w-full top-0 backdrop-blur-md z-10'>
-						<div className='flex items-center justify-between py-5 px-6'>
+						<div className='flex items-center justify-between py-3 px-6'>
 							<nav className='flex space-x-5 items-center'>
 								<Link href='/'>
 									<h1 className='inline-block text-center text-2xl font-black '>

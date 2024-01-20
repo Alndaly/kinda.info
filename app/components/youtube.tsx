@@ -2,7 +2,6 @@
 
 import { useRef, useState } from 'react';
 import { useEffect } from 'react';
-import { useSize } from 'ahooks';
 
 interface Video {
 	title: string;
@@ -13,7 +12,6 @@ const Youtube = (props: Video) => {
 	const { title, src } = props;
 
 	const iframeRef = useRef(null);
-	const size = useSize(document.querySelector('body'));
 
 	const [height, setHeight] = useState<any>(null);
 
@@ -22,8 +20,15 @@ const Youtube = (props: Video) => {
 	};
 
 	useEffect(() => {
+		window.addEventListener('resize', changeVideoIframe);
+		return () => {
+			window.removeEventListener('resize', changeVideoIframe);
+		};
+	}, []);
+
+	useEffect(() => {
 		changeVideoIframe();
-	}, [size]);
+	});
 
 	return (
 		<iframe

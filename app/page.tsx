@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { compareDesc, format, parseISO } from 'date-fns';
 import { allPosts, Post } from 'contentlayer/generated';
 import { removeHtmlTag } from '@/app/utils';
+import Youtube from './components/youtube';
 
 function PostCard(post: Post) {
 	return (
@@ -30,10 +31,19 @@ export default function Home() {
 	);
 
 	return (
-		<div className='px-4 py-8 md:px-6 md:py-10 lg:py-12'>
-			{posts.map((post, idx) => (
-				<PostCard key={idx} {...post} />
-			))}
-		</div>
+		<>
+			<Youtube
+				src='https://www.youtube.com/embed/VNu15Qqomt8?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1&controls=0&modestbranding=1&iv_load_policy=1&start=55'
+				title=''
+			/>
+			<p className='text-center italic text-xl pt-8'>
+				{'"天空生而蔚蓝，我们生而自由"'}
+			</p>
+			<div className='px-4 py-8 md:px-6 md:py-10 lg:py-12'>
+				{posts.map((post, idx) => (
+					<PostCard key={idx} {...post} />
+				))}
+			</div>
+		</>
 	);
 }
