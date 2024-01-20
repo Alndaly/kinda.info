@@ -31,6 +31,9 @@ const Page = ({ params }: { params: { slug: string } }) => {
 				'hover:prose-a:border-b-2',
 				'prose-a:font-bold',
 				'mx-auto',
+				'py-8',
+				'px-8',
+				'md:px-0',
 				{ prose: page.style !== 'website' },
 				{ 'lg:prose-lg': page.style !== 'website' },
 				{ 'max-w-none': page.style === 'website' }
