@@ -2,6 +2,7 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import readingTime from "reading-time";
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
 
 export const Post = defineDocumentType(() => ({
     name: 'Post',
@@ -37,6 +38,6 @@ export default makeSource({
     contentDirPath: 'content',
     documentTypes: [Post, Page],
     mdx: {
-        remarkPlugins: [remarkGfm],
+        remarkPlugins: [remarkGfm, remarkMath],
     }
 })
