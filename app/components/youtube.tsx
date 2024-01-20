@@ -28,7 +28,7 @@ const Youtube = (props: Video) => {
 
 	useEffect(() => {
 		changeVideoIframe();
-	});
+	}, []);
 
 	return (
 		<iframe
