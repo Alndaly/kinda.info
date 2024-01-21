@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import cls from 'classnames';
 import { Mdx } from '@/app/mdx-components';
+import Comments from '../../components/comments';
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	const post = allPosts.find(
@@ -29,7 +30,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
 					src={
 						post?.bgImage
 							? post.bgImage
-							: 'https://oss.kinda.info/image/202401190030996.jpg'
+							: 'https://oss.kinda.info/image/202401211555429.jpeg'
 					}
 					alt='bg'
 					fill
@@ -61,6 +62,7 @@ const PostPage = ({ params }: { params: { slug: string } }) => {
 					'md:px-0'
 				)}>
 				<Mdx code={post.body.code}></Mdx>
+				<Comments />
 			</article>
 		</>
 	);
