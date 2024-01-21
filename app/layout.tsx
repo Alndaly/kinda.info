@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import ThemeProvider from './theme-provider';
 import './globals.css';
 import Link from 'next/link';
+import { GithubIcon } from './components/github-icon';
 import { ModeToggle } from './components/mode-toggle';
+import { BiliBiliIcon } from './components/bilibili-icon';
+import { XiaoHongShuIcon } from './components/xiaohongshu-icon';
 
 export const metadata: Metadata = {
 	title: 'Kinda的个人博客',
@@ -28,7 +31,12 @@ export default function RootLayout({
 								</Link>
 								<Link href='/about-me'>关于我</Link>
 							</nav>
-							<ModeToggle />
+							<div className='flex flex-row space-x-3'>
+								<GithubIcon />
+								<XiaoHongShuIcon />
+								<BiliBiliIcon />
+								<ModeToggle />
+							</div>
 						</div>
 					</header>
 					{children}
