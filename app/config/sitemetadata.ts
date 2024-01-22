@@ -1,0 +1,20 @@
+export const siteMetadata = {
+    title: "Kinda",
+    author: "Kinda",
+    authorDesc: "自我批判和反叛思考",
+    publishName: "Kinda",
+    headerTitle: "Kinda",
+    description:
+        "千年暗室，一灯即明。",
+    language: "zh-cn",
+    keywords: ['kinda', '序章'],
+    siteUrl: "https://kinda.info",
+    siteRepo: "kinda.info",
+    repoid: "R_kgDOLHlvqA",
+    categoryid: "DIC_kwDOLHlvqM4CcknJ",
+    siteLogo: "/static/favicons/favicon.ico",
+    image: "/static/images/avatar.png",
+    cover: "/static/favicons/cover.png",
+    email: "1142704468@qq.com",
+    github: "Alndaly",
+};

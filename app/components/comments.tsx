@@ -1,23 +1,47 @@
-"use client"
+'use client';
 
 import Giscus from '@giscus/react';
+import React, { useState, useCallback } from 'react';
+import { useTheme } from 'next-themes';
+import { siteMetadata } from '../config/sitemetadata';
 
-export default function Comments() {
+const Comments = () => {
+	const [enableLoadComments, setEnabledLoadComments] = useState(false);
+	const { theme, resolvedTheme } = useTheme();
+	const commentsTheme =
+		theme === 'dark' || resolvedTheme === 'dark' ? 'transparent_dark' : 'light';
+	const LoadComments = useCallback(() => {
+		setEnabledLoadComments(true);
+	}, []);
+	const CloseComments = useCallback(() => {
+		setEnabledLoadComments(false);
+	}, []);
 	return (
-		<Giscus
-			id='comments'
-			repo='Alndaly/comment-for-kinda.info'
-			repoId='R_kgDOLHlvqA'
-			category='Announcements'
-			categoryId='DIC_kwDOLHlvqM4CcknJ'
-			mapping='pathname'
-			term='千年暗室，一灯即明!'
-			reactionsEnabled='1'
-			emitMetadata='0'
-			inputPosition='bottom'
-			theme='preferred_color_scheme'
-			lang='zh-CN'
-			loading='lazy'
-		/>
+		<div>
+			<div
+				id='comments'
+				className='my-8 text-center text-sm text-zinc-500 dark:text-zinc-300 rounded-lg py-1 px-2 hover:bg-zinc-100 hover:dark:bg-zinc-800 max-w-fit transform transition duration-400 mx-auto select-none'>
+				{enableLoadComments == false ? (
+					<button onClick={LoadComments}>▲ Load Comments</button>
+				) : (
+					<button onClick={CloseComments}>▼ Close Comments</button>
+				)}
+			</div>
+			{enableLoadComments && (
+				<Giscus
+					repo={`${siteMetadata.github}/${siteMetadata.siteRepo}`}
+					repoId={siteMetadata.repoid}
+					category='Announcements'
+					categoryId={siteMetadata.categoryid}
+					mapping='pathname'
+					reactionsEnabled='1'
+					inputPosition='top'
+					theme={commentsTheme}
+					lang='en'
+				/>
+			)}
+		</div>
 	);
-}
+};
+
+export default Comments;

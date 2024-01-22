@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import ThemeProvider from './theme-provider';
 import './globals.css';
+import Footer from './components/footer';
 import Link from 'next/link';
 import { GithubIcon } from './components/github-icon';
 import { ModeToggle } from './components/mode-toggle';
@@ -40,6 +41,7 @@ export default function RootLayout({
 						</div>
 					</header>
 					{children}
+					<Footer></Footer>
 				</ThemeProvider>
 			</body>
 		</html>
