@@ -19,11 +19,16 @@ export default function Navbar() {
 				scrollDirection === 'down' ? '-top-24' : 'top-0'
 			} sticky z-10 backdrop-filter backdrop-blur-lg bg-opacity-[78.6%] px-4 transition-all duration-600 transform`}>
 			<div className='flex items-center justify-between py-3 px-6'>
-				<nav>
+				<nav className='flex flex-row space-x-5 items-center'>
 					<Link href='/' aria-label={siteMetadata.publishName}>
 						<h1 className='inline-block text-center text-2xl font-black'>
 							{siteMetadata.publishName}
 						</h1>
+					</Link>
+					<Link href='/about-me'>
+						<div className='inline-block text-center text-lg font-black'>
+							关于
+						</div>
 					</Link>
 				</nav>
 				<div className='flex flex-row space-x-3'>
