@@ -28,9 +28,9 @@ const computedFields: import('contentlayer/source-files').ComputedFields = {
         resolve: async (doc) => {
             const regXHeader = /\n(?<flag>#{2,6})\s+(?<content>.+)/g;
             const headings = Array.from(doc.body.raw.matchAll(regXHeader)).map(
-                ({ groups }) => {
-                    const flag = groups?.flag;
-                    const content = groups?.content;
+                (item: any) => {
+                    const flag = item.groups?.flag;
+                    const content = item.groups?.content;
                     return {
                         level:
                             flag?.length == 1 ? "one" : flag?.length == 2 ? "two" : "three",
@@ -53,7 +53,7 @@ export const Post = defineDocumentType(() => ({
         title: { type: 'string', required: false },
         description: { type: "string", required: false },
         date: { type: 'date', required: true },
-        bgImage: { type: 'string', required: false },
+        image: { type: 'string', required: false },
         style: { type: 'string', required: false }
     },
     computedFields
@@ -65,7 +65,7 @@ export const Page = defineDocumentType(() => ({
     contentType: "mdx",
     fields: {
         title: { type: 'string', required: false },
-        bgImage: { type: 'string', required: false },
+        image: { type: 'string', required: false },
         style: { type: 'string', required: false },
         description: { type: 'string', required: false }
     },

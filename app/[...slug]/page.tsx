@@ -63,10 +63,10 @@ const Page = async ({ params }: PageProps) => {
 
 	return (
 		<>
-			{page?.bgImage && (
+			{page?.image && (
 				<div className='w-full h-52 sm:h-72 md:h-96 relative top-0 relative'>
 					<Image
-						src={page.bgImage}
+						src={page.image}
 						alt='bg'
 						fill
 						style={{ objectFit: 'cover' }}

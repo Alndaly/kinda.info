@@ -32,10 +32,12 @@ async function getPostFromParams(params: PostProps['params']) {
 	return post;
 }
 
-async function getAdjacentPosts(post: PostProps) {
-	const sortedPosts = allPosts.sort(
-		(a: Post, b: Post) => new Date(a.date) - new Date(b.date)
-	);
+async function getAdjacentPosts(post: Post) {
+	const sortedPosts = allPosts.sort((a: Post, b: Post) => {
+		const aDate: any = a.date;
+		const bDate: any = b.date;
+		return bDate - aDate;
+	});
 
 	const currentIndex = sortedPosts.findIndex((p: Post) => p === post);
 
@@ -90,9 +92,9 @@ export async function generateStaticParams() {
 	}));
 }
 
-export const PostPage = async ({ params }: PostProps) => {
+const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
-	const post = allPosts.find((post: Post) => {
+	const post: Post | undefined = allPosts.find((post: Post) => {
 		return post._raw.flattenedPath === 'post/' + params.slug;
 	});
 
@@ -103,8 +105,8 @@ export const PostPage = async ({ params }: PostProps) => {
 	const jsonLd = {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
-		datePublished: post.pubDate,
-		dateModified: post.updatedDate,
+		datePublished: post.date,
+		dateModified: post.date,
 		headline: post.title,
 		image:
 			post.image == ''
@@ -131,8 +133,8 @@ export const PostPage = async ({ params }: PostProps) => {
 			<div className='w-full h-52 sm:h-72 md:h-96 relative top-0 relative'>
 				<Image
 					src={
-						post?.bgImage
-							? post.bgImage
+						post?.image
+							? post.image
 							: 'https://oss.kinda.info/image/202401211555429.jpeg'
 					}
 					alt='bg'
