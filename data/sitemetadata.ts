@@ -3,7 +3,7 @@ export const siteMetadata = {
     author: "Kinda",
     siteName: "Kinda",
     authorDesc: "自我批判和反叛思考",
-    publishName: "Kinda",
+    publishName: "kinda.info",
     headerTitle: "Kinda",
     description:
         "千年暗室，一灯即明。",

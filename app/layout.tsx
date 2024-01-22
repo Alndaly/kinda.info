@@ -3,10 +3,7 @@ import ThemeProvider from './theme-provider';
 import './globals.css';
 import Footer from './components/footer';
 import Link from 'next/link';
-import { GithubIcon } from './components/github-icon';
-import { ModeToggle } from './components/mode-toggle';
-import { BiliBiliIcon } from './components/bilibili-icon';
-import { XiaoHongShuIcon } from './components/xiaohongshu-icon';
+import Navbar from './components/navbar';
 
 export const metadata: Metadata = {
 	title: 'Kinda的个人博客',
@@ -22,24 +19,7 @@ export default function RootLayout({
 		<html lang='zh'>
 			<body>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					<header className='sticky w-full top-0 backdrop-blur-md z-10'>
-						<div className='flex items-center justify-between py-3 px-6'>
-							<nav className='flex space-x-5 items-center'>
-								<Link href='/'>
-									<h1 className='inline-block text-center text-2xl font-black '>
-										kinda.info
-									</h1>
-								</Link>
-								<Link href='/about-me'>关于我</Link>
-							</nav>
-							<div className='flex flex-row space-x-3'>
-								<GithubIcon />
-								<XiaoHongShuIcon />
-								<BiliBiliIcon />
-								<ModeToggle />
-							</div>
-						</div>
-					</header>
+					<Navbar />
 					{children}
 					<Footer></Footer>
 				</ThemeProvider>
