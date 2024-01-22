@@ -9,17 +9,17 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	const page = allPages.find(
 		(page) => page._raw.flattenedPath === 'pages/' + params.slug
 	);
-	if (!page) throw new Error(`Post not found for slug: ${params.slug}`);
+	if (!page) throw new Error(`Blog not found for slug: ${params.slug}`);
 	return { title: page.title };
 };
 
 const Page = ({ params }: { params: { slug: string } }) => {
-	// Find the post for the current page.
+	// Find the blog for the current page.
 	const page = allPages.find((page) => {
 		return page._raw.flattenedPath === 'pages/' + params.slug;
 	});
 
-	// 404 if the post does not exist.
+	// 404 if the blog does not exist.
 	if (!page) notFound();
 
 	return (

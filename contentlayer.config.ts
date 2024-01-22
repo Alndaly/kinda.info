@@ -4,9 +4,9 @@ import readingTime from "reading-time";
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 
-export const Post = defineDocumentType(() => ({
-    name: 'Post',
-    filePathPattern: `posts/**/*.mdx`,
+export const Blog = defineDocumentType(() => ({
+    name: 'Blog',
+    filePathPattern: `blogs/**/*.mdx`,
     contentType: "mdx",
     fields: {
         title: { type: 'string', required: false },
@@ -16,7 +16,7 @@ export const Post = defineDocumentType(() => ({
         style: { type: 'string', required: false }
     },
     computedFields: {
-        url: { type: 'string', resolve: (post) => `/${post._raw.flattenedPath}` },
+        url: { type: 'string', resolve: (blog) => `/${blog._raw.flattenedPath}` },
         readingTime: { type: "json", resolve: (doc) => readingTime(doc.body.raw) },
     },
 }))
@@ -37,7 +37,7 @@ export const Page = defineDocumentType(() => ({
 
 export default makeSource({
     contentDirPath: 'content',
-    documentTypes: [Post, Page],
+    documentTypes: [Blog, Page],
     mdx: {
         remarkPlugins: [remarkGfm, remarkMath],
     }
