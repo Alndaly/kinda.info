@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import moment from 'moment';
-import { siteMetadata } from '../config/sitemetadata';
+import { siteMetadata } from '../../data/sitemetadata';
 
 export default function Footer() {
 	return (

@@ -1,6 +1,7 @@
 export const siteMetadata = {
     title: "Kinda",
     author: "Kinda",
+    siteName: "Kinda",
     authorDesc: "自我批判和反叛思考",
     publishName: "Kinda",
     headerTitle: "Kinda",

@@ -3,24 +3,63 @@ import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/mdx-components';
 import cls from 'classnames';
 import Image from 'next/image';
+import { siteMetadata } from '../../data/sitemetadata';
 
-export const generateMetadata = ({ params }: { params: { slug: string } }) => {
-	if (params.slug.endsWith('js')) return;
-	const page = allPages.find(
-		(page) => page._raw.flattenedPath === 'pages/' + params.slug
-	);
-	if (!page) throw new Error(`Blog not found for slug: ${params.slug}`);
-	return { title: page.title };
-};
+interface PageProps {
+	params: {
+		slug: string[];
+	};
+}
 
-const Page = ({ params }: { params: { slug: string } }) => {
-	// Find the blog for the current page.
-	const page = allPages.find((page) => {
-		return page._raw.flattenedPath === 'pages/' + params.slug;
-	});
+async function getPageFromParams(params: PageProps['params']) {
+	const slug = params?.slug?.join('/');
+	const page = allPages.find((page: Page) => page.slugAsParams === slug);
 
-	// 404 if the blog does not exist.
-	if (!page) notFound();
+	if (!page) {
+		null;
+	}
+
+	return page;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+	const page = await getPageFromParams(params);
+
+	if (!page) {
+		return {};
+	}
+
+	return {
+		title: page.title + ' - ' + siteMetadata.publishName,
+		description: page.description,
+		openGraph: {
+			title: page.title + ' - ' + siteMetadata.publishName,
+			description: page.description,
+			url: '/' + page.slugAsParams,
+			siteName: siteMetadata.siteName,
+			images: [
+				{
+					url: `/og?title=${page.title}`,
+				},
+			],
+			locale: siteMetadata.language,
+			type: 'website',
+		},
+	};
+}
+
+export async function generateStaticParams(): Promise<PageProps['params'][]> {
+	return allPages.map((page: any) => ({
+		slug: page.slugAsParams.split('/'),
+	}));
+}
+
+const Page = async ({ params }: PageProps) => {
+	const page = await getPageFromParams(params);
+
+	if (!page) {
+		notFound();
+	}
 
 	return (
 		<>
