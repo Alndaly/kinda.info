@@ -163,9 +163,11 @@ const PostPage = async ({ params }: PostProps) => {
 					'px-8',
 					'md:px-0'
 				)}>
-				<div className='text-sm prose-sm select-none'>
-					<time>{format(parseISO(post.date), 'LLLL d, yyyy')}</time> ·{' '}
-					{post.readingTime.words} words · {post.readingTime.text}
+				<div className='text-sm prose-sm select-none pb-5'>
+					<time>{format(new Date(post.createTime), 'LLLL d, yyyy HH:mm')}</time> ·{' '}
+					{post.readingTime.words} words · {post.readingTime.text} ·{' '}
+					Last updated on{' '}
+					{format(new Date(post.updateTime), 'LLLL d, yyyy HH:mm')}
 				</div>
 				{!post.image && post.title && <h1>{post.title}</h1>}
 				<div>{post.description}</div>
@@ -174,12 +176,13 @@ const PostPage = async ({ params }: PostProps) => {
 				<Link
 					href='https://creativecommons.org/licenses/by-nc-sa/4.0/'
 					target='_blank'>
-					<p className='mt-12 py-2 text-sm text-right sm:text-left text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-200 transition duration-400'>
+					<p className='py-2 text-sm text-right sm:text-left text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-200 transition duration-400'>
 						CC BY-NC-SA 4.0
 					</p>
 				</Link>
 				<Comments />
-				<div className='justify-between flex gap-8 py-8 leading-relaxed'>
+				<hr />
+				<div className='justify-between flex leading-relaxed'>
 					{adjacentPosts.previousPostTitle && (
 						<div>
 							<div>Previous Post</div>

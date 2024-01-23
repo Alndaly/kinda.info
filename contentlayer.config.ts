@@ -3,6 +3,7 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import readingTime from "reading-time";
 import remarkGfm from 'remark-gfm'
 import rehypeSlug from "rehype-slug";
+import { getGitFileUpdateTimestamp, getGitFileCreateTimestamp } from './app/utils/getGitTimeStamp';
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkMath from 'remark-math'
 
@@ -15,6 +16,20 @@ const computedFields: import('contentlayer/source-files').ComputedFields = {
     slug: {
         type: "string",
         resolve: (doc) => `/${doc._raw.flattenedPath}`.toLowerCase(),
+    },
+    createTime: {
+        type: 'number',
+        resolve: async (doc) => {
+            const createTime = await getGitFileCreateTimestamp(doc._raw.sourceFilePath);
+            return createTime;
+        },
+    },
+    updateTime: {
+        type: 'number',
+        resolve: async (doc) => {
+            const updateTime = await getGitFileUpdateTimestamp(doc._raw.sourceFilePath);
+            return updateTime;
+        },
     },
     slugAsParams: {
         type: "string",
@@ -85,6 +100,7 @@ export default makeSource({
     mdx: {
         remarkPlugins: [remarkGfm, remarkMath],
         rehypePlugins: [
+            // @ts-ignore
             [rehypePrettyCode, options],
             rehypeSlug,
         ],

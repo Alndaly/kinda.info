@@ -1,6 +1,7 @@
 import { allPages, type Page } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/mdx-components';
+import { format, parseISO } from 'date-fns';
 import cls from 'classnames';
 import Image from 'next/image';
 import Comments from '../components/comments';
@@ -98,9 +99,12 @@ const Page = async ({ params }: PageProps) => {
 					{ 'lg:prose-lg': page.style !== 'website' },
 					{ 'max-w-none': page.style === 'website' }
 				)}>
-				{!page.image && page.title && (
-					<h1>{page.title}</h1>
-				)}
+				<div className='text-sm prose-sm select-none pb-5'>
+					<time>{format(new Date(page.createTime), 'LLLL d, yyyy HH:mm')}</time>{' '}
+					· {page.readingTime.words} words · {page.readingTime.text} · Last
+					updated on {format(new Date(page.updateTime), 'LLLL d, yyyy HH:mm')}
+				</div>
+				{!page.image && page.title && <h1>{page.title}</h1>}
 				<div>{page.description}</div>
 				<hr />
 				<Mdx code={page.body.code}></Mdx>
