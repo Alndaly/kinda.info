@@ -131,23 +131,23 @@ const PostPage = async ({ params }: PostProps) => {
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 				/>
 			</section>
-			<div className='w-full h-52 sm:h-72 md:h-96 relative top-0 relative'>
-				<Image
-					src={
-						post?.image
-							? post.image
-							: 'https://oss.kinda.info/image/202401211555429.jpeg'
-					}
-					alt='bg'
-					fill
-					style={{ objectFit: 'cover' }}
-				/>
-				<div className='px-8 sm:px-0 max-w-prose prose-h1:mb-0 lg:prose-lg w-full absolute z-100 mx-auto clear-both text-center top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
-					<div className='py-5 px-5 backdrop-blur-sm box-border bg-white/50 dark:bg-black/50 shadow rounded'>
-						{post.title && <h1 className='text-5xl font-bold'>{post.title}</h1>}
+			{post?.image && (
+				<div className='w-full h-52 sm:h-72 md:h-96 relative top-0 relative'>
+					<Image
+						src={post.image}
+						alt='bg'
+						fill
+						style={{ objectFit: 'cover' }}
+					/>
+					<div className='px-8 sm:px-0 max-w-prose prose-h1:mb-0 lg:prose-lg w-full absolute z-100 mx-auto clear-both text-center top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
+						<div className='py-5 px-5 backdrop-blur-sm box-border bg-white/50 dark:bg-black/50 shadow rounded'>
+							{post.title && (
+								<h1 className='text-5xl font-bold'>{post.title}</h1>
+							)}
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
 			<article
 				className={cls(
 					'prose',
@@ -164,10 +164,9 @@ const PostPage = async ({ params }: PostProps) => {
 					'md:px-0'
 				)}>
 				<div className='text-sm prose-sm select-none pb-5'>
-					<time>{format(new Date(post.createTime), 'LLLL d, yyyy HH:mm')}</time> ·{' '}
-					{post.readingTime.words} words · {post.readingTime.text} ·{' '}
-					Last updated on{' '}
-					{format(new Date(post.updateTime), 'LLLL d, yyyy HH:mm')}
+					<time>{format(new Date(post.createTime), 'LLLL d, yyyy HH:mm')}</time>{' '}
+					· {post.readingTime.words} words · {post.readingTime.text} · Last
+					updated on {format(new Date(post.updateTime), 'LLLL d, yyyy HH:mm')}
 				</div>
 				{!post.image && post.title && <h1>{post.title}</h1>}
 				<div>{post.description}</div>
