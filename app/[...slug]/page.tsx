@@ -98,6 +98,9 @@ const Page = async ({ params }: PageProps) => {
 					{ 'lg:prose-lg': page.style !== 'website' },
 					{ 'max-w-none': page.style === 'website' }
 				)}>
+				{!page.image && page.title && (
+					<h1>{page.title}</h1>
+				)}
 				<div>{page.description}</div>
 				<hr />
 				<Mdx code={page.body.code}></Mdx>

@@ -167,6 +167,7 @@ const PostPage = async ({ params }: PostProps) => {
 					<time>{format(parseISO(post.date), 'LLLL d, yyyy')}</time> ·{' '}
 					{post.readingTime.words} words · {post.readingTime.text}
 				</div>
+				{!post.image && post.title && <h1>{post.title}</h1>}
 				<div>{post.description}</div>
 				<hr />
 				<Mdx code={post.body.code}></Mdx>
