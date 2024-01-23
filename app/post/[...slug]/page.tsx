@@ -118,7 +118,7 @@ const PostPage = async ({ params }: PostProps) => {
 			{
 				'@type': 'Person',
 				name: `${siteMetaData.author}`,
-				url: `/about`,
+				url: `/about-me`,
 			},
 		],
 	};
@@ -142,13 +142,9 @@ const PostPage = async ({ params }: PostProps) => {
 					fill
 					style={{ objectFit: 'cover' }}
 				/>
-				<div className='px-8 sm:px-0 max-w-prose lg:prose-lg w-full absolute z-100 mx-auto clear-both text-center top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
+				<div className='px-8 sm:px-0 max-w-prose prose-h1:mb-0 lg:prose-lg w-full absolute z-100 mx-auto clear-both text-center top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
 					<div className='py-5 px-5 backdrop-blur-sm box-border bg-white/50 dark:bg-black/50 shadow rounded'>
 						{post.title && <h1 className='text-5xl font-bold'>{post.title}</h1>}
-						<div className='mb-2 text-sm'>
-							{format(parseISO(post.date), 'LLLL d, yyyy')}
-						</div>
-						<div className='text-sm'>{post.readingTime.text}</div>
 					</div>
 				</div>
 			</div>
@@ -167,6 +163,12 @@ const PostPage = async ({ params }: PostProps) => {
 					'px-8',
 					'md:px-0'
 				)}>
+				<div className='text-sm prose-sm select-none'>
+					<time>{format(parseISO(post.date), 'LLLL d, yyyy')}</time> ·{' '}
+					{post.readingTime.words} words · {post.readingTime.text}
+				</div>
+				<div>{post.description}</div>
+				<hr />
 				<Mdx code={post.body.code}></Mdx>
 				<div className='justify-between flex gap-8 py-8 leading-relaxed'>
 					{adjacentPosts.previousPostTitle && (
