@@ -1,4 +1,4 @@
-import { siteMetadata } from '@/data/sitemetadata';
+import { siteMetaData } from '@/data/sitemetadata';
 
 export default function robots() {
 	return {
@@ -6,6 +6,6 @@ export default function robots() {
 			userAgent: '*',
 			allow: '/',
 		},
-		sitemap: `${siteMetadata.siteUrl}/sitemap.xml`,
+		sitemap: `${siteMetaData.siteUrl}/sitemap.xml`,
 	};
 }

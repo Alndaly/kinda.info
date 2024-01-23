@@ -3,7 +3,7 @@ import { allPosts, type Post } from 'contentlayer/generated';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { siteMetadata } from '@/data/sitemetadata';
+import { siteMetaData } from '@/data/sitemetadata';
 import cls from 'classnames';
 import ScrollTopAndComment from '@/app/components/scroll-top-and-comment';
 import { Mdx } from '@/app/mdx-components';
@@ -71,11 +71,11 @@ export async function generateMetadata({ params }: PostProps) {
 	}
 
 	return {
-		title: post.title + ' - ' + siteMetadata.publishName,
+		title: post.title + ' - ' + siteMetaData.publisher,
 		description: post.description,
 		openGraph: {
 			url: `/post/${post.slugAsParams}`,
-			title: post.title + ' - ' + siteMetadata.publishName,
+			title: post.title + ' - ' + siteMetaData.publisher,
 			description: post.description,
 			type: 'article',
 			images: [
@@ -117,7 +117,7 @@ const PostPage = async ({ params }: PostProps) => {
 		author: [
 			{
 				'@type': 'Person',
-				name: `${siteMetadata.author}`,
+				name: `${siteMetaData.author}`,
 				url: `/about`,
 			},
 		],

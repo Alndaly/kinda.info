@@ -30,7 +30,7 @@ function useHighlighted(id: string) {
 	return [activeId === id, setActiveId];
 }
 
-const TableOfContent = ({ heading }) => {
+const TableOfContent = ({ heading }: any) => {
 	const id = heading.id;
 	const [highlighted, setHighlighted] = useHighlighted(id);
 	return (

@@ -2,14 +2,14 @@
 
 import Link from 'next/link';
 import moment from 'moment';
-import { siteMetadata } from '../../data/sitemetadata';
+import { siteMetaData } from '../../data/sitemetadata';
 
 export default function Footer() {
 	return (
 		<footer>
 			<div className='container flex flex-col items-center px-8 py-8 mx-auto sm:flex-row select-none'>
 				<div className='text-sm text-zinc-500 dark:text-zinc-300'>
-					© {moment().format('YYYY')} {siteMetadata.publishName}
+					© {moment().format('YYYY')} {siteMetaData.publisher}
 				</div>
 				<p className='mt-4 text-sm text-zinc-500 dark:text-zinc-300 sm:ml-4 sm:pl-4 sm:border-l sm:border-zinc-200 sm:mt-0 select-none'>
 					Powered by{' '}
@@ -26,7 +26,7 @@ export default function Footer() {
 					<span className='text-zinc-400 hover:text-zinc-500 transform duration-400'>
 						<span className='sr-only'>GitHub</span>
 						<Link
-							href={`https://www.github.com/${siteMetadata.github}/${siteMetadata.siteRepo}`}
+							href={`https://www.github.com/${siteMetaData.github}/${siteMetaData.siteRepo}`}
 							aria-label='Github'
 							target='_blank'>
 							<svg
@@ -44,7 +44,7 @@ export default function Footer() {
 					<span className='text-zinc-400 hover:text-zinc-500 transform duration-400'>
 						<span className='sr-only'>email</span>
 						<Link
-							href={`mailto:${siteMetadata.email}`}
+							href={`mailto:${siteMetaData.email}`}
 							aria-label='Email'
 							target='_blank'>
 							<svg

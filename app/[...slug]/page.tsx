@@ -5,7 +5,7 @@ import cls from 'classnames';
 import Image from 'next/image';
 import Comments from '../components/comments';
 import ScrollTopAndComment from '../components/scroll-top-and-comment';
-import { siteMetadata } from '../../data/sitemetadata';
+import { siteMetaData } from '../../data/sitemetadata';
 
 interface PageProps {
 	params: {
@@ -32,19 +32,19 @@ export async function generateMetadata({ params }: PageProps) {
 	}
 
 	return {
-		title: page.title + ' - ' + siteMetadata.publishName,
+		title: page.title + ' - ' + siteMetaData.publisher,
 		description: page.description,
 		openGraph: {
-			title: page.title + ' - ' + siteMetadata.publishName,
+			title: page.title + ' - ' + siteMetaData.publisher,
 			description: page.description,
 			url: '/' + page.slugAsParams,
-			siteName: siteMetadata.siteName,
+			siteName: siteMetaData.siteName,
 			images: [
 				{
 					url: `/og?title=${page.title}`,
 				},
 			],
-			locale: siteMetadata.language,
+			locale: siteMetaData.language,
 			type: 'website',
 		},
 	};
