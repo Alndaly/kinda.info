@@ -61,6 +61,21 @@ export default function Footer() {
 							</svg>
 						</Link>
 					</span>
+					<span className='text-zinc-400 hover:text-zinc-500 transform duration-400'>
+						<Link href='/rss' aria-label='RSS' target='_blank'>
+							<svg
+								className='fill-current w-6 h-6'
+								fill='currentColor'
+								viewBox='0 0 800 800'
+								aria-hidden='true'>
+								<path
+									d='M493 652H392c0-134-111-244-244-244V307c189 0 345 156 345 345zm71 0c0-228-188-416-416-416V132c285 0 520 235 520 520z'
+									clipRule='evenodd'
+								/>
+								<circle cx='219' cy='581' r='71' />
+							</svg>
+						</Link>
+					</span>
 				</span>
 			</div>
 		</footer>
