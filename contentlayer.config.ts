@@ -2,6 +2,8 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import readingTime from "reading-time";
 import remarkGfm from 'remark-gfm'
+import rehypeSlug from "rehype-slug";
+import rehypePrettyCode from "rehype-pretty-code";
 import remarkMath from 'remark-math'
 
 
@@ -72,10 +74,19 @@ export const Page = defineDocumentType(() => ({
     computedFields
 }))
 
+const options: import('rehype-pretty-code').Options = {
+    theme: "github-dark-dimmed",
+    keepBackground: true
+};
+
 export default makeSource({
     contentDirPath: './data/content',
     documentTypes: [Post, Page],
     mdx: {
         remarkPlugins: [remarkGfm, remarkMath],
+        rehypePlugins: [
+            [rehypePrettyCode, options],
+            rehypeSlug,
+        ],
     }
 })
