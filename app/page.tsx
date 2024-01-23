@@ -13,9 +13,9 @@ function PostCard(post: Post) {
 				</Link>
 			</h2>
 			<time
-				dateTime={post.date}
+				dateTime={format(new Date(post.createTime), 'LLLL d, yyyy HH:mm')}
 				className='mb-2 block text-xs text-gray-600 flex flex-row space-x-5'>
-				<div>{format(parseISO(post.date), 'LLLL d, yyyy')}</div>
+				<div>{format(new Date(post.createTime), 'LLLL d, yyyy')}</div>
 				<div>{post.readingTime.text}</div>
 			</time>
 			<div className='line-clamp-2 text-gray-400 text-sm'>
@@ -27,7 +27,7 @@ function PostCard(post: Post) {
 
 export default function Home() {
 	const posts = allPosts.sort((a, b) =>
-		compareDesc(new Date(a.date), new Date(b.date))
+		compareDesc(new Date(a.createTime), new Date(b.createTime))
 	);
 
 	return (

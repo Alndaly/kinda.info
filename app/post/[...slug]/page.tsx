@@ -35,8 +35,8 @@ async function getPostFromParams(params: PostProps['params']) {
 
 async function getAdjacentPosts(post: Post) {
 	const sortedPosts = allPosts.sort((a: Post, b: Post) => {
-		const aDate: any = a.date;
-		const bDate: any = b.date;
+		const aDate: any = a.createTime;
+		const bDate: any = b.createTime;
 		return bDate - aDate;
 	});
 
@@ -106,8 +106,8 @@ const PostPage = async ({ params }: PostProps) => {
 	const jsonLd = {
 		'@context': 'https://schema.org',
 		'@type': 'Article',
-		datePublished: post.date,
-		dateModified: post.date,
+		datePublished: post.createTime,
+		dateModified: post.updateTime,
 		headline: post.title,
 		image:
 			post.image == ''

@@ -4,7 +4,7 @@ import { siteMetaData } from "@/data/sitemetadata"
 export default async function sitemap() {
     const posts = allPosts.map(post => ({
         url: `${siteMetaData.siteUrl}${post.slug}`,
-        lastModified: post.date ? post.date : post.date,
+        lastModified: post.updateTime ? post.updateTime : post.updateTime,
     }))
 
     const routes = ['', '/post', '/about-me'].map(route => ({
