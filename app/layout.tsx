@@ -4,6 +4,8 @@ import './globals.css';
 import Footer from './components/footer';
 import { siteMetadata } from '@/data/sitemetadata';
 import Navbar from './components/navbar';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteMetadata.siteUrl),
@@ -42,6 +44,8 @@ export default function RootLayout({
 					<Navbar />
 					{children}
 					<Footer></Footer>
+					<SpeedInsights />
+					<Analytics />
 				</ThemeProvider>
 			</body>
 		</html>

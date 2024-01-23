@@ -16,7 +16,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "@types/mdx": "^2.0.10",
     "@vercel/analytics": "^1.1.2",
-    "@vercel/speed-insights": "^1.0.5",
+    "@vercel/speed-insights": "^1.0.7",
     "ahooks": "^3.7.8",
     "classnames": "^2.5.1",
     "contentlayer": "^0.3.4",
