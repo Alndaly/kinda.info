@@ -170,6 +170,14 @@ const PostPage = async ({ params }: PostProps) => {
 				<div>{post.description}</div>
 				<hr />
 				<Mdx code={post.body.code}></Mdx>
+				<Link
+					href='https://creativecommons.org/licenses/by-nc-sa/4.0/'
+					target='_blank'>
+					<p className='mt-12 py-2 text-sm text-right sm:text-left text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-200 transition duration-400'>
+						CC BY-NC-SA 4.0
+					</p>
+				</Link>
+				<Comments />
 				<div className='justify-between flex gap-8 py-8 leading-relaxed'>
 					{adjacentPosts.previousPostTitle && (
 						<div>
@@ -189,8 +197,8 @@ const PostPage = async ({ params }: PostProps) => {
 						</div>
 					)}
 				</div>
-				<Comments />
 			</article>
+
 			<ScrollTopAndComment />
 		</>
 	);
