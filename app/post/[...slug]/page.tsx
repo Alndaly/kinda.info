@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { siteMetadata } from '@/data/sitemetadata';
 import cls from 'classnames';
+import ScrollTopAndComment from '@/app/components/scroll-top-and-comment';
 import { Mdx } from '@/app/mdx-components';
 import Comments from '../../components/comments';
 
@@ -188,6 +189,7 @@ const PostPage = async ({ params }: PostProps) => {
 				</div>
 				<Comments />
 			</article>
+			<ScrollTopAndComment />
 		</>
 	);
 };

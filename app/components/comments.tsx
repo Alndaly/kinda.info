@@ -10,18 +10,20 @@ const Comments = () => {
 	const commentsTheme =
 		theme === 'dark' || resolvedTheme === 'dark' ? 'transparent_dark' : 'light';
 	return (
-		<Giscus
-			repo={`${siteMetadata.github}/${siteMetadata.siteRepo}`}
-			repoId={siteMetadata.repoid}
-			category='Announcements'
-			categoryId={siteMetadata.categoryid}
-			mapping='pathname'
-			reactionsEnabled='1'
-			inputPosition='top'
-			theme={commentsTheme}
-			lang='en'
-			loading='lazy'
-		/>
+		<div id='comments'>
+			<Giscus
+				repo={`${siteMetadata.github}/${siteMetadata.siteRepo}`}
+				repoId={siteMetadata.repoid}
+				category='Announcements'
+				categoryId={siteMetadata.categoryid}
+				mapping='pathname'
+				reactionsEnabled='1'
+				inputPosition='top'
+				theme={commentsTheme}
+				lang='en'
+				loading='lazy'
+			/>
+		</div>
 	);
 };
 

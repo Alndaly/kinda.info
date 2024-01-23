@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/mdx-components';
 import cls from 'classnames';
 import Image from 'next/image';
+import Comments from '../components/comments';
+import ScrollTopAndComment from '../components/scroll-top-and-comment';
 import { siteMetadata } from '../../data/sitemetadata';
 
 interface PageProps {
@@ -97,7 +99,9 @@ const Page = async ({ params }: PageProps) => {
 					{ 'max-w-none': page.style === 'website' }
 				)}>
 				<Mdx code={page.body.code}></Mdx>
+				<Comments />
 			</article>
+			<ScrollTopAndComment />
 		</>
 	);
 };
