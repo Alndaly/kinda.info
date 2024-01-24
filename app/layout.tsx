@@ -1,34 +1,34 @@
 import { Metadata } from 'next';
-import ThemeProvider from './theme-provider';
+import ThemeProvider from './components/theme-provider';
 import './globals.css';
 import Footer from './components/footer';
-import { siteMetaData } from '@/data/sitemetadata';
+import { siteConfig } from '@/site.config';
 import Navbar from './components/navbar';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
-	metadataBase: new URL(siteMetaData.siteUrl),
+	metadataBase: new URL(siteConfig.siteUrl),
 	generator: 'Next.js',
-	applicationName: siteMetaData.siteRepo,
+	applicationName: siteConfig.siteRepo,
 	referrer: 'origin-when-cross-origin',
-	keywords: siteMetaData.keywords,
-	authors: [{ name: siteMetaData.author, url: '/about-me' }],
-	creator: siteMetaData.author,
-	publisher: siteMetaData.publisher,
-	title: siteMetaData.title,
-	description: siteMetaData.description,
+	keywords: siteConfig.keywords,
+	authors: [{ name: siteConfig.author, url: '/about-me' }],
+	creator: siteConfig.author,
+	publisher: siteConfig.publisher,
+	title: siteConfig.title,
+	description: siteConfig.description,
 	formatDetection: {
 		email: true,
 		address: false,
 		telephone: false,
 	},
 	openGraph: {
-		title: siteMetaData.title,
-		description: siteMetaData.description,
-		url: siteMetaData.siteUrl,
-		siteName: siteMetaData.siteName,
-		locale: siteMetaData.language,
+		title: siteConfig.title,
+		description: siteConfig.description,
+		url: siteConfig.siteUrl,
+		siteName: siteConfig.siteName,
+		locale: siteConfig.language,
 	},
 };
 

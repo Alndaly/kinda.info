@@ -4,10 +4,10 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import TableOfContent from '@/app/components/toc';
 import Link from 'next/link';
-import { siteMetaData } from '@/data/sitemetadata';
+import { siteConfig } from '@/site.config';
 import cls from 'classnames';
 import ScrollTopAndComment from '@/app/components/scroll-top-and-comment';
-import { Mdx } from '@/app/mdx-components';
+import { Mdx } from '@/app/components/mdx-components';
 import Comments from '../../components/comments';
 
 interface PostProps {
@@ -72,11 +72,11 @@ export async function generateMetadata({ params }: PostProps) {
 	}
 
 	return {
-		title: post.title + ' - ' + siteMetaData.publisher,
+		title: post.title + ' - ' + siteConfig.publisher,
 		description: post.description,
 		openGraph: {
 			url: `/post/${post.slugAsParams}`,
-			title: post.title + ' - ' + siteMetaData.publisher,
+			title: post.title + ' - ' + siteConfig.publisher,
 			description: post.description,
 			type: 'article',
 			images: [
@@ -118,7 +118,7 @@ const PostPage = async ({ params }: PostProps) => {
 		author: [
 			{
 				'@type': 'Person',
-				name: `${siteMetaData.author}`,
+				name: `${siteConfig.author}`,
 				url: `/about-me`,
 			},
 		],

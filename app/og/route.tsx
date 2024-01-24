@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-import { siteMetaData } from '@/data/sitemetadata';
+import { siteConfig } from '@/site.config';
 
 export const runtime = 'edge';
 
@@ -9,7 +9,7 @@ export async function GET(request: Request) {
 
 	const title = searchParams.has('title')
 		? searchParams.get('title')?.slice(0, 100)!
-		: siteMetaData.publisher;
+		: siteConfig.publisher;
 
 	return new ImageResponse(
 		(
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
 						</svg>
 						<div tw='flex ml-4 text-[#9b9ba4]'>
 							<div tw='flex text-[#eaeaf0] ml-4 mr-4 text-4xl'>
-								{siteMetaData.siteRepo}
+								{siteConfig.siteRepo}
 							</div>
 						</div>
 					</div>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ModeToggle } from './mode-toggle';
 import MobileNavBar from './mobile-navbar';
 import headerNavLinks from '@/data/headerNavLinks';
-import { siteMetaData } from '@/data/sitemetadata';
+import { siteConfig } from '@/site.config';
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -19,10 +19,10 @@ export default function Navbar() {
 			} py-3 sticky z-10 bg-white dark:bg-[#1E1E1E] backdrop-filter backdrop-blur-lg bg-opacity-[78.6%] border-b border-zinc-50 dark:border-zinc-800 px-4 transition-all duration-600 transform`}>
 			<div className='max-w-7xl mx-auto items-center flex justify-between'>
 				<div>
-					<Link href='/' aria-label={siteMetaData.publisher} passHref>
+					<Link href='/' aria-label={siteConfig.publisher} passHref>
 						<div className='flex items-center justify-between'>
 							<div className='text-xl whitespace-nowrap font-semibold rounded-lg sm:block text-zinc-800 hover:bg-zinc-50 dark:hover:bg-slate-800 dark:text-zinc-200 select-none tracking-tight px-3 py-1 duration-400'>
-								{siteMetaData.publisher}
+								{siteConfig.publisher}
 							</div>
 						</div>
 					</Link>

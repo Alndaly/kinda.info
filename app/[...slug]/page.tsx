@@ -1,12 +1,12 @@
 import { allPages, type Page } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
-import { Mdx } from '@/app/mdx-components';
+import { Mdx } from '@/app/components/mdx-components';
 import moment from 'moment-timezone';
 import cls from 'classnames';
 import Image from 'next/image';
 import Comments from '../components/comments';
 import ScrollTopAndComment from '../components/scroll-top-and-comment';
-import { siteMetaData } from '../../data/sitemetadata';
+import { siteConfig } from '../../site.config';
 
 interface PageProps {
 	params: {
@@ -33,19 +33,19 @@ export async function generateMetadata({ params }: PageProps) {
 	}
 
 	return {
-		title: page.title + ' - ' + siteMetaData.publisher,
+		title: page.title + ' - ' + siteConfig.publisher,
 		description: page.description,
 		openGraph: {
-			title: page.title + ' - ' + siteMetaData.publisher,
+			title: page.title + ' - ' + siteConfig.publisher,
 			description: page.description,
 			url: '/' + page.slugAsParams,
-			siteName: siteMetaData.siteName,
+			siteName: siteConfig.siteName,
 			images: [
 				{
 					url: `/og?title=${page.title}`,
 				},
 			],
-			locale: siteMetaData.language,
+			locale: siteConfig.language,
 			type: 'website',
 		},
 	};

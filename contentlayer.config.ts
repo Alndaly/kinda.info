@@ -6,6 +6,7 @@ import rehypeSlug from "rehype-slug";
 import GithubSlugger from 'github-slugger'
 import { getGitFileUpdateTimestamp, getGitFileCreateTimestamp } from './app/utils/getGitTimeStamp';
 import rehypePrettyCode from "rehype-pretty-code";
+import { siteConfig } from './site.config';
 import remarkMath from 'remark-math'
 
 const slugger = new GithubSlugger()
@@ -96,7 +97,7 @@ const options: import('rehype-pretty-code').Options = {
 };
 
 export default makeSource({
-    contentDirPath: './data/content',
+    contentDirPath: siteConfig.docPath,
     documentTypes: [Post, Page],
     mdx: {
         remarkPlugins: [remarkGfm, remarkMath],

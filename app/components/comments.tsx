@@ -3,7 +3,7 @@
 import Giscus from '@giscus/react';
 import React from 'react';
 import { useTheme } from 'next-themes';
-import { siteMetaData } from '../../data/sitemetadata';
+import { siteConfig } from '../../site.config';
 
 const Comments = () => {
 	const { theme, resolvedTheme } = useTheme();
@@ -12,10 +12,10 @@ const Comments = () => {
 	return (
 		<div id='comments'>
 			<Giscus
-				repo={`${siteMetaData.github}/${siteMetaData.siteRepo}`}
-				repoId={siteMetaData.repoId}
+				repo={`${siteConfig.github}/${siteConfig.siteRepo}`}
+				repoId={siteConfig.repoId}
 				category='Announcements'
-				categoryId={siteMetaData.categoryId}
+				categoryId={siteConfig.categoryId}
 				mapping='pathname'
 				reactionsEnabled='1'
 				inputPosition='top'

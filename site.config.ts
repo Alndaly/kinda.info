@@ -1,4 +1,4 @@
-export const siteMetaData = {
+export const siteConfig = {
     title: "阡陌",
     author: "阡陌",
     siteName: "阡陌",
@@ -9,10 +9,11 @@ export const siteMetaData = {
     keywords: ['kinda', '阡陌', '序章', '人生'],
     siteUrl: "https://kinda.info",
     siteRepo: "kinda.info",
-    repoId: "R_kgDOLHlvqA",
-    categoryId: "DIC_kwDOLHlvqM4CcknJ",
+    repoId: "R_kgDOLG0_4Q",
+    categoryId: "DIC_kwDOLG0_4c4CcpnC",
     siteLogo: "/favicon.ico",
     cover: "https://oss.kinda.info/image/202401211555429.jpeg",
     email: "1142704468@qq.com",
     github: "Alndaly",
+    docPath: "data/content"
 };

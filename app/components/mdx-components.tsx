@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import type { MDXComponents } from 'mdx/types';
-import BiliBili from './components/bilibili';
-import Youtube from './components/youtube';
+import BiliBili from './bilibili';
+import Youtube from './youtube';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 
 // Define your custom MDX components.
