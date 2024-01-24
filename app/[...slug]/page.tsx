@@ -33,10 +33,10 @@ export async function generateMetadata({ params }: PageProps) {
 	}
 
 	return {
-		title: page.title + ' - ' + siteConfig.publisher,
+		title: page.title + ' - ' + siteConfig.author,
 		description: page.description,
 		openGraph: {
-			title: page.title + ' - ' + siteConfig.publisher,
+			title: page.title + ' - ' + siteConfig.author,
 			description: page.description,
 			url: '/' + page.slugAsParams,
 			siteName: siteConfig.siteName,

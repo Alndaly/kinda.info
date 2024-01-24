@@ -9,7 +9,7 @@ export async function GET(request: Request) {
 
 	const title = searchParams.has('title')
 		? searchParams.get('title')?.slice(0, 100)!
-		: siteConfig.publisher;
+		: siteConfig.author;
 
 	return new ImageResponse(
 		(

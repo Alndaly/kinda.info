@@ -72,11 +72,11 @@ export async function generateMetadata({ params }: PostProps) {
 	}
 
 	return {
-		title: post.title + ' - ' + siteConfig.publisher,
+		title: post.title + ' - ' + siteConfig.author,
 		description: post.description,
 		openGraph: {
 			url: `/post/${post.slugAsParams}`,
-			title: post.title + ' - ' + siteConfig.publisher,
+			title: post.title + ' - ' + siteConfig.author,
 			description: post.description,
 			type: 'article',
 			images: [

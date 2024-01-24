@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 	keywords: siteConfig.keywords,
 	authors: [{ name: siteConfig.author, url: '/about-me' }],
 	creator: siteConfig.author,
-	publisher: siteConfig.publisher,
+	publisher: siteConfig.author,
 	title: siteConfig.title,
 	description: siteConfig.description,
 	formatDetection: {
