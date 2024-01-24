@@ -40,11 +40,11 @@ const SearchBar = (props: SearchBarProps) => {
 					leave='ease-in duration-200'
 					leaveFrom='opacity-100'
 					leaveTo='opacity-0'>
-					<div className='fixed inset-0 bg-white/50 dark:bg-black/50' />
+					<div className='fixed inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-sm' />
 				</Transition.Child>
 
 				<div className='fixed inset-0 overflow-y-auto'>
-					<div className='flex min-h-full items-center justify-center p-4 text-center'>
+					<div className='flex h-full items-center justify-center relative'>
 						<Transition.Child
 							as={Fragment}
 							enter='ease-out duration-300'
@@ -53,14 +53,14 @@ const SearchBar = (props: SearchBarProps) => {
 							leave='ease-in duration-200'
 							leaveFrom='opacity-100 scale-100'
 							leaveTo='opacity-0 scale-95'>
-							<Dialog.Panel className='transition-all duration-600 transform w-full max-w-md transform rounded-2xl bg-white dark:bg-black p-6 text-left align-middle transition-all'>
+							<Dialog.Panel className='border border-zinc-50 dark:border-zinc-800 drop-shadow-lg w-full max-w-xl rounded-2xl bg-white dark:bg-[#1E1E1E] p-6 text-left flex flex-col h-full max-h-[50%]'>
 								<input
 									placeholder='输入关键词'
-									className='p-5 w-full rounded-xl outline-none border-none focus:ring-0'
+									className='p-5 w-full outline-none border-b border-zinc-50 dark:border-zinc-800 '
 									onChange={(event) => setQuery(event.target.value)}
 								/>
 								{query && searchedPosts && searchedPosts.length > 0 && (
-									<div className='pt-5 w-full'>
+									<div className='pt-5 w-full flex-1 overflow-auto flex flex-col gap-2'>
 										{searchedPosts.map((post: Post) => {
 											return (
 												<div
@@ -68,7 +68,7 @@ const SearchBar = (props: SearchBarProps) => {
 														router.push(post.urlslug);
 														onClose();
 													}}
-													className='w-full hover:bg-white/20 p-2 rounded cursor-pointer'
+													className='w-full dark:bg-white/5 dark:hover:bg-white/10 bg-black/5 hover:bg-black/10 p-3 rounded cursor-pointer'
 													key={post._id}>
 													{post.title}
 												</div>
