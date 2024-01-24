@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { siteMetaData } from '../../data/sitemetadata';
 
 export default function Footer() {
@@ -9,7 +9,7 @@ export default function Footer() {
 		<footer>
 			<div className='container flex flex-col items-center px-8 py-8 mx-auto sm:flex-row select-none'>
 				<div className='text-sm text-zinc-500 dark:text-zinc-300'>
-					© {moment().format('YYYY')} {siteMetaData.publisher}
+					© {moment().tz('Asia/Shanghai').format('YYYY')} {siteMetaData.publisher}
 				</div>
 				<p className='mt-4 text-sm text-zinc-500 dark:text-zinc-300 sm:ml-4 sm:pl-4 sm:border-l sm:border-zinc-200 sm:mt-0 select-none'>
 					Powered by{' '}

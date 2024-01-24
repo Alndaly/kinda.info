@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { allPosts, Post } from 'contentlayer/generated';
 import { removeHtmlTag } from '@/app/utils';
 import Youtube from './components/youtube';
@@ -13,9 +13,9 @@ function PostCard(post: Post) {
 				</Link>
 			</h2>
 			<time
-				dateTime={moment(post.createTime).format('LLLL d, yyyy HH:mm')}
+				dateTime={moment(post.createTime).tz('Asia/Shanghai').format('LLLL d, yyyy HH:mm')}
 				className='mb-2 block text-xs text-gray-600 flex flex-row space-x-5'>
-				<div>{moment(post.createTime).format('LLLL')}</div>
+				<div>{moment(post.createTime).tz('Asia/Shanghai').format('LLLL')}</div>
 				<div>{post.readingTime.text}</div>
 			</time>
 			<div className='line-clamp-2 text-gray-400 text-sm'>

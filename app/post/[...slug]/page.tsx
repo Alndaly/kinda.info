@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { allPosts, type Post } from 'contentlayer/generated';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -166,7 +166,7 @@ const PostPage = async ({ params }: PostProps) => {
 				)}>
 				<div className='text-sm prose-sm select-none'>
 					{post.readingTime.words} words · {post.readingTime.text} · Last
-					updated on {moment(post.updateTime).format('LLLL')}
+					updated on {moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
 				</div>
 				{!post.image && post.title && <h1 className='pt-8'>{post.title}</h1>}
 				{post.description && <div className='pt-8'>{post.description}</div>}
