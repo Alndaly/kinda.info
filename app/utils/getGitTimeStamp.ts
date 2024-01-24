@@ -6,7 +6,7 @@ import { siteConfig } from '../../site.config'
 const cache = new Map<string, number>()
 
 export const getGitFileCreateTimestamp = async (file: string) => {
-    file = process.cwd() + '/' + siteConfig.docPath + file
+    file = process.cwd() + '/' + siteConfig.docPath + "/" + file
     const cached = cache.get('createTimeFor:' + file)
     if (cached) return cached
 
@@ -36,7 +36,7 @@ export const getGitFileCreateTimestamp = async (file: string) => {
 }
 
 export const getGitFileUpdateTimestamp = async (file: string) => {
-    file = process.cwd() + '/' + siteConfig.docPath + file
+    file = process.cwd() + '/' + siteConfig.docPath + "/" + file
     const cached = cache.get('updateTimeFor:' + file)
     if (cached) return cached
 
