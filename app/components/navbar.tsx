@@ -16,7 +16,7 @@ export default function Navbar() {
 		<header
 			className={`active ${
 				scrollDirection === 'down' ? '-top-24' : 'top-0'
-			} py-3 sticky z-10 bg-white dark:bg-black backdrop-filter backdrop-blur-lg bg-opacity-[78.6%] border-b border-zinc-50 dark:border-zinc-800 px-4 transition-all duration-600 transform`}>
+			} py-3 sticky z-10 bg-white dark:bg-[#1E1E1E] backdrop-filter backdrop-blur-lg bg-opacity-[78.6%] border-b border-zinc-50 dark:border-zinc-800 px-4 transition-all duration-600 transform`}>
 			<div className='max-w-7xl mx-auto items-center flex justify-between'>
 				<div>
 					<Link href='/' aria-label={siteMetaData.publisher} passHref>
