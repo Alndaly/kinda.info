@@ -30,10 +30,6 @@ export default function Home() {
 
 	return (
 		<>
-			<Youtube
-				src='https://www.youtube.com/embed/VNu15Qqomt8?autoplay=1&autohide=1&border=0&wmode=opaque&enablejsapi=1&controls=0&modestbranding=1&iv_load_policy=1&start=55'
-				title=''
-			/>
 			<p className='text-center italic text-xl pt-8'>
 				{'"天空生而蔚蓝，我们生而自由。"'}
 			</p>
