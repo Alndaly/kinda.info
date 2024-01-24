@@ -2,6 +2,7 @@ import moment from 'moment';
 import { allPosts, type Post } from 'contentlayer/generated';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import TableOfContent from '@/app/components/toc';
 import Link from 'next/link';
 import { siteMetaData } from '@/data/sitemetadata';
 import cls from 'classnames';
@@ -203,7 +204,6 @@ const PostPage = async ({ params }: PostProps) => {
 					</div>
 				</div>
 			</article>
-
 			<ScrollTopAndComment />
 		</>
 	);

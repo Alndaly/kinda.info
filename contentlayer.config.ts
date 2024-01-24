@@ -3,10 +3,12 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import readingTime from "reading-time";
 import remarkGfm from 'remark-gfm'
 import rehypeSlug from "rehype-slug";
+import GithubSlugger from 'github-slugger'
 import { getGitFileUpdateTimestamp, getGitFileCreateTimestamp } from './app/utils/getGitTimeStamp';
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkMath from 'remark-math'
 
+const slugger = new GithubSlugger()
 
 const computedFields: import('contentlayer/source-files').ComputedFields = {
     urlslug: {
@@ -52,7 +54,7 @@ const computedFields: import('contentlayer/source-files').ComputedFields = {
                         level:
                             flag?.length == 1 ? "one" : flag?.length == 2 ? "two" : "three",
                         text: content,
-                        id: content.split(" ").join("-").toLowerCase(),
+                        id: slugger.slug(content),
                     };
                 }
             );
