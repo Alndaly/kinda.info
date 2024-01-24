@@ -56,7 +56,7 @@ const SearchBar = (props: SearchBarProps) => {
 							<Dialog.Panel className='border border-zinc-50 dark:border-zinc-800 drop-shadow-lg w-full max-w-xl rounded-2xl bg-white dark:bg-[#1E1E1E] p-6 text-left flex flex-col h-full max-h-[50%]'>
 								<input
 									placeholder='输入关键词'
-									className='p-5 w-full outline-none border-b border-zinc-50 dark:border-zinc-800 '
+									className='bg-transparent p-5 w-full outline-none border-b border-zinc-50 dark:border-zinc-800 '
 									onChange={(event) => setQuery(event.target.value)}
 								/>
 								{query && searchedPosts && searchedPosts.length > 0 && (
