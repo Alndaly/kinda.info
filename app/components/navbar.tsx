@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ModeToggle } from './mode-toggle';
 import MobileNavBar from './mobile-navbar';
 import headerNavLinks from '@/data/headerNavLinks';
+import { SearchIcon } from './search-icon';
 import { siteConfig } from '@/site.config';
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
@@ -43,8 +44,9 @@ export default function Navbar() {
 						))}
 					</div>
 				</nav>
-				<div className='flex items-center text-base leading-5'>
+				<div className='flex items-center text-base leading-5 gap-5'>
 					<MobileNavBar />
+					<SearchIcon />
 					<ModeToggle />
 				</div>
 			</div>
