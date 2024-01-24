@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='zh'>
-			<body>
+			<body className='dark:bg-[#1E1E1E]'>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 					<Navbar />
 					{children}
