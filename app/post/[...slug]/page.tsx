@@ -163,13 +163,12 @@ const PostPage = async ({ params }: PostProps) => {
 					'px-8',
 					'md:px-0'
 				)}>
-				<div className='text-sm prose-sm select-none pb-5'>
-					<time>{format(new Date(post.createTime), 'LLLL d, yyyy HH:mm')}</time>{' '}
-					· {post.readingTime.words} words · {post.readingTime.text} · Last
+				<div className='text-sm prose-sm select-none'>
+					{post.readingTime.words} words · {post.readingTime.text} · Last
 					updated on {format(new Date(post.updateTime), 'LLLL d, yyyy HH:mm')}
 				</div>
-				{!post.image && post.title && <h1>{post.title}</h1>}
-				<div>{post.description}</div>
+				{!post.image && post.title && <h1 className='pt-5'>{post.title}</h1>}
+				{post.description && <div className='pt-5'>{post.description}</div>}
 				<hr />
 				<Mdx code={post.body.code}></Mdx>
 				<Link
