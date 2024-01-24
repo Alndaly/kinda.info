@@ -119,7 +119,7 @@ const PostPage = async ({ params }: PostProps) => {
 			{
 				'@type': 'Person',
 				name: `${siteConfig.author}`,
-				url: `/about-me`,
+				url: `/about`,
 			},
 		],
 	};

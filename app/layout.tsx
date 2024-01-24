@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 	applicationName: siteConfig.siteRepo,
 	referrer: 'origin-when-cross-origin',
 	keywords: siteConfig.keywords,
-	authors: [{ name: siteConfig.author, url: '/about-me' }],
+	authors: [{ name: siteConfig.author, url: '/about' }],
 	creator: siteConfig.author,
 	publisher: siteConfig.author,
 	title: siteConfig.title,
