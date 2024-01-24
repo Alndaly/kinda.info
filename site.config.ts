@@ -12,5 +12,6 @@ export const siteConfig = {
     categoryId: "DIC_kwDOLG0_4c4CcpnC",
     email: "1142704468@qq.com",
     github: "Alndaly",
-    docPath: "data/content"
+    docPath: "data/content",
+    cover: "https://oss.kinda.info/image/202401211555429.jpeg"
 };
