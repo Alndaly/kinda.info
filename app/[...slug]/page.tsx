@@ -1,7 +1,7 @@
 import { allPages, type Page } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/mdx-components';
-import { format } from 'date-fns';
+import moment from 'moment';
 import cls from 'classnames';
 import Image from 'next/image';
 import Comments from '../components/comments';
@@ -101,10 +101,10 @@ const Page = async ({ params }: PageProps) => {
 				)}>
 				<div className='text-sm prose-sm select-none'>
 					{page.readingTime.words} words · {page.readingTime.text} · Last
-					updated on {format(new Date(page.updateTime), 'LLLL d, yyyy HH:mm')}
+					updated on {moment(page.updateTime).format('LLLL')}
 				</div>
-				{!page.image && page.title && <h1 className='pt-5'>{page.title}</h1>}
-				{page.description && <div className='pt-5'>{page.description}</div>}
+				{!page.image && page.title && <h1 className='pt-8'>{page.title}</h1>}
+				{page.description && <div className='pt-8'>{page.description}</div>}
 				<hr />
 				<Mdx code={page.body.code}></Mdx>
 				<Comments />

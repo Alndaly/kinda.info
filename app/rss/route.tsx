@@ -1,6 +1,6 @@
 import Rss from 'rss';
 import { siteMetaData } from '@/data/sitemetadata';
-import { format } from 'date-fns';
+import moment from 'moment';
 import { allPosts } from 'contentlayer/generated';
 
 export async function GET(request: Request) {
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 			author: siteMetaData.author,
 			url: `${siteMetaData.siteUrl}${post.slug}`,
 			guid: `${siteMetaData.siteUrl}${post.slug}`,
-			date: format(new Date(post.createTime), 'LLLL d, yyyy HH:mm'),
+			date: moment(post.createTime).format('LLLL'),
 		});
 	});
 

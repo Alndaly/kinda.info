@@ -1,4 +1,4 @@
-import { format, parseISO } from 'date-fns';
+import moment from 'moment';
 import { allPosts, type Post } from 'contentlayer/generated';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -165,10 +165,10 @@ const PostPage = async ({ params }: PostProps) => {
 				)}>
 				<div className='text-sm prose-sm select-none'>
 					{post.readingTime.words} words · {post.readingTime.text} · Last
-					updated on {format(new Date(post.updateTime), 'LLLL d, yyyy HH:mm')}
+					updated on {moment(post.updateTime).format('LLLL')}
 				</div>
-				{!post.image && post.title && <h1 className='pt-5'>{post.title}</h1>}
-				{post.description && <div className='pt-5'>{post.description}</div>}
+				{!post.image && post.title && <h1 className='pt-8'>{post.title}</h1>}
+				{post.description && <div className='pt-8'>{post.description}</div>}
 				<hr />
 				<Mdx code={post.body.code}></Mdx>
 				<Link
@@ -181,23 +181,26 @@ const PostPage = async ({ params }: PostProps) => {
 				<Comments />
 				<hr />
 				<div className='justify-between flex leading-relaxed'>
-					{adjacentPosts.previousPostTitle && (
-						<div>
-							<div>Previous Post</div>
-							<Link href={`/post/${adjacentPosts.previousPostSlug}`}>
-								{adjacentPosts.previousPostTitle}
-							</Link>
-						</div>
-					)}
-
-					{adjacentPosts.nextPostTitle && (
-						<div className='mb-0 pb-0'>
-							<div>Next Post</div>
-							<Link href={`/post/${adjacentPosts.nextPostSlug}`}>
-								{adjacentPosts.nextPostTitle}
-							</Link>
-						</div>
-					)}
+					<div>
+						{adjacentPosts.previousPostTitle && (
+							<div>
+								<div>Previous Post</div>
+								<Link href={`/post/${adjacentPosts.previousPostSlug}`}>
+									{adjacentPosts.previousPostTitle}
+								</Link>
+							</div>
+						)}
+					</div>
+					<div>
+						{adjacentPosts.nextPostTitle && (
+							<div className='mb-0 pb-0'>
+								<div>Next Post</div>
+								<Link href={`/post/${adjacentPosts.nextPostSlug}`}>
+									{adjacentPosts.nextPostTitle}
+								</Link>
+							</div>
+						)}
+					</div>
 				</div>
 			</article>
 

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { compareDesc, format, parseISO } from 'date-fns';
+import moment from 'moment';
 import { allPosts, Post } from 'contentlayer/generated';
 import { removeHtmlTag } from '@/app/utils';
 import Youtube from './components/youtube';
@@ -13,9 +13,9 @@ function PostCard(post: Post) {
 				</Link>
 			</h2>
 			<time
-				dateTime={format(new Date(post.createTime), 'LLLL d, yyyy HH:mm')}
+				dateTime={moment(post.createTime).format('LLLL d, yyyy HH:mm')}
 				className='mb-2 block text-xs text-gray-600 flex flex-row space-x-5'>
-				<div>{format(new Date(post.createTime), 'LLLL d, yyyy')}</div>
+				<div>{moment(post.createTime).format('LLLL')}</div>
 				<div>{post.readingTime.text}</div>
 			</time>
 			<div className='line-clamp-2 text-gray-400 text-sm'>
@@ -26,9 +26,7 @@ function PostCard(post: Post) {
 }
 
 export default function Home() {
-	const posts = allPosts.sort((a, b) =>
-		compareDesc(new Date(a.createTime), new Date(b.createTime))
-	);
+	const posts = allPosts.sort((a, b) => b.createTime - a.createTime);
 
 	return (
 		<>
