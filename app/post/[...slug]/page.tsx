@@ -152,6 +152,20 @@ const PostPage = async ({ params }: PostProps) => {
 					{moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
 				</div>
 				{post.title && <h1 className='pt-8'>{post.title}</h1>}
+				{post.tags && (
+					<p className='flex flex-row gap-2'>
+						{post.tags.map((tag, index) => {
+							return (
+								<Link
+									className='!font-light text-sm border-none'
+									key={index}
+									href={`/tag/${tag}`}>
+									{`# ${tag}`}
+								</Link>
+							);
+						})}
+					</p>
+				)}
 				{post?.image && (
 					<Image
 						src={post.image}

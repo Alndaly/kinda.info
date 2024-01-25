@@ -2,6 +2,13 @@ import Link from 'next/link';
 import moment from 'moment-timezone';
 import { allPosts, Post } from 'contentlayer/generated';
 import { removeHtmlTag } from '@/app/utils';
+import { notFound } from 'next/navigation';
+
+interface TagPostsProps {
+	params: {
+		slug: string[];
+	};
+}
 
 function PostCard(post: Post) {
 	return (
@@ -33,13 +40,18 @@ function PostCard(post: Post) {
 	);
 }
 
-export default function Home() {
-	const posts = allPosts.sort((a, b) => b.createTime - a.createTime);
+export default function TagPosts({ params }: TagPostsProps) {
+	const posts = allPosts
+		.filter((post) => post.tags.includes(params?.slug[0]))
+		.sort((a, b) => b.createTime - a.createTime);
+	if (!posts) {
+		notFound();
+	}
 
 	return (
 		<>
 			<p className='text-center italic text-xl pt-8'>
-				{'"天空生而蔚蓝，我们生而自由。"'}
+				{'# ' + params?.slug[0]}
 			</p>
 			<div className='px-4 py-8 md:px-6 md:py-10 lg:py-12'>
 				{posts.map((post, idx) => (

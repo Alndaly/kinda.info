@@ -78,8 +78,6 @@ const Page = async ({ params }: PageProps) => {
 					'py-8',
 					'px-8',
 					'md:px-0',
-					{ prose: page.style !== 'website' },
-					{ 'max-w-none': page.style === 'website' }
 				)}>
 				<div className='text-sm prose-sm select-none'>
 					{page.readingTime.words} words · {page.readingTime.text} · Last
