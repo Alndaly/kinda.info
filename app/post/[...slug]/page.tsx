@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import TableOfContent from '@/app/components/toc';
 import Link from 'next/link';
-import { Disclosure } from '@headlessui/react';
 import { siteConfig } from '@/site.config';
 import cls from 'classnames';
 import ScrollTopAndComment from '@/app/components/scroll-top-and-comment';
@@ -133,27 +132,9 @@ const PostPage = async ({ params }: PostProps) => {
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 				/>
 			</section>
-			{post?.image && (
-				<div className='w-full h-52 sm:h-72 md:h-96 relative top-0 relative'>
-					<Image
-						src={post.image}
-						alt='bg'
-						fill
-						style={{ objectFit: 'cover' }}
-					/>
-					<div className='px-8 sm:px-0 max-w-prose prose-h1:mb-0 lg:prose-lg w-full absolute z-100 mx-auto clear-both text-center top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2'>
-						<div className='py-5 px-5 backdrop-blur-sm box-border bg-white/50 dark:bg-black/50 shadow rounded'>
-							{post.title && (
-								<h1 className='text-5xl font-bold'>{post.title}</h1>
-							)}
-						</div>
-					</div>
-				</div>
-			)}
 			<article
 				className={cls(
 					'prose',
-					'lg:prose-lg',
 					'dark:prose-invert',
 					'prose-table:break-all',
 					'prose-a:no-underline',
@@ -170,8 +151,18 @@ const PostPage = async ({ params }: PostProps) => {
 					updated on{' '}
 					{moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
 				</div>
-				{!post.image && post.title && <h1 className='pt-8'>{post.title}</h1>}
-				{post.description && <div className='pt-8'>{post.description}</div>}
+				{post.title && <h1 className='pt-8'>{post.title}</h1>}
+				{post?.image && (
+					<Image
+						src={post.image}
+						alt='bg'
+						width={1920}
+						height={1080}
+						className='rounded-lg'
+						style={{ objectFit: 'cover' }}
+					/>
+				)}
+				{post.description && <div>{post.description}</div>}
 				<hr />
 				{post.headings && post.headings.length > 0 && (
 					<TableOfContent headings={post.headings} />
