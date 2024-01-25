@@ -20,13 +20,11 @@ const SearchBar = (props: SearchBarProps) => {
 	const router = useRouter();
 
 	const [query, setQuery] = useState('');
-	const [searching, setSearching] = useState(false);
 	const [searchedPosts, setSearchedPosts] = useState<any[]>([]);
 
 	useEffect(() => {
 		const filteredPost =
 			query === '' ? allPosts : fuse.search(query).map(({ item }) => item);
-		console.log(111, filteredPost);
 		setSearchedPosts(filteredPost);
 	}, [query]);
 

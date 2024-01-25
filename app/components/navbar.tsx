@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ModeToggle } from './mode-toggle';
-import MobileNavBar from './mobile-navbar';
+import { MobileNavBarIcon } from './mobile-navbar-icon';
 import headerNavLinks from '@/data/headerNavLinks';
 import { SearchIcon } from './search-icon';
 import { siteConfig } from '@/site.config';
@@ -47,7 +47,9 @@ export default function Navbar() {
 				<div className='flex items-center text-base leading-5 gap-5'>
 					<ModeToggle />
 					<SearchIcon />
-					<MobileNavBar />
+					<div className='md:hidden'>
+						<MobileNavBarIcon />
+					</div>
 				</div>
 			</div>
 		</header>
