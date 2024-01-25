@@ -22,7 +22,7 @@ export default function Navbar() {
 				<div>
 					<Link href='/' aria-label={siteConfig.author} passHref>
 						<div className='flex items-center justify-between'>
-							<div className='text-xl whitespace-nowrap font-semibold rounded-lg sm:block text-zinc-800 hover:bg-zinc-50 dark:hover:bg-slate-800 dark:text-zinc-200 select-none tracking-tight px-3 py-1 duration-400'>
+							<div className='text-xl whitespace-nowrap font-semibold text-zinc-800 dark:text-zinc-200 select-none'>
 								{siteConfig.author}
 							</div>
 						</div>
@@ -45,9 +45,9 @@ export default function Navbar() {
 					</div>
 				</nav>
 				<div className='flex items-center text-base leading-5 gap-5'>
-					<MobileNavBar />
-					<SearchIcon />
 					<ModeToggle />
+					<SearchIcon />
+					<MobileNavBar />
 				</div>
 			</div>
 		</header>
