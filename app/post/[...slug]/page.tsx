@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import TableOfContent from '@/app/components/toc';
 import Link from 'next/link';
+import { Disclosure } from '@headlessui/react';
 import { siteConfig } from '@/site.config';
 import cls from 'classnames';
 import ScrollTopAndComment from '@/app/components/scroll-top-and-comment';
@@ -166,11 +167,15 @@ const PostPage = async ({ params }: PostProps) => {
 				)}>
 				<div className='text-sm prose-sm select-none'>
 					{post.readingTime.words} words · {post.readingTime.text} · Last
-					updated on {moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
+					updated on{' '}
+					{moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
 				</div>
 				{!post.image && post.title && <h1 className='pt-8'>{post.title}</h1>}
 				{post.description && <div className='pt-8'>{post.description}</div>}
 				<hr />
+				{post.headings && post.headings.length > 0 && (
+					<TableOfContent headings={post.headings} />
+				)}
 				<Mdx code={post.body.code}></Mdx>
 				<Link
 					href='https://creativecommons.org/licenses/by-nc-sa/4.0/'
