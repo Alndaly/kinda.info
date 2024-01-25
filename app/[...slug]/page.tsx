@@ -68,6 +68,9 @@ const Page = async ({ params }: PageProps) => {
 		<>
 			<article
 				className={cls(
+					'prose',
+					'lg:prose-lg',
+					'xl:prose-xl',
 					'dark:prose-invert',
 					'prose-table:break-all',
 					'prose-a:no-underline',
@@ -78,7 +81,6 @@ const Page = async ({ params }: PageProps) => {
 					'py-8',
 					'px-8',
 					'md:px-0',
-					'prose',
 				)}>
 				<div className='text-sm prose-sm select-none'>
 					{page.readingTime.words} words · {page.readingTime.text} · Last

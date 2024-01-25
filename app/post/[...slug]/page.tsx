@@ -135,6 +135,8 @@ const PostPage = async ({ params }: PostProps) => {
 			<article
 				className={cls(
 					'prose',
+					'lg:prose-lg',
+					'xl:prose-xl',
 					'dark:prose-invert',
 					'prose-table:break-all',
 					'prose-a:no-underline',
