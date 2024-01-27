@@ -18,21 +18,23 @@ function PostCard(post: Post) {
 					{post.title}
 				</Link>
 			</h2>
-			<time
-				dateTime={moment(post.createTime)
-					.tz('Asia/Shanghai')
-					.format('LLLL d, yyyy HH:mm')}
-				className='mb-2 block text-xs text-gray-600 flex flex-row space-x-5'>
-				<div>{moment(post.createTime).tz('Asia/Shanghai').format('LLLL')}</div>
-				<div>{post.readingTime.text}</div>
+			<div className='mb-2 text-xs text-gray-600'>
+				<time
+					dateTime={moment(post.createTime)
+						.tz('Asia/Shanghai')
+						.format('LLLL d, yyyy HH:mm')}></time>
+				<span className='mr-2'>
+					{moment(post.createTime).tz('Asia/Shanghai').format('LLLL')}
+				</span>
+				<span className='mr-2'>{post.readingTime.text}</span>
 				{post.tags.map((tag, index) => {
 					return (
-						<Link key={index} href={`/tag/${tag}`}>
+						<Link key={index} href={`/tag/${tag}`} className='mr-2'>
 							{tag}
 						</Link>
 					);
 				})}
-			</time>
+			</div>
 			<div className='line-clamp-2 text-gray-400 text-sm'>
 				{post.description ? post.description : removeHtmlTag(post.body.raw)}
 			</div>
