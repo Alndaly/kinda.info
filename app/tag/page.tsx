@@ -33,7 +33,7 @@ const TagPage = () => {
 			{sortedTags.map((tag) => (
 				<Link
 					key={tag}
-					className={`inline-flex lg:block px-3 py-2 font-normal hover:bg-zinc-50 hover:text-cyan-500 dark:hover:bg-slate-800 transition trasnform duration-400 select-none`}
+					className={`block px-3 py-2 font-normal hover:bg-zinc-50 hover:text-cyan-500 dark:hover:bg-slate-800 transition trasnform duration-400 select-none`}
 					href={`/tag/${tag}`}>
 					{tag}({tagsCount[tag]})
 				</Link>
