@@ -21,7 +21,7 @@ const Comments = () => {
 				inputPosition='top'
 				theme={commentsTheme}
 				lang='en'
-				loading='lazy'
+				// loading='lazy'
 			/>
 		</div>
 	);
