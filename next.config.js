@@ -10,6 +10,12 @@ const nextConfig = {
                 port: '',
                 pathname: '/image/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'oss.kinda.info',
+                port: '',
+                pathname: '/**',
+            },
         ],
     },
 }
