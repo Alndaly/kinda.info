@@ -12,7 +12,7 @@ interface TagPostsProps {
 
 function PostCard(post: Post) {
 	return (
-		<div className='mb-8 mx-auto w-full max-w-6xl'>
+		<div className='mb-8 w-full'>
 			<h2 className='mb-1 text-xl'>
 				<Link href={post.slug} className='font-bold no-underline'>
 					{post.title}
@@ -51,15 +51,15 @@ export default function TagPosts({ params }: TagPostsProps) {
 	}
 
 	return (
-		<>
-			<p className='text-center italic text-xl pt-8'>
-				{'# ' + params?.slug[0]}
-			</p>
-			<div className='px-4 py-8 md:px-6 md:py-10 lg:py-12'>
+		<div className='prose dark:prose-invert mx-auto px-8 md:px-0 lg:prose-lg xl:prose-xl'>
+			<h1 className='italic pt-8 font-bold'>{params?.slug[0]}</h1>
+			<p>{`${posts.length} blog${posts.length > 1 ? 's' : ''} in total`} </p>
+			<hr />
+			<div>
 				{posts.map((post, idx) => (
 					<PostCard key={idx} {...post} />
 				))}
 			</div>
-		</>
+		</div>
 	);
 }

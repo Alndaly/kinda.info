@@ -5,7 +5,7 @@ import { removeHtmlTag } from '@/app/utils';
 
 function PostCard(post: Post) {
 	return (
-		<div className='mb-8 mx-auto w-full max-w-6xl'>
+		<div className='mb-8 w-full'>
 			<h2 className='mb-1 text-xl'>
 				<Link href={post.slug} className='font-bold no-underline'>
 					{post.title}
@@ -39,15 +39,15 @@ export default function Home() {
 	const posts = allPosts.sort((a, b) => b.createTime - a.createTime);
 
 	return (
-		<>
+		<div className='prose dark:prose-invert lg:prose-lg xl:prose-xl mx-auto px-8 md:px-0'>
 			<p className='text-center italic text-xl pt-8'>
 				{'"天空生而蔚蓝，我们生而自由。"'}
 			</p>
-			<div className='px-4 py-8 md:px-6 md:py-10 lg:py-12'>
+			<div>
 				{posts.map((post, idx) => (
 					<PostCard key={idx} {...post} />
 				))}
 			</div>
-		</>
+		</div>
 	);
 }
