@@ -154,7 +154,7 @@ const PostPage = async ({ params }: PostProps) => {
 					{moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
 				</div>
 				{post.title && <h1 className='pt-8'>{post.title}</h1>}
-				{post.tags && (
+				{/* {post.tags && (
 					<p className='flex flex-row gap-2'>
 						{post.tags.map((tag, index) => {
 							return (
@@ -167,7 +167,7 @@ const PostPage = async ({ params }: PostProps) => {
 							);
 						})}
 					</p>
-				)}
+				)} */}
 				{post?.image && (
 					<Image
 						src={post.image}
