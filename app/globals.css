@@ -2,6 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-figcaption{
-    text-align: center;
+figcaption {
+	text-align: center;
 }
+
+span[data-highlighted-line] {
+	background: #c8c8ff1a;
+	--tw-border-opacity: 1;
+}
+
+pre[data-language] {
+	overflow-x: auto;
+	padding: 1em 0;
+}
+
+pre [data-line] {
+	padding: 0 1em;
+}
+/* 
+code[data-theme*=' '],
+code[data-theme*=' '] span {
+	color: var(--shiki-light);
+	background-color: var(--shiki-light-bg);
+}
+
+@media (prefers-color-scheme: dark) {
+	code[data-theme*=' '],
+	code[data-theme*=' '] span {
+		color: var(--shiki-dark);
+		background-color: var(--shiki-dark-bg);
+	}
+} */

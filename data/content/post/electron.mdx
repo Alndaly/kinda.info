@@ -1,0 +1,51 @@
+---
+title: Electron初探
+tags: [technology]
+---
+
+Electron 核心其实就是两个进程，一个主进程，其中可以使用 nodejs 所有的 api，另一个渲染进程，即一般的前端。
+
+两个进程之间想要交互，必须通过 preload 来进行。
+
+```ts {5-7} title="main.ts"
+...
+const mainWindow = new BrowserWindow({
+	width: 800,
+	height: 600,
+	webPreferences: {
+		preload: path.join(__dirname, 'preload.js'),
+	},
+});
+...
+```
+
+```ts {11} title="preload.ts"
+import { contextBridge, ipcRenderer } from 'electron';
+
+contextBridge.exposeInMainWorld('versions', {
+	node: () => process.versions.node,
+	chrome: () => process.versions.chrome,
+	electron: () => process.versions.electron,
+});
+
+contextBridge.exposeInMainWorld('electron', {
+	startDrag: (fileName: string) => {
+		ipcRenderer.send('ondragstart', fileName);
+	},
+});
+```
+
+通过 preload 中的 `contextBridge` 向 `window` 中注入函数或者对象，这样在渲染进程中就可以通过 `window` 来调用这些函数或者对象了。
+
+然后通过 `ipcRenderer` 来向主进程发送通知，主进程监听到通知即可执行相应的操作（此时可以使用 nodejs 的 api）。
+
+```ts {3} title="main.ts"
+import { app, BrowserWindow, ipcMain, Notification } from 'electron';
+...
+ipcMain.on('ondragstart', (event, filePath) => {
+  event.sender.startDrag({
+    file: path.join(__dirname, filePath),
+    icon: path.join(__dirname, 'icon.jpg')
+  })
+})
+```
