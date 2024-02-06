@@ -9,6 +9,7 @@ import cls from 'classnames';
 import ScrollTopAndComment from '@/app/components/scroll-top-and-comment';
 import { Mdx } from '@/app/components/mdx-components';
 import Comments from '../../components/comments';
+import { convertMdToHtml } from '@/app/utils';
 
 interface PostProps {
 	params: {
@@ -103,6 +104,8 @@ const PostPage = async ({ params }: PostProps) => {
 	// 404 if the post does not exist.
 	if (!post) notFound();
 
+	const content = await convertMdToHtml(post.body.raw);
+
 	const adjacentPosts = await getAdjacentPosts(post);
 	const jsonLd = {
 		'@context': 'https://schema.org',
@@ -183,7 +186,8 @@ const PostPage = async ({ params }: PostProps) => {
 				{post.headings && post.headings.length > 0 && (
 					<TableOfContent headings={post.headings} />
 				)}
-				<Mdx code={post.body.code}></Mdx>
+				{/* @ts-ignore */}
+				<div dangerouslySetInnerHTML={{ __html: content.value }}></div>
 				<Link
 					href='https://creativecommons.org/licenses/by-nc-sa/4.0/'
 					target='_blank'>

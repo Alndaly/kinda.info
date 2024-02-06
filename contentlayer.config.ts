@@ -1,15 +1,9 @@
 // contentlayer.config.ts
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import readingTime from "reading-time";
-import remarkGfm from 'remark-gfm'
-import rehypeSlug from "rehype-slug";
-// @ts-ignore
-import rehypeFigure from "rehype-figure"
 import GithubSlugger from 'github-slugger'
 import { getGitFileUpdateTimestamp, getGitFileCreateTimestamp } from './app/utils/getGitTimeStamp';
-import rehypePrettyCode from "rehype-pretty-code";
 import { siteConfig } from './site.config';
-import remarkMath from 'remark-math'
 
 const slugger = new GithubSlugger()
 
@@ -96,21 +90,7 @@ export const Page = defineDocumentType(() => ({
     computedFields
 }))
 
-const options: import('rehype-pretty-code').Options = {
-    theme: "github-dark-dimmed",
-    keepBackground: true
-};
-
 export default makeSource({
     contentDirPath: siteConfig.docPath,
     documentTypes: [Post, Page],
-    mdx: {
-        remarkPlugins: [remarkGfm, remarkMath],
-        rehypePlugins: [
-            // @ts-ignore
-            [rehypePrettyCode, options],
-            rehypeFigure,
-            rehypeSlug,
-        ],
-    }
 })

@@ -39,6 +39,8 @@ contextBridge.exposeInMainWorld('electron', {
 
 然后通过 `ipcRenderer` 来向主进程发送通知，主进程监听到通知即可执行相应的操作（此时可以使用 nodejs 的 api）。
 
+ipcRenderer 的传输参数有限制，详情见[electron ipcrender](https://www.electronjs.org/zh/docs/latest/api/ipc-renderer#ipcrenderersendchannel-args)。
+
 ```ts {3} title="main.ts"
 import { app, BrowserWindow, ipcMain, Notification } from 'electron';
 ...
