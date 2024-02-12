@@ -45,7 +45,17 @@ function PostCard(post: Post) {
 export default function TagPosts({ params }: TagPostsProps) {
 	const posts = allPosts
 		.filter((post) => post.tags.includes(params?.slug[0]))
-		.sort((a, b) => b.createTime - a.createTime);
+		.sort((a, b) => b.createTime - a.createTime)
+		.sort((a, b) => {
+			if (a.order && b.order) {
+				return a.order - b.order;
+			} else if (a.order && !b.order) {
+				return -1;
+			} else if (!a.order && b.order) {
+				return 1;
+			}
+			return 0;
+		});
 	if (!posts) {
 		notFound();
 	}
