@@ -3,7 +3,7 @@ const headerNavLinks = [
     { href: '/tag', title: 'Tag' },
     // { href: '/photo', title: 'Photo' },
     { href: '/about', title: 'About' },
-    { href: '/links', title: 'Links' },
+    { href: '/link', title: 'Link' },
     { href: '/project', title: 'Project' },
 ]
 
