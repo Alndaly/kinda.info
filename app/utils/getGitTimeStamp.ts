@@ -25,6 +25,7 @@ export const getGitFileCreateTimestamp = async (file: string) => {
             const gitOutput = output.trim();
             // 将输出按行分割
             const lines = gitOutput.split('\n');
+            console.log(file, lines)
             // 获取最后一行
             const lastLine = lines[lines.length - 1];
             const timestamp = +new Date(lastLine)
