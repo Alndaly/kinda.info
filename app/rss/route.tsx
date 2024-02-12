@@ -18,12 +18,12 @@ export async function GET(request: Request) {
 
 	allPosts.forEach((post) => {
 		feed.item({
-			title: post.title ? post.title : '暂无标题哦',
+			title: post.title ? post.title : '暂无标题',
 			description: post.description ? post.description : '暂无描述',
 			author: siteConfig.author,
 			url: `${siteConfig.siteUrl}${post.slug}`,
 			guid: `${siteConfig.siteUrl}${post.slug}`,
-			date: moment(post.createTime).tz('Asia/Shanghai').format('LLLL'),
+			date: moment(post.updateTime).tz('Asia/Shanghai').format('LLLL'),
 		});
 	});
 
