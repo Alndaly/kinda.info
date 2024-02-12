@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import NextTopLoader from 'nextjs-toploader';
 import ThemeProvider from './components/theme-provider';
 import './globals.css';
 import Footer from './components/footer';
@@ -40,6 +41,7 @@ export default function RootLayout({
 	return (
 		<html lang='zh'>
 			<body className='dark:bg-[#1E1E1E]'>
+				<NextTopLoader />
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 					<Navbar />
 					{children}
