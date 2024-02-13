@@ -35,11 +35,9 @@ async function getPostFromParams(params: PostProps['params']) {
 }
 
 async function getAdjacentPosts(post: Post) {
-	const sortedPosts = allPosts.sort((a: Post, b: Post) => {
-		const aDate: any = a.createTime;
-		const bDate: any = b.createTime;
-		return bDate - aDate;
-	});
+	const sortedPosts = allPosts.sort(
+		(a: Post, b: Post) => a.updateTime - b.updateTime
+	);
 
 	const currentIndex = sortedPosts.findIndex((p: Post) => p === post);
 

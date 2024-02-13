@@ -13,11 +13,11 @@ function PostCard(post: Post) {
 			</h2>
 			<div className='mb-2 text-xs text-gray-600'>
 				<time
-					dateTime={moment(post.createTime)
+					dateTime={moment(post.updateTime)
 						.tz('Asia/Shanghai')
 						.format('LLLL d, yyyy HH:mm')}></time>
 				<span className='mr-2'>
-					{moment(post.createTime).tz('Asia/Shanghai').format('LLLL')}
+					{moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
 				</span>
 				<span className='mr-2'>{post.readingTime.text}</span>
 				{post.tags.map((tag, index) => {
@@ -36,7 +36,7 @@ function PostCard(post: Post) {
 }
 
 export default function Home() {
-	const posts = allPosts.sort((a, b) => b.createTime - a.createTime);
+	const posts = allPosts.sort((a, b) => b.updateTime - a.updateTime);
 
 	return (
 		<div className='prose dark:prose-invert lg:prose-lg xl:prose-xl mx-auto px-8 md:px-0'>
