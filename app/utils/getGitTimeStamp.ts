@@ -23,6 +23,7 @@ export const getGitFileCreateTimestamp = async (file: string) => {
         subprocess.stdout.on('close', () => {
             // 将输出转为字符串
             const gitOutput = output.trim();
+            console.log(`all logs' time for file ${file}:\n`, gitOutput)
             // 将输出按行分割
             const lines = gitOutput.split('\n');
             // 获取最后一行
