@@ -151,7 +151,7 @@ const PostPage = async ({ params }: PostProps) => {
 				<div className='text-sm prose-sm select-none'>
 					{post.readingTime.words} words · {post.readingTime.text} · Last
 					updated on{' '}
-					{moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
+					{moment(post.updateTime).tz(siteConfig.timeZone).format('LLLL')}
 				</div>
 				{post.title && <h1 className='pt-8'>{post.title}</h1>}
 				{post?.image && (

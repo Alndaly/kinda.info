@@ -9,7 +9,8 @@ export default function Footer() {
 		<footer>
 			<div className='container flex flex-col items-center px-8 py-8 mx-auto sm:flex-row select-none'>
 				<div className='text-sm text-zinc-500 dark:text-zinc-300'>
-					© {moment().tz('Asia/Shanghai').format('YYYY')} {siteConfig.author}
+					© {moment().tz(siteConfig.timeZone).format('YYYY')}{' '}
+					{siteConfig.author}
 				</div>
 				<p className='mt-4 text-sm text-zinc-500 dark:text-zinc-300 sm:ml-4 sm:pl-4 sm:border-l sm:border-zinc-200 sm:mt-0 select-none'>
 					Powered by{' '}

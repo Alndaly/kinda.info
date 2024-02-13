@@ -80,12 +80,12 @@ const Page = async ({ params }: PageProps) => {
 					'mx-auto',
 					'py-8',
 					'px-8',
-					'md:px-0',
+					'md:px-0'
 				)}>
 				<div className='text-sm prose-sm select-none'>
 					{page.readingTime.words} words · {page.readingTime.text} · Last
 					updated on{' '}
-					{moment(page.updateTime).tz('Asia/Shanghai').format('LLLL')}
+					{moment(page.updateTime).tz(siteConfig.timeZone).format('LLLL')}
 				</div>
 				{page.title && <h1 className='pt-8'>{page.title}</h1>}
 				{page?.image && (

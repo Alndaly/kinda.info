@@ -2,6 +2,7 @@ export const siteConfig = {
     title: "阡陌",
     author: "阡陌",
     siteName: "阡陌 - 千年暗室，一灯即明。",
+    timeZone: 'Asia/Shanghai',
     description:
         "千年暗室，一灯即明。",
     language: "zh-cn",

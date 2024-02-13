@@ -3,6 +3,7 @@ import moment from 'moment-timezone';
 import { allPosts, Post } from 'contentlayer/generated';
 import { removeHtmlTag } from '@/app/utils';
 import { notFound } from 'next/navigation';
+import { siteConfig } from '@/site.config';
 
 interface TagPostsProps {
 	params: {
@@ -21,10 +22,10 @@ function PostCard(post: Post) {
 			<div className='mb-2 text-xs text-gray-600'>
 				<time
 					dateTime={moment(post.updateTime)
-						.tz('Asia/Shanghai')
+						.tz(siteConfig.timeZone)
 						.format('LLLL d, yyyy HH:mm')}></time>
 				<span className='mr-2'>
-					{moment(post.updateTime).tz('Asia/Shanghai').format('LLLL')}
+					{moment(post.updateTime).tz(siteConfig.timeZone).format('LLLL')}
 				</span>
 				<span className='mr-2'>{post.readingTime.text}</span>
 				{post.tags.map((tag, index) => {

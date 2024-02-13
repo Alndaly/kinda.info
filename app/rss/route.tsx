@@ -23,7 +23,7 @@ export async function GET(request: Request) {
 			author: siteConfig.author,
 			url: `${siteConfig.siteUrl}${post.slug}`,
 			guid: `${siteConfig.siteUrl}${post.slug}`,
-			date: moment(post.updateTime).tz('Asia/Shanghai').format('LLLL'),
+			date: moment(post.updateTime).tz(siteConfig.timeZone).format('LLLL'),
 		});
 	});
 
