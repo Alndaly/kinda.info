@@ -1,46 +1,11 @@
-import Link from 'next/link';
-import moment from 'moment-timezone';
-import { allPosts, Post } from 'contentlayer/generated';
-import { removeHtmlTag } from '@/app/utils';
+import { allPosts } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
-import { siteConfig } from '@/site.config';
+import PostCard from '@/app/components/post-card';
 
 interface TagPostsProps {
 	params: {
 		slug: string[];
 	};
-}
-
-function PostCard(post: Post) {
-	return (
-		<div className='mb-8 w-full'>
-			<h2 className='mb-1 text-xl'>
-				<Link href={post.slug} className='font-bold no-underline'>
-					{post.title}
-				</Link>
-			</h2>
-			<div className='mb-2 text-xs text-gray-600'>
-				<time
-					dateTime={moment(post.updateTime)
-						.tz(siteConfig.timeZone)
-						.format('LLLL d, yyyy HH:mm')}></time>
-				<span className='mr-2'>
-					{moment(post.updateTime).tz(siteConfig.timeZone).format('LLLL')}
-				</span>
-				<span className='mr-2'>{post.readingTime.text}</span>
-				{post.tags.map((tag, index) => {
-					return (
-						<Link key={index} href={`/tag/${tag}`} className='mr-2'>
-							{tag}
-						</Link>
-					);
-				})}
-			</div>
-			<div className='line-clamp-2 text-gray-400 text-sm'>
-				{post.description ? post.description : removeHtmlTag(post.body.raw)}
-			</div>
-		</div>
-	);
 }
 
 export default function TagPosts({ params }: TagPostsProps) {
