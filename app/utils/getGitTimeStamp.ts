@@ -18,6 +18,7 @@ export const getGitFileCreateTimestamp = async (file: string) => {
 
         let output = ''
         subprocess.stdout.on('data', (data) => {
+            console.log(file + '创建' + data.toString())
             output += String(data)
         });
         subprocess.stdout.on('close', () => {
@@ -49,6 +50,7 @@ export const getGitFileUpdateTimestamp = async (file: string) => {
         let output = ''
         subprocess.stdout.on('data', (data) => {
             output += String(data)
+            console.log(file + '更新' + data.toString())
         });
         subprocess.stdout.on('close', () => {
             const timestamp = +new Date(output)
