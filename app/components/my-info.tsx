@@ -30,7 +30,7 @@ const MyInfo = () => {
 					</div>
 				</div>
 				<div className='w-px dark:bg-white/20 bg-black/20'></div>
-				<div>
+				<div className='flex flex-col items-center justify-center'>
 					<div>Words</div>
 					<div className='text-slate-400 dark:text-slate-500'>{words}</div>
 				</div>

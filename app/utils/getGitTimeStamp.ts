@@ -21,12 +21,11 @@ export const getGitFileCreateTimestamp = async (file: string) => {
             output += String(data)
         });
         subprocess.stdout.on('close', () => {
-            // 将输出转为字符串
+            // convert the output to string
             const gitOutput = output.trim();
-            console.log(`all logs' time for file ${file}:\n`, gitOutput)
-            // 将输出按行分割
+            // split the output by line
             const lines = gitOutput.split('\n');
-            // 获取最后一行
+            // get the last line
             const lastLine = lines[lines.length - 1];
             const timestamp = +new Date(lastLine)
             cache.set('createTimeFor:' + file, timestamp)
