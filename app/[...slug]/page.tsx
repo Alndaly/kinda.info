@@ -89,13 +89,10 @@ const Page = async ({ params }: PageProps) => {
 				</div>
 				{page.title && <h1 className='pt-8'>{page.title}</h1>}
 				{page?.image && (
-					<Image
+					<img
 						src={page.image}
 						alt='bg'
-						width={1920}
-						height={1080}
-						className='rounded-lg'
-						style={{ objectFit: 'cover' }}
+						className='rounded-lg w-full aspect-video'
 					/>
 				)}
 				{page.description && <div>{page.description}</div>}

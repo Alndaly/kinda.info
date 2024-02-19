@@ -1,6 +1,5 @@
 import moment from 'moment-timezone';
 import { allPosts, type Post } from 'contentlayer/generated';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import TableOfContent from '@/app/components/toc';
 import Link from 'next/link';
@@ -155,13 +154,10 @@ const PostPage = async ({ params }: PostProps) => {
 				</div>
 				{post.title && <h1 className='pt-8'>{post.title}</h1>}
 				{post?.image && (
-					<Image
+					<img
 						src={post.image}
 						alt='bg'
-						width={1920}
-						height={1080}
-						className='rounded-lg'
-						style={{ objectFit: 'cover' }}
+						className='rounded-lg w-full aspect-video'
 					/>
 				)}
 				{post.description && <div>{post.description}</div>}
