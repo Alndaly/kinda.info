@@ -28,12 +28,13 @@ const TagPage = () => {
             'mx-auto',
             'py-8',
             'px-8',
-            'md:px-0'
+            'md:px-0',
+			'space-y-2'
         )}>
 			{sortedTags.map((tag) => (
 				<Link
 					key={tag}
-					className={`block px-3 py-2 font-normal hover:bg-zinc-50 hover:text-cyan-500 dark:hover:bg-slate-800 transition trasnform duration-400 select-none`}
+					className={`rounded block border-none px-3 py-2 font-normal hover:bg-zinc-50 dark:hover:bg-slate-800 transform duration-400`}
 					href={`/tag/${tag}`}>
 					{tag}({tagsCount[tag]})
 				</Link>
