@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { Mdx } from '@/app/components/mdx-components';
 import moment from 'moment-timezone';
 import cls from 'classnames';
-import Image from 'next/image';
 import Comments from '../components/comments';
 import ScrollTopAndComment from '../components/scroll-top-and-comment';
 import { siteConfig } from '../../site.config';

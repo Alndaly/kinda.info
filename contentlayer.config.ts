@@ -61,6 +61,14 @@ const computedFields: import('contentlayer/source-files').ComputedFields = {
 };
 
 
+export const Sentence = defineDocumentType(() => ({
+    name: 'Sentence',
+    filePathPattern: `sentence/**/*.md`,
+    contentType: "mdx",
+    fields: {},
+    computedFields
+}))
+
 export const Post = defineDocumentType(() => ({
     name: 'Post',
     filePathPattern: `post/**/*.mdx`,
@@ -93,5 +101,5 @@ export const Page = defineDocumentType(() => ({
 
 export default makeSource({
     contentDirPath: siteConfig.docPath,
-    documentTypes: [Post, Page],
+    documentTypes: [Post, Page, Sentence],
 })
