@@ -68,18 +68,18 @@ export async function generateMetadata({ params }: PostProps) {
 		return {};
 	}
 
+	const title = post.title ? post.title : post.slugAsParams;
+
 	return {
-		title: post.title + ' - ' + siteConfig.author,
+		title: title,
 		description: post.description,
 		openGraph: {
 			url: `/post/${post.slugAsParams}`,
-			title: post.title + ' - ' + siteConfig.author,
+			title: title + ' - ' + siteConfig.author,
 			description: post.description,
 			type: 'article',
 			images: [
-				post.image == ''
-					? { url: `/og?title=${post.title}` }
-					: { url: post.image },
+				post.image == '' ? { url: `/og?title=${title}` } : { url: post.image },
 			],
 		},
 	};
@@ -100,6 +100,8 @@ const PostPage = async ({ params }: PostProps) => {
 	// 404 if the post does not exist.
 	if (!post) notFound();
 
+	const title = post.title ? post.title : post.slugAsParams;
+
 	const content = await convertMdToHtml(post.body.raw);
 
 	const adjacentPosts = await getAdjacentPosts(post);
@@ -108,11 +110,11 @@ const PostPage = async ({ params }: PostProps) => {
 		'@type': 'Article',
 		datePublished: post.createTime,
 		dateModified: post.updateTime,
-		headline: post.title,
+		headline: title,
 		image:
 			post.image == ''
-				? [`/og?title=${post.title}`]
-				: [post.image, `/og?title=${post.title}`],
+				? [`/og?title=${title}`]
+				: [post.image, `/og?title=${title}`],
 		description: post.description,
 		author: [
 			{
@@ -152,7 +154,7 @@ const PostPage = async ({ params }: PostProps) => {
 					updated on{' '}
 					{moment(post.updateTime).tz(siteConfig.timeZone).format('LLLL')}
 				</div>
-				{post.title && <h1 className='pt-8'>{post.title}</h1>}
+				{title && <h1 className='pt-8'>{title}</h1>}
 				{post?.image && (
 					<img
 						src={post.image}
