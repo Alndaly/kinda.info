@@ -9,6 +9,8 @@ Electron 核心其实就是两个进程，一个主进程，其中可以使用 n
 
 两个进程之间想要交互，必须通过 preload 来进行。
 
+**主进程**
+
 ```ts {5-7} title="main.ts"
 ...
 const mainWindow = new BrowserWindow({
@@ -21,6 +23,8 @@ const mainWindow = new BrowserWindow({
 ...
 ```
 
+**预加载脚本**
+
 ```ts {11} title="preload.ts"
 import { contextBridge, ipcRenderer } from 'electron';
 
@@ -30,7 +34,7 @@ contextBridge.exposeInMainWorld('versions', {
 	electron: () => process.versions.electron,
 });
 
-contextBridge.exposeInMainWorld('electron', {
+contextBridge.exposeInMainWorld('electronApi', {
 	startDrag: (fileName: string) => {
 		ipcRenderer.send('ondragstart', fileName);
 	},
@@ -39,9 +43,38 @@ contextBridge.exposeInMainWorld('electron', {
 
 通过 preload 中的 `contextBridge` 向 `window` 中注入函数或者对象，这样在渲染进程中就可以通过 `window` 来调用这些函数或者对象了。
 
+**渲染进程**
+
+```ts title="app.ts"
+window.electronApi.startDrag('test.txt');
+```
+
+注意由于window对象本身不具备electronApi属性，所以此处ts编译会出错，需要增加d.ts类型文件。
+
+```ts title="types/index.d.ts"
+interface Window {
+    electronApi: {
+        startDrag: (fileName: string) => void;
+    }
+}
+```
+
+在tsconfig中，把类型文件也加到编译文件里
+
+```ts title="tsconfig.json"
+...
+"include": [
+  ...
+  "types/interface.d.ts",
+],
+...
+```
+
 然后通过 `ipcRenderer` 来向主进程发送通知，主进程监听到通知即可执行相应的操作（此时可以使用 nodejs 的 api）。
 
 ipcRenderer 的传输参数有限制，详情见[electron ipcrender](https://www.electronjs.org/zh/docs/latest/api/ipc-renderer#ipcrenderersendchannel-args)。
+
+**主进程**
 
 ```ts {3} title="main.ts"
 import { app, BrowserWindow, ipcMain, Notification } from 'electron';
@@ -56,30 +89,34 @@ ipcMain.on('ondragstart', (event, filePath) => {
 
 ## 优化
 
-为了方便进程间的沟通，往往会在本地增加一个nodejs服务进程，便于接受应用发起的请求并且做出相应。
+为了方便进程间的沟通，往往会在本地增加一个 nodejs 服务进程，便于接受应用发起的请求并且做出相应。
 
 ## 安装错误问题
 
 > `Electron failed to install correctly, please delete node_modules/electron and try installing again`
 
-直接`pnpm i electron`是不会安装其完整包的，需要手动cd到electron包目录下执行`node install.js`命令。
+直接`pnpm i electron`是不会安装其完整包的，需要手动 cd 到 electron 包目录下执行`node install.js`命令。
 
 国内这一步大多数情况下会发生网络问题，需要手动修改`install.js`文件中的`mirrorOptions`变量，将其指向可访问镜像。
 
 ```js title="node_module/electron/install.js" {5}
 downloadArtifact({
-  version,
-  artifactName: 'electron',
-  force: process.env.force_no_cache === 'true',
-  mirrorOptions: { mirror: "https://npmmirror.com/mirrors/electron/" },
-  cacheRoot: process.env.electron_config_cache,
-  checksums: process.env.electron_use_remote_checksums ? undefined : require('./checksums.json'),
-  platform,
-  arch
-}).then(extractFile).catch(err => {
-  console.error(err.stack);
-  process.exit(1);
-});
+	version,
+	artifactName: 'electron',
+	force: process.env.force_no_cache === 'true',
+	mirrorOptions: { mirror: 'https://npmmirror.com/mirrors/electron/' },
+	cacheRoot: process.env.electron_config_cache,
+	checksums: process.env.electron_use_remote_checksums
+		? undefined
+		: require('./checksums.json'),
+	platform,
+	arch,
+})
+	.then(extractFile)
+	.catch((err) => {
+		console.error(err.stack);
+		process.exit(1);
+	});
 ```
 
-调用`downloadArtifact`会下载electron的完整包，包目录下会多出path.txt和version。
+调用`downloadArtifact`会下载 electron 的完整包，包目录下会多出 path.txt 和 version。
