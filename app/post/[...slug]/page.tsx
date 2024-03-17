@@ -2,6 +2,7 @@ import moment from 'moment-timezone';
 import { allPosts, type Post } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
 import TableOfContent from '@/app/components/toc';
+import { removeHtmlTag } from '@/app/utils';
 import Link from 'next/link';
 import { siteConfig } from '@/site.config';
 import cls from 'classnames';
@@ -69,14 +70,17 @@ export async function generateMetadata({ params }: PostProps) {
 	}
 
 	const title = post.title ? post.title : post.slugAsParams;
+	const description = post.description
+		? post.description
+		: removeHtmlTag(post.body.raw);
 
 	return {
 		title: title,
-		description: post.description,
+		description: description,
 		openGraph: {
 			url: `/post/${post.slugAsParams}`,
 			title: title + ' - ' + siteConfig.author,
-			description: post.description,
+			description: description,
 			type: 'article',
 			images: [
 				post.image == '' ? { url: `/og?title=${title}` } : { url: post.image },
