@@ -4,7 +4,7 @@ import { siteConfig } from "@/site.config"
 export default async function sitemap() {
     const posts = allPosts.map(post => ({
         url: `${siteConfig.siteUrl}${post.slug}`,
-        lastModified: post.updateTime ? post.updateTime : post.updateTime,
+        lastModified: new Date(post.updateTime ? post.updateTime : post.updateTime).toISOString().split('T')[0],
     }))
 
     const routes = ['', '/post', '/about'].map(route => ({
