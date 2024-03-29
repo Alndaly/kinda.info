@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
 	return new Response(feed.xml(), {
 		headers: {
-			'Content-Type': 'application/xml',
+			'Content-Type': 'application/atom+xml; chatset=utf-8',
 		},
 	});
 }
