@@ -2,27 +2,15 @@
 
 import Link from 'next/link';
 import moment from 'moment-timezone';
-import { siteConfig } from '../../site.config';
+import { siteConfig } from '@/site.config';
 
 export default function Footer() {
 	return (
 		<footer>
 			<div className='container flex flex-col items-center px-8 py-8 mx-auto sm:flex-row select-none'>
 				<div className='text-sm text-zinc-500 dark:text-zinc-300'>
-					© {moment().tz(siteConfig.timeZone).format('YYYY')}{' '}
-					{siteConfig.author}
+					© {siteConfig.author} Since {moment().tz(siteConfig.timeZone).format('YYYY')}{' '}
 				</div>
-				<p className='mt-4 text-sm text-zinc-500 dark:text-zinc-300 sm:ml-4 sm:pl-4 sm:border-l sm:border-zinc-200 sm:mt-0 select-none'>
-					Powered by{' '}
-					<Link href='https://nextjs.org/' target='_blank'>
-						Next.js
-					</Link>{' '}
-					and{' '}
-					<Link href='https://vercel.com/' target='_blank'>
-						Vercel
-					</Link>
-				</p>
-
 				<span className='inline-flex justify-center mt-4 space-x-5 sm:ml-auto sm:mt-0 sm:justify-start'>
 					<span className='text-zinc-400 hover:text-zinc-500 transform duration-400'>
 						<span className='sr-only'>GitHub</span>
@@ -59,21 +47,6 @@ export default function Footer() {
 								<path
 									d='m18 8.118-8 4-8-4V14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.118z'
 									clipRule='evenodd'></path>
-							</svg>
-						</Link>
-					</span>
-					<span className='text-zinc-400 hover:text-zinc-500 transform duration-400'>
-						<Link href='/rss' aria-label='RSS' target='_blank'>
-							<svg
-								className='fill-current w-6 h-6'
-								fill='currentColor'
-								viewBox='0 0 800 800'
-								aria-hidden='true'>
-								<path
-									d='M493 652H392c0-134-111-244-244-244V307c189 0 345 156 345 345zm71 0c0-228-188-416-416-416V132c285 0 520 235 520 520z'
-									clipRule='evenodd'
-								/>
-								<circle cx='219' cy='581' r='71' />
 							</svg>
 						</Link>
 					</span>

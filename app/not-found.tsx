@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function NotFound() {
 	return (
-		<div className='flex justify-center items-center flex-col p-5 gap-5 min-h-full'>
+		<div className='flex justify-center items-center flex-col p-5 gap-5 min-h-screen'>
 			<p className='text-2xl'>Ops...</p>
 			<p className='text-xl'>
 				This page is deleted

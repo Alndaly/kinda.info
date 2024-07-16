@@ -3,7 +3,7 @@
 import Giscus from '@giscus/react';
 import React from 'react';
 import { useTheme } from 'next-themes';
-import { siteConfig } from '../../site.config';
+import { siteConfig } from '@/site.config';
 
 const Comments = () => {
 	const { theme, resolvedTheme } = useTheme();

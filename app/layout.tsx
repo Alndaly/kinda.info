@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
+import Nav from '@/components/nav';
 import NextTopLoader from 'nextjs-toploader';
-import ThemeProvider from './components/theme-provider';
 import './globals.css';
-import Footer from './components/footer';
+import ThemeProvider from '@/components/theme-provider';
 import { siteConfig } from '@/site.config';
-import Navbar from './components/navbar';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -41,11 +40,12 @@ export default function RootLayout({
 	return (
 		<html lang='zh'>
 			<body className='dark:bg-[#1E1E1E]'>
-				<NextTopLoader />
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					<Navbar />
+					<div className='fixed top-0 left-0 z-10 w-full'>
+						<Nav />
+					</div>
+					<NextTopLoader />
 					{children}
-					<Footer></Footer>
 					<SpeedInsights />
 					<Analytics />
 				</ThemeProvider>
