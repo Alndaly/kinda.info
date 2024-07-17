@@ -31,7 +31,7 @@ const NotionBlock = async ({ block }: { block: BlockObjectResponse }) => {
 				block.image.type === 'external' ? (
 					<picture>
 						<img
-							className='w-full aspect-video object-cover'
+							className='w-full'
 							src={block.image.external.url}
 							alt=''
 						/>
@@ -39,7 +39,7 @@ const NotionBlock = async ({ block }: { block: BlockObjectResponse }) => {
 				) : (
 					<picture>
 						<img
-							className='w-full aspect-video object-cover'
+							className='w-full'
 							src={block.image?.file?.url}
 							alt=''
 						/>
@@ -113,6 +113,14 @@ const NotionBlock = async ({ block }: { block: BlockObjectResponse }) => {
 			break;
 	}
 
+	if (block.has_children) {
+		return (
+			<>
+				{element}
+				{/* <NotionBlock block={} /> */}
+			</>
+		);
+	}
 	return element;
 };
 
