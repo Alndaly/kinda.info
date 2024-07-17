@@ -10,20 +10,20 @@ const NotionBlock = async ({ block }: { block: BlockObjectResponse }) => {
 			element = block.paragraph.rich_text.map((richText, index) => {
 				if (richText.href && richText.annotations.code) {
 					return (
-						<Link href={richText.href} key={index} target='_blank'>
+						<Link className='break-words' href={richText.href} key={index} target='_blank'>
 							<code>{richText.plain_text}</code>
 						</Link>
 					);
 				} else if (richText.href && !richText.annotations.code) {
 					return (
-						<Link href={richText.href} key={index} target='_blank'>
+						<Link className='break-words' href={richText.href} key={index} target='_blank'>
 							{richText.plain_text}
 						</Link>
 					);
 				} else if (richText.annotations.code && !richText.href) {
 					return <code key={index}>{richText.plain_text}</code>;
 				}
-				return <span key={index}>{richText.plain_text}</span>;
+				return <span className='break-words' key={index}>{richText.plain_text}</span>;
 			});
 			break;
 		case 'image':
