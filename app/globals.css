@@ -4,27 +4,14 @@
 
 html.dark .shiki,
 html.dark .shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-  /* 可选，用于定义字体样式 */
-  font-style: var(--shiki-dark-font-style) !important;
-  font-weight: var(--shiki-dark-font-weight) !important;
-  text-decoration: var(--shiki-dark-text-decoration) !important;
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+	/* 可选，用于定义字体样式 */
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
 }
 
 figcaption {
 	text-align: center;
-}
-
-span[data-highlighted-line] {
-	background: #c8c8ff1a;
-}
-
-pre[data-language] {
-	overflow-x: auto;
-	padding: 1em 0;
-}
-
-pre [data-line] {
-	padding: 0 1em;
 }
