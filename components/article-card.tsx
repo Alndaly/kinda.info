@@ -6,8 +6,9 @@ const ArticleCard = (props: any) => {
 	const { article } = props;
 	return (
 		<Link
-			href={article.public_url}
-			target='_blank'
+			// href={article.public_url}
+			href={'/post/' + article.id}
+			// target='_blank'
 			className='no-underline flex flex-col gap-2 p-5 rounded hover:bg-slate-50/70 dark:hover:bg-slate-800/50'>
 			<div>
 				{article.properties.Name.title.map((title: any, index: number) => {

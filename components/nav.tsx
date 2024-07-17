@@ -3,8 +3,10 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { ModeToggle } from './mode-toggle';
 import { useAppStore } from '@/store/app';
+import { usePathname } from 'next/navigation';
 
 const Nav = () => {
+	const pathname = usePathname();
 	const navDom = useRef<HTMLDivElement>(null);
 	const { setNavBar } = useAppStore();
 	useEffect(() => {
@@ -13,7 +15,9 @@ const Nav = () => {
 	return (
 		<div
 			ref={navDom}
-			className={`flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full`}>
+			className={`${
+				pathname.startsWith('/post') ? 'backdrop-blur-sm' : ''
+			} flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full`}>
 			<Link href={'/'}>Home</Link>
 			<div>|</div>
 			<Link href={'/posts'}>Posts</Link>
