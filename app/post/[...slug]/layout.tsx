@@ -6,7 +6,7 @@ export default function PostLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<section>
+		<section className='mt-[64px]'>
 			{children}
 			<Footer />
 		</section>

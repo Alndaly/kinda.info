@@ -5,6 +5,8 @@ import { getArticle, getBlocks } from '@/service/articles';
 import moment from 'moment-timezone';
 import { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
+export const revalidate = 3600;
+
 interface PostProps {
 	params: {
 		slug: string[];
@@ -18,7 +20,7 @@ const PostPage = async ({ params }: PostProps) => {
 	const article = await getArticle(slug[0]);
 	return (
 		<>
-			<article className='mt-[64px] prose dark:prose-invert lg:prose-lg xl:prose-xl sm:mx-auto mx-5'>
+			<article className='prose dark:prose-invert lg:prose-lg xl:prose-xl sm:mx-auto mx-5'>
 				<div>
 					{/* @ts-ignore */}
 					{article.properties.Name.title.map((title: any, index: number) => {
