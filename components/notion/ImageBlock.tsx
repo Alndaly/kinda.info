@@ -8,7 +8,7 @@ const ImageBlock = async ({ block }: { block: ImageBlockObjectResponse }) => {
 			</picture>
 		) : (
 			<picture>
-				<img className='w-full' src={block.image?.file?.url} alt='' />
+				<img className='w-full' src={block.image.file.url} alt='' />
 			</picture>
 		);
 	return element;

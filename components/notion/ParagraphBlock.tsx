@@ -49,7 +49,7 @@ const ParagraphBlock = ({ block }: { block: ParagraphBlockObjectResponse }) => {
 			</span>
 		);
 	});
-	return element;
+	return <p>{element}</p>;
 };
 
 export default ParagraphBlock;
