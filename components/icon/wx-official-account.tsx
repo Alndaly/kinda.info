@@ -4,7 +4,7 @@ import { Popover, PopoverPanel, PopoverButton } from '@headlessui/react';
 export function WxOfficialAccountIcon() {
 	return (
 		<Popover className='relative'>
-			<PopoverButton>
+			<PopoverButton className='outline-none'>
 				<div className='border rounded-full w-8 h-8 flex items-center justify-center border-black dark:border-white'>
 					<svg
 						className='w-4 h-4 text-black dark:text-white'
@@ -19,9 +19,11 @@ export function WxOfficialAccountIcon() {
 			</PopoverButton>
 			<PopoverPanel
 				transition
-				anchor='bottom'
-				className='rounded-xl bg-white/20 dark:bg-black/20 backdrop-blur-sm transition ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-y-1 data-[closed]:opacity-0'>
-				<p className='p-5 text-center'>
+				anchor={{
+					to: 'right',
+				}}
+				className='rounded-xl bg-white/20 dark:bg-black/20 transition ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-x-1 data-[closed]:opacity-0'>
+				<p className='p-3'>
 					<picture>
 						<img
 							src='https://oss.kinda.info/image/202407181443786.jpg'
