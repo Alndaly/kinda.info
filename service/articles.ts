@@ -3,10 +3,9 @@ import { cache } from 'react'
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
-export const getArticles = cache(async () => {
+export const getArticles = cache(async (databaseID: string) => {
     const response = await notion.databases.query({
-        database_id: 'efe5db924ac24e8da24ba07c3dc8e441',
-        // database_id: '22d0ed9dda914633b674edbb90b488b9',
+        database_id: databaseID,
         sorts: [
             {
                 property: 'Last edited time',

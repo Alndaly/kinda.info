@@ -13,7 +13,7 @@ const ArticleCard = (props: any) => {
 			<div>
 				{article.properties.Name.title.map((title: any, index: number) => {
 					return (
-						<div key={index} className='font-bold text-lg'>
+						<div key={index} className='font-bold text-xl'>
 							{title.plain_text}
 						</div>
 					);

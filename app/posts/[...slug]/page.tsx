@@ -2,10 +2,17 @@ import { getArticles, getArticle } from '@/service/articles';
 import ArticleCard from '@/components/article-card';
 import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 
-export const revalidate = 3600 
+export const revalidate = 3600;
 
-const Page = async () => {
-	const articles: QueryDatabaseResponse = await getArticles();
+interface PostsProps {
+	params: {
+		slug: string[];
+	};
+}
+
+const Page = async ({ params }: PostsProps) => {
+	const { slug } = params;
+	const articles: QueryDatabaseResponse = await getArticles(slug[0]);
 	const tasks = articles.results.map(async (article) => {
 		const res = await getArticle(article.id);
 		return res;
