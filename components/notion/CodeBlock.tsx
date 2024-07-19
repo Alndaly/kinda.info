@@ -4,7 +4,7 @@ import { codeToHtml } from 'shiki';
 const CodeBlock = async ({ block }: { block: CodeBlockObjectResponse }) => {
 	const task = block.code.rich_text.map(async (richText, index) => {
 		return await codeToHtml(richText.plain_text, {
-			lang: block.code.language,
+			lang: block.code.language == 'plain text' ? 'text' : block.code.language,
 			themes: {
 				light: 'vitesse-light',
 				dark: 'vitesse-dark',

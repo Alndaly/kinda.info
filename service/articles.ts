@@ -9,7 +9,7 @@ export const getArticles = cache(async (databaseID?: string) => {
         sorts: [
             {
                 property: 'Last edited time',
-                direction: 'ascending',
+                direction: 'descending',
             },
         ],
     });
