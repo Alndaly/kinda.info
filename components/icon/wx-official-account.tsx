@@ -1,7 +1,16 @@
 'use client';
 import { Popover, PopoverPanel, PopoverButton } from '@headlessui/react';
+import { configResponsive, useResponsive } from 'ahooks';
+
+configResponsive({
+	small: 640,
+	middle: 768,
+	large: 1024,
+});
 
 export function WxOfficialAccountIcon() {
+	const responsive = useResponsive();
+
 	return (
 		<Popover className='relative'>
 			<PopoverButton className='outline-none'>
@@ -20,9 +29,10 @@ export function WxOfficialAccountIcon() {
 			<PopoverPanel
 				transition
 				anchor={{
-					to: 'right',
+					to: responsive && responsive['small'] ? 'right' : 'bottom',
+					gap: 10,
 				}}
-				className='rounded-xl bg-white/20 dark:bg-black/20 transition ease-in-out [--anchor-gap:var(--spacing-5)] data-[closed]:-translate-x-1 data-[closed]:opacity-0'>
+				className='rounded-xl bg-white/20 dark:bg-black/20 transition ease-in-out [--anchor-gap:var(--spacing-5)] sm:data-[closed]:-translate-x-1 data-[closed]:translate-x-0 data-[closed]:-translate-y-1 sm:data-[closed]:-translate-y-0 data-[closed]:opacity-0'>
 				<p className='p-3'>
 					<picture>
 						<img
