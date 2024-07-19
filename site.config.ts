@@ -1,12 +1,13 @@
 export const siteConfig = {
+    baseUrl: 'https://kinda.info',
     title: "Kinda",
-    author: "Kinda",
+    author: "Kinda Hall",
     siteName: "Kinda - 我们要幸福快乐的活着。",
     timeZone: 'Asia/Shanghai',
     description:
         "我们要幸福快乐的活着。",
     language: "zh-cn",
-    keywords: ['kinda', '阡陌', '序章', '人生'],
+    keywords: ['kinda', '阡陌', '序章', '人生', '是爱生活的七月'],
     siteUrl: "https://kinda.info",
     siteRepo: "kinda.info",
     repoId: "R_kgDOLG0_4Q",

@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
-import { getArticle, getBlocks } from '@/service/articles';
+import { getArticle, getArticles, getBlocks } from '@/service/articles';
 import moment from 'moment-timezone';
-import { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import {
+	BlockObjectResponse,
+	QueryDatabaseResponse,
+} from '@notionhq/client/build/src/api-endpoints';
 
 export const revalidate = 3600;
 
@@ -12,6 +15,13 @@ interface PostProps {
 		slug: string[];
 	};
 }
+
+export const generateStaticParams = async () => {
+	const articles: QueryDatabaseResponse = await getArticles();
+	return articles.results.map((article) => ({
+		slug: [article.id],
+	}));
+};
 
 const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.

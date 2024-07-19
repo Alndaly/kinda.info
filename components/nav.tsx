@@ -20,7 +20,7 @@ const Nav = () => {
 			} flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full`}>
 			<Link href={'/'}>Home</Link>
 			<div>|</div>
-			<Link href={'/posts/efe5db924ac24e8da24ba07c3dc8e441'}>Posts</Link>
+			<Link href={'/posts'}>Posts</Link>
 			<div className='fixed right-5'>
 				<ModeToggle />
 			</div>
