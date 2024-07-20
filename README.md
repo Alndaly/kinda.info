@@ -50,3 +50,5 @@ vercel配置环境变量NOTION_TOKEN和NOTION_PAGE_ID。
 }
 ...
 ```
+
+同时还需要注释`post/page.tsx`文件中的`generateStaticParams`函数体。
