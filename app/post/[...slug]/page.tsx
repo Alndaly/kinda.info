@@ -16,12 +16,12 @@ interface PostProps {
 	};
 }
 
-export const generateStaticParams = async () => {
-	const articles: QueryDatabaseResponse = await getArticles();
-	return articles.results.map((article) => ({
-		slug: [article.id],
-	}));
-};
+// export const generateStaticParams = async () => {
+// 	const articles: QueryDatabaseResponse = await getArticles();
+// 	return articles.results.map((article) => ({
+// 		slug: [article.id],
+// 	}));
+// };
 
 const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
