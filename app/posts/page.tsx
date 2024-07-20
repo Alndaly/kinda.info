@@ -13,7 +13,7 @@ const Page = async () => {
 	const res = await Promise.all(tasks);
 	const articles_info = res;
 	return (
-		<div className='mt-[64px] prose dark:prose-invert lg:prose-lg xl:prose-xl grid grid-cols-1 gap-4 w-full mx-auto p-5'>
+		<div className='mt-[64px] prose dark:prose-invert grid grid-cols-1 gap-4 w-full mx-auto p-5'>
 			{articles_info.map((item) => {
 				return (
 					<div key={item.id}>

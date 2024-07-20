@@ -2,7 +2,7 @@ import { projects } from "../../constants/projects";
 
 const ProjectPage = () => {
 	return (
-		<div className='mx-auto prose dark:prose-invert lg:prose-lg xl:prose-xl'>
+		<div className='mx-auto prose dark:prose-invert'>
 			<div className='grid drid-cols-1 sm:grid-cols-2 gap-5 p-5'>
 				{projects.map((project, index) => {
 					return (

@@ -17,7 +17,7 @@ const Nav = () => {
 			ref={navDom}
 			className={`${
 				pathname.startsWith('/post') ? 'backdrop-blur-sm' : ''
-			} flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full`}>
+			} flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full bg-transparent`}>
 			<Link href={'/'}>Home</Link>
 			<div>|</div>
 			<Link href={'/posts'}>Posts</Link>
