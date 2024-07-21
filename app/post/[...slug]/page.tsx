@@ -30,7 +30,7 @@ const PostPage = async ({ params }: PostProps) => {
 	const article = await getArticle(slug[0]);
 	return (
 		<>
-			<article className='prose dark:prose-invert sm:mx-auto m-5'>
+			<article className='prose dark:prose-invert sm:mx-auto py-5'>
 				<div>
 					{/* @ts-ignore */}
 					{article.properties.Name.title.map((title: any, index: number) => {

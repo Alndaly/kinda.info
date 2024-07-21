@@ -16,11 +16,25 @@ const Nav = () => {
 		<div
 			ref={navDom}
 			className={`${
-				pathname.startsWith('/post') ? 'backdrop-blur-sm' : ''
+				!pathname.startsWith('/home') ? 'backdrop-blur-md' : ''
 			} flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full bg-transparent`}>
-			<Link href={'/'}>Home</Link>
+			<Link
+				className={`${pathname === '/home' ? 'font-bold' : ''}`}
+				href={'/home'}>
+				Home
+			</Link>
 			<div>|</div>
-			<Link href={'/posts'}>Posts</Link>
+			<Link
+				className={`${pathname === '/posts' ? 'font-bold' : ''}`}
+				href={'/posts'}>
+				Posts
+			</Link>
+			<div>|</div>
+			<Link
+				className={`${pathname === '/projects' ? 'font-bold' : ''}`}
+				href={'/projects'}>
+				Projects
+			</Link>
 			<div className='fixed right-5'>
 				<ModeToggle />
 			</div>

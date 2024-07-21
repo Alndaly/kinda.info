@@ -1,9 +1,10 @@
 import { projects } from "../../constants/projects";
+import Comments from "@/components/comments";
 
-const ProjectPage = () => {
+const ProjectsPage = () => {
 	return (
-		<div className='mx-auto prose dark:prose-invert'>
-			<div className='grid drid-cols-1 sm:grid-cols-2 gap-5 p-5'>
+		<div className='mx-auto p-5'>
+			<div className='grid drid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mb-5'>
 				{projects.map((project, index) => {
 					return (
 						<a
@@ -24,8 +25,9 @@ const ProjectPage = () => {
 					);
 				})}
 			</div>
+			<Comments />
 		</div>
 	);
 };
 
-export default ProjectPage;
+export default ProjectsPage;
