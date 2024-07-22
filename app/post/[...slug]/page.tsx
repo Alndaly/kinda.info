@@ -39,14 +39,14 @@ const PostPage = async ({ params }: PostProps) => {
 				</div>
 				<div className='text-sm text-zinc-500 dark:text-zinc-400'>
 					<p>
-						Last update:{' '}
+						上次更新:{' '}
 						{moment
 							.tz(
 								// @ts-ignore
 								article.properties['Last edited time'].last_edited_time,
 								'Asia/Shanghai'
 							)
-							.format('YYYY-MM-DD HH:mm:ss')}
+							.format('LLLL')}
 					</p>
 				</div>
 				<hr />

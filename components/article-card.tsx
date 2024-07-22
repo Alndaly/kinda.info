@@ -34,19 +34,13 @@ const ArticleCard = (props: any) => {
 			)}
 			<div className='text-slate-400 text-sm space-x-2'>
 				<span>
-					Last update:{' '}
+					上次更新:{' '}
 					{moment
 						.tz(
 							article.properties['Last edited time'].last_edited_time,
 							'Asia/Shanghai'
 						)
-						.format('YYYY-MM-DD HH:mm:ss')}
-				</span>
-				<span>
-					Created:{' '}
-					{moment
-						.tz(article.properties['Created'].created_time, 'Asia/Shanghai')
-						.format('YYYY-MM-DD HH:mm:ss')}
+						.format('LLLL')}
 				</span>
 			</div>
 		</Link>
