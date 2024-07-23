@@ -32,6 +32,21 @@ const ArticleCard = (props: any) => {
 					})}
 				</div>
 			)}
+
+			{article.properties.Summary?.rich_text && (
+				<div>
+					{article.properties.Summary.rich_text.map(
+						(summary: any, index: number) => {
+							return (
+								<div key={index} className='text-sm line-clamp-3'>
+									{summary.plain_text}
+								</div>
+							);
+						}
+					)}
+				</div>
+			)}
+
 			<div className='text-slate-400 text-sm space-x-2'>
 				<span>
 					上次更新:{' '}

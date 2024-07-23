@@ -12,6 +12,16 @@ export const getArticles = cache(async (databaseID?: string) => {
                 direction: 'descending',
             },
         ],
+        filter: {
+            and: [
+                {
+                    property: 'Published',
+                    checkbox: {
+                        equals: true,
+                    },
+                },
+            ],
+        }
     });
     return response
 })
