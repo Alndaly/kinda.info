@@ -5,6 +5,7 @@ import { getArticle, getArticles, getBlocks } from '@/service/articles';
 import moment from 'moment-timezone';
 import {
 	BlockObjectResponse,
+	GetPageResponse,
 	QueryDatabaseResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 
@@ -27,7 +28,7 @@ const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
 	const { slug } = params;
 	const blocks = (await getBlocks(slug[0])).results;
-	const article = await getArticle(slug[0]);
+	const article: GetPageResponse = await getArticle(slug[0]);
 	return (
 		<>
 			<article className='prose dark:prose-invert sm:mx-auto p-5 sm:px-0'>
@@ -57,6 +58,17 @@ const PostPage = async ({ params }: PostProps) => {
 						</div>
 					);
 				})}
+				{article.properties.Tags.multi_select.length > 0 && (
+					<div className='flex flex-row gap-2 py-2'>
+						{article.properties.Tags.multi_select.map((tag: any) => {
+							return (
+								<div key={tag.id} className='text-sm'>
+									{'#' + tag.name}
+								</div>
+							);
+						})}
+					</div>
+				)}
 				<Link
 					className='no-underline'
 					href='https://creativecommons.org/licenses/by-nc-sa/4.0/'

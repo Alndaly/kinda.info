@@ -1,5 +1,4 @@
 import { projects } from "../../constants/projects";
-import Comments from "@/components/comments";
 
 const ProjectsPage = () => {
 	return (
@@ -25,7 +24,6 @@ const ProjectsPage = () => {
 					);
 				})}
 			</div>
-			<Comments />
 		</div>
 	);
 };
