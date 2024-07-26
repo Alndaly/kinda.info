@@ -34,6 +34,6 @@ export const projects: Project[] = [
         title: 'aiop',
         description: 'aiop工具库，python包，建立这个包的目的是为了便于一些ai的操作，相比较qin工具包而言，这个包的功能比较简洁单一。',
         url: 'https://github.com/Alndaly/aiop',
-        image: 'https://oss.kinda.info/image/202407042343412.png'
+        image: 'https://oss.kinda.info/image/202407260943972.png'
     }
 ];

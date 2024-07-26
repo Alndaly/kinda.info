@@ -58,8 +58,10 @@ const PostPage = async ({ params }: PostProps) => {
 						</div>
 					);
 				})}
+				{/* @ts-ignore */}
 				{article.properties.Tags.multi_select.length > 0 && (
 					<div className='flex flex-row gap-2 py-2'>
+						{/* @ts-ignore */}
 						{article.properties.Tags.multi_select.map((tag: any) => {
 							return (
 								<div key={tag.id} className='text-sm'>
