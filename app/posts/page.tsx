@@ -1,13 +1,12 @@
-import { getArticles, getArticle } from '@/service/articles';
+import { getDatabaseData, getPageData } from '@/service/articles';
 import ArticleCard from '@/components/article-card';
-import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 
 export const revalidate = 3600;
 
 const Page = async () => {
-	const articles: QueryDatabaseResponse = await getArticles();
+	const articles = await getDatabaseData();
 	const tasks = articles.results.map(async (article) => {
-		const res = await getArticle(article.id);
+		const res = await getPageData(article.id);
 		return res;
 	});
 	const res = await Promise.all(tasks);

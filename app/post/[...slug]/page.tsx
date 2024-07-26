@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
-import { getArticle, getArticles, getBlocks } from '@/service/articles';
+import { getPageData, getDatabaseData, getBlocks } from '@/service/articles';
 import moment from 'moment-timezone';
 import {
 	BlockObjectResponse,
@@ -18,7 +18,7 @@ interface PostProps {
 }
 
 // export const generateStaticParams = async () => {
-// 	const articles: QueryDatabaseResponse = await getArticles();
+// 	const articles: QueryDatabaseResponse = await getDatabaseData();
 // 	return articles.results.map((article) => ({
 // 		slug: [article.id],
 // 	}));
@@ -28,7 +28,7 @@ const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
 	const { slug } = params;
 	const blocks = (await getBlocks(slug[0])).results;
-	const article: GetPageResponse = await getArticle(slug[0]);
+	const article: GetPageResponse = await getPageData(slug[0]);
 	return (
 		<>
 			<article className='prose dark:prose-invert sm:mx-auto p-5 sm:px-0'>
