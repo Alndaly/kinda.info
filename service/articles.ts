@@ -9,7 +9,7 @@ const agent = new ProxyAgent();
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN, agent });
 
-export const getDatabaseData = cache(async (databaseID?: string): Promise<QueryDatabaseResponse> => {
+export const getDatabaseData = cache(async (databaseID?: string, tag?: string): Promise<QueryDatabaseResponse> => {
     const response = await notion.databases.query({
         database_id: databaseID ? databaseID : process.env.NOTION_PAGE_ID!,
         sorts: [
@@ -26,6 +26,12 @@ export const getDatabaseData = cache(async (databaseID?: string): Promise<QueryD
                         equals: true,
                     },
                 },
+                {
+                    property: 'Tags',
+                    multi_select: {
+                        contains: tag ? tag : '',
+                    }
+                }
             ],
         }
     });

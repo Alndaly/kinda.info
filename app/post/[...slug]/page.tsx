@@ -64,9 +64,12 @@ const PostPage = async ({ params }: PostProps) => {
 						{/* @ts-ignore */}
 						{article.properties.Tags.multi_select.map((tag: any) => {
 							return (
-								<div key={tag.id} className='text-sm'>
+								<Link
+									href={`/tag/${tag.name}`}
+									key={tag.id}
+									className='text-sm no-underline'>
 									{'#' + tag.name}
-								</div>
+								</Link>
 							);
 						})}
 					</div>

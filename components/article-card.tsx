@@ -23,11 +23,9 @@ const ArticleCard = (props: any) => {
 				<div className='flex flex-row gap-2'>
 					{article.properties.Tags.multi_select.map((tag: any) => {
 						return (
-							<div
-								key={tag.id}
-								className='text-sm border rounded-md border-gray-200 px-2'>
-								{tag.name}
-							</div>
+							<Link key={tag.id} href={'/tag/' + tag.name} className='text-sm no-underline'>
+								{'#' + tag.name}
+							</Link>
 						);
 					})}
 				</div>

@@ -7,7 +7,7 @@ export default function PostLayout({
 }) {
 	return (
 		<>
-			<section className='mt-[64px] '>{children}</section>
+			<section className='mt-[64px]'>{children}</section>
 			<Footer />
 		</>
 	);
