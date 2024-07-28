@@ -6,7 +6,7 @@ const CodeBlock = async ({ block }: { block: CodeBlockObjectResponse }) => {
 		return await codeToHtml(richText.plain_text, {
 			lang: block.code.language == 'plain text' ? 'text' : block.code.language,
 			themes: {
-				light: 'vitesse-light',
+				light: 'catppuccin-latte',
 				dark: 'vitesse-dark',
 			},
 		});
