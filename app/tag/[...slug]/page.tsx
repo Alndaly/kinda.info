@@ -18,7 +18,7 @@ const TagPage = async ({ params }: TagProps) => {
 	const res = await Promise.all(tasks);
 	const articles_info = res;
 	return (
-		<div className='prose dark:prose-invert grid grid-cols-1 gap-4 w-full mx-auto py-5'>
+		<div className='prose dark:prose-invert grid grid-cols-1 gap-4 w-full mx-auto p-5 sm:px-0'>
 			<div className='font-bold text-2xl italic p-5'>Tag: {tag}</div>
 			{articles_info.map((item) => {
 				return (
