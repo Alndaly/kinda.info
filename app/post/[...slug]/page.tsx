@@ -8,6 +8,7 @@ import {
 	GetPageResponse,
 	QueryDatabaseResponse,
 } from '@notionhq/client/build/src/api-endpoints';
+import { redirect } from 'next/navigation';
 
 export const revalidate = 3600;
 
@@ -29,6 +30,11 @@ const PostPage = async ({ params }: PostProps) => {
 	const { slug } = params;
 	const blocks = (await getBlocks(slug[0])).results;
 	const article: GetPageResponse = await getPageData(slug[0]);
+	// @ts-ignore
+	if (!article.properties.Published.checkbox) {
+		// 如果文章是未发布的，则重定向到404页面
+		redirect('/not-found');
+	}
 	return (
 		<>
 			<article className='prose dark:prose-invert sm:mx-auto p-5 sm:px-0'>
