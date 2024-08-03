@@ -59,9 +59,7 @@ const PostPage = async ({ params }: PostProps) => {
 				<hr />
 				{blocks.map((block) => {
 					return (
-						<div key={block.id}>
-							<NotionBlock block={block as BlockObjectResponse} />
-						</div>
+						<NotionBlock key={block.id} block={block as BlockObjectResponse} />
 					);
 				})}
 				{/* @ts-ignore */}

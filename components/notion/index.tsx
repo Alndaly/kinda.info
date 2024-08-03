@@ -10,6 +10,7 @@ import ColumnBlock from './ColumnBlock';
 import Heading1Block from './Heading1Block';
 import Heading2Block from './Heading2Block';
 import Heading3Block from './Heading3Block';
+import NumberedListItemBlock from './BulletedListItemBlock copy';
 
 const NotionBlock = async ({ block }: { block: BlockObjectResponse }) => {
 	const type = block.type;
@@ -38,6 +39,9 @@ const NotionBlock = async ({ block }: { block: BlockObjectResponse }) => {
 			break;
 		case 'bulleted_list_item':
 			element = <BulletedListItemBlock block={block} />;
+			break;
+		case 'numbered_list_item':
+			element = <NumberedListItemBlock block={block} />;
 			break;
 		case 'quote':
 			element = <QuoteBlock block={block} />;
