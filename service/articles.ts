@@ -44,10 +44,18 @@ export const getPageData = async (pageId: string): Promise<GetPageResponse> => {
 }
 
 
-export const getBlocks = cache(async (blockId: string): Promise<ListBlockChildrenResponse> => {
-    const response = await notion.blocks.children.list({
+export const getBlocks = cache(async (blockId: string, startCursor?: string): Promise<ListBlockChildrenResponse> => {
+    let response = await notion.blocks.children.list({
         block_id: blockId,
         page_size: 100,
+        start_cursor: startCursor,
     });
+    if (response.has_more) {
+        const next = await getBlocks(blockId, response.next_cursor!)
+        response = {
+            ...next,
+            results: [...response.results, ...next.results],
+        }
+    }
     return response
 })
