@@ -18,6 +18,9 @@ export default function Home() {
 				<div className='font-bold text-lg mt-4 font-serif'>
 					Hello, I'm Kinda
 				</div>
+				<div className='font-bold text-lg mt-4 font-serif'>
+					「只要你呼唤我的名字，我们的羁绊就永远不会消失」
+				</div>
 				<div className='sm:hidden mt-5 flex flex-row gap-4 rounded-full backdrop-blur-sm bg-black/20 dark:bg-black/20 p-2'>
 					<div>
 						<BiliBiliIcon />
