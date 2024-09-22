@@ -3,6 +3,7 @@ import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
 import { getPageData, getDatabaseData, getBlocks } from '@/service/articles';
 import moment from 'moment-timezone';
+import { AIIcon } from '@/components/icon/ai-icon';
 import {
 	BlockObjectResponse,
 	GetPageResponse,
@@ -38,24 +39,34 @@ const PostPage = async ({ params }: PostProps) => {
 	return (
 		<>
 			<article className='prose dark:prose-invert sm:mx-auto p-5 sm:px-0'>
-				<div>
-					{/* @ts-ignore */}
-					{article.properties.Name.title.map((title: any, index: number) => {
-						return <h1 key={index}>{title.plain_text}</h1>;
-					})}
-				</div>
-				<div className='text-sm text-zinc-500 dark:text-zinc-400'>
-					<p>
-						上次更新:{' '}
-						{moment
-							.tz(
-								// @ts-ignore
-								article.properties['Last edited time'].last_edited_time,
-								'Asia/Shanghai'
-							)
-							.format('LLLL')}
+				{/* @ts-ignore */}
+				{article.properties.Name.title.map((title: any, index: number) => {
+					return <h1 key={index}>{title.plain_text}</h1>;
+				})}
+				<p className='text-sm text-zinc-500 dark:text-zinc-400'>
+					上次更新:{' '}
+					{moment
+						.tz(
+							// @ts-ignore
+							article.properties['Last edited time'].last_edited_time,
+							'Asia/Shanghai'
+						)
+						.format('LLLL')}
+				</p>
+				{/* @ts-ignore */}
+				{article.properties.Summary?.rich_text && (
+					<p className='rounded ring-1 ring-inset dark:ring-white/10 dark:bg-white/5 ring-black/10 bg-black/5 p-5'>
+						<div className='font-bold text-lg pb-2 font-mono flex flex-row items-center gap-2 italic dark:text-yellow-200 text-yellow-500'>
+							AI Summary
+						</div>
+						{/* @ts-ignore */}
+						{article.properties.Summary.rich_text.map(
+							(summary: any, index: number) => {
+								return <span key={index}>{summary.plain_text}</span>;
+							}
+						)}
 					</p>
-				</div>
+				)}
 				<hr />
 				{blocks.map((block) => {
 					return (
