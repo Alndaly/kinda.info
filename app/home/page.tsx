@@ -9,7 +9,7 @@ import { YoutubeIcon } from '@/components/icon/youtube-icon';
 export default function Home() {
 	return (
 		<>
-			<div className='absolute top-0 left-0 h-full w-full bg-black/10 dark:bg-black/50 justify-center items-center flex flex-col'>
+			<div className='absolute top-0 left-0 h-full w-full dark:bg-black/50 justify-center items-center flex flex-col'>
 				<img
 					className='rounded-full w-32 h-32 object-center'
 					src='https://oss.kinda.info/image/202407162310900.jpg'
