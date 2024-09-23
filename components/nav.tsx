@@ -17,7 +17,7 @@ const Nav = () => {
 			ref={navDom}
 			className={`${
 				!pathname.startsWith('/home') ? 'backdrop-blur-md' : ''
-			} flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full bg-transparent`}>
+			} flex flex-row gap-5 p-5 justify-center items-center h-[64px] transition-all w-full bg-transparent border-b dark:border-zinc-800 border-zinc-500/20`}>
 			<Link
 				className={`${pathname === '/home' ? 'font-bold' : ''}`}
 				href={'/home'}>
