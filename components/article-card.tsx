@@ -9,7 +9,7 @@ const ArticleCard = (props: any) => {
 			// href={article.public_url}
 			href={'/post/' + article.id}
 			// target='_blank'
-			className='no-underline flex flex-col gap-2 p-5 rounded hover:bg-slate-50/70 dark:hover:bg-slate-800/50'>
+			className='no-underline flex flex-col gap-2 p-5 rounded dark:hover:bg-white/5  hover:bg-black/5 transition-all duration-300'>
 			<div>
 				{article.properties.Name.title.map((title: any, index: number) => {
 					return (
