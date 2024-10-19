@@ -34,11 +34,13 @@ export function DashboardTableOfContents({ toc }: TocProps) {
 
 	return (
 		<div className='space-y-2'>
-			<p className='font-medium'>On This Page</p>
-			{/* <Tree tree={toc} activeItem={activeHeading} /> */}
-			<ul className={cn('m-0 list-none')}>
-				<IndentTree tree={toc} activeItem={activeHeading} />
-			</ul>
+			<p className='font-medium'>当前页面目录</p>
+			{toc.items.length > 0 && (
+				<ul className={cn('m-0 list-none')}>
+					<IndentTree tree={toc} activeItem={activeHeading} />
+				</ul>
+			)}
+			{toc.items.length === 0 && <div className='opacity-50'>暂无目录</div>}
 		</div>
 	);
 }
@@ -92,41 +94,15 @@ interface TreeProps {
 	activeItem?: string | null;
 }
 
-function Tree({ tree, level = 1, activeItem }: TreeProps) {
-	return tree?.items?.length && level <= 3 ? (
-		<ul className={cn('m-0 list-none', { 'pl-4': level !== 1 })}>
-			{tree.items.map((item, index) => {
-				return (
-					<li key={index} className={cn('mt-0 pt-2')}>
-						<a
-							href={`#${item.id}`}
-							className={cn(
-								'inline-block no-underline',
-								item.id === `${activeItem}`
-									? 'font-medium text-primary'
-									: 'text-sm text-muted-foreground'
-							)}>
-							{item.title}
-						</a>
-						{item.items?.length ? (
-							<Tree tree={item} level={level + 1} activeItem={activeItem} />
-						) : null}
-					</li>
-				);
-			})}
-		</ul>
-	) : null;
-}
-
 function IndentTree({ tree, level = 1, activeItem }: TreeProps) {
-	let style = 'pl-4';
+	let style = 'pl-0';
 	if (level == 2) {
-		style = 'pl-8';
+		style = 'pl-4';
 	} else if (level == 3) {
-		style = 'pl-12';
+		style = 'pl-8';
 	}
 	return tree?.items?.length && level <= 3 ? (
-		<React.Fragment>
+		<>
 			{tree.items.map((item, index) => {
 				return (
 					<>
@@ -152,6 +128,6 @@ function IndentTree({ tree, level = 1, activeItem }: TreeProps) {
 					</>
 				);
 			})}
-		</React.Fragment>
+		</>
 	) : null;
 }
