@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
-import { getPageData, getDatabaseData, getBlocks } from '@/service/articles';
+import { getPageData, getBlocks } from '@/service/articles';
 import moment from 'moment-timezone';
-import { AIIcon } from '@/components/icon/ai-icon';
 import {
 	BlockObjectResponse,
 	GetPageResponse,
-	QueryDatabaseResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 import { redirect } from 'next/navigation';
+import { getTableOfContents } from '@/utils/md';
+import { DashboardTableOfContents } from '@/components/toc';
 
 export const revalidate = 3600;
 
@@ -30,6 +30,7 @@ const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
 	const { slug } = params;
 	const blocks = (await getBlocks(slug[0])).results;
+	const headers = getTableOfContents(blocks);
 	const article: GetPageResponse = await getPageData(slug[0]);
 	// @ts-ignore
 	if (!article.properties.Published.checkbox) {
@@ -37,8 +38,8 @@ const PostPage = async ({ params }: PostProps) => {
 		redirect('/not-found');
 	}
 	return (
-		<>
-			<article className='prose dark:prose-invert sm:mx-auto p-5 sm:px-0'>
+		<div className='flex flex-row gap-5'>
+			<article className='prose dark:prose-invert max-w-none flex-1 p-5 sm:p-10'>
 				{/* @ts-ignore */}
 				{article.properties.Name.title.map((title: any, index: number) => {
 					return <h1 key={index}>{title.plain_text}</h1>;
@@ -101,7 +102,10 @@ const PostPage = async ({ params }: PostProps) => {
 				</Link>
 				<Comments />
 			</article>
-		</>
+			<div className='hidden md:flex w-1/4 h-full overflow-auto sticky top-[64px] p-5 sm:p-10'>
+				<DashboardTableOfContents toc={headers} />
+			</div>
+		</div>
 	);
 };
 

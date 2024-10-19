@@ -2,7 +2,7 @@ import { Heading1BlockObjectResponse } from '@notionhq/client/build/src/api-endp
 
 const Heading1Block = ({ block }: { block: Heading1BlockObjectResponse }) => {
 	const element = (
-		<h1>
+		<h1 id={block.id} className='scroll-mt-[64px]'>
 			{block.heading_1.rich_text.map((richText, index) => {
 				return <span key={index}>{richText.plain_text}</span>;
 			})}
