@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Nav from '@/components/nav';
 import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
-import ThemeProvider from '@/components/theme-provider';
+import { ThemeProvider } from '@/components/theme-provider';
 import { siteConfig } from '@/site.config';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';

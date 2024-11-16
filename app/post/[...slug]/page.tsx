@@ -3,13 +3,13 @@ import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
 import { getPageData, getBlocks } from '@/service/articles';
 import moment from 'moment-timezone';
+import ScrollTopAndComment from '@/components/scroll-top-and-comment';
 import {
 	BlockObjectResponse,
 	GetPageResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 import { redirect } from 'next/navigation';
 import { getTableOfContents } from '@/utils/md';
-import { DashboardTableOfContents } from '@/components/toc';
 
 export const revalidate = 3600;
 
@@ -18,13 +18,6 @@ interface PostProps {
 		slug: string[];
 	};
 }
-
-// export const generateStaticParams = async () => {
-// 	const articles: QueryDatabaseResponse = await getDatabaseData();
-// 	return articles.results.map((article) => ({
-// 		slug: [article.id],
-// 	}));
-// };
 
 const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
@@ -38,8 +31,8 @@ const PostPage = async ({ params }: PostProps) => {
 		redirect('/not-found');
 	}
 	return (
-		<div className='flex flex-row gap-5'>
-			<article className='prose dark:prose-invert max-w-none flex-1 p-5 sm:p-10'>
+		<div>
+			<article className='prose dark:prose-invert mx-auto p-5 sm:p-10'>
 				{/* @ts-ignore */}
 				{article.properties.Name.title.map((title: any, index: number) => {
 					return <h1 key={index}>{title.plain_text}</h1>;
@@ -58,7 +51,7 @@ const PostPage = async ({ params }: PostProps) => {
 				{article.properties.Summary?.rich_text &&
 					// @ts-ignore
 					article.properties.Summary?.rich_text.length > 0 && (
-						<p className='rounded ring-1 ring-inset dark:ring-white/10 dark:bg-white/5 ring-black/10 bg-black/5 p-5'>
+						<p className='rounded ring-1 ring-inset dark:ring-white/10 ring-black/10 bg-black/5 dark:bg-white/5 p-5'>
 							<div className='font-bold text-lg pb-2 font-mono flex flex-row items-center gap-2 italic dark:text-yellow-200 text-yellow-500'>
 								AI Summary
 							</div>
@@ -102,9 +95,7 @@ const PostPage = async ({ params }: PostProps) => {
 				</Link>
 				<Comments />
 			</article>
-			<div className='hidden md:flex w-1/4 h-full overflow-auto sticky top-[64px] p-5 sm:p-10'>
-				<DashboardTableOfContents toc={headers} />
-			</div>
+			<ScrollTopAndComment />
 		</div>
 	);
 };
