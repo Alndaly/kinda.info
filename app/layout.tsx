@@ -38,7 +38,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang='zh'>
+		<html lang='zh' suppressHydrationWarning>
 			<body className='dark:bg-[#1E1E1E]'>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 					<div className='fixed top-0 left-0 z-10 w-full'>

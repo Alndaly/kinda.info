@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Metadata, ResolvingMetadata } from 'next';
 import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
 import { getPageData, getBlocks } from '@/service/articles';
@@ -15,16 +16,58 @@ export const revalidate = 3600;
 
 interface PostProps {
 	params: {
-		slug: string[];
+		slug: string;
+	};
+}
+
+export async function generateMetadata({ params }: PostProps) {
+	const { slug } = params;
+	const blocks = (await getBlocks(slug)).results;
+	const article: GetPageResponse = await getPageData(slug);
+	// 动态提取标题、描述和作者
+	// @ts-ignore
+	const title =
+	// @ts-ignore
+		article.properties.Name?.title.map((t: any) => t.plain_text).join('') ||
+		'该页面莫得标题';
+	// @ts-ignore
+	const description =
+	// @ts-ignore
+		article.properties.Summary?.rich_text
+			.map((s: any) => s.plain_text)
+			.join('') || '该页面莫得描述';
+	// @ts-ignore
+	const author =
+	// @ts-ignore
+		article.properties.Author?.people?.map((p: any) => p.name).join(', ') ||
+		'未知作者';
+
+	return {
+		title,
+		description,
+		authors: [{ name: author }], // 作者信息
+		openGraph: {
+			title,
+			description,
+			siteName: 'kinda, a blog',
+			type: 'article',
+			authors: [author], // Open Graph 支持的作者字段
+		},
+		twitter: {
+			// card: 'summary_large_image',
+			title,
+			description,
+			creator: author, // Twitter 卡片中的作者信息
+		},
 	};
 }
 
 const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
 	const { slug } = params;
-	const blocks = (await getBlocks(slug[0])).results;
+	const blocks = (await getBlocks(slug)).results;
 	const headers = getTableOfContents(blocks);
-	const article: GetPageResponse = await getPageData(slug[0]);
+	const article: GetPageResponse = await getPageData(slug);
 	// @ts-ignore
 	if (!article.properties.Published.checkbox) {
 		// 如果文章是未发布的，则重定向到404页面
