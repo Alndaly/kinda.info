@@ -35,6 +35,12 @@ const Nav = () => {
 				href={'/projects'}>
 				Projects
 			</Link>
+			<div>|</div>
+			<Link
+				className={`${pathname === '/tools' ? 'font-bold' : ''}`}
+				href={'/tools'}>
+				Tools
+			</Link>
 			<div className='fixed right-5'>
 				<ModeToggle />
 			</div>

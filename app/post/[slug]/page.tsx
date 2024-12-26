@@ -15,30 +15,30 @@ import { getTableOfContents } from '@/utils/md';
 export const revalidate = 3600;
 
 interface PostProps {
-	params: {
+	params: Promise<{
 		slug: string;
-	};
+	}>;
 }
 
 export async function generateMetadata({ params }: PostProps) {
-	const { slug } = params;
+	const { slug } = await params;
 	const blocks = (await getBlocks(slug)).results;
 	const article: GetPageResponse = await getPageData(slug);
 	// 动态提取标题、描述和作者
 	// @ts-ignore
 	const title =
-	// @ts-ignore
+		// @ts-ignore
 		article.properties.Name?.title.map((t: any) => t.plain_text).join('') ||
 		'该页面莫得标题';
 	// @ts-ignore
 	const description =
-	// @ts-ignore
+		// @ts-ignore
 		article.properties.Summary?.rich_text
 			.map((s: any) => s.plain_text)
 			.join('') || '该页面莫得描述';
 	// @ts-ignore
 	const author =
-	// @ts-ignore
+		// @ts-ignore
 		article.properties.Author?.people?.map((p: any) => p.name).join(', ') ||
 		'未知作者';
 
@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: PostProps) {
 
 const PostPage = async ({ params }: PostProps) => {
 	// Find the post for the current page.
-	const { slug } = params;
+	const { slug } = await params;
 	const blocks = (await getBlocks(slug)).results;
 	const headers = getTableOfContents(blocks);
 	const article: GetPageResponse = await getPageData(slug);
