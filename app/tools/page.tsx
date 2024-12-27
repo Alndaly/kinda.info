@@ -8,6 +8,12 @@ const tools = [
 		url: 'https://moodist.mvze.net',
 		cover: 'https://oss.kinda.info/image/202412262256146.png',
 	},
+	{
+		name: '热点排序',
+		description: '一些热搜',
+		url: 'https://hot.imsyy.top/#/',
+		cover: 'https://oss.kinda.info/image/202412272357013.png'
+	}
 ];
 
 const ToolsPage = () => {
