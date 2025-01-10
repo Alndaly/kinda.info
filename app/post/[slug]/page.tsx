@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import type { Metadata, ResolvingMetadata } from 'next';
 import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
 import { getPageData, getBlocks } from '@/service/articles';
@@ -73,6 +72,7 @@ const PostPage = async ({ params }: PostProps) => {
 		// 如果文章是未发布的，则重定向到404页面
 		redirect('/not-found');
 	}
+
 	return (
 		<div>
 			<article className='prose dark:prose-invert mx-auto p-5 sm:p-10'>
