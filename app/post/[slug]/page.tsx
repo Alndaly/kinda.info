@@ -94,17 +94,17 @@ const PostPage = async ({ params }: PostProps) => {
 				{article.properties.Summary?.rich_text &&
 					// @ts-ignore
 					article.properties.Summary?.rich_text.length > 0 && (
-						<p className='rounded ring-1 ring-inset dark:ring-white/10 ring-black/10 bg-black/5 dark:bg-white/5 p-5'>
-							<div className='font-bold text-lg pb-2 font-mono flex flex-row items-center gap-2 italic dark:text-yellow-200 text-yellow-500'>
+						<div className='rounded ring-1 ring-inset dark:ring-white/10 ring-black/10 bg-black/5 dark:bg-white/5 p-5'>
+							<p className='my-0 font-bold text-lg pb-2 font-mono flex flex-row items-center gap-2 italic dark:text-yellow-200 text-yellow-500'>
 								AI Summary
-							</div>
+							</p>
 							{/* @ts-ignore */}
 							{article.properties.Summary.rich_text.map(
 								(summary: any, index: number) => {
 									return <span key={index}>{summary.plain_text}</span>;
 								}
 							)}
-						</p>
+						</div>
 					)}
 				<hr />
 				{blocks.map((block) => {
