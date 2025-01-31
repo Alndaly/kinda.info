@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { siteConfig } from '@/site.config';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteConfig.siteUrl),
@@ -40,6 +41,7 @@ export default function RootLayout({
 	return (
 		<html lang='zh' suppressHydrationWarning>
 			<body className='dark:bg-[#1E1E1E]'>
+				<GoogleAnalytics gaId='G-JT60THL1FF' />
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
 					<div className='fixed top-0 left-0 z-10 w-full'>
 						<Nav />
