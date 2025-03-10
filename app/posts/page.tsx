@@ -1,8 +1,7 @@
 import { getDatabaseData, getPageData } from '@/service/articles';
 import ArticleCard from '@/components/article-card';
 
-// export const revalidate = 3600;
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600;
 
 const Page = async () => {
 	const articles = await getDatabaseData();

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Comments from '@/components/comments';
 import NotionBlock from '@/components/notion';
-import { getPageData, getBlocks } from '@/service/articles';
+import { getPageData, getBlocks, getDatabaseData } from '@/service/articles';
 import moment from 'moment-timezone';
 import ScrollTopAndComment from '@/components/scroll-top-and-comment';
 import {
@@ -17,6 +17,18 @@ interface PostProps {
 	params: Promise<{
 		slug: string;
 	}>;
+}
+
+export async function generateStaticParams() {
+	const articles = await getDatabaseData();
+	const tasks = articles.results.map(async (article) => {
+		const res = await getPageData(article.id);
+		return res;
+	});
+	const posts = await Promise.all(tasks);
+	return posts.map((post) => ({
+		slug: post.id,
+	}));
 }
 
 export async function generateMetadata({ params }: PostProps) {
