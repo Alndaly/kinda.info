@@ -60,7 +60,7 @@ const AudioPlayer: React.FC = () => {
 				audioRef.current.play();
 			}
 		}
-	}, [currentTrackIndex, tracks]);
+	}, [currentTrackIndex, isPlaying, tracks]);
 
 	// 初始化 tracks 并自动播放
 	useEffect(() => {

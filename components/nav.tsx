@@ -11,7 +11,7 @@ const Nav = () => {
 	const { setNavBar } = useAppStore();
 	useEffect(() => {
 		setNavBar(navDom);
-	}, []);
+	}, [setNavBar]);
 	return (
 		<div
 			ref={navDom}

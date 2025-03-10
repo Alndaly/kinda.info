@@ -1,17 +1,12 @@
 import ArticleCard from '@/components/article-card';
 import { getDatabaseData, getPageData } from '@/service/articles';
 
-interface TagProps {
-	params: {
-		slug: string[];
-	};
-}
+type Params = Promise<{ slug: string }>;
 
 export const revalidate = 3600;
 
-const TagPage = async ({ params }: TagProps) => {
-	// Find the post for the current page.
-	const { slug } = params;
+const TagPage = async ({ params }: { params: Params }) => {
+	const { slug } = await params;
 	const tag = decodeURIComponent(slug[0]);
 	const articles = await getDatabaseData(process.env.NOTION_PAGE_ID, tag);
 	const tasks = articles.results.map(async (article) => {
