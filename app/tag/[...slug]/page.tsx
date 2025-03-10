@@ -6,6 +6,9 @@ interface TagProps {
 		slug: string[];
 	};
 }
+
+export const revalidate = 3600;
+
 const TagPage = async ({ params }: TagProps) => {
 	// Find the post for the current page.
 	const { slug } = params;
@@ -15,8 +18,7 @@ const TagPage = async ({ params }: TagProps) => {
 		const res = await getPageData(article.id);
 		return res;
 	});
-	const res = await Promise.all(tasks);
-	const articles_info = res;
+	const articles_info = await Promise.all(tasks);
 	return (
 		<div className='prose dark:prose-invert grid grid-cols-1 gap-4 w-full mx-auto p-5 sm:px-0'>
 			<div className='font-bold text-2xl italic p-5'>Tag: {tag}</div>

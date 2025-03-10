@@ -62,6 +62,7 @@ export async function generateMetadata({ params }: PostProps) {
 			description,
 			siteName: 'kinda, a blog',
 			type: 'article',
+			image: 'https://oss.kinda.info/image/202502042221927.jpeg',
 			authors: [author], // Open Graph 支持的作者字段
 		},
 		twitter: {

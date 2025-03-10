@@ -7,7 +7,7 @@ import { siteConfig } from '@/site.config';
 export default function Footer() {
 	return (
 		<footer>
-			<div className='container flex flex-col items-center px-8 py-8 mx-auto sm:flex-row select-none'>
+			<div className='container flex flex-col items-center px-8 py-8 mx-auto sm:flex-row'>
 				<div className='text-sm text-zinc-500 dark:text-zinc-300'>
 					© {siteConfig.author} Since {moment().tz(siteConfig.timeZone).format('YYYY')}{' '}
 				</div>
