@@ -10,6 +10,7 @@ import {
 } from '@notionhq/client/build/src/api-endpoints';
 import { redirect } from 'next/navigation';
 import { getTableOfContents } from '@/utils/md';
+import TableOfContents from '@/components/toc';
 
 export const revalidate = 3600;
 

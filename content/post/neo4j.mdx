@@ -1,0 +1,261 @@
+# neo4j
+
+## 介绍
+
+Neo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 **neo4j** 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。
+
+## **1. 安装和配置**
+
+### **安装 Neo4j Python 驱动**
+
+首先，确保你已经安装了 Neo4j 数据库，并且已经运行它。然后，你需要安装 Neo4j 的 Python 驱动。
+
+```shell
+pip install neo4j
+```
+
+### **连接到 Neo4j 数据库**
+
+连接到 Neo4j 数据库需要提供数据库的 URI、用户名和密码。通常使用 bolt 协议来连接 Neo4j，默认端口为 7687。
+
+```python
+from neo4j import GraphDatabase
+
+# 创建 Neo4j 驱动实例
+uri = "bolt://localhost:7687"  # Neo4j URI
+username = "neo4j"  # Neo4j 默认用户名
+password = "your_password"  # 密码
+driver = GraphDatabase.driver(uri, auth=(username, password))
+```
+
+## **2. 节点的基础操作**
+
+### **创建节点**
+
+节点是图数据库的基本元素之一，你可以通过 Cypher 查询语言创建节点，并为其设置属性。
+
+```python
+def create_node(tx, node_id, label):
+    query = "CREATE (n:Animal {custom_id: $node_id, label: $label})"
+    tx.run(query, node_id=node_id, label=label)
+
+# 执行创建节点
+with driver.session() as session:
+    session.write_transaction(create_node, "unique_id_1", "Mammal")
+    print("Node created.")
+
+# 关闭驱动
+driver.close()
+```
+
+### **查询节点**
+
+你可以使用 MATCH 查询来查找符合条件的节点。
+
+```python
+def get_node(tx, node_id):
+    query = "MATCH (n:Animal {custom_id: $node_id}) RETURN n"
+    result = tx.run(query, node_id=node_id)
+    for record in result:
+        print(record["n"])
+
+# 执行查询
+with driver.session() as session:
+    session.read_transaction(get_node, "unique_id_1")
+```
+
+### **更新节点**
+
+更新节点的属性时，可以使用 SET 语句。
+
+```python
+def update_node(tx, node_id, new_label):
+    query = "MATCH (n:Animal {custom_id: $node_id}) SET n.label = $new_label"
+    tx.run(query, node_id=node_id, new_label=new_label)
+
+# 执行更新
+with driver.session() as session:
+    session.write_transaction(update_node, "unique_id_1", "Dog")
+```
+
+### **删除节点**
+
+删除节点时，需要使用 DETACH DELETE，确保删除该节点及其所有关系。
+
+```python
+def delete_node(tx, node_id):
+    query = "MATCH (n:Animal {custom_id: $node_id}) DETACH DELETE n"
+    tx.run(query, node_id=node_id)
+
+# 执行删除
+with driver.session() as session:
+    session.write_transaction(delete_node, "unique_id_1")
+    print("Node deleted.")
+```
+
+## **3. 关系的基础操作**
+
+### **创建关系**
+
+创建关系时，你需要指定关系的类型，并连接两个节点。
+
+```python
+def create_relationship(tx, node1_id, node2_id):
+    query = """
+    MATCH (a:Animal {custom_id: $node1_id}), (b:Animal {custom_id: $node2_id})
+    CREATE (a)-[:KNOWS]->(b)
+    """
+    tx.run(query, node1_id=node1_id, node2_id=node2_id)
+
+# 执行创建关系
+with driver.session() as session:
+    session.write_transaction(create_relationship, "unique_id_1", "unique_id_2")
+```
+
+### **查询关系**
+
+你可以使用 MATCH 查找关系，并指定起始和结束节点。
+
+```python
+def get_relationship(tx, node1_id, node2_id):
+    query = """
+    MATCH (a)-[r:KNOWS]->(b)
+    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id
+    RETURN r
+    """
+    result = tx.run(query, node1_id=node1_id, node2_id=node2_id)
+    for record in result:
+        print(record["r"])
+
+# 执行查询
+with driver.session() as session:
+    session.read_transaction(get_relationship, "unique_id_1", "unique_id_2")
+```
+
+### **删除关系**
+
+删除节点之间的关系时，可以使用 DELETE。
+
+```python
+def delete_relationship(tx, node1_id, node2_id):
+    query = """
+    MATCH (a)-[r]->(b)
+    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id
+    DELETE r
+    """
+    tx.run(query, node1_id=node1_id, node2_id=node2_id)
+
+# 执行删除关系
+with driver.session() as session:
+    session.write_transaction(delete_relationship, "unique_id_1", "unique_id_2")
+    print("Relationship deleted.")
+```
+
+## **4. 创建约束和索引**
+
+### **创建唯一约束**
+
+唯一约束确保某个属性在数据库中是唯一的。
+
+```python
+def create_unique_constraint(tx):
+    query = "CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT n.custom_id IS UNIQUE"
+    tx.run(query)
+
+# 执行创建唯一约束
+with driver.session() as session:
+    session.write_transaction(create_unique_constraint)
+    print("Unique constraint created.")
+```
+
+### **创建存在性约束**
+
+存在性约束确保节点或关系必须包含某个属性。
+
+```python
+def create_existence_constraint(tx):
+    query = "CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT exists(n.custom_id)"
+    tx.run(query)
+
+# 执行创建存在性约束
+with driver.session() as session:
+    session.write_transaction(create_existence_constraint)
+    print("Existence constraint created.")
+```
+
+### **创建索引**
+
+索引用于提高某个属性的查询性能。
+
+```python
+def create_index(tx):
+    query = "CREATE INDEX IF NOT EXISTS FOR (n:Animal) ON (n.custom_id)"
+    tx.run(query)
+
+# 执行创建索引
+with driver.session() as session:
+    session.write_transaction(create_index)
+    print("Index created.")
+```
+
+## **5. 复杂查询和聚合操作**
+
+### **聚合查询**
+
+Neo4j 支持多种聚合函数，比如 COUNT、SUM、AVG 等。可以用来统计节点或关系的数量。
+
+```python
+def count_nodes(tx):
+    query = "MATCH (n:Animal) RETURN COUNT(n)"
+    result = tx.run(query)
+    for record in result:
+        print(record["COUNT(n)"])
+
+# 执行聚合查询
+with driver.session() as session:
+    session.read_transaction(count_nodes)
+```
+
+### **查询带条件的关系**
+
+你可以使用条件来过滤查询结果。
+
+```python
+def filter_nodes(tx):
+    query = "MATCH (n:Animal) WHERE n.label = 'Dog' RETURN n"
+    result = tx.run(query)
+    for record in result:
+        print(record["n"])
+
+# 执行条件查询
+with driver.session() as session:
+    session.read_transaction(filter_nodes)
+```
+
+## **6. 批量操作**
+
+### **批量创建节点**
+
+```python
+def create_multiple_nodes(tx, nodes):
+    query = "UNWIND $nodes AS node CREATE (n:Animal {custom_id: node.custom_id, label: node.label})"
+    tx.run(query, nodes=nodes)
+
+# 执行批量创建
+nodes = [
+    {"custom_id": "unique_id_1", "label": "Dog"},
+    {"custom_id": "unique_id_2", "label": "Cat"},
+    {"custom_id": "unique_id_3", "label": "Fox"}
+]
+with driver.session() as session:
+    session.write_transaction(create_multiple_nodes, nodes)
+```
+
+## **7. 关闭连接**
+
+完成操作后，关闭连接：
+
+```python
+# 关闭驱动
+driver.close()
+```

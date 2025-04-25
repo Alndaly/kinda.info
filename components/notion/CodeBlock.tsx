@@ -16,4 +16,5 @@ const CodeBlock = async ({ block }: { block: CodeBlockObjectResponse }) => {
 	);
 	return element;
 };
+
 export default CodeBlock;

@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable @next/next/no-img-element */
 import { BiliBiliIcon } from '@/components/icon/bilibili-icon';
 import { GithubIcon } from '@/components/icon/github-icon';
 import { WxOfficialAccountIcon } from '@/components/icon/wx-official-account';
