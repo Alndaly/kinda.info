@@ -1,21 +1,22 @@
 import Link from 'next/link';
+import { ArrowLeft, Asterisk } from 'lucide-react';
 
 export default function NotFound() {
-	return (
-		<div className='flex justify-center items-center flex-col p-5 gap-5 min-h-screen'>
-			<p className='text-2xl'>Ops...</p>
-			<p className='text-xl'>
-				This page is deleted
-			</p>
-			<Link
-				href='/'
-				className='rounded-full px-5 py-2 border border-zinc-300 dark:border-zinc-500'>
-				Return Home
-			</Link>
-			<p className='text-sm'>
-				Or if you do want to contact me, do this by
-				<a href='mailto:1142704468@qq.com' className='font-bold underline ml-1'>email</a>
-			</p>
-		</div>
-	);
+  return (
+    <div className="site-container grid min-h-[65svh] place-items-center py-20 text-center">
+      <div>
+        <Asterisk className="mx-auto mb-7 h-8 w-8 text-accent" />
+        <p className="section-index">Error / 404</p>
+        <h1 className="mt-4 font-display text-[clamp(5rem,18vw,12rem)] leading-none tracking-[-0.08em]">
+          走丢了
+        </h1>
+        <p className="mx-auto mt-5 max-w-md leading-7 text-muted-foreground">
+          这一页可能被移动了，也可能从来没有存在过。
+        </p>
+        <Link href="/" className="back-link mb-0 mt-9">
+          <ArrowLeft /> 回到首页
+        </Link>
+      </div>
+    </div>
+  );
 }

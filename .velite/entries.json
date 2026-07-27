@@ -1,0 +1,232 @@
+[
+  {
+    "slug": "personal-internet",
+    "type": "note",
+    "title": "重建一小块属于自己的互联网",
+    "eyebrow": "Internet Gardening",
+    "summary": "当所有表达都被装进同一种信息流，个人网站仍然可以是一间有窗、有桌子、也有自己时间的房间。",
+    "date": "2026-06-18T00:00:00.000Z",
+    "tags": [
+      "Web",
+      "生活"
+    ],
+    "featured": false,
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 189.60000000000002
+    },
+    "excerpt": "社交平台很像繁忙的街道。它让我们遇见很多人，也让每句话都必须在几秒钟里证明自己值得被看见。\n个人网站不一样。这里没有推荐算法催促我，也没有一个必须填满的更新频率。它可以慢，可以偏心，可以保留那些只对少数人有用的长篇笔记。\n房间，而不是展柜\n我不希望它只陈列“最好”的作品。比起无懈可击的成果，我更想保留过程：一个项目为什么开始，一段代码为什么重写，一张照片背后那天的天气。\n网站因此更像房间——来访的人会看到桌面上的半成品，也会发现主人最近在关心什么。\n\n[!IMPORTANT]\n原则\n先为表达选择形式，再为形式选择工",
+    "html": "<p>社交平台很像繁忙的街道。它让我们遇见很多人，也让每句话都必须在几秒钟里证明自己值得被看见。</p>\n<p>个人网站不一样。这里没有推荐算法催促我，也没有一个必须填满的更新频率。它可以慢，可以偏心，可以保留那些只对少数人有用的长篇笔记。</p>\n<h2>房间，而不是展柜</h2>\n<p>我不希望它只陈列“最好”的作品。比起无懈可击的成果，我更想保留过程：一个项目为什么开始，一段代码为什么重写，一张照片背后那天的天气。</p>\n<p>网站因此更像房间——来访的人会看到桌面上的半成品，也会发现主人最近在关心什么。</p>\n<blockquote>\n<p>[!IMPORTANT]\n<strong>原则</strong></p>\n<p>先为表达选择形式，再为形式选择工具。不要让发布系统决定你能说什么。</p>\n</blockquote>\n<h2>本地文件是一种自由</h2>\n<p>笔记最终只是仓库里的 MDX 文件。没有远程数据库，没有第三方编辑器，也没有随服务一起消失的格式。文本可以被版本管理、迁移、搜索，也可以在许多年后用最普通的方式打开。</p>\n<p>这不一定是最高效的发布流程，但它足够诚实，也足够长久。</p>",
+    "content": "社交平台很像繁忙的街道。它让我们遇见很多人，也让每句话都必须在几秒钟里证明自己值得被看见。\n\n个人网站不一样。这里没有推荐算法催促我，也没有一个必须填满的更新频率。它可以慢，可以偏心，可以保留那些只对少数人有用的长篇笔记。\n\n## 房间，而不是展柜\n\n我不希望它只陈列“最好”的作品。比起无懈可击的成果，我更想保留过程：一个项目为什么开始，一段代码为什么重写，一张照片背后那天的天气。\n\n网站因此更像房间——来访的人会看到桌面上的半成品，也会发现主人最近在关心什么。\n\n> [!IMPORTANT]\n> **原则**\n>\n> 先为表达选择形式，再为形式选择工具。不要让发布系统决定你能说什么。\n\n## 本地文件是一种自由\n\n笔记最终只是仓库里的 MDX 文件。没有远程数据库，没有第三方编辑器，也没有随服务一起消失的格式。文本可以被版本管理、迁移、搜索，也可以在许多年后用最普通的方式打开。\n\n这不一定是最高效的发布流程，但它足够诚实，也足够长久。",
+    "href": "/notes/personal-internet"
+  },
+  {
+    "slug": "soft-engineering",
+    "type": "note",
+    "title": "柔软的工程学",
+    "eyebrow": "Field Note No. 07",
+    "summary": "好的软件不只正确、快速、可扩展。它还应该理解人的迟疑，允许犯错，并在复杂世界里留出一点呼吸。",
+    "date": "2026-07-20T00:00:00.000Z",
+    "updated": "2026-07-24T00:00:00.000Z",
+    "tags": [
+      "思考",
+      "设计"
+    ],
+    "featured": true,
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 282.12
+    },
+    "excerpt": "我们经常用很硬的词谈论软件：约束、校验、权限、失败、熔断。它们当然重要，但人使用软件时，并不会把自己想成一个等待被验证的输入。\n人会迟疑，会忘记，会在深夜一点误触那个按钮。于是我开始在意另一种工程能力：让系统强壮，也让使用它的人感到安全。\n正确之外，还有感受\n一个表单可以在提交失败时准确地返回 400，但如果它抹掉了用户刚刚写完的两千字，那么从人的角度看，它就是彻底失败了。\n\n[!TIP]\n一个简单判断\n当错误不可避免时，先保护人的劳动，再解释系统发生了什么。\n\n这意味着自动保存、可撤销、保留上下文；也意味着错误信",
+    "html": "<p>我们经常用很硬的词谈论软件：<strong>约束、校验、权限、失败、熔断</strong>。它们当然重要，但人使用软件时，并不会把自己想成一个等待被验证的输入。</p>\n<p>人会迟疑，会忘记，会在深夜一点误触那个按钮。于是我开始在意另一种工程能力：让系统强壮，也让使用它的人感到安全。</p>\n<h2>正确之外，还有感受</h2>\n<p>一个表单可以在提交失败时准确地返回 <code>400</code>，但如果它抹掉了用户刚刚写完的两千字，那么从人的角度看，它就是彻底失败了。</p>\n<blockquote>\n<p>[!TIP]\n<strong>一个简单判断</strong></p>\n<p>当错误不可避免时，先保护人的劳动，再解释系统发生了什么。</p>\n</blockquote>\n<p>这意味着自动保存、可撤销、保留上下文；也意味着错误信息里不该只有错误代码。我们要告诉人：哪里出了问题、他是否需要担心、接下来能做什么。</p>\n<h2>把余地做进系统</h2>\n<p>柔软不是没有边界。恰好相反，它需要更精确的边界设计。</p>\n<ul>\n<li>危险操作要慢一点，让人有机会反悔。</li>\n<li>高频操作要快一点，别让界面挡在意图前面。</li>\n<li>不确定的结果要诚实，不用一个漂亮的百分比假装笃定。</li>\n<li>空白状态不是“没有数据”，而是下一步行动的邀请。</li>\n</ul>\n<p>真正成熟的产品，不会要求人永远清醒、准确、高效。它承认我们偶尔混乱，然后仍然稳稳接住。</p>\n<h2>最后</h2>\n<p>代码里的每一个分支，最后都会成为某个人经历的一小段时间。我们写的不是抽象流程，而是别人一天里的几秒钟。</p>\n<p>如果工程最终是为人服务的，那么“舒服”就不只是视觉设计的工作。它应该从数据模型、失败策略和权限边界开始，一直延伸到按钮上的那几个字。</p>",
+    "content": "我们经常用很硬的词谈论软件：**约束、校验、权限、失败、熔断**。它们当然重要，但人使用软件时，并不会把自己想成一个等待被验证的输入。\n\n人会迟疑，会忘记，会在深夜一点误触那个按钮。于是我开始在意另一种工程能力：让系统强壮，也让使用它的人感到安全。\n\n## 正确之外，还有感受\n\n一个表单可以在提交失败时准确地返回 `400`，但如果它抹掉了用户刚刚写完的两千字，那么从人的角度看，它就是彻底失败了。\n\n> [!TIP]\n> **一个简单判断**\n>\n> 当错误不可避免时，先保护人的劳动，再解释系统发生了什么。\n\n这意味着自动保存、可撤销、保留上下文；也意味着错误信息里不该只有错误代码。我们要告诉人：哪里出了问题、他是否需要担心、接下来能做什么。\n\n## 把余地做进系统\n\n柔软不是没有边界。恰好相反，它需要更精确的边界设计。\n\n- 危险操作要慢一点，让人有机会反悔。\n- 高频操作要快一点，别让界面挡在意图前面。\n- 不确定的结果要诚实，不用一个漂亮的百分比假装笃定。\n- 空白状态不是“没有数据”，而是下一步行动的邀请。\n\n真正成熟的产品，不会要求人永远清醒、准确、高效。它承认我们偶尔混乱，然后仍然稳稳接住。\n\n## 最后\n\n代码里的每一个分支，最后都会成为某个人经历的一小段时间。我们写的不是抽象流程，而是别人一天里的几秒钟。\n\n如果工程最终是为人服务的，那么“舒服”就不只是视觉设计的工作。它应该从数据模型、失败策略和权限边界开始，一直延伸到按钮上的那几个字。",
+    "href": "/notes/soft-engineering"
+  },
+  {
+    "slug": "aiop",
+    "type": "project",
+    "title": "aiop",
+    "eyebrow": "AI Utility",
+    "summary": "一个更小、更专注的 AI 操作工具包，为常见模型调用提供轻量且清晰的接口。",
+    "date": "2024-07-26T00:00:00.000Z",
+    "tags": [
+      "Python",
+      "AI"
+    ],
+    "cover": "https://oss.kinda.info/image/202407260943972.png",
+    "featured": false,
+    "link": "https://github.com/Alndaly/aiop",
+    "status": "experiment",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 37.720000000000006
+    },
+    "excerpt": "如果说 qin 是一只装满工具的箱子，aiop 更像桌面上最常用的那把小刀。\n它只处理 AI 相关的高频操作，用更轻的依赖和更直接的接口，服务于快速实验与小型项目。",
+    "html": "<p>如果说 qin 是一只装满工具的箱子，aiop 更像桌面上最常用的那把小刀。</p>\n<p>它只处理 AI 相关的高频操作，用更轻的依赖和更直接的接口，服务于快速实验与小型项目。</p>",
+    "content": "如果说 qin 是一只装满工具的箱子，aiop 更像桌面上最常用的那把小刀。\n\n它只处理 AI 相关的高频操作，用更轻的依赖和更直接的接口，服务于快速实验与小型项目。",
+    "href": "/projects/aiop"
+  },
+  {
+    "slug": "kinda-utils",
+    "type": "project",
+    "title": "@kinda/utils",
+    "eyebrow": "Open Source",
+    "summary": "一个收纳常用基础能力的 TypeScript 工具箱，让重复的小问题只被解决一次。",
+    "date": "2024-02-12T00:00:00.000Z",
+    "tags": [
+      "TypeScript",
+      "Open Source"
+    ],
+    "cover": "https://oss.kinda.info/image/202402121954106.png",
+    "featured": true,
+    "link": "https://github.com/Alndaly/kinda-utils",
+    "status": "active",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 80.16000000000001
+    },
+    "excerpt": "@kinda/utils 是我在不同项目之间反复遇到同一类基础问题之后做的工具包。\n它不追求成为一个庞大的全能依赖，更像一只随手可以拿走的小工具箱：行为明确、类型可靠，并且尽量不替使用者做过多决定。\n我在意什么\n\nAPI 能够只看名字就理解。\nTypeScript 类型是产品的一部分，而不是额外说明。\n每个工具都应该小到可以单独测试，也小到未来可以被轻松替换。\n",
+    "html": "<p><code>@kinda/utils</code> 是我在不同项目之间反复遇到同一类基础问题之后做的工具包。</p>\n<p>它不追求成为一个庞大的全能依赖，更像一只随手可以拿走的小工具箱：行为明确、类型可靠，并且尽量不替使用者做过多决定。</p>\n<h2>我在意什么</h2>\n<ul>\n<li>API 能够只看名字就理解。</li>\n<li>TypeScript 类型是产品的一部分，而不是额外说明。</li>\n<li>每个工具都应该小到可以单独测试，也小到未来可以被轻松替换。</li>\n</ul>",
+    "content": "`@kinda/utils` 是我在不同项目之间反复遇到同一类基础问题之后做的工具包。\n\n它不追求成为一个庞大的全能依赖，更像一只随手可以拿走的小工具箱：行为明确、类型可靠，并且尽量不替使用者做过多决定。\n\n## 我在意什么\n\n- API 能够只看名字就理解。\n- TypeScript 类型是产品的一部分，而不是额外说明。\n- 每个工具都应该小到可以单独测试，也小到未来可以被轻松替换。",
+    "href": "/projects/kinda-utils"
+  },
+  {
+    "slug": "qin",
+    "type": "project",
+    "title": "qin",
+    "eyebrow": "Python Toolkit",
+    "summary": "覆盖 AI、视频与图像工作流的 Python 命令行工具，把零散脚本整理成可复用的生产力。",
+    "date": "2024-07-04T00:00:00.000Z",
+    "tags": [
+      "Python",
+      "AI"
+    ],
+    "cover": "https://oss.kinda.info/image/202407042343412.png",
+    "featured": true,
+    "link": "https://github.com/Alndaly/qin-cli",
+    "status": "experiment",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 80.72000000000001
+    },
+    "excerpt": "qin 起初只是一组放在本地的 Python 脚本。随着使用场景变多，我开始把它们整理成结构清晰的命令行工具。\n它处理视频、图片与常见 AI 任务，目标不是包揽一切，而是把高频流程变成可靠的命令。\n从脚本到产品\n真正困难的部分不是写出某个功能，而是让它在第二次、第二十次使用时仍然可预测。qin 因此逐渐拥有统一的参数设计、错误提示与配置方式。",
+    "html": "<p>qin 起初只是一组放在本地的 Python 脚本。随着使用场景变多，我开始把它们整理成结构清晰的命令行工具。</p>\n<p>它处理视频、图片与常见 AI 任务，目标不是包揽一切，而是把高频流程变成可靠的命令。</p>\n<h2>从脚本到产品</h2>\n<p>真正困难的部分不是写出某个功能，而是让它在第二次、第二十次使用时仍然可预测。qin 因此逐渐拥有统一的参数设计、错误提示与配置方式。</p>",
+    "content": "qin 起初只是一组放在本地的 Python 脚本。随着使用场景变多，我开始把它们整理成结构清晰的命令行工具。\n\n它处理视频、图片与常见 AI 任务，目标不是包揽一切，而是把高频流程变成可靠的命令。\n\n## 从脚本到产品\n\n真正困难的部分不是写出某个功能，而是让它在第二次、第二十次使用时仍然可预测。qin 因此逐渐拥有统一的参数设计、错误提示与配置方式。",
+    "href": "/projects/qin"
+  },
+  {
+    "slug": "unit-one",
+    "type": "project",
+    "title": "Unit One",
+    "eyebrow": "Community Product",
+    "summary": "一次关于私域社区的产品实验：让内容、关系与成员体验回到社区自身。",
+    "date": "2024-02-11T00:00:00.000Z",
+    "tags": [
+      "Product",
+      "Community"
+    ],
+    "cover": "https://oss.kinda.info/image/202402121949063.png",
+    "featured": false,
+    "link": "https://docs.unit-one.top",
+    "status": "archive",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 66.96000000000001
+    },
+    "excerpt": "Unit One 是一次完整但暂时停下来的社区产品尝试。\n我在这个项目里思考内容归属、成员关系和社区治理，也第一次更具体地感受到：技术实现只是产品的一部分，真正决定社区走向的是持续的运营与共识。\n把它留在这里，不是因为它已经完成，而是因为认真做过的实验也值得拥有一个位置。",
+    "html": "<p>Unit One 是一次完整但暂时停下来的社区产品尝试。</p>\n<p>我在这个项目里思考内容归属、成员关系和社区治理，也第一次更具体地感受到：技术实现只是产品的一部分，真正决定社区走向的是持续的运营与共识。</p>\n<p>把它留在这里，不是因为它已经完成，而是因为认真做过的实验也值得拥有一个位置。</p>",
+    "content": "Unit One 是一次完整但暂时停下来的社区产品尝试。\n\n我在这个项目里思考内容归属、成员关系和社区治理，也第一次更具体地感受到：技术实现只是产品的一部分，真正决定社区走向的是持续的运营与共识。\n\n把它留在这里，不是因为它已经完成，而是因为认真做过的实验也值得拥有一个位置。",
+    "href": "/projects/unit-one"
+  },
+  {
+    "slug": "after-rain",
+    "type": "photo",
+    "title": "雨停以后",
+    "eyebrow": "Frame 001",
+    "summary": "雨刚停，城市把所有平常的灯都重新擦亮了一遍。",
+    "date": "2024-09-22T00:00:00.000Z",
+    "tags": [
+      "城市",
+      "夜"
+    ],
+    "cover": "https://oss.kinda.info/image/202409222153357.png",
+    "featured": true,
+    "location": "Shanghai",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 40.88
+    },
+    "excerpt": "那天没有特意带着拍摄计划出门。雨停以后，路面像一张还没完全定影的相纸，把灯和行人的影子都留得很长。\n我喜欢这种短暂的时刻：城市仍旧嘈杂，但光线让它显得比平时温柔。",
+    "html": "<p>那天没有特意带着拍摄计划出门。雨停以后，路面像一张还没完全定影的相纸，把灯和行人的影子都留得很长。</p>\n<p>我喜欢这种短暂的时刻：城市仍旧嘈杂，但光线让它显得比平时温柔。</p>",
+    "content": "那天没有特意带着拍摄计划出门。雨停以后，路面像一张还没完全定影的相纸，把灯和行人的影子都留得很长。\n\n我喜欢这种短暂的时刻：城市仍旧嘈杂，但光线让它显得比平时温柔。",
+    "href": "/photography/after-rain"
+  },
+  {
+    "slug": "july-self",
+    "type": "photo",
+    "title": "七月，自画像",
+    "eyebrow": "Frame 002",
+    "summary": "在一年最热的时候，留下一张还愿意相信热烈的自己。",
+    "date": "2024-07-16T00:00:00.000Z",
+    "tags": [
+      "人像",
+      "日常"
+    ],
+    "cover": "https://oss.kinda.info/image/202407162310900.jpg",
+    "featured": false,
+    "location": "Hangzhou",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 43.120000000000005
+    },
+    "excerpt": "镜头朝向自己的时候，人会忽然不知道该把手放在哪里。\n后来我不再寻找一个标准的表情，只是让快门记下那一刻真正的样子。照片不需要说明我是谁，它只是证明：这个七月，我确实在这里。",
+    "html": "<p>镜头朝向自己的时候，人会忽然不知道该把手放在哪里。</p>\n<p>后来我不再寻找一个标准的表情，只是让快门记下那一刻真正的样子。照片不需要说明我是谁，它只是证明：这个七月，我确实在这里。</p>",
+    "content": "镜头朝向自己的时候，人会忽然不知道该把手放在哪里。\n\n后来我不再寻找一个标准的表情，只是让快门记下那一刻真正的样子。照片不需要说明我是谁，它只是证明：这个七月，我确实在这里。",
+    "href": "/photography/july-self"
+  },
+  {
+    "slug": "quiet-distance",
+    "type": "photo",
+    "title": "很远，也很安静",
+    "eyebrow": "Frame 003",
+    "summary": "有些风景并不要求我们抵达，只要在远处看一会儿就好。",
+    "date": "2024-01-21T00:00:00.000Z",
+    "tags": [
+      "风景",
+      "旅行"
+    ],
+    "cover": "https://oss.kinda.info/image/202401211555429.jpeg",
+    "featured": false,
+    "location": "Somewhere",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 45.36000000000001
+    },
+    "excerpt": "远处的东西因为无法触碰，反而更容易保持完整。\n拍完这张照片后，我站了很久。没有发生值得记录的事件，只有风，只有缓慢变化的光。后来想起那一天，最清楚的反而就是这段什么都没有发生的时间。",
+    "html": "<p>远处的东西因为无法触碰，反而更容易保持完整。</p>\n<p>拍完这张照片后，我站了很久。没有发生值得记录的事件，只有风，只有缓慢变化的光。后来想起那一天，最清楚的反而就是这段什么都没有发生的时间。</p>",
+    "content": "远处的东西因为无法触碰，反而更容易保持完整。\n\n拍完这张照片后，我站了很久。没有发生值得记录的事件，只有风，只有缓慢变化的光。后来想起那一天，最清楚的反而就是这段什么都没有发生的时间。",
+    "href": "/photography/quiet-distance"
+  },
+  {
+    "slug": "neo4j-python-guide",
+    "type": "note",
+    "title": "用 Python 驯服图数据库：Neo4j 实用手册",
+    "eyebrow": "Engineering Note",
+    "summary": "从连接、增删改查到约束与索引，一份可以直接带进项目里的 Neo4j Python 速查笔记。",
+    "date": "2025-02-04T00:00:00.000Z",
+    "updated": "2025-02-04T00:00:00.000Z",
+    "tags": [
+      "Python",
+      "Database"
+    ],
+    "featured": false,
+    "metadata": {
+      "readingTime": 4,
+      "wordCount": 1031.88
+    },
+    "excerpt": "neo4j\n介绍\nNeo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 neo4j 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。\nflowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 R",
+    "html": "<h1>neo4j</h1>\n<h2>介绍</h2>\n<p>Neo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 <strong>neo4j</strong> 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。</p>\n<pre><code class=\"language-mermaid\">flowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 Relationships\"]\n    C --> E[\"属性 Properties\"]\n    D --> E\n</code></pre>\n<blockquote>\n<p>[!NOTE]\n本文示例聚焦驱动层的基础操作。进入生产环境前，请把连接信息放入环境变量，并为会话增加完整的异常处理。</p>\n</blockquote>\n<h2><strong>1. 安装和配置</strong></h2>\n<h3><strong>安装 Neo4j Python 驱动</strong></h3>\n<p>首先，确保你已经安装了 Neo4j 数据库，并且已经运行它。然后，你需要安装 Neo4j 的 Python 驱动。</p>\n<pre><code class=\"language-shell\">pip install neo4j\n</code></pre>\n<h3><strong>连接到 Neo4j 数据库</strong></h3>\n<p>连接到 Neo4j 数据库需要提供数据库的 URI、用户名和密码。通常使用 bolt 协议来连接 Neo4j，默认端口为 7687。</p>\n<pre><code class=\"language-python\">from neo4j import GraphDatabase\n\n# 创建 Neo4j 驱动实例\nuri = \"bolt://localhost:7687\"  # Neo4j URI\nusername = \"neo4j\"  # Neo4j 默认用户名\npassword = \"your_password\"  # 密码\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n</code></pre>\n<h2><strong>2. 节点的基础操作</strong></h2>\n<h3><strong>创建节点</strong></h3>\n<p>节点是图数据库的基本元素之一，你可以通过 Cypher 查询语言创建节点，并为其设置属性。</p>\n<pre><code class=\"language-python\">def create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\n# 执行创建节点\nwith driver.session() as session:\n    session.write_transaction(create_node, \"unique_id_1\", \"Mammal\")\n    print(\"Node created.\")\n\n# 关闭驱动\ndriver.close()\n</code></pre>\n<h3><strong>查询节点</strong></h3>\n<p>你可以使用 MATCH 查询来查找符合条件的节点。</p>\n<pre><code class=\"language-python\">def get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    result = tx.run(query, node_id=node_id)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_node, \"unique_id_1\")\n</code></pre>\n<h3><strong>更新节点</strong></h3>\n<p>更新节点的属性时，可以使用 SET 语句。</p>\n<pre><code class=\"language-python\">def update_node(tx, node_id, new_label):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) SET n.label = $new_label\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\n# 执行更新\nwith driver.session() as session:\n    session.write_transaction(update_node, \"unique_id_1\", \"Dog\")\n</code></pre>\n<h3><strong>删除节点</strong></h3>\n<p>删除节点时，需要使用 DETACH DELETE，确保删除该节点及其所有关系。</p>\n<pre><code class=\"language-python\">def delete_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) DETACH DELETE n\"\n    tx.run(query, node_id=node_id)\n\n# 执行删除\nwith driver.session() as session:\n    session.write_transaction(delete_node, \"unique_id_1\")\n    print(\"Node deleted.\")\n</code></pre>\n<h2><strong>3. 关系的基础操作</strong></h2>\n<h3><strong>创建关系</strong></h3>\n<p>创建关系时，你需要指定关系的类型，并连接两个节点。</p>\n<pre><code class=\"language-python\">def create_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $node1_id}), (b:Animal {custom_id: $node2_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行创建关系\nwith driver.session() as session:\n    session.write_transaction(create_relationship, \"unique_id_1\", \"unique_id_2\")\n</code></pre>\n<h3><strong>查询关系</strong></h3>\n<p>你可以使用 MATCH 查找关系，并指定起始和结束节点。</p>\n<pre><code class=\"language-python\">def get_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r:KNOWS]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    RETURN r\n    \"\"\"\n    result = tx.run(query, node1_id=node1_id, node2_id=node2_id)\n    for record in result:\n        print(record[\"r\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_relationship, \"unique_id_1\", \"unique_id_2\")\n</code></pre>\n<h3><strong>删除关系</strong></h3>\n<p>删除节点之间的关系时，可以使用 DELETE。</p>\n<pre><code class=\"language-python\">def delete_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    DELETE r\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行删除关系\nwith driver.session() as session:\n    session.write_transaction(delete_relationship, \"unique_id_1\", \"unique_id_2\")\n    print(\"Relationship deleted.\")\n</code></pre>\n<h2><strong>4. 创建约束和索引</strong></h2>\n<h3><strong>创建唯一约束</strong></h3>\n<p>唯一约束确保某个属性在数据库中是唯一的。</p>\n<pre><code class=\"language-python\">def create_unique_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT n.custom_id IS UNIQUE\"\n    tx.run(query)\n\n# 执行创建唯一约束\nwith driver.session() as session:\n    session.write_transaction(create_unique_constraint)\n    print(\"Unique constraint created.\")\n</code></pre>\n<h3><strong>创建存在性约束</strong></h3>\n<p>存在性约束确保节点或关系必须包含某个属性。</p>\n<pre><code class=\"language-python\">def create_existence_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT exists(n.custom_id)\"\n    tx.run(query)\n\n# 执行创建存在性约束\nwith driver.session() as session:\n    session.write_transaction(create_existence_constraint)\n    print(\"Existence constraint created.\")\n</code></pre>\n<h3><strong>创建索引</strong></h3>\n<p>索引用于提高某个属性的查询性能。</p>\n<pre><code class=\"language-python\">def create_index(tx):\n    query = \"CREATE INDEX IF NOT EXISTS FOR (n:Animal) ON (n.custom_id)\"\n    tx.run(query)\n\n# 执行创建索引\nwith driver.session() as session:\n    session.write_transaction(create_index)\n    print(\"Index created.\")\n</code></pre>\n<h2><strong>5. 复杂查询和聚合操作</strong></h2>\n<h3><strong>聚合查询</strong></h3>\n<p>Neo4j 支持多种聚合函数，比如 COUNT、SUM、AVG 等。可以用来统计节点或关系的数量。</p>\n<pre><code class=\"language-python\">def count_nodes(tx):\n    query = \"MATCH (n:Animal) RETURN COUNT(n)\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"COUNT(n)\"])\n\n# 执行聚合查询\nwith driver.session() as session:\n    session.read_transaction(count_nodes)\n</code></pre>\n<h3><strong>查询带条件的关系</strong></h3>\n<p>你可以使用条件来过滤查询结果。</p>\n<pre><code class=\"language-python\">def filter_nodes(tx):\n    query = \"MATCH (n:Animal) WHERE n.label = 'Dog' RETURN n\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行条件查询\nwith driver.session() as session:\n    session.read_transaction(filter_nodes)\n</code></pre>\n<h2><strong>6. 批量操作</strong></h2>\n<h3><strong>批量创建节点</strong></h3>\n<pre><code class=\"language-python\">def create_multiple_nodes(tx, nodes):\n    query = \"UNWIND $nodes AS node CREATE (n:Animal {custom_id: node.custom_id, label: node.label})\"\n    tx.run(query, nodes=nodes)\n\n# 执行批量创建\nnodes = [\n    {\"custom_id\": \"unique_id_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"unique_id_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"unique_id_3\", \"label\": \"Fox\"}\n]\nwith driver.session() as session:\n    session.write_transaction(create_multiple_nodes, nodes)\n</code></pre>\n<h2><strong>7. 关闭连接</strong></h2>\n<p>完成操作后，关闭连接：</p>\n<pre><code class=\"language-python\"># 关闭驱动\ndriver.close()\n</code></pre>",
+    "content": "# neo4j\n\n## 介绍\n\nNeo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 **neo4j** 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。\n\n```mermaid\nflowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 Relationships\"]\n    C --> E[\"属性 Properties\"]\n    D --> E\n```\n\n> [!NOTE]\n> 本文示例聚焦驱动层的基础操作。进入生产环境前，请把连接信息放入环境变量，并为会话增加完整的异常处理。\n\n## **1. 安装和配置**\n\n### **安装 Neo4j Python 驱动**\n\n首先，确保你已经安装了 Neo4j 数据库，并且已经运行它。然后，你需要安装 Neo4j 的 Python 驱动。\n\n```shell\npip install neo4j\n```\n\n### **连接到 Neo4j 数据库**\n\n连接到 Neo4j 数据库需要提供数据库的 URI、用户名和密码。通常使用 bolt 协议来连接 Neo4j，默认端口为 7687。\n\n```python\nfrom neo4j import GraphDatabase\n\n# 创建 Neo4j 驱动实例\nuri = \"bolt://localhost:7687\"  # Neo4j URI\nusername = \"neo4j\"  # Neo4j 默认用户名\npassword = \"your_password\"  # 密码\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n```\n\n## **2. 节点的基础操作**\n\n### **创建节点**\n\n节点是图数据库的基本元素之一，你可以通过 Cypher 查询语言创建节点，并为其设置属性。\n\n```python\ndef create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\n# 执行创建节点\nwith driver.session() as session:\n    session.write_transaction(create_node, \"unique_id_1\", \"Mammal\")\n    print(\"Node created.\")\n\n# 关闭驱动\ndriver.close()\n```\n\n### **查询节点**\n\n你可以使用 MATCH 查询来查找符合条件的节点。\n\n```python\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    result = tx.run(query, node_id=node_id)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_node, \"unique_id_1\")\n```\n\n### **更新节点**\n\n更新节点的属性时，可以使用 SET 语句。\n\n```python\ndef update_node(tx, node_id, new_label):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) SET n.label = $new_label\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\n# 执行更新\nwith driver.session() as session:\n    session.write_transaction(update_node, \"unique_id_1\", \"Dog\")\n```\n\n### **删除节点**\n\n删除节点时，需要使用 DETACH DELETE，确保删除该节点及其所有关系。\n\n```python\ndef delete_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) DETACH DELETE n\"\n    tx.run(query, node_id=node_id)\n\n# 执行删除\nwith driver.session() as session:\n    session.write_transaction(delete_node, \"unique_id_1\")\n    print(\"Node deleted.\")\n```\n\n## **3. 关系的基础操作**\n\n### **创建关系**\n\n创建关系时，你需要指定关系的类型，并连接两个节点。\n\n```python\ndef create_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $node1_id}), (b:Animal {custom_id: $node2_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行创建关系\nwith driver.session() as session:\n    session.write_transaction(create_relationship, \"unique_id_1\", \"unique_id_2\")\n```\n\n### **查询关系**\n\n你可以使用 MATCH 查找关系，并指定起始和结束节点。\n\n```python\ndef get_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r:KNOWS]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    RETURN r\n    \"\"\"\n    result = tx.run(query, node1_id=node1_id, node2_id=node2_id)\n    for record in result:\n        print(record[\"r\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_relationship, \"unique_id_1\", \"unique_id_2\")\n```\n\n### **删除关系**\n\n删除节点之间的关系时，可以使用 DELETE。\n\n```python\ndef delete_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    DELETE r\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行删除关系\nwith driver.session() as session:\n    session.write_transaction(delete_relationship, \"unique_id_1\", \"unique_id_2\")\n    print(\"Relationship deleted.\")\n```\n\n## **4. 创建约束和索引**\n\n### **创建唯一约束**\n\n唯一约束确保某个属性在数据库中是唯一的。\n\n```python\ndef create_unique_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT n.custom_id IS UNIQUE\"\n    tx.run(query)\n\n# 执行创建唯一约束\nwith driver.session() as session:\n    session.write_transaction(create_unique_constraint)\n    print(\"Unique constraint created.\")\n```\n\n### **创建存在性约束**\n\n存在性约束确保节点或关系必须包含某个属性。\n\n```python\ndef create_existence_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT exists(n.custom_id)\"\n    tx.run(query)\n\n# 执行创建存在性约束\nwith driver.session() as session:\n    session.write_transaction(create_existence_constraint)\n    print(\"Existence constraint created.\")\n```\n\n### **创建索引**\n\n索引用于提高某个属性的查询性能。\n\n```python\ndef create_index(tx):\n    query = \"CREATE INDEX IF NOT EXISTS FOR (n:Animal) ON (n.custom_id)\"\n    tx.run(query)\n\n# 执行创建索引\nwith driver.session() as session:\n    session.write_transaction(create_index)\n    print(\"Index created.\")\n```\n\n## **5. 复杂查询和聚合操作**\n\n### **聚合查询**\n\nNeo4j 支持多种聚合函数，比如 COUNT、SUM、AVG 等。可以用来统计节点或关系的数量。\n\n```python\ndef count_nodes(tx):\n    query = \"MATCH (n:Animal) RETURN COUNT(n)\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"COUNT(n)\"])\n\n# 执行聚合查询\nwith driver.session() as session:\n    session.read_transaction(count_nodes)\n```\n\n### **查询带条件的关系**\n\n你可以使用条件来过滤查询结果。\n\n```python\ndef filter_nodes(tx):\n    query = \"MATCH (n:Animal) WHERE n.label = 'Dog' RETURN n\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行条件查询\nwith driver.session() as session:\n    session.read_transaction(filter_nodes)\n```\n\n## **6. 批量操作**\n\n### **批量创建节点**\n\n```python\ndef create_multiple_nodes(tx, nodes):\n    query = \"UNWIND $nodes AS node CREATE (n:Animal {custom_id: node.custom_id, label: node.label})\"\n    tx.run(query, nodes=nodes)\n\n# 执行批量创建\nnodes = [\n    {\"custom_id\": \"unique_id_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"unique_id_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"unique_id_3\", \"label\": \"Fox\"}\n]\nwith driver.session() as session:\n    session.write_transaction(create_multiple_nodes, nodes)\n```\n\n## **7. 关闭连接**\n\n完成操作后，关闭连接：\n\n```python\n# 关闭驱动\ndriver.close()\n```",
+    "href": "/notes/neo4j-python-guide"
+  }
+]

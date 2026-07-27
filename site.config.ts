@@ -1,18 +1,15 @@
 export const siteConfig = {
-    baseUrl: 'https://kinda.info',
-    title: "Kinda",
-    author: "Kinda Hall",
-    siteName: "Kinda - 我们要幸福快乐的活着。",
-    timeZone: 'Asia/Shanghai',
-    description:
-        "我们要幸福快乐的活着。",
-    language: "zh-cn",
-    keywords: ['kinda', '阡陌', '序章', '人生', '是爱生活的七月'],
-    siteUrl: "https://kinda.info",
-    siteRepo: "kinda.info",
-    repoId: "R_kgDOLG0_4Q",
-    categoryId: "DIC_kwDOLG0_4c4CcpnC",
-    email: "1142704468@qq.com",
-    github: "Alndaly",
-    cover: "https://oss.kinda.info/image/202401211555429.jpeg"
-};
+  baseUrl: 'https://kinda.info',
+  siteUrl: 'https://kinda.info',
+  title: 'Kinda — Notes, Frames & Things',
+  shortTitle: 'Kinda',
+  author: 'Kinda Hall',
+  siteName: 'Kinda',
+  timeZone: 'Asia/Shanghai',
+  description: '关于代码、影像与日常感受的个人档案。把认真做过的东西，安静地留在这里。',
+  language: 'zh-CN',
+  keywords: ['Kinda', '个人网站', '笔记', '摄影', '独立开发', 'MDX'],
+  email: '1142704468@qq.com',
+  github: 'Alndaly',
+  siteRepo: 'kinda.info',
+} as const;

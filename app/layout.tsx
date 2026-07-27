@@ -1,60 +1,70 @@
-import { Metadata } from 'next';
-import Nav from '@/components/nav';
-import NextTopLoader from 'nextjs-toploader';
-import './globals.css';
-import { ThemeProvider } from '@/components/theme-provider';
-import { siteConfig } from '@/site.config';
+import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { GoogleAnalytics } from '@next/third-parties/google';
-import Script from 'next/script';
+import { ThemeProvider } from '@/components/theme-provider';
+import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/site-footer';
+import { siteConfig } from '@/site.config';
+import 'katex/dist/katex.min.css';
+import 'highlight.js/styles/github-dark.css';
+import './globals.css';
 
 export const metadata: Metadata = {
-	metadataBase: new URL(siteConfig.siteUrl),
-	generator: 'Next.js',
-	applicationName: siteConfig.siteRepo,
-	referrer: 'origin-when-cross-origin',
-	keywords: siteConfig.keywords,
-	authors: [{ name: siteConfig.author, url: '/about' }],
-	creator: siteConfig.author,
-	publisher: siteConfig.author,
-	title: siteConfig.title,
-	description: siteConfig.description,
-	formatDetection: {
-		email: true,
-		address: false,
-		telephone: false,
-	},
-	openGraph: {
-		title: siteConfig.title,
-		description: siteConfig.description,
-		url: siteConfig.siteUrl,
-		siteName: siteConfig.siteName,
-		locale: siteConfig.language,
-	},
+  metadataBase: new URL(siteConfig.siteUrl),
+  title: {
+    default: siteConfig.title,
+    template: `%s — ${siteConfig.shortTitle}`,
+  },
+  description: siteConfig.description,
+  applicationName: siteConfig.siteName,
+  authors: [{ name: siteConfig.author, url: '/about' }],
+  creator: siteConfig.author,
+  keywords: [...siteConfig.keywords],
+  openGraph: {
+    type: 'website',
+    locale: siteConfig.language,
+    url: siteConfig.siteUrl,
+    siteName: siteConfig.siteName,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [
+      {
+        url: '/og.png',
+        width: 1729,
+        height: 910,
+        alt: 'Kinda — Notes, Frames & Things',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: ['/og.png'],
+  },
 };
 
-export default function RootLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
-	return (
-		<html lang='zh' suppressHydrationWarning>
-			{/* 由于一些tailwindcss的样式是拼接的，编译时无法识别导致编译结果中没有对应的样式，故而此处引入cdn来补充tailwindcss样式表 */}
-			<Script src='https://unpkg.com/@tailwindcss/browser@4' />
-			<body className='dark:bg-[#1E1E1E]'>
-				<GoogleAnalytics gaId='G-JT60THL1FF' />
-				<ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-					<div className='fixed top-0 left-0 z-10 w-full'>
-						<Nav />
-					</div>
-					<NextTopLoader />
-					{children}
-					<SpeedInsights />
-					<Analytics />
-				</ThemeProvider>
-			</body>
-		</html>
-	);
+export const viewport: Viewport = {
+  colorScheme: 'light dark',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f2efe6' },
+    { media: '(prefers-color-scheme: dark)', color: '#171713' },
+  ],
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className="page-noise" aria-hidden="true" />
+          <SiteHeader />
+          <main>{children}</main>
+          <SiteFooter />
+          <SpeedInsights />
+          <Analytics />
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }

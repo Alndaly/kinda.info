@@ -1,40 +1,40 @@
-import { exec } from 'child_process'
-import { promisify } from 'util'
-import { defineSchema, defineConfig, s } from 'velite'
-
-const execAsync = promisify(exec)
-
-const timestamp = defineSchema(() =>
-  s
-    .custom<string | undefined>(i => i === undefined || typeof i === 'string')
-    .transform<string>(async (value, { meta, addIssue }) => {
-      if (value != null) {
-        addIssue({ fatal: false, code: 'custom', message: '`s.timestamp()` schema will resolve the value from `git log -1 --format=%cd`' })
-      }
-      const { stdout } = await execAsync(`git log -1 --format=%cd ${meta.path}`)
-      return new Date(stdout || Date.now()).toISOString()
-    })
-)
-
-// `s` is extended from Zod with some custom schemas,
-// you can also import re-exported `z` from `velite` if you don't need these extension schemas.
+import { defineConfig, s } from 'velite';
 
 export default defineConfig({
   collections: {
-    posts: {
-      name: 'Post', // collection type name
-      pattern: 'post/**/*.mdx', // content files glob pattern
+    entries: {
+      name: 'Entry',
+      pattern: '**/*.mdx',
       schema: s
         .object({
-          slug: s.path(), // auto generate slug from file path
-          lastModified: timestamp(),
-          metadata: s.metadata(), // extract markdown reading-time, word-count, etc.
-          excerpt: s.excerpt(), // excerpt of markdown content
-          content: s.markdown(), // transform markdown to html
-          code: s.mdx()
+          slug: s.string(),
+          type: s.enum(['note', 'photo', 'project']),
+          title: s.string(),
+          eyebrow: s.string().optional(),
+          summary: s.string(),
+          date: s.isodate(),
+          updated: s.isodate().optional(),
+          tags: s.array(s.string()).default([]),
+          cover: s.string().optional(),
+          featured: s.boolean().default(false),
+          location: s.string().optional(),
+          link: s.string().optional(),
+          status: s.enum(['active', 'experiment', 'archive']).optional(),
+          metadata: s.metadata(),
+          excerpt: s.excerpt(),
+          html: s.markdown(),
+          content: s.raw(),
         })
-        // more additional fields (computed fields)
-        .transform(data => ({ ...data, permalink: `/${data.slug}` }))
+        .transform((entry) => ({
+          ...entry,
+          href: `/${
+            entry.type === 'note'
+              ? 'notes'
+              : entry.type === 'photo'
+                ? 'photography'
+                : 'projects'
+          }/${entry.slug}`,
+        })),
     },
-  }
-})
+  },
+});

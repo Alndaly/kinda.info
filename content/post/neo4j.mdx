@@ -1,8 +1,34 @@
+---
+slug: neo4j-python-guide
+type: note
+title: 用 Python 驯服图数据库：Neo4j 实用手册
+eyebrow: Engineering Note
+summary: 从连接、增删改查到约束与索引，一份可以直接带进项目里的 Neo4j Python 速查笔记。
+date: 2025-02-04
+updated: 2025-02-04
+tags:
+  - Python
+  - Database
+featured: false
+---
+
 # neo4j
 
 ## 介绍
 
 Neo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 **neo4j** 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。
+
+```mermaid
+flowchart LR
+    A["Python 应用"] -->|Bolt| B[("Neo4j")]
+    B --> C["节点 Nodes"]
+    B --> D["关系 Relationships"]
+    C --> E["属性 Properties"]
+    D --> E
+```
+
+> [!NOTE]
+> 本文示例聚焦驱动层的基础操作。进入生产环境前，请把连接信息放入环境变量，并为会话增加完整的异常处理。
 
 ## **1. 安装和配置**
 
