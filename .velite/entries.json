@@ -200,6 +200,29 @@
     "href": "/projects/unit-one"
   },
   {
+    "slug": "neo4j-python-guide",
+    "locale": "zh",
+    "type": "note",
+    "title": "用 Python 驯服图数据库：Neo4j 实用手册",
+    "eyebrow": "Engineering Note",
+    "summary": "从连接、增删改查到约束与索引，一份可以直接带进项目里的 Neo4j Python 速查笔记。",
+    "date": "2025-02-04T00:00:00.000Z",
+    "updated": "2025-02-04T00:00:00.000Z",
+    "tags": [
+      "Python",
+      "Database"
+    ],
+    "featured": false,
+    "metadata": {
+      "readingTime": 4,
+      "wordCount": 1031.88
+    },
+    "excerpt": "neo4j\n介绍\nNeo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 neo4j 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。\nflowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 R",
+    "html": "<h1>neo4j</h1>\n<h2>介绍</h2>\n<p>Neo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 <strong>neo4j</strong> 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。</p>\n<pre><code class=\"language-mermaid\">flowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 Relationships\"]\n    C --> E[\"属性 Properties\"]\n    D --> E\n</code></pre>\n<blockquote>\n<p>[!NOTE]\n本文示例聚焦驱动层的基础操作。进入生产环境前，请把连接信息放入环境变量，并为会话增加完整的异常处理。</p>\n</blockquote>\n<h2><strong>1. 安装和配置</strong></h2>\n<h3><strong>安装 Neo4j Python 驱动</strong></h3>\n<p>首先，确保你已经安装了 Neo4j 数据库，并且已经运行它。然后，你需要安装 Neo4j 的 Python 驱动。</p>\n<pre><code class=\"language-shell\">pip install neo4j\n</code></pre>\n<h3><strong>连接到 Neo4j 数据库</strong></h3>\n<p>连接到 Neo4j 数据库需要提供数据库的 URI、用户名和密码。通常使用 bolt 协议来连接 Neo4j，默认端口为 7687。</p>\n<pre><code class=\"language-python\">from neo4j import GraphDatabase\n\n# 创建 Neo4j 驱动实例\nuri = \"bolt://localhost:7687\"  # Neo4j URI\nusername = \"neo4j\"  # Neo4j 默认用户名\npassword = \"your_password\"  # 密码\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n</code></pre>\n<h2><strong>2. 节点的基础操作</strong></h2>\n<h3><strong>创建节点</strong></h3>\n<p>节点是图数据库的基本元素之一，你可以通过 Cypher 查询语言创建节点，并为其设置属性。</p>\n<pre><code class=\"language-python\">def create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\n# 执行创建节点\nwith driver.session() as session:\n    session.write_transaction(create_node, \"unique_id_1\", \"Mammal\")\n    print(\"Node created.\")\n\n# 关闭驱动\ndriver.close()\n</code></pre>\n<h3><strong>查询节点</strong></h3>\n<p>你可以使用 MATCH 查询来查找符合条件的节点。</p>\n<pre><code class=\"language-python\">def get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    result = tx.run(query, node_id=node_id)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_node, \"unique_id_1\")\n</code></pre>\n<h3><strong>更新节点</strong></h3>\n<p>更新节点的属性时，可以使用 SET 语句。</p>\n<pre><code class=\"language-python\">def update_node(tx, node_id, new_label):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) SET n.label = $new_label\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\n# 执行更新\nwith driver.session() as session:\n    session.write_transaction(update_node, \"unique_id_1\", \"Dog\")\n</code></pre>\n<h3><strong>删除节点</strong></h3>\n<p>删除节点时，需要使用 DETACH DELETE，确保删除该节点及其所有关系。</p>\n<pre><code class=\"language-python\">def delete_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) DETACH DELETE n\"\n    tx.run(query, node_id=node_id)\n\n# 执行删除\nwith driver.session() as session:\n    session.write_transaction(delete_node, \"unique_id_1\")\n    print(\"Node deleted.\")\n</code></pre>\n<h2><strong>3. 关系的基础操作</strong></h2>\n<h3><strong>创建关系</strong></h3>\n<p>创建关系时，你需要指定关系的类型，并连接两个节点。</p>\n<pre><code class=\"language-python\">def create_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $node1_id}), (b:Animal {custom_id: $node2_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行创建关系\nwith driver.session() as session:\n    session.write_transaction(create_relationship, \"unique_id_1\", \"unique_id_2\")\n</code></pre>\n<h3><strong>查询关系</strong></h3>\n<p>你可以使用 MATCH 查找关系，并指定起始和结束节点。</p>\n<pre><code class=\"language-python\">def get_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r:KNOWS]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    RETURN r\n    \"\"\"\n    result = tx.run(query, node1_id=node1_id, node2_id=node2_id)\n    for record in result:\n        print(record[\"r\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_relationship, \"unique_id_1\", \"unique_id_2\")\n</code></pre>\n<h3><strong>删除关系</strong></h3>\n<p>删除节点之间的关系时，可以使用 DELETE。</p>\n<pre><code class=\"language-python\">def delete_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    DELETE r\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行删除关系\nwith driver.session() as session:\n    session.write_transaction(delete_relationship, \"unique_id_1\", \"unique_id_2\")\n    print(\"Relationship deleted.\")\n</code></pre>\n<h2><strong>4. 创建约束和索引</strong></h2>\n<h3><strong>创建唯一约束</strong></h3>\n<p>唯一约束确保某个属性在数据库中是唯一的。</p>\n<pre><code class=\"language-python\">def create_unique_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT n.custom_id IS UNIQUE\"\n    tx.run(query)\n\n# 执行创建唯一约束\nwith driver.session() as session:\n    session.write_transaction(create_unique_constraint)\n    print(\"Unique constraint created.\")\n</code></pre>\n<h3><strong>创建存在性约束</strong></h3>\n<p>存在性约束确保节点或关系必须包含某个属性。</p>\n<pre><code class=\"language-python\">def create_existence_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT exists(n.custom_id)\"\n    tx.run(query)\n\n# 执行创建存在性约束\nwith driver.session() as session:\n    session.write_transaction(create_existence_constraint)\n    print(\"Existence constraint created.\")\n</code></pre>\n<h3><strong>创建索引</strong></h3>\n<p>索引用于提高某个属性的查询性能。</p>\n<pre><code class=\"language-python\">def create_index(tx):\n    query = \"CREATE INDEX IF NOT EXISTS FOR (n:Animal) ON (n.custom_id)\"\n    tx.run(query)\n\n# 执行创建索引\nwith driver.session() as session:\n    session.write_transaction(create_index)\n    print(\"Index created.\")\n</code></pre>\n<h2><strong>5. 复杂查询和聚合操作</strong></h2>\n<h3><strong>聚合查询</strong></h3>\n<p>Neo4j 支持多种聚合函数，比如 COUNT、SUM、AVG 等。可以用来统计节点或关系的数量。</p>\n<pre><code class=\"language-python\">def count_nodes(tx):\n    query = \"MATCH (n:Animal) RETURN COUNT(n)\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"COUNT(n)\"])\n\n# 执行聚合查询\nwith driver.session() as session:\n    session.read_transaction(count_nodes)\n</code></pre>\n<h3><strong>查询带条件的关系</strong></h3>\n<p>你可以使用条件来过滤查询结果。</p>\n<pre><code class=\"language-python\">def filter_nodes(tx):\n    query = \"MATCH (n:Animal) WHERE n.label = 'Dog' RETURN n\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行条件查询\nwith driver.session() as session:\n    session.read_transaction(filter_nodes)\n</code></pre>\n<h2><strong>6. 批量操作</strong></h2>\n<h3><strong>批量创建节点</strong></h3>\n<pre><code class=\"language-python\">def create_multiple_nodes(tx, nodes):\n    query = \"UNWIND $nodes AS node CREATE (n:Animal {custom_id: node.custom_id, label: node.label})\"\n    tx.run(query, nodes=nodes)\n\n# 执行批量创建\nnodes = [\n    {\"custom_id\": \"unique_id_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"unique_id_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"unique_id_3\", \"label\": \"Fox\"}\n]\nwith driver.session() as session:\n    session.write_transaction(create_multiple_nodes, nodes)\n</code></pre>\n<h2><strong>7. 关闭连接</strong></h2>\n<p>完成操作后，关闭连接：</p>\n<pre><code class=\"language-python\"># 关闭驱动\ndriver.close()\n</code></pre>",
+    "content": "# neo4j\n\n## 介绍\n\nNeo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 **neo4j** 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。\n\n```mermaid\nflowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 Relationships\"]\n    C --> E[\"属性 Properties\"]\n    D --> E\n```\n\n> [!NOTE]\n> 本文示例聚焦驱动层的基础操作。进入生产环境前，请把连接信息放入环境变量，并为会话增加完整的异常处理。\n\n## **1. 安装和配置**\n\n### **安装 Neo4j Python 驱动**\n\n首先，确保你已经安装了 Neo4j 数据库，并且已经运行它。然后，你需要安装 Neo4j 的 Python 驱动。\n\n```shell\npip install neo4j\n```\n\n### **连接到 Neo4j 数据库**\n\n连接到 Neo4j 数据库需要提供数据库的 URI、用户名和密码。通常使用 bolt 协议来连接 Neo4j，默认端口为 7687。\n\n```python\nfrom neo4j import GraphDatabase\n\n# 创建 Neo4j 驱动实例\nuri = \"bolt://localhost:7687\"  # Neo4j URI\nusername = \"neo4j\"  # Neo4j 默认用户名\npassword = \"your_password\"  # 密码\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n```\n\n## **2. 节点的基础操作**\n\n### **创建节点**\n\n节点是图数据库的基本元素之一，你可以通过 Cypher 查询语言创建节点，并为其设置属性。\n\n```python\ndef create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\n# 执行创建节点\nwith driver.session() as session:\n    session.write_transaction(create_node, \"unique_id_1\", \"Mammal\")\n    print(\"Node created.\")\n\n# 关闭驱动\ndriver.close()\n```\n\n### **查询节点**\n\n你可以使用 MATCH 查询来查找符合条件的节点。\n\n```python\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    result = tx.run(query, node_id=node_id)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_node, \"unique_id_1\")\n```\n\n### **更新节点**\n\n更新节点的属性时，可以使用 SET 语句。\n\n```python\ndef update_node(tx, node_id, new_label):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) SET n.label = $new_label\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\n# 执行更新\nwith driver.session() as session:\n    session.write_transaction(update_node, \"unique_id_1\", \"Dog\")\n```\n\n### **删除节点**\n\n删除节点时，需要使用 DETACH DELETE，确保删除该节点及其所有关系。\n\n```python\ndef delete_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) DETACH DELETE n\"\n    tx.run(query, node_id=node_id)\n\n# 执行删除\nwith driver.session() as session:\n    session.write_transaction(delete_node, \"unique_id_1\")\n    print(\"Node deleted.\")\n```\n\n## **3. 关系的基础操作**\n\n### **创建关系**\n\n创建关系时，你需要指定关系的类型，并连接两个节点。\n\n```python\ndef create_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $node1_id}), (b:Animal {custom_id: $node2_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行创建关系\nwith driver.session() as session:\n    session.write_transaction(create_relationship, \"unique_id_1\", \"unique_id_2\")\n```\n\n### **查询关系**\n\n你可以使用 MATCH 查找关系，并指定起始和结束节点。\n\n```python\ndef get_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r:KNOWS]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    RETURN r\n    \"\"\"\n    result = tx.run(query, node1_id=node1_id, node2_id=node2_id)\n    for record in result:\n        print(record[\"r\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_relationship, \"unique_id_1\", \"unique_id_2\")\n```\n\n### **删除关系**\n\n删除节点之间的关系时，可以使用 DELETE。\n\n```python\ndef delete_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    DELETE r\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行删除关系\nwith driver.session() as session:\n    session.write_transaction(delete_relationship, \"unique_id_1\", \"unique_id_2\")\n    print(\"Relationship deleted.\")\n```\n\n## **4. 创建约束和索引**\n\n### **创建唯一约束**\n\n唯一约束确保某个属性在数据库中是唯一的。\n\n```python\ndef create_unique_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT n.custom_id IS UNIQUE\"\n    tx.run(query)\n\n# 执行创建唯一约束\nwith driver.session() as session:\n    session.write_transaction(create_unique_constraint)\n    print(\"Unique constraint created.\")\n```\n\n### **创建存在性约束**\n\n存在性约束确保节点或关系必须包含某个属性。\n\n```python\ndef create_existence_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT exists(n.custom_id)\"\n    tx.run(query)\n\n# 执行创建存在性约束\nwith driver.session() as session:\n    session.write_transaction(create_existence_constraint)\n    print(\"Existence constraint created.\")\n```\n\n### **创建索引**\n\n索引用于提高某个属性的查询性能。\n\n```python\ndef create_index(tx):\n    query = \"CREATE INDEX IF NOT EXISTS FOR (n:Animal) ON (n.custom_id)\"\n    tx.run(query)\n\n# 执行创建索引\nwith driver.session() as session:\n    session.write_transaction(create_index)\n    print(\"Index created.\")\n```\n\n## **5. 复杂查询和聚合操作**\n\n### **聚合查询**\n\nNeo4j 支持多种聚合函数，比如 COUNT、SUM、AVG 等。可以用来统计节点或关系的数量。\n\n```python\ndef count_nodes(tx):\n    query = \"MATCH (n:Animal) RETURN COUNT(n)\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"COUNT(n)\"])\n\n# 执行聚合查询\nwith driver.session() as session:\n    session.read_transaction(count_nodes)\n```\n\n### **查询带条件的关系**\n\n你可以使用条件来过滤查询结果。\n\n```python\ndef filter_nodes(tx):\n    query = \"MATCH (n:Animal) WHERE n.label = 'Dog' RETURN n\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行条件查询\nwith driver.session() as session:\n    session.read_transaction(filter_nodes)\n```\n\n## **6. 批量操作**\n\n### **批量创建节点**\n\n```python\ndef create_multiple_nodes(tx, nodes):\n    query = \"UNWIND $nodes AS node CREATE (n:Animal {custom_id: node.custom_id, label: node.label})\"\n    tx.run(query, nodes=nodes)\n\n# 执行批量创建\nnodes = [\n    {\"custom_id\": \"unique_id_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"unique_id_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"unique_id_3\", \"label\": \"Fox\"}\n]\nwith driver.session() as session:\n    session.write_transaction(create_multiple_nodes, nodes)\n```\n\n## **7. 关闭连接**\n\n完成操作后，关闭连接：\n\n```python\n# 关闭驱动\ndriver.close()\n```",
+    "href": "/notes/neo4j-python-guide"
+  },
+  {
     "slug": "personal-internet",
     "locale": "zh",
     "type": "note",
@@ -243,29 +266,6 @@
     "html": "<p>我们经常用很硬的词谈论软件：<strong>约束、校验、权限、失败、熔断</strong>。它们当然重要，但人使用软件时，并不会把自己想成一个等待被验证的输入。</p>\n<p>人会迟疑，会忘记，会在深夜一点误触那个按钮。于是我开始在意另一种工程能力：让系统强壮，也让使用它的人感到安全。</p>\n<h2>正确之外，还有感受</h2>\n<p>一个表单可以在提交失败时准确地返回 <code>400</code>，但如果它抹掉了用户刚刚写完的两千字，那么从人的角度看，它就是彻底失败了。</p>\n<blockquote>\n<p>[!TIP]\n<strong>一个简单判断</strong></p>\n<p>当错误不可避免时，先保护人的劳动，再解释系统发生了什么。</p>\n</blockquote>\n<p>这意味着自动保存、可撤销、保留上下文；也意味着错误信息里不该只有错误代码。我们要告诉人：哪里出了问题、他是否需要担心、接下来能做什么。</p>\n<h2>把余地做进系统</h2>\n<p>柔软不是没有边界。恰好相反，它需要更精确的边界设计。</p>\n<ul>\n<li>危险操作要慢一点，让人有机会反悔。</li>\n<li>高频操作要快一点，别让界面挡在意图前面。</li>\n<li>不确定的结果要诚实，不用一个漂亮的百分比假装笃定。</li>\n<li>空白状态不是“没有数据”，而是下一步行动的邀请。</li>\n</ul>\n<p>真正成熟的产品，不会要求人永远清醒、准确、高效。它承认我们偶尔混乱，然后仍然稳稳接住。</p>\n<h2>最后</h2>\n<p>代码里的每一个分支，最后都会成为某个人经历的一小段时间。我们写的不是抽象流程，而是别人一天里的几秒钟。</p>\n<p>如果工程最终是为人服务的，那么“舒服”就不只是视觉设计的工作。它应该从数据模型、失败策略和权限边界开始，一直延伸到按钮上的那几个字。</p>",
     "content": "我们经常用很硬的词谈论软件：**约束、校验、权限、失败、熔断**。它们当然重要，但人使用软件时，并不会把自己想成一个等待被验证的输入。\n\n人会迟疑，会忘记，会在深夜一点误触那个按钮。于是我开始在意另一种工程能力：让系统强壮，也让使用它的人感到安全。\n\n## 正确之外，还有感受\n\n一个表单可以在提交失败时准确地返回 `400`，但如果它抹掉了用户刚刚写完的两千字，那么从人的角度看，它就是彻底失败了。\n\n> [!TIP]\n> **一个简单判断**\n>\n> 当错误不可避免时，先保护人的劳动，再解释系统发生了什么。\n\n这意味着自动保存、可撤销、保留上下文；也意味着错误信息里不该只有错误代码。我们要告诉人：哪里出了问题、他是否需要担心、接下来能做什么。\n\n## 把余地做进系统\n\n柔软不是没有边界。恰好相反，它需要更精确的边界设计。\n\n- 危险操作要慢一点，让人有机会反悔。\n- 高频操作要快一点，别让界面挡在意图前面。\n- 不确定的结果要诚实，不用一个漂亮的百分比假装笃定。\n- 空白状态不是“没有数据”，而是下一步行动的邀请。\n\n真正成熟的产品，不会要求人永远清醒、准确、高效。它承认我们偶尔混乱，然后仍然稳稳接住。\n\n## 最后\n\n代码里的每一个分支，最后都会成为某个人经历的一小段时间。我们写的不是抽象流程，而是别人一天里的几秒钟。\n\n如果工程最终是为人服务的，那么“舒服”就不只是视觉设计的工作。它应该从数据模型、失败策略和权限边界开始，一直延伸到按钮上的那几个字。",
     "href": "/notes/soft-engineering"
-  },
-  {
-    "slug": "neo4j-python-guide",
-    "locale": "zh",
-    "type": "note",
-    "title": "用 Python 驯服图数据库：Neo4j 实用手册",
-    "eyebrow": "Engineering Note",
-    "summary": "从连接、增删改查到约束与索引，一份可以直接带进项目里的 Neo4j Python 速查笔记。",
-    "date": "2025-02-04T00:00:00.000Z",
-    "updated": "2025-02-04T00:00:00.000Z",
-    "tags": [
-      "Python",
-      "Database"
-    ],
-    "featured": false,
-    "metadata": {
-      "readingTime": 4,
-      "wordCount": 1031.88
-    },
-    "excerpt": "neo4j\n介绍\nNeo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 neo4j 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。\nflowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 R",
-    "html": "<h1>neo4j</h1>\n<h2>介绍</h2>\n<p>Neo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 <strong>neo4j</strong> 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。</p>\n<pre><code class=\"language-mermaid\">flowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 Relationships\"]\n    C --> E[\"属性 Properties\"]\n    D --> E\n</code></pre>\n<blockquote>\n<p>[!NOTE]\n本文示例聚焦驱动层的基础操作。进入生产环境前，请把连接信息放入环境变量，并为会话增加完整的异常处理。</p>\n</blockquote>\n<h2><strong>1. 安装和配置</strong></h2>\n<h3><strong>安装 Neo4j Python 驱动</strong></h3>\n<p>首先，确保你已经安装了 Neo4j 数据库，并且已经运行它。然后，你需要安装 Neo4j 的 Python 驱动。</p>\n<pre><code class=\"language-shell\">pip install neo4j\n</code></pre>\n<h3><strong>连接到 Neo4j 数据库</strong></h3>\n<p>连接到 Neo4j 数据库需要提供数据库的 URI、用户名和密码。通常使用 bolt 协议来连接 Neo4j，默认端口为 7687。</p>\n<pre><code class=\"language-python\">from neo4j import GraphDatabase\n\n# 创建 Neo4j 驱动实例\nuri = \"bolt://localhost:7687\"  # Neo4j URI\nusername = \"neo4j\"  # Neo4j 默认用户名\npassword = \"your_password\"  # 密码\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n</code></pre>\n<h2><strong>2. 节点的基础操作</strong></h2>\n<h3><strong>创建节点</strong></h3>\n<p>节点是图数据库的基本元素之一，你可以通过 Cypher 查询语言创建节点，并为其设置属性。</p>\n<pre><code class=\"language-python\">def create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\n# 执行创建节点\nwith driver.session() as session:\n    session.write_transaction(create_node, \"unique_id_1\", \"Mammal\")\n    print(\"Node created.\")\n\n# 关闭驱动\ndriver.close()\n</code></pre>\n<h3><strong>查询节点</strong></h3>\n<p>你可以使用 MATCH 查询来查找符合条件的节点。</p>\n<pre><code class=\"language-python\">def get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    result = tx.run(query, node_id=node_id)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_node, \"unique_id_1\")\n</code></pre>\n<h3><strong>更新节点</strong></h3>\n<p>更新节点的属性时，可以使用 SET 语句。</p>\n<pre><code class=\"language-python\">def update_node(tx, node_id, new_label):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) SET n.label = $new_label\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\n# 执行更新\nwith driver.session() as session:\n    session.write_transaction(update_node, \"unique_id_1\", \"Dog\")\n</code></pre>\n<h3><strong>删除节点</strong></h3>\n<p>删除节点时，需要使用 DETACH DELETE，确保删除该节点及其所有关系。</p>\n<pre><code class=\"language-python\">def delete_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) DETACH DELETE n\"\n    tx.run(query, node_id=node_id)\n\n# 执行删除\nwith driver.session() as session:\n    session.write_transaction(delete_node, \"unique_id_1\")\n    print(\"Node deleted.\")\n</code></pre>\n<h2><strong>3. 关系的基础操作</strong></h2>\n<h3><strong>创建关系</strong></h3>\n<p>创建关系时，你需要指定关系的类型，并连接两个节点。</p>\n<pre><code class=\"language-python\">def create_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $node1_id}), (b:Animal {custom_id: $node2_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行创建关系\nwith driver.session() as session:\n    session.write_transaction(create_relationship, \"unique_id_1\", \"unique_id_2\")\n</code></pre>\n<h3><strong>查询关系</strong></h3>\n<p>你可以使用 MATCH 查找关系，并指定起始和结束节点。</p>\n<pre><code class=\"language-python\">def get_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r:KNOWS]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    RETURN r\n    \"\"\"\n    result = tx.run(query, node1_id=node1_id, node2_id=node2_id)\n    for record in result:\n        print(record[\"r\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_relationship, \"unique_id_1\", \"unique_id_2\")\n</code></pre>\n<h3><strong>删除关系</strong></h3>\n<p>删除节点之间的关系时，可以使用 DELETE。</p>\n<pre><code class=\"language-python\">def delete_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    DELETE r\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行删除关系\nwith driver.session() as session:\n    session.write_transaction(delete_relationship, \"unique_id_1\", \"unique_id_2\")\n    print(\"Relationship deleted.\")\n</code></pre>\n<h2><strong>4. 创建约束和索引</strong></h2>\n<h3><strong>创建唯一约束</strong></h3>\n<p>唯一约束确保某个属性在数据库中是唯一的。</p>\n<pre><code class=\"language-python\">def create_unique_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT n.custom_id IS UNIQUE\"\n    tx.run(query)\n\n# 执行创建唯一约束\nwith driver.session() as session:\n    session.write_transaction(create_unique_constraint)\n    print(\"Unique constraint created.\")\n</code></pre>\n<h3><strong>创建存在性约束</strong></h3>\n<p>存在性约束确保节点或关系必须包含某个属性。</p>\n<pre><code class=\"language-python\">def create_existence_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT exists(n.custom_id)\"\n    tx.run(query)\n\n# 执行创建存在性约束\nwith driver.session() as session:\n    session.write_transaction(create_existence_constraint)\n    print(\"Existence constraint created.\")\n</code></pre>\n<h3><strong>创建索引</strong></h3>\n<p>索引用于提高某个属性的查询性能。</p>\n<pre><code class=\"language-python\">def create_index(tx):\n    query = \"CREATE INDEX IF NOT EXISTS FOR (n:Animal) ON (n.custom_id)\"\n    tx.run(query)\n\n# 执行创建索引\nwith driver.session() as session:\n    session.write_transaction(create_index)\n    print(\"Index created.\")\n</code></pre>\n<h2><strong>5. 复杂查询和聚合操作</strong></h2>\n<h3><strong>聚合查询</strong></h3>\n<p>Neo4j 支持多种聚合函数，比如 COUNT、SUM、AVG 等。可以用来统计节点或关系的数量。</p>\n<pre><code class=\"language-python\">def count_nodes(tx):\n    query = \"MATCH (n:Animal) RETURN COUNT(n)\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"COUNT(n)\"])\n\n# 执行聚合查询\nwith driver.session() as session:\n    session.read_transaction(count_nodes)\n</code></pre>\n<h3><strong>查询带条件的关系</strong></h3>\n<p>你可以使用条件来过滤查询结果。</p>\n<pre><code class=\"language-python\">def filter_nodes(tx):\n    query = \"MATCH (n:Animal) WHERE n.label = 'Dog' RETURN n\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行条件查询\nwith driver.session() as session:\n    session.read_transaction(filter_nodes)\n</code></pre>\n<h2><strong>6. 批量操作</strong></h2>\n<h3><strong>批量创建节点</strong></h3>\n<pre><code class=\"language-python\">def create_multiple_nodes(tx, nodes):\n    query = \"UNWIND $nodes AS node CREATE (n:Animal {custom_id: node.custom_id, label: node.label})\"\n    tx.run(query, nodes=nodes)\n\n# 执行批量创建\nnodes = [\n    {\"custom_id\": \"unique_id_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"unique_id_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"unique_id_3\", \"label\": \"Fox\"}\n]\nwith driver.session() as session:\n    session.write_transaction(create_multiple_nodes, nodes)\n</code></pre>\n<h2><strong>7. 关闭连接</strong></h2>\n<p>完成操作后，关闭连接：</p>\n<pre><code class=\"language-python\"># 关闭驱动\ndriver.close()\n</code></pre>",
-    "content": "# neo4j\n\n## 介绍\n\nNeo4j 是一个图形数据库，它使用图形结构来存储数据。数据通过节点（nodes）、关系（relationships）和属性（properties）来表示。Python 中可以通过 **neo4j** 驱动来与 Neo4j 数据库进行交互，本教程将向你展示如何在 Python 中使用 Neo4j 驱动进行基础操作。\n\n```mermaid\nflowchart LR\n    A[\"Python 应用\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"节点 Nodes\"]\n    B --> D[\"关系 Relationships\"]\n    C --> E[\"属性 Properties\"]\n    D --> E\n```\n\n> [!NOTE]\n> 本文示例聚焦驱动层的基础操作。进入生产环境前，请把连接信息放入环境变量，并为会话增加完整的异常处理。\n\n## **1. 安装和配置**\n\n### **安装 Neo4j Python 驱动**\n\n首先，确保你已经安装了 Neo4j 数据库，并且已经运行它。然后，你需要安装 Neo4j 的 Python 驱动。\n\n```shell\npip install neo4j\n```\n\n### **连接到 Neo4j 数据库**\n\n连接到 Neo4j 数据库需要提供数据库的 URI、用户名和密码。通常使用 bolt 协议来连接 Neo4j，默认端口为 7687。\n\n```python\nfrom neo4j import GraphDatabase\n\n# 创建 Neo4j 驱动实例\nuri = \"bolt://localhost:7687\"  # Neo4j URI\nusername = \"neo4j\"  # Neo4j 默认用户名\npassword = \"your_password\"  # 密码\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n```\n\n## **2. 节点的基础操作**\n\n### **创建节点**\n\n节点是图数据库的基本元素之一，你可以通过 Cypher 查询语言创建节点，并为其设置属性。\n\n```python\ndef create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\n# 执行创建节点\nwith driver.session() as session:\n    session.write_transaction(create_node, \"unique_id_1\", \"Mammal\")\n    print(\"Node created.\")\n\n# 关闭驱动\ndriver.close()\n```\n\n### **查询节点**\n\n你可以使用 MATCH 查询来查找符合条件的节点。\n\n```python\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    result = tx.run(query, node_id=node_id)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_node, \"unique_id_1\")\n```\n\n### **更新节点**\n\n更新节点的属性时，可以使用 SET 语句。\n\n```python\ndef update_node(tx, node_id, new_label):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) SET n.label = $new_label\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\n# 执行更新\nwith driver.session() as session:\n    session.write_transaction(update_node, \"unique_id_1\", \"Dog\")\n```\n\n### **删除节点**\n\n删除节点时，需要使用 DETACH DELETE，确保删除该节点及其所有关系。\n\n```python\ndef delete_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) DETACH DELETE n\"\n    tx.run(query, node_id=node_id)\n\n# 执行删除\nwith driver.session() as session:\n    session.write_transaction(delete_node, \"unique_id_1\")\n    print(\"Node deleted.\")\n```\n\n## **3. 关系的基础操作**\n\n### **创建关系**\n\n创建关系时，你需要指定关系的类型，并连接两个节点。\n\n```python\ndef create_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $node1_id}), (b:Animal {custom_id: $node2_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行创建关系\nwith driver.session() as session:\n    session.write_transaction(create_relationship, \"unique_id_1\", \"unique_id_2\")\n```\n\n### **查询关系**\n\n你可以使用 MATCH 查找关系，并指定起始和结束节点。\n\n```python\ndef get_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r:KNOWS]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    RETURN r\n    \"\"\"\n    result = tx.run(query, node1_id=node1_id, node2_id=node2_id)\n    for record in result:\n        print(record[\"r\"])\n\n# 执行查询\nwith driver.session() as session:\n    session.read_transaction(get_relationship, \"unique_id_1\", \"unique_id_2\")\n```\n\n### **删除关系**\n\n删除节点之间的关系时，可以使用 DELETE。\n\n```python\ndef delete_relationship(tx, node1_id, node2_id):\n    query = \"\"\"\n    MATCH (a)-[r]->(b)\n    WHERE a.custom_id = $node1_id AND b.custom_id = $node2_id\n    DELETE r\n    \"\"\"\n    tx.run(query, node1_id=node1_id, node2_id=node2_id)\n\n# 执行删除关系\nwith driver.session() as session:\n    session.write_transaction(delete_relationship, \"unique_id_1\", \"unique_id_2\")\n    print(\"Relationship deleted.\")\n```\n\n## **4. 创建约束和索引**\n\n### **创建唯一约束**\n\n唯一约束确保某个属性在数据库中是唯一的。\n\n```python\ndef create_unique_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT n.custom_id IS UNIQUE\"\n    tx.run(query)\n\n# 执行创建唯一约束\nwith driver.session() as session:\n    session.write_transaction(create_unique_constraint)\n    print(\"Unique constraint created.\")\n```\n\n### **创建存在性约束**\n\n存在性约束确保节点或关系必须包含某个属性。\n\n```python\ndef create_existence_constraint(tx):\n    query = \"CREATE CONSTRAINT IF NOT EXISTS ON (n:Animal) ASSERT exists(n.custom_id)\"\n    tx.run(query)\n\n# 执行创建存在性约束\nwith driver.session() as session:\n    session.write_transaction(create_existence_constraint)\n    print(\"Existence constraint created.\")\n```\n\n### **创建索引**\n\n索引用于提高某个属性的查询性能。\n\n```python\ndef create_index(tx):\n    query = \"CREATE INDEX IF NOT EXISTS FOR (n:Animal) ON (n.custom_id)\"\n    tx.run(query)\n\n# 执行创建索引\nwith driver.session() as session:\n    session.write_transaction(create_index)\n    print(\"Index created.\")\n```\n\n## **5. 复杂查询和聚合操作**\n\n### **聚合查询**\n\nNeo4j 支持多种聚合函数，比如 COUNT、SUM、AVG 等。可以用来统计节点或关系的数量。\n\n```python\ndef count_nodes(tx):\n    query = \"MATCH (n:Animal) RETURN COUNT(n)\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"COUNT(n)\"])\n\n# 执行聚合查询\nwith driver.session() as session:\n    session.read_transaction(count_nodes)\n```\n\n### **查询带条件的关系**\n\n你可以使用条件来过滤查询结果。\n\n```python\ndef filter_nodes(tx):\n    query = \"MATCH (n:Animal) WHERE n.label = 'Dog' RETURN n\"\n    result = tx.run(query)\n    for record in result:\n        print(record[\"n\"])\n\n# 执行条件查询\nwith driver.session() as session:\n    session.read_transaction(filter_nodes)\n```\n\n## **6. 批量操作**\n\n### **批量创建节点**\n\n```python\ndef create_multiple_nodes(tx, nodes):\n    query = \"UNWIND $nodes AS node CREATE (n:Animal {custom_id: node.custom_id, label: node.label})\"\n    tx.run(query, nodes=nodes)\n\n# 执行批量创建\nnodes = [\n    {\"custom_id\": \"unique_id_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"unique_id_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"unique_id_3\", \"label\": \"Fox\"}\n]\nwith driver.session() as session:\n    session.write_transaction(create_multiple_nodes, nodes)\n```\n\n## **7. 关闭连接**\n\n完成操作后，关闭连接：\n\n```python\n# 关闭驱动\ndriver.close()\n```",
-    "href": "/notes/neo4j-python-guide"
   },
   {
     "slug": "neo4j-python-guide",
@@ -534,214 +534,6 @@
     "html": "<p>Unit One was a complete community-product experiment that has, for now, come to a stop.</p>\n<p>It gave me room to think about ownership of content, relationships between members, and community governance. It also made one lesson concrete: implementation is only part of a product; sustained care and shared understanding determine where a community goes.</p>\n<p>I keep it here not because it is finished, but because experiments pursued seriously deserve a place of their own.</p>",
     "content": "Unit One was a complete community-product experiment that has, for now, come to a stop.\n\nIt gave me room to think about ownership of content, relationships between members, and community governance. It also made one lesson concrete: implementation is only part of a product; sustained care and shared understanding determine where a community goes.\n\nI keep it here not because it is finished, but because experiments pursued seriously deserve a place of their own.",
     "href": "/en/projects/unit-one"
-  },
-  {
-    "slug": "docker-wait-strategy",
-    "locale": "zh",
-    "type": "note",
-    "title": "docker等待问题",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "docker中如何让一个服务等待另一个服务成功运行后再启动？ 通过如下代码配置mysql的healthycheck 通过如下代码配置等待mysql正常运行后再启动api服务",
-    "date": "2025-04-23T00:00:00.000Z",
-    "tags": [
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/1debbdbf-a033-80ac-81cc-f45aff58df33",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 107.12
-    },
-    "excerpt": "docker中如何让一个服务等待另一个服务成功运行后再启动？\n通过如下代码配置mysql的healthycheck\n  mysql:\n    container_name: mysql\n    image:\n      mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: ...\n      MYSQL_DATABASE: ...\n    volumes:\n       - ./volumes/mysql:/var/lib/mysql\n    ports:",
-    "html": "<p>docker中如何让一个服务等待另一个服务成功运行后再启动？</p>\n<p>通过如下代码配置mysql的healthycheck</p>\n<pre><code>  mysql:\n    container_name: mysql\n    image:\n      mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: ...\n      MYSQL_DATABASE: ...\n    volumes:\n       - ./volumes/mysql:/var/lib/mysql\n    ports:\n      - \"3306:3306\"\n    healthcheck:\n      test: [\"CMD\", \"mysqladmin\", \"ping\", \"--host=localhost\", \"--user=...\", \"--password=...\"]\n      interval: 30s\n      timeout: 20s\n      retries: 3\n</code></pre>\n<p>通过如下代码配置等待mysql正常运行后再启动api服务</p>\n<pre><code> api:\n    container_name: api\n    build:\n      context: api\n      dockerfile: Dockerfile\n    command: [\"sh\", \"-c\", \"python -m script.init_sql_base_data &#x26;&#x26; fastapi run main.py --proxy-headers --host 0.0.0.0 --port 8001\"]\n    volumes:\n      - ./api:/app\n    depends_on:\n      mysql:\n        condition: service_healt\n    env_file:\n      - ./api/.env.development\n</code></pre>",
-    "content": "docker中如何让一个服务等待另一个服务成功运行后再启动？\n\n通过如下代码配置mysql的healthycheck\n\n```\n  mysql:\n    container_name: mysql\n    image:\n      mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: ...\n      MYSQL_DATABASE: ...\n    volumes:\n       - ./volumes/mysql:/var/lib/mysql\n    ports:\n      - \"3306:3306\"\n    healthcheck:\n      test: [\"CMD\", \"mysqladmin\", \"ping\", \"--host=localhost\", \"--user=...\", \"--password=...\"]\n      interval: 30s\n      timeout: 20s\n      retries: 3\n```\n\n通过如下代码配置等待mysql正常运行后再启动api服务\n\n```\n api:\n    container_name: api\n    build:\n      context: api\n      dockerfile: Dockerfile\n    command: [\"sh\", \"-c\", \"python -m script.init_sql_base_data && fastapi run main.py --proxy-headers --host 0.0.0.0 --port 8001\"]\n    volumes:\n      - ./api:/app\n    depends_on:\n      mysql:\n        condition: service_healt\n    env_file:\n      - ./api/.env.development\n```",
-    "href": "/notes/docker-wait-strategy"
-  },
-  {
-    "slug": "earth-online",
-    "locale": "zh",
-    "type": "note",
-    "title": "地球OnLine",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "文章探讨了中国大学教育的形式主义和与现实生活的脱节，强调项目经验的重要性。作者认为，大学教育对个人成长的帮助有限，真正有意义的学习来自于创业经历和实践。毕业后，社会的压力和对传统生活轨迹的遵循使人们像游戏中的NPC一样被动生活，缺乏自主选择的能力。最终，作者质疑这种生活方式的合理性，并以“欢迎…",
-    "date": "2024-09-23T00:00:00.000Z",
-    "tags": [
-      "生活",
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/605376f7-370c-43b6-bff7-fcab974f989d",
-    "metadata": {
-      "readingTime": 3,
-      "wordCount": 664.6800000000001
-    },
-    "excerpt": "大学教育形式主义泛滥成灾，并且教授的往往和时代已经脱节。而在实际生活中，项目经历起着更为重要的作用。当前社会下的人民生活场景往往循环得如如同“NPC”游戏。对于一些思想上有所醒悟的人来说，这一点让人很痛苦。\n\n其实普通人在现在这个中国活着就和游戏中的NPC一样，并且比NPC还要更智能（虽然没有灵魂）。\n从毕业前两年左右，我就开始意识到其实大学的教育（此处我仅仅指的教育）对我来讲没有任何意义，唯一存在一定启蒙的只有一节金融管理信息系统的课程，而这节课讲的是前后端分离的一个项目，分组合作完成，用的敏捷开发模式。也是在那",
-    "html": "<p>大学教育形式主义泛滥成灾，并且教授的往往和时代已经脱节。而在实际生活中，项目经历起着更为重要的作用。当前社会下的人民生活场景往往循环得如如同“NPC”游戏。对于一些思想上有所醒悟的人来说，这一点让人很痛苦。</p>\n<hr>\n<p>其实普通人在现在这个中国活着就和游戏中的NPC一样，并且比NPC还要更智能（虽然没有灵魂）。</p>\n<p>从毕业前两年左右，我就开始意识到其实大学的教育（此处我仅仅指的教育）对我来讲没有任何意义，唯一存在一定启蒙的只有一节金融管理信息系统的课程，而这节课讲的是前后端分离的一个项目，分组合作完成，用的敏捷开发模式。也是在那节课，我了解到了前后端分离到底是什么意思，我知道了django，我知道了vue，并且切实用两者去做了实践。然后四年中真正有意义的时间，是我大三开始的创业，注意此处的有意义指的是kpi性质的，而不是okr，即目标导向的意义，价值导向的意义此处并无体现。</p>\n<p>于大三开始创业，在创业期间，历经四个月的团队合作，我们成功做出了一款小程序并且上线。期间需要接触以及学习的东西不可计量。</p>\n<p>这期间对我来说，几乎可以说熟练了 JS、SASS、TS、Python、Django、Vue、微信小程序开发、Webpack，同时基于项目是团队一起做的，也大幅度增加了交流，对前后端分离有了非常清楚的了解与认知。</p>\n<p>这一点毫无疑问是非常讽刺的，无论是技术还是交流，在我看来，四年的大学生活，不如我这一年多的初创经历。</p>\n<p>然而更加讽刺的是，当大学生活结束之后，我们被迫走上社会（当然你也可以选择 gap，但如果你家里并没有什么特殊，那么试问有多少家庭对你的 gap 充分理解与支持，别说那是自己的事儿，家人的意见我不信你一点不在乎），此时的你如果大学期间是按部就班读的，那好，接下来你要接触的，大学里大概率是没有教过你的。</p>\n<p>毕业之后，你会发现接下来的时间都被安排的明明白白，如果你是一个乖孩子，正常读书，那么此时从未被教授过前后端知识的你即将面临简历海投却没有回音的局面，你会开始怀疑自己，然后屈服于一些更加低薪，更加普通的岗位，或者考公、当老师；进入岗位后，你会发现要学的更多，如何处理同事间的关系，和领导要怎么相处，怎么称呼他人（当然，这些在私企或者外企基本还是比较简单的，此处局限于国企，至于具体原因，涉及面太广，之后有空再写一篇）；紧接着，二十五六岁的你可能还没谈过恋爱，此时一点不懂什么是真的爱的你会被催促着去找一个要陪伴终身的伴侣；然后到个三十岁不到，经济刚刚有起色的你会被催促着生个孩子；生了孩子后，发现无法逃脱现状了的你被迫屈服现实，再将这一套思想逐步灌输到你自己的孩子身上。如此循环一代又一代，完美的游戏生成了。NPC 自发维护着游戏，服从于氪金玩家的规则，服务于氪金玩家的利益。</p>\n<p>一个没有灵魂的 NPC 参与游戏也就参与了，不会有太多的想法，但当你觉醒了自己的灵魂，发现了这一套体系的问题所在，但你被迫只能参与，没法操纵自己的身体。如果你有幸做到思考与实践，那么很大程度上，你会看到这个时代对你指指点点（正常过日子好了诶，别人都这么过来的），但是问题就在与别人都这么过来的就一定对的吗？如果这是对的，那么为什么现在的他们多数都还是那副样子并没有什么特别呢？</p>\n<p>最后的最后，这个世界，我只想说一句——</p>\n<blockquote>\n<p>欢迎来到《地球Online》</p>\n</blockquote>",
-    "content": "大学教育形式主义泛滥成灾，并且教授的往往和时代已经脱节。而在实际生活中，项目经历起着更为重要的作用。当前社会下的人民生活场景往往循环得如如同“NPC”游戏。对于一些思想上有所醒悟的人来说，这一点让人很痛苦。\n\n---\n\n其实普通人在现在这个中国活着就和游戏中的NPC一样，并且比NPC还要更智能（虽然没有灵魂）。\n\n从毕业前两年左右，我就开始意识到其实大学的教育（此处我仅仅指的教育）对我来讲没有任何意义，唯一存在一定启蒙的只有一节金融管理信息系统的课程，而这节课讲的是前后端分离的一个项目，分组合作完成，用的敏捷开发模式。也是在那节课，我了解到了前后端分离到底是什么意思，我知道了django，我知道了vue，并且切实用两者去做了实践。然后四年中真正有意义的时间，是我大三开始的创业，注意此处的有意义指的是kpi性质的，而不是okr，即目标导向的意义，价值导向的意义此处并无体现。\n\n于大三开始创业，在创业期间，历经四个月的团队合作，我们成功做出了一款小程序并且上线。期间需要接触以及学习的东西不可计量。\n\n这期间对我来说，几乎可以说熟练了 JS、SASS、TS、Python、Django、Vue、微信小程序开发、Webpack，同时基于项目是团队一起做的，也大幅度增加了交流，对前后端分离有了非常清楚的了解与认知。\n\n这一点毫无疑问是非常讽刺的，无论是技术还是交流，在我看来，四年的大学生活，不如我这一年多的初创经历。\n\n然而更加讽刺的是，当大学生活结束之后，我们被迫走上社会（当然你也可以选择 gap，但如果你家里并没有什么特殊，那么试问有多少家庭对你的 gap 充分理解与支持，别说那是自己的事儿，家人的意见我不信你一点不在乎），此时的你如果大学期间是按部就班读的，那好，接下来你要接触的，大学里大概率是没有教过你的。\n\n毕业之后，你会发现接下来的时间都被安排的明明白白，如果你是一个乖孩子，正常读书，那么此时从未被教授过前后端知识的你即将面临简历海投却没有回音的局面，你会开始怀疑自己，然后屈服于一些更加低薪，更加普通的岗位，或者考公、当老师；进入岗位后，你会发现要学的更多，如何处理同事间的关系，和领导要怎么相处，怎么称呼他人（当然，这些在私企或者外企基本还是比较简单的，此处局限于国企，至于具体原因，涉及面太广，之后有空再写一篇）；紧接着，二十五六岁的你可能还没谈过恋爱，此时一点不懂什么是真的爱的你会被催促着去找一个要陪伴终身的伴侣；然后到个三十岁不到，经济刚刚有起色的你会被催促着生个孩子；生了孩子后，发现无法逃脱现状了的你被迫屈服现实，再将这一套思想逐步灌输到你自己的孩子身上。如此循环一代又一代，完美的游戏生成了。NPC 自发维护着游戏，服从于氪金玩家的规则，服务于氪金玩家的利益。\n\n一个没有灵魂的 NPC 参与游戏也就参与了，不会有太多的想法，但当你觉醒了自己的灵魂，发现了这一套体系的问题所在，但你被迫只能参与，没法操纵自己的身体。如果你有幸做到思考与实践，那么很大程度上，你会看到这个时代对你指指点点（正常过日子好了诶，别人都这么过来的），但是问题就在与别人都这么过来的就一定对的吗？如果这是对的，那么为什么现在的他们多数都还是那副样子并没有什么特别呢？\n\n最后的最后，这个世界，我只想说一句——\n\n> 欢迎来到《地球Online》",
-    "href": "/notes/earth-online"
-  },
-  {
-    "slug": "education-reflection",
-    "locale": "zh",
-    "type": "note",
-    "title": "教育",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "反思过去近二十年的学生生涯，强调个体的独特性和多样性。回忆中真正美好的并非繁重的作业和考试，而是简单而充实的生活体验。指出现代人虽然物质丰富，却常感空虚，呼吁停止内卷，强调每个人的生活都应有不同的答案，鼓励改变现状以打破僵局。",
-    "date": "2024-10-19T00:00:00.000Z",
-    "tags": [
-      "思考",
-      "生活",
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/124bbdbf-a033-8062-8d44-f0d4198d63c0",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 267.52000000000004
-    },
-    "excerpt": "【高中生晚11点上厕所被判重大违纪，现在的高中堪比“监狱”！-哔哩哔哩】 https://b23.tv/uTQDSAS\n看了视频，回想起来自己过去这近二十年的学生生涯有感而发。\n一向如此不代表就合适，更何况变本加厉。我们是人，是一个个独立的个体，有着各自的喜好，各自的特长与短处。\n很多人说工作后回想学生时代很美好， 可真正美好的，并不是早上五点半在闹钟中被惊醒，不是晚上十二点仍然做不完的作业，不是一张张永远做不完的试卷，不是一周为数不多的课外活动都要被语数英替代几节，不是上课想上个厕所都得举手报告；而是不需要考虑什",
-    "html": "<p>【高中生晚11点上厕所被判重大违纪，现在的高中堪比“监狱”！-哔哩哔哩】 <a href=\"https://b23.tv/uTQDSAS\">https://b23.tv/uTQDSAS</a></p>\n<p>看了视频，回想起来自己过去这近二十年的学生生涯有感而发。</p>\n<p>一向如此不代表就合适，更何况变本加厉。我们是人，是一个个独立的个体，有着各自的喜好，各自的特长与短处。</p>\n<p>很多人说工作后回想学生时代很美好， 可真正美好的，并不是早上五点半在闹钟中被惊醒，不是晚上十二点仍然做不完的作业，不是一张张永远做不完的试卷，不是一周为数不多的课外活动都要被语数英替代几节，不是上课想上个厕所都得举手报告；而是不需要考虑什么时候被裁的日子，是简简单单却又充满惊喜的平淡生活，是遇到某个人时产生的那份朦胧的情感，是那体育课上尽情挥洒的汗水。</p>\n<p>那时没有手机，没有money，好像什么都没有，但我们的心中却那么充实，感觉拥有了全世界。现如今有了手机，有了money，本应更加满足，但很多人偏偏心却空了。如果只是一两个人有这个问题，那或许能说是个人的问题，但当这个问题普及成这般的时候，问题的根源就不在个人身上了。</p>\n<p>吃苦不值得被歌颂，人生这场“考试”，没有，也不应该有标准答案。每份答卷都可以是满分。 不要内卷了，不要内卷了，不要内卷了。</p>\n<p>在这个时代，确实有很多事情要改，改完后的结果好坏也的确犹未可知，但如果没人去改变，那僵局永远存在。</p>",
-    "content": "【高中生晚11点上厕所被判重大违纪，现在的高中堪比“监狱”！-哔哩哔哩】 [https://b23.tv/uTQDSAS](https://b23.tv/uTQDSAS)\n\n看了视频，回想起来自己过去这近二十年的学生生涯有感而发。\n\n一向如此不代表就合适，更何况变本加厉。我们是人，是一个个独立的个体，有着各自的喜好，各自的特长与短处。\n\n很多人说工作后回想学生时代很美好， 可真正美好的，并不是早上五点半在闹钟中被惊醒，不是晚上十二点仍然做不完的作业，不是一张张永远做不完的试卷，不是一周为数不多的课外活动都要被语数英替代几节，不是上课想上个厕所都得举手报告；而是不需要考虑什么时候被裁的日子，是简简单单却又充满惊喜的平淡生活，是遇到某个人时产生的那份朦胧的情感，是那体育课上尽情挥洒的汗水。\n\n那时没有手机，没有money，好像什么都没有，但我们的心中却那么充实，感觉拥有了全世界。现如今有了手机，有了money，本应更加满足，但很多人偏偏心却空了。如果只是一两个人有这个问题，那或许能说是个人的问题，但当这个问题普及成这般的时候，问题的根源就不在个人身上了。\n\n吃苦不值得被歌颂，人生这场“考试”，没有，也不应该有标准答案。每份答卷都可以是满分。 不要内卷了，不要内卷了，不要内卷了。\n\n在这个时代，确实有很多事情要改，改完后的结果好坏也的确犹未可知，但如果没人去改变，那僵局永远存在。",
-    "href": "/notes/education-reflection"
-  },
-  {
-    "slug": "japan-travel-notes",
-    "locale": "zh",
-    "type": "note",
-    "title": "日本旅游",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "日本旅行のハイライトには、金閣寺の美しい紅葉、二三坂の抹茶チョコレート店、清水寺の伝統的な雰囲気、大阪ユニバーサルスタジオのスリリングなジェットコースター体験、迷いやすい日本の地下鉄の利用法、心斎橋でのショッピングの注意点が含まれています。特に、Suicaカードの便利さと、免税手続きに必要なパ…",
-    "date": "2024-12-04T00:00:00.000Z",
-    "tags": [
-      "旅游",
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/151bbdbf-a033-80b6-80b8-e0baa2f8047f",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 321.04
-    },
-    "excerpt": "1️⃣ 金阁寺 这是个大大超出预期的地点，本来对于寺庙的预期最大的是清水寺，但实际真正到达金阁寺的一瞬间，门口的那一排红枫就已经震撼到我了。进去以后的实际金寺被一群彩色的绿植所簇拥着，一只凤凰立在其顶，超级美。\n\n\n2️⃣ 二三坂 由于下雨的关系（而且雨还不小），实际体验是另一种韵味。但因为一天走了太多的关系而且二三坂坡度着实还是有点的，实在是有点累。但这里有抹茶的那家店（卖糖的），强推他们家的抹茶巧克力，真的好好吃（只买了两盒的我事后该多买点）。\n3️⃣ 清水寺 和二三坂紧邻，往上走到顶就是清水寺，由于天气关系且",
-    "html": "<p>1️⃣ 金阁寺 这是个大大超出预期的地点，本来对于寺庙的预期最大的是清水寺，但实际真正到达金阁寺的一瞬间，门口的那一排红枫就已经震撼到我了。进去以后的实际金寺被一群彩色的绿植所簇拥着，一只凤凰立在其顶，超级美。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635512.JPG\" alt=\"文章配图\"></p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"文章配图\"></p>\n<p>2️⃣ 二三坂 由于下雨的关系（而且雨还不小），实际体验是另一种韵味。但因为一天走了太多的关系而且二三坂坡度着实还是有点的，实在是有点累。但这里有抹茶的那家店（卖糖的），强推他们家的抹茶巧克力，真的好好吃（只买了两盒的我事后该多买点）。</p>\n<p>3️⃣ 清水寺 和二三坂紧邻，往上走到顶就是清水寺，由于天气关系且我们已经是晚上了，可惜没看到满是红叶的场景。整体风格比较传统。</p>\n<p>4️⃣ 大阪环球 好莱坞过山车无敌！！！我从没想到过山车可以这么嗨，osaka lover这一首bgm配上过山车的失重感（时间上也比我想象的要久一些）以及迎面而来的风，很难用言语表达这种感觉。</p>\n<p>5️⃣ 关于地铁 日本的地铁真的很迷很迷很迷！也可能是我头一回去，几天的行程有很多时间都耽搁在了迷路。不要用高德，一定要用google maps，然后google maps中有些地铁线路的标识实际日本地铁是没有标的，有时候可以看标，但有时候必须看全称，所以你如果找不到对应地铁的英文简称标识的话就找全称！不过suica card真的很好用，苹果手机这方面确实方便，全程不需要打开手机，靠近碰一下就过。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"文章配图\"></p>\n<p>6️⃣ 关于购物 日本心斋桥大多商店基本统一8点关门，所以你如果要购物的话一定要合理安排时间，以及记得带上护照，免税需要这个。至于饮食的话反而不用太过担心，因为有不少关门比较晚的店家（但旺季会出现很长的排队现象）。</p>",
-    "content": "1️⃣ 金阁寺 这是个大大超出预期的地点，本来对于寺庙的预期最大的是清水寺，但实际真正到达金阁寺的一瞬间，门口的那一排红枫就已经震撼到我了。进去以后的实际金寺被一群彩色的绿植所簇拥着，一只凤凰立在其顶，超级美。\n\n![文章配图](https://oss.kinda.info/image/202412041635512.JPG)\n\n![文章配图](https://oss.kinda.info/image/202412041635218.JPG)\n\n2️⃣ 二三坂 由于下雨的关系（而且雨还不小），实际体验是另一种韵味。但因为一天走了太多的关系而且二三坂坡度着实还是有点的，实在是有点累。但这里有抹茶的那家店（卖糖的），强推他们家的抹茶巧克力，真的好好吃（只买了两盒的我事后该多买点）。\n\n3️⃣ 清水寺 和二三坂紧邻，往上走到顶就是清水寺，由于天气关系且我们已经是晚上了，可惜没看到满是红叶的场景。整体风格比较传统。\n\n4️⃣ 大阪环球 好莱坞过山车无敌！！！我从没想到过山车可以这么嗨，osaka lover这一首bgm配上过山车的失重感（时间上也比我想象的要久一些）以及迎面而来的风，很难用言语表达这种感觉。\n\n5️⃣ 关于地铁 日本的地铁真的很迷很迷很迷！也可能是我头一回去，几天的行程有很多时间都耽搁在了迷路。不要用高德，一定要用google maps，然后google maps中有些地铁线路的标识实际日本地铁是没有标的，有时候可以看标，但有时候必须看全称，所以你如果找不到对应地铁的英文简称标识的话就找全称！不过suica card真的很好用，苹果手机这方面确实方便，全程不需要打开手机，靠近碰一下就过。\n\n![文章配图](https://oss.kinda.info/image/202412041635465.JPG)\n\n6️⃣ 关于购物 日本心斋桥大多商店基本统一8点关门，所以你如果要购物的话一定要合理安排时间，以及记得带上护照，免税需要这个。至于饮食的话反而不用太过担心，因为有不少关门比较晚的店家（但旺季会出现很长的排队现象）。",
-    "href": "/notes/japan-travel-notes"
-  },
-  {
-    "slug": "media-governance-reflection",
-    "locale": "zh",
-    "type": "note",
-    "title": "完善对国内自媒体的管控迫在眉睫",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "文章探讨了男女对立的根源，认为这种对立源于误解和极端思维的传播。强调男女关系的本质是互惠互利，婚姻的起源在于物质保障而非爱情。当前社会矛盾主要在于贫富差距，而自媒体的极端言论加剧了对立，模糊了真正的问题。建议减少对自媒体的关注，培养批判性思维，并呼吁政府加强对自媒体的监管，以促进理性对话和理解。",
-    "date": "2025-01-31T00:00:00.000Z",
-    "tags": [
-      "思考",
-      "生活",
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/6beba509-dfce-493f-b76b-214e3014178d",
-    "metadata": {
-      "readingTime": 2,
-      "wordCount": 594.6
-    },
-    "excerpt": "\n菩提本无树，明镜亦非台；本来无一物，何处惹尘埃。\n\n看着纷杂的自媒体的推送，没来由的心中多了很多的烦恼。\n男女本身没有什么对立的地方，唯一存在较大的不同那就是女生存在子宫要生孩子，而这本身并不是男性的错，遇到事情就拿这个说话等于忽视了两件事情。\n\n\n其一：男性在女性生育期间的所有付出\n\n\n其二：生育这件事情并不是给男方生孩子，而是双方的爱情结晶\n\n\n如果对这两者没有清晰的认知，那请你千万别生。\n婚姻的起源\n自远古时代，男女结合的目的本身就是彼此利益互换\n\n\n女方给男方提供性需求价值\n\n\n男方能够给予女方足够的保护",
-    "html": "<blockquote>\n<p>菩提本无树，明镜亦非台；本来无一物，何处惹尘埃。</p>\n</blockquote>\n<p>看着纷杂的自媒体的推送，没来由的心中多了很多的烦恼。</p>\n<p>男女本身没有什么对立的地方，唯一存在较大的不同那就是女生存在子宫要生孩子，而这本身并不是男性的错，遇到事情就拿这个说话等于忽视了两件事情。</p>\n<ul>\n<li>\n<p>其一：男性在女性生育期间的所有付出</p>\n</li>\n<li>\n<p>其二：生育这件事情并不是给男方生孩子，而是双方的爱情结晶</p>\n</li>\n</ul>\n<p>如果对这两者没有清晰的认知，那请你千万别生。</p>\n<h2>婚姻的起源</h2>\n<p>自远古时代，男女结合的目的本身就是彼此利益互换</p>\n<ul>\n<li>\n<p>女方给男方提供性需求价值</p>\n</li>\n<li>\n<p>男方能够给予女方足够的保护来度过相对虚弱的生育期</p>\n</li>\n</ul>\n<p>爱情并不是在婚姻之前产生的，恰恰相反，婚姻产生之后经过很久很久，当物质得到一定的满足，人们有足够的精力去思考更多的人性的光辉面，才产生了爱情这种概念。</p>\n<p>当下引起男女对立的人，本质上非蠢即坏，而且是极蠢极坏。就目前而言，国内真正的矛盾在于贫富悬殊，即资源分配不平衡导致的阶级矛盾。但资方通过掌控各大自媒体平台，在极大程度上掌控了对舆论的引导权。刻意迎合部分极端女权/男权的想法，就目前国内而言，极端女权更为严重的多，这极大的增长了这些极端化的思维，同时在通过召集水军，进一步宣传极端思维主义，打压异性，促使两极分化，从而令人们无心顾及真正的矛盾所在——贫富阶级矛盾。更有甚者，一些境外势力通过渗透自媒体的角角落落进一步来促进极端思维的诞生与传播，从而促使中国自内部瓦解。</p>\n<p>这种舆论导向不仅加剧了社会矛盾，也模糊了真正需要解决的问题。我们应该警惕这种操纵，努力促进理性对话和互相理解。只有摒弃偏见、超越对立，我们才能共同面对和解决更深层次的社会问题。</p>\n<blockquote>\n<p>偏听则暗，兼听则明。</p>\n</blockquote>\n<p>在这种复杂的社会环境中，我们每个人都有责任保持清醒的头脑，不被片面的信息所误导。我们应该努力培养批判性思维，主动寻求多元化的信息来源，以形成更全面、客观的观点。只有这样，我们才能真正理解并解决社会中的深层次问题，而不是被表面的对立所分散注意力。</p>\n<h2>实践上</h2>\n<h3>从群众出发</h3>\n<p>我们可以尽量减少对自媒体的关注和浏览，同时关闭所有自媒体的推送，能关闭的个性推荐尽量关闭，尤其减少某音、某书的相关推荐（当然，就眼下的B站而言，亦是如此）。能屏蔽的账号尽量屏蔽。</p>\n<h3>从政府出发</h3>\n<p>资本都是逐利的，所以本质上无法真正让资本进行自控，这方面必须要政府进行监督。增强对各大自媒体平台的管控，尤其注意极端思维的诞生与传播。自自媒体诞生以来，无论是各种谣言还是极端思维的传播成本大大降低，仅仅几秒钟的视频，几十字的文案，一秒钟内便能够通过网络传播到全国各地。为什么从前的时候没有这么多极端思维？那是因为没有网络，传播的成本远大于创造的成本。</p>\n<p>为什么我常常推荐多看书或者长博客而少看自媒体？因为前者需要的成本是很高的，真正去做这些事情的人不是奔着赚快钱去的，他们在做的是真正的记录和引导。</p>",
-    "content": "> 菩提本无树，明镜亦非台；本来无一物，何处惹尘埃。\n\n看着纷杂的自媒体的推送，没来由的心中多了很多的烦恼。\n\n男女本身没有什么对立的地方，唯一存在较大的不同那就是女生存在子宫要生孩子，而这本身并不是男性的错，遇到事情就拿这个说话等于忽视了两件事情。\n\n- 其一：男性在女性生育期间的所有付出\n\n- 其二：生育这件事情并不是给男方生孩子，而是双方的爱情结晶\n\n如果对这两者没有清晰的认知，那请你千万别生。\n\n## 婚姻的起源\n\n自远古时代，男女结合的目的本身就是彼此利益互换\n\n- 女方给男方提供性需求价值\n\n- 男方能够给予女方足够的保护来度过相对虚弱的生育期\n\n爱情并不是在婚姻之前产生的，恰恰相反，婚姻产生之后经过很久很久，当物质得到一定的满足，人们有足够的精力去思考更多的人性的光辉面，才产生了爱情这种概念。\n\n当下引起男女对立的人，本质上非蠢即坏，而且是极蠢极坏。就目前而言，国内真正的矛盾在于贫富悬殊，即资源分配不平衡导致的阶级矛盾。但资方通过掌控各大自媒体平台，在极大程度上掌控了对舆论的引导权。刻意迎合部分极端女权/男权的想法，就目前国内而言，极端女权更为严重的多，这极大的增长了这些极端化的思维，同时在通过召集水军，进一步宣传极端思维主义，打压异性，促使两极分化，从而令人们无心顾及真正的矛盾所在——贫富阶级矛盾。更有甚者，一些境外势力通过渗透自媒体的角角落落进一步来促进极端思维的诞生与传播，从而促使中国自内部瓦解。\n\n这种舆论导向不仅加剧了社会矛盾，也模糊了真正需要解决的问题。我们应该警惕这种操纵，努力促进理性对话和互相理解。只有摒弃偏见、超越对立，我们才能共同面对和解决更深层次的社会问题。\n\n> 偏听则暗，兼听则明。\n\n在这种复杂的社会环境中，我们每个人都有责任保持清醒的头脑，不被片面的信息所误导。我们应该努力培养批判性思维，主动寻求多元化的信息来源，以形成更全面、客观的观点。只有这样，我们才能真正理解并解决社会中的深层次问题，而不是被表面的对立所分散注意力。\n\n## 实践上\n\n### 从群众出发\n\n我们可以尽量减少对自媒体的关注和浏览，同时关闭所有自媒体的推送，能关闭的个性推荐尽量关闭，尤其减少某音、某书的相关推荐（当然，就眼下的B站而言，亦是如此）。能屏蔽的账号尽量屏蔽。\n\n### 从政府出发\n\n资本都是逐利的，所以本质上无法真正让资本进行自控，这方面必须要政府进行监督。增强对各大自媒体平台的管控，尤其注意极端思维的诞生与传播。自自媒体诞生以来，无论是各种谣言还是极端思维的传播成本大大降低，仅仅几秒钟的视频，几十字的文案，一秒钟内便能够通过网络传播到全国各地。为什么从前的时候没有这么多极端思维？那是因为没有网络，传播的成本远大于创造的成本。\n\n为什么我常常推荐多看书或者长博客而少看自媒体？因为前者需要的成本是很高的，真正去做这些事情的人不是奔着赚快钱去的，他们在做的是真正的记录和引导。",
-    "href": "/notes/media-governance-reflection"
-  },
-  {
-    "slug": "notion-webhooks",
-    "locale": "zh",
-    "type": "note",
-    "title": "喜大普奔，Notion终于支持WebHook了",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。 有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了 我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持…",
-    "date": "2025-04-03T00:00:00.000Z",
-    "tags": [
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/1c9bbdbf-a033-8022-8e0e-ef3186a6f6c4",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 106.2
-    },
-    "excerpt": "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。\n有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了\n我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。\n灵感这不就来了！\n具体操作\n处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api",
-    "html": "<p>今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。</p>\n<p>有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了</p>\n<p>我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。</p>\n<p>灵感这不就来了！</p>\n<h1>具体操作</h1>\n<p>处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api触发笔记服务部署，bingo！链路打通！</p>",
-    "content": "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。\n\n有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了\n\n我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。\n\n灵感这不就来了！\n\n# 具体操作\n\n处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api触发笔记服务部署，bingo！链路打通！",
-    "href": "/notes/notion-webhooks"
-  },
-  {
-    "slug": "robotaxi-reflection",
-    "locale": "zh",
-    "type": "note",
-    "title": "萝卜快跑引起的思考",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "在国内，追逐AI应用落地可能导致人工智能替代人类的问题，尤其在当前国内的情况下。大规模增加无人驾驶汽车可能导致大量司机失业，进而增加无业游民，导致社会混乱。",
-    "date": "2024-07-23T00:00:00.000Z",
-    "tags": [
-      "ai",
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/d8195951-b1df-4cf8-b844-5b990ec623fb",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 100.12
-    },
-    "excerpt": "在国内，任何公司都以盈利为第一目标，这种场景下是很难去真正做出底层突破的。\n狂热追逐ai应用落地只会导致ai高度替换人类，在真正的未来，人人富足，生产力极大丰富的时候，那将不是问题，但就眼下的国内而言，是完全不合适的。\n\n2023年2月24日，百度\"萝卜快跑\"自动驾驶出租车在武汉市的公路上行驶。\n大幅的增加无人驾驶汽车会导致大批量的司机失业，继而导致无业游民的增加。一方面没钱赚，另一方面没事情做，社会就会很快变的混乱。",
-    "html": "<p>在国内，任何公司都以盈利为第一目标，这种场景下是很难去真正做出底层突破的。</p>\n<p>狂热追逐ai应用落地只会导致ai高度替换人类，在真正的未来，人人富足，生产力极大丰富的时候，那将不是问题，但就眼下的国内而言，是完全不合适的。</p>\n<p><img src=\"/images/archive/kinda-info/robotaxi-reflection/image-1.jpg\" alt=\"文章配图\"></p>\n<p><em>2023年2月24日，百度\"萝卜快跑\"自动驾驶出租车在武汉市的公路上行驶。</em></p>\n<p>大幅的增加无人驾驶汽车会导致大批量的司机失业，继而导致无业游民的增加。一方面没钱赚，另一方面没事情做，社会就会很快变的混乱。</p>",
-    "content": "在国内，任何公司都以盈利为第一目标，这种场景下是很难去真正做出底层突破的。\n\n狂热追逐ai应用落地只会导致ai高度替换人类，在真正的未来，人人富足，生产力极大丰富的时候，那将不是问题，但就眼下的国内而言，是完全不合适的。\n\n![文章配图](/images/archive/kinda-info/robotaxi-reflection/image-1.jpg)\n\n_2023年2月24日，百度\"萝卜快跑\"自动驾驶出租车在武汉市的公路上行驶。_\n\n大幅的增加无人驾驶汽车会导致大批量的司机失业，继而导致无业游民的增加。一方面没钱赚，另一方面没事情做，社会就会很快变的混乱。",
-    "href": "/notes/robotaxi-reflection"
-  },
-  {
-    "slug": "values-and-effort",
-    "locale": "zh",
-    "type": "note",
-    "title": "价值观的分辨",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "评价一个人的指标应该是他是否有目标的同时也在为之努力，而不是仅仅看他是否在赚钱。问题出在财富分配标准和社会奖励机制上，导致家长和孩子的角度不同。财富分配问题需要解决，以避免对努力的人产生误解和不公正的评价。",
-    "date": "2024-07-25T00:00:00.000Z",
-    "tags": [
-      "思考",
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/1611047c-237a-4600-99d3-48135a67d261",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 189.84000000000003
-    },
-    "excerpt": "评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n\n评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n个人觉得：问题不是出在家长身上，也不是出在孩子身上，是出在财富分配标准和社会奖励机制上。\n家长角度：\n理想的底线是生存，任何人最起码应该保证自己的生存，如果连生存都需要靠别人，那还谈何理想目标。\n孩子角度：\n我已经很努力了，我也有我自己的目标，我只是没有赚到钱，为什么就一定说我这样子的人是不要好的人呢？\n其实双方都没有错，只",
-    "html": "<p>评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。</p>\n<hr>\n<blockquote>\n<p>评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。</p>\n</blockquote>\n<p>个人觉得：问题不是出在家长身上，也不是出在孩子身上，是出在财富分配标准和社会奖励机制上。</p>\n<p>家长角度：</p>\n<p>理想的底线是生存，任何人最起码应该保证自己的生存，如果连生存都需要靠别人，那还谈何理想目标。</p>\n<p>孩子角度：</p>\n<p>我已经很努力了，我也有我自己的目标，我只是没有赚到钱，为什么就一定说我这样子的人是不要好的人呢？</p>\n<p>其实双方都没有错，只是角度不同。本质上是财富的分配出了问题，并且很巧妙的，不知道被哪方人员给长辈们成功渲染了一种思维，那就是，你长久的不赚钱，一直靠我们，就是不太好，如果孩子在努力，那么大多数家长或许会一定程度上认可，但是依然避免不了心里放不下，或者说有一定芥蒂。</p>",
-    "content": "评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n---\n\n> 评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n个人觉得：问题不是出在家长身上，也不是出在孩子身上，是出在财富分配标准和社会奖励机制上。\n\n家长角度：\n\n理想的底线是生存，任何人最起码应该保证自己的生存，如果连生存都需要靠别人，那还谈何理想目标。\n\n孩子角度：\n\n我已经很努力了，我也有我自己的目标，我只是没有赚到钱，为什么就一定说我这样子的人是不要好的人呢？\n\n其实双方都没有错，只是角度不同。本质上是财富的分配出了问题，并且很巧妙的，不知道被哪方人员给长辈们成功渲染了一种思维，那就是，你长久的不赚钱，一直靠我们，就是不太好，如果孩子在努力，那么大多数家长或许会一定程度上认可，但是依然避免不了心里放不下，或者说有一定芥蒂。",
-    "href": "/notes/values-and-effort"
-  },
-  {
-    "slug": "what-to-do-and-not-do",
-    "locale": "zh",
-    "type": "note",
-    "title": "该做什么不该做什么",
-    "eyebrow": "旧站归档 · KINDA.INFO",
-    "summary": "生活就像一片荒野，在荒野中我们才能找到自己。文章提到了拒绝多巴胺、欢迎内啡肽的生理基础，不要频繁放纵自己和长期呆在舒适区的问题，以及学会主动、不要过度准备、拒绝拖延症、活在当下和减少与人交流出门放空的方法来应对郁闷的情绪。",
-    "date": "2026-04-27T00:00:00.000Z",
-    "tags": [
-      "生活",
-      "思考",
-      "归档"
-    ],
-    "featured": false,
-    "source": "https://kinda.info/post/bd43b6d9-e9dc-45ef-bc0e-c21fc6ce8b7d",
-    "metadata": {
-      "readingTime": 3,
-      "wordCount": 795.2400000000001
-    },
-    "excerpt": "人生是旷野，在旷野中，我们才能找到自己。\n\n\n为什么写这篇\n今天本来心情并不怎么好，有种莫名其妙的烦躁感，可能因为最近有太多莫名其妙的事情了，一件接一件，打破了很多接下来的安排。但这趟出门让我豁然开朗了一些。也因此对让自己郁闷的原因以及让自己开朗的方法作一番记录。\n生理基础\n拒绝多巴胺，欢迎内啡肽。（非绝对）\n\n多巴胺\n\n\n多巴胺是什么？它是一种能带来能量和动力的神经传导物质，不仅能左右人们的行为，还参与情爱过程，激发人对异性情感的产生。此外，多巴胺对我们的身心健康有着至关重要的作用，同时还跟愉悦和满足感有关，当我",
-    "html": "<p>人生是旷野，在旷野中，我们才能找到自己。</p>\n<p><img src=\"https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402112218604.jpg\" alt=\"文章配图\"></p>\n<hr>\n<h2>为什么写这篇</h2>\n<p>今天本来心情并不怎么好，有种莫名其妙的烦躁感，可能因为最近有太多莫名其妙的事情了，一件接一件，打破了很多接下来的安排。但这趟出门让我豁然开朗了一些。也因此对让自己郁闷的原因以及让自己开朗的方法作一番记录。</p>\n<h2>生理基础</h2>\n<p>拒绝多巴胺，欢迎内啡肽。（非绝对）</p>\n<ul>\n<li>多巴胺</li>\n</ul>\n<blockquote>\n<p>多巴胺是什么？它是一种能带来能量和动力的神经传导物质，不仅能左右人们的行为，还参与情爱过程，激发人对异性情感的产生。此外，多巴胺对我们的身心健康有着至关重要的作用，同时还跟愉悦和满足感有关，当我们经历新鲜、刺激或具有挑战性的事情时，大脑中就会分泌多巴胺。</p>\n</blockquote>\n<ul>\n<li>内啡肽</li>\n</ul>\n<blockquote>\n<p>内啡肽（endorphin）亦称安多芬或脑内啡，是一种内成性（脑下垂体分泌）的类吗啡生物化学合成物激素。它是由脑下垂体和脊椎动物的丘脑下部所分泌的氨基化合物（肽） 。它能与吗啡受体结合，产生跟吗啡、鸦片剂一样的止痛效果和欣快感。等同天然的镇痛剂。利用药物可增加脑内啡的分泌效果。</p>\n</blockquote>\n<blockquote>\n<p>内啡肽是使人感觉喜乐的激素，想要摆脱担心和忧虑就必须得到这一激素的帮助。为了能经常分泌内啡肽，最好带着欢笑活着。这是以分泌喜乐激素内啡肽来减轻痛苦的一个生命法则。内啡肽同血清素一样，有必要就分泌，无必要就减少，若内啡肽的生产遗传基因麻木，无所反应，就无法感觉到喜乐和幸福。因此，完全从忧郁症中解放出来的途径，是生活的环境总要符合内啡肽和血清素的需要。</p>\n</blockquote>\n<h2>不要频繁放纵自己</h2>\n<p>频繁的放纵自己，沉迷”奶头乐“，一刷 b 站就停不下来，打开此类软件后就忘记自己打开它的目的，沉迷下滑无法自拔，频繁 xxoo（手动狗头）。长时间的沉迷于这些行为会导致多巴胺频繁分泌。 多巴胺恢复稳态是需要时间的的，如果你在前一次的情绪恢复（多巴胺恢复稳态）之前又一次的刺激他，那么会导致你的快乐的阈值变高，此时原先你觉得 happy 的事情将会对你的情绪快乐毫无作用。需要更大的刺激来令多巴胺继续分泌，而这就会导致你陷入一个极度的恶性循坏。如果你真的陷入了这样的循环，那么你需要逼自己远离那些之前令你陷入这个循环的事情一阵子，这段时间可能是两周，也可能是一个月，这确实需要一段很长的时间，但你一定要坚持克制自己，不然这可能会毁了你。</p>\n<h2>不要长期呆在舒适区</h2>\n<blockquote>\n<p>鸟儿想学会飞翔，都要先跳下悬崖。</p>\n</blockquote>\n<p>长期呆在自己的舒适区，不敢跨出脚步，不仅会导致自己失去前进的动力，更会导致自己精神逐渐摆烂，能力退步，形成恶性循环。要学会走出去，跨出去。</p>\n<h2>学会主动</h2>\n<p>遇事总选择被动等待，很少主动出击，和人有关的事情更是如此，这会导致你错过无数的机会。无论是事业上还是情感上，好事儿都对主动的人青睐有加。</p>\n<h2>不要过度准备</h2>\n<blockquote>\n<p>Just do it</p>\n</blockquote>\n<p>经常会有这种情况发生，明明在别人看来自己已经准备的差不多了，但是自己往往会觉得还缺点什么。</p>\n<p>长期如此会严重损害自己的积极性和自信心。人类的行动是需要积极反馈才能有做下去的动力的。</p>\n<p>学会 MVP 思想，边尝试边准备，避免过度准备。</p>\n<h2>拒绝拖延症</h2>\n<blockquote>\n<p>明日复明日，明日何其多。我生待明日，万事成蹉跎。</p>\n</blockquote>\n<p>总是能多拖一时就多拖一时，能多拖一天就多拖一天。长期如此会导致事情堆积，失去处理的动力。并且未来是无法预测的，能当下解决就尽量当下解决，不要拖延。</p>\n<h2>活在当下</h2>\n<p>尽可能不要安排太遥远的事情，这个遥远不仅指的能力上，也指的时间上，活在当下，减少期待，未来的生活谁都无法准确预料到。</p>\n<h2>减少和人的交流，出门放空</h2>\n<p>当你郁闷的时候，任何人和你聊天，你都会有一种发自心底的烦躁感，你的言辞也会带有一股闷气，此时和别人说一些生活琐事大概率只会导致情况更为严重，甚至包括和家人沟通。</p>\n<p>如果此时天气好，那么不要犹豫，直接出门散步溜达，避免去人多的地方，去户外走走，运动运动；如果天气不好，那么可以去室内泳池游个泳，去健身房健个身，去球馆打个球，去 ktv 狂吼一嗓。各种方式都行，只要是你喜欢的发泄情绪的方式，当然，得是有益的=。=。</p>",
-    "content": "人生是旷野，在旷野中，我们才能找到自己。\n\n![文章配图](https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402112218604.jpg)\n\n---\n\n## 为什么写这篇\n\n今天本来心情并不怎么好，有种莫名其妙的烦躁感，可能因为最近有太多莫名其妙的事情了，一件接一件，打破了很多接下来的安排。但这趟出门让我豁然开朗了一些。也因此对让自己郁闷的原因以及让自己开朗的方法作一番记录。\n\n## 生理基础\n\n拒绝多巴胺，欢迎内啡肽。（非绝对）\n\n- 多巴胺\n\n> 多巴胺是什么？它是一种能带来能量和动力的神经传导物质，不仅能左右人们的行为，还参与情爱过程，激发人对异性情感的产生。此外，多巴胺对我们的身心健康有着至关重要的作用，同时还跟愉悦和满足感有关，当我们经历新鲜、刺激或具有挑战性的事情时，大脑中就会分泌多巴胺。\n\n- 内啡肽\n\n> 内啡肽（endorphin）亦称安多芬或脑内啡，是一种内成性（脑下垂体分泌）的类吗啡生物化学合成物激素。它是由脑下垂体和脊椎动物的丘脑下部所分泌的氨基化合物（肽） 。它能与吗啡受体结合，产生跟吗啡、鸦片剂一样的止痛效果和欣快感。等同天然的镇痛剂。利用药物可增加脑内啡的分泌效果。\n\n> 内啡肽是使人感觉喜乐的激素，想要摆脱担心和忧虑就必须得到这一激素的帮助。为了能经常分泌内啡肽，最好带着欢笑活着。这是以分泌喜乐激素内啡肽来减轻痛苦的一个生命法则。内啡肽同血清素一样，有必要就分泌，无必要就减少，若内啡肽的生产遗传基因麻木，无所反应，就无法感觉到喜乐和幸福。因此，完全从忧郁症中解放出来的途径，是生活的环境总要符合内啡肽和血清素的需要。\n\n## 不要频繁放纵自己\n\n频繁的放纵自己，沉迷”奶头乐“，一刷 b 站就停不下来，打开此类软件后就忘记自己打开它的目的，沉迷下滑无法自拔，频繁 xxoo（手动狗头）。长时间的沉迷于这些行为会导致多巴胺频繁分泌。 多巴胺恢复稳态是需要时间的的，如果你在前一次的情绪恢复（多巴胺恢复稳态）之前又一次的刺激他，那么会导致你的快乐的阈值变高，此时原先你觉得 happy 的事情将会对你的情绪快乐毫无作用。需要更大的刺激来令多巴胺继续分泌，而这就会导致你陷入一个极度的恶性循坏。如果你真的陷入了这样的循环，那么你需要逼自己远离那些之前令你陷入这个循环的事情一阵子，这段时间可能是两周，也可能是一个月，这确实需要一段很长的时间，但你一定要坚持克制自己，不然这可能会毁了你。\n\n## 不要长期呆在舒适区\n\n> 鸟儿想学会飞翔，都要先跳下悬崖。\n\n长期呆在自己的舒适区，不敢跨出脚步，不仅会导致自己失去前进的动力，更会导致自己精神逐渐摆烂，能力退步，形成恶性循环。要学会走出去，跨出去。\n\n## 学会主动\n\n遇事总选择被动等待，很少主动出击，和人有关的事情更是如此，这会导致你错过无数的机会。无论是事业上还是情感上，好事儿都对主动的人青睐有加。\n\n## 不要过度准备\n\n> Just do it\n\n经常会有这种情况发生，明明在别人看来自己已经准备的差不多了，但是自己往往会觉得还缺点什么。\n\n长期如此会严重损害自己的积极性和自信心。人类的行动是需要积极反馈才能有做下去的动力的。\n\n学会 MVP 思想，边尝试边准备，避免过度准备。\n\n## 拒绝拖延症\n\n> 明日复明日，明日何其多。我生待明日，万事成蹉跎。\n\n总是能多拖一时就多拖一时，能多拖一天就多拖一天。长期如此会导致事情堆积，失去处理的动力。并且未来是无法预测的，能当下解决就尽量当下解决，不要拖延。\n\n## 活在当下\n\n尽可能不要安排太遥远的事情，这个遥远不仅指的能力上，也指的时间上，活在当下，减少期待，未来的生活谁都无法准确预料到。\n\n## 减少和人的交流，出门放空\n\n当你郁闷的时候，任何人和你聊天，你都会有一种发自心底的烦躁感，你的言辞也会带有一股闷气，此时和别人说一些生活琐事大概率只会导致情况更为严重，甚至包括和家人沟通。\n\n如果此时天气好，那么不要犹豫，直接出门散步溜达，避免去人多的地方，去户外走走，运动运动；如果天气不好，那么可以去室内泳池游个泳，去健身房健个身，去球馆打个球，去 ktv 狂吼一嗓。各种方式都行，只要是你喜欢的发泄情绪的方式，当然，得是有益的=。=。",
-    "href": "/notes/what-to-do-and-not-do"
   },
   {
     "slug": "ai-image-training-notes",
@@ -1497,5 +1289,213 @@
     "html": "<blockquote>\n<p>[!TIP]\n只有whisper.cpp文件和whisper.h文件是项目的核心文件，其他代码都是ggml的机器学习框架代码。</p>\n</blockquote>\n<p>examples中的代码是命令行中调用<code>./main ***</code>时实际调用whisper.cpp文件进行语音转文字的代码，可以自定义修改，令输出不再固定于范例格式。</p>\n<h3><strong>快速开始</strong></h3>\n<h4>**克隆 **<code>**whisper.cpp**</code></h4>\n<pre><code class=\"language-bash\">git clone git@github.com:ggerganov/whisper.cpp.git\n</code></pre>\n<h4><strong>获取模型</strong></h4>\n<blockquote>\n<p>[!TIP]\n为了能够在C/C++中加载，OpenAI提供的<a href=\"https://github.com/openai/whisper/blob/main/whisper/__init__.py#L17-L30\">原始Whisper PyTorch模型(opens in a new tab)</a>被转换成自定义的ggml格式。转换是通过 <code>[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)</code><a href=\"https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py\">(opens in a new tab)</a> 脚本执行的。</p>\n</blockquote>\n<p>有三种方法可以获取模型</p>\n<ol>\n<li>使用 <code>[download-ggml-model.sh](https://github.com/ggerganov/whisper.cpp/blob/master/models/download-ggml-model.sh)</code><a href=\"https://github.com/ggerganov/whisper.cpp/blob/master/models/download-ggml-model.sh\">(opens in a new tab)</a> 下载预转换的模型</li>\n</ol>\n<p>例子</p>\n<pre><code class=\"language-bash\">$ ./download-ggml-model.sh\nbase.enDownloading ggml model base.en ...models/ggml-base.en.bin          100%[=============================================>] 141.11M  5.41MB/s    in 22sDone! Model 'base.en' saved in 'models/ggml-base.en.bin'You can now use it like this:\n\n\t$ ./main -m models/ggml-base.en.bin -f samples/jfk.wav\n</code></pre>\n<ol>\n<li>手动下载预转换的模型</li>\n</ol>\n<p>ggml 模型可以从以下位置获取：</p>\n<ul>\n<li><a href=\"https://huggingface.co/ggerganov/whisper.cpp/tree/main\">https://huggingface.co/ggerganov/whisper.cpp/tree/main</a></li>\n<li><a href=\"https://ggml.ggerganov.com/\">https://ggml.ggerganov.com</a></li>\n</ul>\n<ol>\n<li>使用 <code>[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)</code>转换</li>\n</ol>\n<p>下载由<a href=\"https://github.com/openai/whisper/blob/main/whisper/__init__.py#L17-L30\">OpenAI 提供的其中一个模型</a>，并使用 <code>[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)</code>脚本生成 <code>ggml</code> 文件。</p>\n<p>示例转换，假设原始的 PyTorch 文件已下载到 <code>~/.cache/whisper</code>。将 <code>~/path/to/repo/whisper/</code> 更改为您 Whisper 源代码副本的位置：</p>\n<pre><code class=\"language-bash\">mkdir models/whisper-medium\npython models/convert-pt-to-ggml.py ~/.cache/whisper/medium.pt ~/path/to/repo/whisper/ ./models/whisper-medium\nmv ./models/whisper-medium/ggml-model.bin models/ggml-medium.bin\nrmdir models/whisper-medium\n</code></pre>\n<h4><strong>编译</strong></h4>\n<p>现在，我们构建主示例。</p>\n<pre><code class=\"language-bash\"># build the main example\nmake\n</code></pre>\n<h4><strong>运行</strong></h4>\n<blockquote>\n<p>[!TIP]\n注意，当前whisper.cpp的main示例仅支持16bit的wav媒体文件！所以在执行前需要先把媒体文件转为这个格式。</p>\n</blockquote>\n<p>可以通过如下命令解决：</p>\n<pre><code class=\"language-bash\">ffmpeg -i input.mp3 -ar 16000 -ac 1 -c:a pcm_s16le output.wav\n</code></pre>\n<pre><code class=\"language-bash\">./main -m models/ggml-base.en.bin -f output.wav\n</code></pre>\n<h3><strong>微调模型</strong></h3>\n<p>社区正在努力创建使用额外训练数据进行细调的 Whisper 模型。例如，这篇<a href=\"https://huggingface.co/blog/zh/fine-tune-whisper\">博文</a>描述了使用 Hugging Face (HF) Transformer 实现的 Whisper 进行微调的方法。</p>\n<p>生成的模型与原始的 OpenAI 格式略有不同。要读取 HF 模型，您可以使用 <code>[convert-h5-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-h5-to-ggml.py)</code>脚本，如下所示：</p>\n<pre><code class=\"language-bash\">git clone https://github.com/openai/whisper\ngit clone https://github.com/ggerganov/whisper.cpp\n\n# clone HF fine-tuned model (this is just an example)\ngit clone https://huggingface.co/openai/whisper-medium\n\n# convert the model to ggml\npython3 ./whisper.cpp/models/convert-h5-to-ggml.py ./whisper-medium/ ./whisper .\n</code></pre>\n<h3><strong>内存占用</strong></h3>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<table><thead><tr><th>Model</th><th>Disk</th><th>Mem</th></tr></thead><tbody><tr><td>tiny</td><td>75 MiB</td><td>~273 MB</td></tr><tr><td>base</td><td>142 MiB</td><td>~388 MB</td></tr><tr><td>small</td><td>466 MiB</td><td>~852 MB</td></tr><tr><td>medium 1.5 GiB</td><td>~2.1 GB</td><td></td></tr><tr><td>large</td><td>2.9 GiB</td><td>~3.9 GB</td></tr></tbody></table>\n<h3><strong>模型量化</strong></h3>\n<p><code>whisper.cpp</code> 支持对 ggml 模型进行量化，从而减少内存占用。要量化模型，请使用以下命令：</p>\n<pre><code class=\"language-bash\"># quantize a model with Q5_0 method\nmake quantize\n./quantize models/ggml-base.en.bin models/ggml-base.en-q5_0.bin q5_0\n\n# run the examples as usual, specifying the quantized model file\n./main -m models/ggml-base.en-q5_0.bin ./samples/gb0.wav\n</code></pre>\n<h3><strong>Core ML 支持</strong></h3>\n<p>在苹果系列芯片的设备上，编码器推断可以通过 Core ML 在苹果神经引擎（ANE）上执行。这可以导致显著的加速，与仅 CPU 执行相比，速度提高了 3 倍以上。以下是生成 Core ML 模型并将其与 whisper.cpp 一起使用的说明：</p>\n<h4><strong>安装所需要的库</strong></h4>\n<pre><code class=\"language-bash\">pip install ane_transformers\npip install openai-whisper\npip install coremltools\n</code></pre>\n<blockquote>\n<p>[!TIP]\n想要成功安装 <code>coremltools</code>，你必须要安装 XCode 并且执行 <code>xcode-select --install</code> 安装命令行工具（一般安装git时这个也会一起安装）。 - 建议使用conda创建python虚拟环境，并且使用python 3.10版本 - 建议使用macos14即以上版本。</p>\n</blockquote>\n<h4><strong>生成 Core ML 模型</strong></h4>\n<p>举例如果是生成基于 base.en 模型的 Core ML 模型，执行以下命令：</p>\n<pre><code class=\"language-bash\">./models/generate-coreml-model.sh base.en\n</code></pre>\n<h4><strong>打包编译</strong></h4>\n<pre><code class=\"language-bash\"># using Makefile\nmake clean\nWHISPER_COREML=1 make -j\n# using CMake\ncmake -B build -DWHISPER_COREML=1\ncmake --build build -j --config Release\n</code></pre>\n<h4><strong>运行</strong></h4>\n<pre><code class=\"language-bash\">$ ./main -m models/ggml-base.en.bin -f samples/jfk.wav\n\n...\n\nwhisper_init_state: loading Core ML model from 'models/ggml-base.en-encoder.mlmodelc'\nwhisper_init_state: first run on a device may take a while ...\nwhisper_init_state: Core ML model loaded\nsystem_info: n_threads = 4 / 10 | AVX = 0 | AVX2 = 0 | AVX512 = 0 | FMA = 0 | NEON = 1 | ARM_FMA = 1 | F16C = 0 | FP16_VA = 1 | WASM_SIMD = 0 | BLAS = 1 | SSE3 = 0 | VSX = 0 | COREML = 1 |\n\n...\n</code></pre>\n<h3><strong>N卡支持</strong></h3>\n<p>在支持n卡的机器上，可以开启N卡加速。</p>\n<p>请确保你安装了<a href=\"https://developer.nvidia.com/cuda-downloads\">cuda</a></p>\n<pre><code class=\"language-bash\">make cleanWHISPER_CUBLAS=1 make -j\n</code></pre>\n<h3><strong>实时音频转文字</strong></h3>\n<pre><code class=\"language-bash\">make stream./stream -m ./models/ggml-base.en.bin -t 8 --step 500 --length 5000\n</code></pre>\n<h3><strong>信心程度显示</strong></h3>\n<p>这种方式下会通过使用不同的颜色显示文字来表示 whisper.cpp 对音频的识别信心程度。</p>\n<p><img src=\"https://user-images.githubusercontent.com/1991296/197356445-311c8643-9397-4e5e-b46e-0b4b4daa2530.png\" alt=\"文章配图\"></p>\n<pre><code class=\"language-bash\">./main -m models/ggml-base.en.bin -f samples/gb0.wav --print-colors\n</code></pre>\n<h3><strong>实时字幕式</strong></h3>\n<pre><code class=\"language-bash\">./main -m ./models/ggml-base.en.bin -f ./samples/jfk.wav -owtssource ./samples/jfk.wav.wtsffplay ./samples/jfk.wav.mp4\n</code></pre>",
     "content": "> [!TIP]\n> 只有whisper.cpp文件和whisper.h文件是项目的核心文件，其他代码都是ggml的机器学习框架代码。\n\nexamples中的代码是命令行中调用`./main ***`时实际调用whisper.cpp文件进行语音转文字的代码，可以自定义修改，令输出不再固定于范例格式。\n\n### **快速开始**\n\n#### **克隆 **`**whisper.cpp**`\n\n```bash\ngit clone git@github.com:ggerganov/whisper.cpp.git\n```\n\n#### **获取模型**\n\n> [!TIP]\n> 为了能够在C/C++中加载，OpenAI提供的[原始Whisper PyTorch模型(opens in a new tab)](https://github.com/openai/whisper/blob/main/whisper/__init__.py#L17-L30)被转换成自定义的ggml格式。转换是通过 `[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)`[(opens in a new tab)](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py) 脚本执行的。\n\n有三种方法可以获取模型\n\n1. 使用 `[download-ggml-model.sh](https://github.com/ggerganov/whisper.cpp/blob/master/models/download-ggml-model.sh)`[(opens in a new tab)](https://github.com/ggerganov/whisper.cpp/blob/master/models/download-ggml-model.sh) 下载预转换的模型\n\n例子\n\n```bash\n$ ./download-ggml-model.sh\nbase.enDownloading ggml model base.en ...models/ggml-base.en.bin          100%[=============================================>] 141.11M  5.41MB/s    in 22sDone! Model 'base.en' saved in 'models/ggml-base.en.bin'You can now use it like this:\n\n\t$ ./main -m models/ggml-base.en.bin -f samples/jfk.wav\n```\n\n1. 手动下载预转换的模型\n\nggml 模型可以从以下位置获取：\n\n- [https://huggingface.co/ggerganov/whisper.cpp/tree/main](https://huggingface.co/ggerganov/whisper.cpp/tree/main)\n- [https://ggml.ggerganov.com](https://ggml.ggerganov.com/)\n1. 使用 `[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)`转换\n\n下载由[OpenAI 提供的其中一个模型](https://github.com/openai/whisper/blob/main/whisper/__init__.py#L17-L30)，并使用 `[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)`脚本生成 `ggml` 文件。\n\n示例转换，假设原始的 PyTorch 文件已下载到 `~/.cache/whisper`。将 `~/path/to/repo/whisper/` 更改为您 Whisper 源代码副本的位置：\n\n```bash\nmkdir models/whisper-medium\npython models/convert-pt-to-ggml.py ~/.cache/whisper/medium.pt ~/path/to/repo/whisper/ ./models/whisper-medium\nmv ./models/whisper-medium/ggml-model.bin models/ggml-medium.bin\nrmdir models/whisper-medium\n```\n\n#### **编译**\n\n现在，我们构建主示例。\n\n```bash\n# build the main example\nmake\n```\n\n#### **运行**\n\n> [!TIP]\n> 注意，当前whisper.cpp的main示例仅支持16bit的wav媒体文件！所以在执行前需要先把媒体文件转为这个格式。\n\n可以通过如下命令解决：\n\n```bash\nffmpeg -i input.mp3 -ar 16000 -ac 1 -c:a pcm_s16le output.wav\n```\n\n```bash\n./main -m models/ggml-base.en.bin -f output.wav\n```\n\n### **微调模型**\n\n社区正在努力创建使用额外训练数据进行细调的 Whisper 模型。例如，这篇[博文](https://huggingface.co/blog/zh/fine-tune-whisper)描述了使用 Hugging Face (HF) Transformer 实现的 Whisper 进行微调的方法。\n\n生成的模型与原始的 OpenAI 格式略有不同。要读取 HF 模型，您可以使用 `[convert-h5-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-h5-to-ggml.py)`脚本，如下所示：\n\n```bash\ngit clone https://github.com/openai/whisper\ngit clone https://github.com/ggerganov/whisper.cpp\n\n# clone HF fine-tuned model (this is just an example)\ngit clone https://huggingface.co/openai/whisper-medium\n\n# convert the model to ggml\npython3 ./whisper.cpp/models/convert-h5-to-ggml.py ./whisper-medium/ ./whisper .\n```\n\n### **内存占用**\n\n| Model | Disk | Mem |\n| --- | --- | --- |\n| tiny | 75 MiB | ~273 MB |\n| base | 142 MiB | ~388 MB |\n| small | 466 MiB | ~852 MB |\n| medium 1.5 GiB | ~2.1 GB |  |\n| large | 2.9 GiB | ~3.9 GB |\n\n### **模型量化**\n\n`whisper.cpp` 支持对 ggml 模型进行量化，从而减少内存占用。要量化模型，请使用以下命令：\n\n```bash\n# quantize a model with Q5_0 method\nmake quantize\n./quantize models/ggml-base.en.bin models/ggml-base.en-q5_0.bin q5_0\n\n# run the examples as usual, specifying the quantized model file\n./main -m models/ggml-base.en-q5_0.bin ./samples/gb0.wav\n```\n\n### **Core ML 支持**\n\n在苹果系列芯片的设备上，编码器推断可以通过 Core ML 在苹果神经引擎（ANE）上执行。这可以导致显著的加速，与仅 CPU 执行相比，速度提高了 3 倍以上。以下是生成 Core ML 模型并将其与 whisper.cpp 一起使用的说明：\n\n#### **安装所需要的库**\n\n```bash\npip install ane_transformers\npip install openai-whisper\npip install coremltools\n```\n\n> [!TIP]\n> 想要成功安装 `coremltools`，你必须要安装 XCode 并且执行 `xcode-select --install` 安装命令行工具（一般安装git时这个也会一起安装）。 - 建议使用conda创建python虚拟环境，并且使用python 3.10版本 - 建议使用macos14即以上版本。\n\n#### **生成 Core ML 模型**\n\n举例如果是生成基于 base.en 模型的 Core ML 模型，执行以下命令：\n\n```bash\n./models/generate-coreml-model.sh base.en\n```\n\n#### **打包编译**\n\n```bash\n# using Makefile\nmake clean\nWHISPER_COREML=1 make -j\n# using CMake\ncmake -B build -DWHISPER_COREML=1\ncmake --build build -j --config Release\n```\n\n#### **运行**\n\n```bash\n$ ./main -m models/ggml-base.en.bin -f samples/jfk.wav\n\n...\n\nwhisper_init_state: loading Core ML model from 'models/ggml-base.en-encoder.mlmodelc'\nwhisper_init_state: first run on a device may take a while ...\nwhisper_init_state: Core ML model loaded\nsystem_info: n_threads = 4 / 10 | AVX = 0 | AVX2 = 0 | AVX512 = 0 | FMA = 0 | NEON = 1 | ARM_FMA = 1 | F16C = 0 | FP16_VA = 1 | WASM_SIMD = 0 | BLAS = 1 | SSE3 = 0 | VSX = 0 | COREML = 1 |\n\n...\n```\n\n### **N卡支持**\n\n在支持n卡的机器上，可以开启N卡加速。\n\n请确保你安装了[cuda](https://developer.nvidia.com/cuda-downloads)\n\n```bash\nmake cleanWHISPER_CUBLAS=1 make -j\n```\n\n### **实时音频转文字**\n\n```bash\nmake stream./stream -m ./models/ggml-base.en.bin -t 8 --step 500 --length 5000\n```\n\n### **信心程度显示**\n\n这种方式下会通过使用不同的颜色显示文字来表示 whisper.cpp 对音频的识别信心程度。\n\n![文章配图](https://user-images.githubusercontent.com/1991296/197356445-311c8643-9397-4e5e-b46e-0b4b4daa2530.png)\n\n```bash\n./main -m models/ggml-base.en.bin -f samples/gb0.wav --print-colors\n```\n\n### **实时字幕式**\n\n```bash\n./main -m ./models/ggml-base.en.bin -f ./samples/jfk.wav -owtssource ./samples/jfk.wav.wtsffplay ./samples/jfk.wav.mp4\n```",
     "href": "/notes/whisper-cpp-guide"
+  },
+  {
+    "slug": "docker-wait-strategy",
+    "locale": "zh",
+    "type": "note",
+    "title": "docker等待问题",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "docker中如何让一个服务等待另一个服务成功运行后再启动？ 通过如下代码配置mysql的healthycheck 通过如下代码配置等待mysql正常运行后再启动api服务",
+    "date": "2025-04-23T00:00:00.000Z",
+    "tags": [
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/1debbdbf-a033-80ac-81cc-f45aff58df33",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 107.12
+    },
+    "excerpt": "docker中如何让一个服务等待另一个服务成功运行后再启动？\n通过如下代码配置mysql的healthycheck\n  mysql:\n    container_name: mysql\n    image:\n      mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: ...\n      MYSQL_DATABASE: ...\n    volumes:\n       - ./volumes/mysql:/var/lib/mysql\n    ports:",
+    "html": "<p>docker中如何让一个服务等待另一个服务成功运行后再启动？</p>\n<p>通过如下代码配置mysql的healthycheck</p>\n<pre><code>  mysql:\n    container_name: mysql\n    image:\n      mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: ...\n      MYSQL_DATABASE: ...\n    volumes:\n       - ./volumes/mysql:/var/lib/mysql\n    ports:\n      - \"3306:3306\"\n    healthcheck:\n      test: [\"CMD\", \"mysqladmin\", \"ping\", \"--host=localhost\", \"--user=...\", \"--password=...\"]\n      interval: 30s\n      timeout: 20s\n      retries: 3\n</code></pre>\n<p>通过如下代码配置等待mysql正常运行后再启动api服务</p>\n<pre><code> api:\n    container_name: api\n    build:\n      context: api\n      dockerfile: Dockerfile\n    command: [\"sh\", \"-c\", \"python -m script.init_sql_base_data &#x26;&#x26; fastapi run main.py --proxy-headers --host 0.0.0.0 --port 8001\"]\n    volumes:\n      - ./api:/app\n    depends_on:\n      mysql:\n        condition: service_healt\n    env_file:\n      - ./api/.env.development\n</code></pre>",
+    "content": "docker中如何让一个服务等待另一个服务成功运行后再启动？\n\n通过如下代码配置mysql的healthycheck\n\n```\n  mysql:\n    container_name: mysql\n    image:\n      mysql:latest\n    environment:\n      MYSQL_ROOT_PASSWORD: ...\n      MYSQL_DATABASE: ...\n    volumes:\n       - ./volumes/mysql:/var/lib/mysql\n    ports:\n      - \"3306:3306\"\n    healthcheck:\n      test: [\"CMD\", \"mysqladmin\", \"ping\", \"--host=localhost\", \"--user=...\", \"--password=...\"]\n      interval: 30s\n      timeout: 20s\n      retries: 3\n```\n\n通过如下代码配置等待mysql正常运行后再启动api服务\n\n```\n api:\n    container_name: api\n    build:\n      context: api\n      dockerfile: Dockerfile\n    command: [\"sh\", \"-c\", \"python -m script.init_sql_base_data && fastapi run main.py --proxy-headers --host 0.0.0.0 --port 8001\"]\n    volumes:\n      - ./api:/app\n    depends_on:\n      mysql:\n        condition: service_healt\n    env_file:\n      - ./api/.env.development\n```",
+    "href": "/notes/docker-wait-strategy"
+  },
+  {
+    "slug": "earth-online",
+    "locale": "zh",
+    "type": "note",
+    "title": "地球OnLine",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "文章探讨了中国大学教育的形式主义和与现实生活的脱节，强调项目经验的重要性。作者认为，大学教育对个人成长的帮助有限，真正有意义的学习来自于创业经历和实践。毕业后，社会的压力和对传统生活轨迹的遵循使人们像游戏中的NPC一样被动生活，缺乏自主选择的能力。最终，作者质疑这种生活方式的合理性，并以“欢迎…",
+    "date": "2024-09-23T00:00:00.000Z",
+    "tags": [
+      "生活",
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/605376f7-370c-43b6-bff7-fcab974f989d",
+    "metadata": {
+      "readingTime": 3,
+      "wordCount": 664.6800000000001
+    },
+    "excerpt": "大学教育形式主义泛滥成灾，并且教授的往往和时代已经脱节。而在实际生活中，项目经历起着更为重要的作用。当前社会下的人民生活场景往往循环得如如同“NPC”游戏。对于一些思想上有所醒悟的人来说，这一点让人很痛苦。\n\n其实普通人在现在这个中国活着就和游戏中的NPC一样，并且比NPC还要更智能（虽然没有灵魂）。\n从毕业前两年左右，我就开始意识到其实大学的教育（此处我仅仅指的教育）对我来讲没有任何意义，唯一存在一定启蒙的只有一节金融管理信息系统的课程，而这节课讲的是前后端分离的一个项目，分组合作完成，用的敏捷开发模式。也是在那",
+    "html": "<p>大学教育形式主义泛滥成灾，并且教授的往往和时代已经脱节。而在实际生活中，项目经历起着更为重要的作用。当前社会下的人民生活场景往往循环得如如同“NPC”游戏。对于一些思想上有所醒悟的人来说，这一点让人很痛苦。</p>\n<hr>\n<p>其实普通人在现在这个中国活着就和游戏中的NPC一样，并且比NPC还要更智能（虽然没有灵魂）。</p>\n<p>从毕业前两年左右，我就开始意识到其实大学的教育（此处我仅仅指的教育）对我来讲没有任何意义，唯一存在一定启蒙的只有一节金融管理信息系统的课程，而这节课讲的是前后端分离的一个项目，分组合作完成，用的敏捷开发模式。也是在那节课，我了解到了前后端分离到底是什么意思，我知道了django，我知道了vue，并且切实用两者去做了实践。然后四年中真正有意义的时间，是我大三开始的创业，注意此处的有意义指的是kpi性质的，而不是okr，即目标导向的意义，价值导向的意义此处并无体现。</p>\n<p>于大三开始创业，在创业期间，历经四个月的团队合作，我们成功做出了一款小程序并且上线。期间需要接触以及学习的东西不可计量。</p>\n<p>这期间对我来说，几乎可以说熟练了 JS、SASS、TS、Python、Django、Vue、微信小程序开发、Webpack，同时基于项目是团队一起做的，也大幅度增加了交流，对前后端分离有了非常清楚的了解与认知。</p>\n<p>这一点毫无疑问是非常讽刺的，无论是技术还是交流，在我看来，四年的大学生活，不如我这一年多的初创经历。</p>\n<p>然而更加讽刺的是，当大学生活结束之后，我们被迫走上社会（当然你也可以选择 gap，但如果你家里并没有什么特殊，那么试问有多少家庭对你的 gap 充分理解与支持，别说那是自己的事儿，家人的意见我不信你一点不在乎），此时的你如果大学期间是按部就班读的，那好，接下来你要接触的，大学里大概率是没有教过你的。</p>\n<p>毕业之后，你会发现接下来的时间都被安排的明明白白，如果你是一个乖孩子，正常读书，那么此时从未被教授过前后端知识的你即将面临简历海投却没有回音的局面，你会开始怀疑自己，然后屈服于一些更加低薪，更加普通的岗位，或者考公、当老师；进入岗位后，你会发现要学的更多，如何处理同事间的关系，和领导要怎么相处，怎么称呼他人（当然，这些在私企或者外企基本还是比较简单的，此处局限于国企，至于具体原因，涉及面太广，之后有空再写一篇）；紧接着，二十五六岁的你可能还没谈过恋爱，此时一点不懂什么是真的爱的你会被催促着去找一个要陪伴终身的伴侣；然后到个三十岁不到，经济刚刚有起色的你会被催促着生个孩子；生了孩子后，发现无法逃脱现状了的你被迫屈服现实，再将这一套思想逐步灌输到你自己的孩子身上。如此循环一代又一代，完美的游戏生成了。NPC 自发维护着游戏，服从于氪金玩家的规则，服务于氪金玩家的利益。</p>\n<p>一个没有灵魂的 NPC 参与游戏也就参与了，不会有太多的想法，但当你觉醒了自己的灵魂，发现了这一套体系的问题所在，但你被迫只能参与，没法操纵自己的身体。如果你有幸做到思考与实践，那么很大程度上，你会看到这个时代对你指指点点（正常过日子好了诶，别人都这么过来的），但是问题就在与别人都这么过来的就一定对的吗？如果这是对的，那么为什么现在的他们多数都还是那副样子并没有什么特别呢？</p>\n<p>最后的最后，这个世界，我只想说一句——</p>\n<blockquote>\n<p>欢迎来到《地球Online》</p>\n</blockquote>",
+    "content": "大学教育形式主义泛滥成灾，并且教授的往往和时代已经脱节。而在实际生活中，项目经历起着更为重要的作用。当前社会下的人民生活场景往往循环得如如同“NPC”游戏。对于一些思想上有所醒悟的人来说，这一点让人很痛苦。\n\n---\n\n其实普通人在现在这个中国活着就和游戏中的NPC一样，并且比NPC还要更智能（虽然没有灵魂）。\n\n从毕业前两年左右，我就开始意识到其实大学的教育（此处我仅仅指的教育）对我来讲没有任何意义，唯一存在一定启蒙的只有一节金融管理信息系统的课程，而这节课讲的是前后端分离的一个项目，分组合作完成，用的敏捷开发模式。也是在那节课，我了解到了前后端分离到底是什么意思，我知道了django，我知道了vue，并且切实用两者去做了实践。然后四年中真正有意义的时间，是我大三开始的创业，注意此处的有意义指的是kpi性质的，而不是okr，即目标导向的意义，价值导向的意义此处并无体现。\n\n于大三开始创业，在创业期间，历经四个月的团队合作，我们成功做出了一款小程序并且上线。期间需要接触以及学习的东西不可计量。\n\n这期间对我来说，几乎可以说熟练了 JS、SASS、TS、Python、Django、Vue、微信小程序开发、Webpack，同时基于项目是团队一起做的，也大幅度增加了交流，对前后端分离有了非常清楚的了解与认知。\n\n这一点毫无疑问是非常讽刺的，无论是技术还是交流，在我看来，四年的大学生活，不如我这一年多的初创经历。\n\n然而更加讽刺的是，当大学生活结束之后，我们被迫走上社会（当然你也可以选择 gap，但如果你家里并没有什么特殊，那么试问有多少家庭对你的 gap 充分理解与支持，别说那是自己的事儿，家人的意见我不信你一点不在乎），此时的你如果大学期间是按部就班读的，那好，接下来你要接触的，大学里大概率是没有教过你的。\n\n毕业之后，你会发现接下来的时间都被安排的明明白白，如果你是一个乖孩子，正常读书，那么此时从未被教授过前后端知识的你即将面临简历海投却没有回音的局面，你会开始怀疑自己，然后屈服于一些更加低薪，更加普通的岗位，或者考公、当老师；进入岗位后，你会发现要学的更多，如何处理同事间的关系，和领导要怎么相处，怎么称呼他人（当然，这些在私企或者外企基本还是比较简单的，此处局限于国企，至于具体原因，涉及面太广，之后有空再写一篇）；紧接着，二十五六岁的你可能还没谈过恋爱，此时一点不懂什么是真的爱的你会被催促着去找一个要陪伴终身的伴侣；然后到个三十岁不到，经济刚刚有起色的你会被催促着生个孩子；生了孩子后，发现无法逃脱现状了的你被迫屈服现实，再将这一套思想逐步灌输到你自己的孩子身上。如此循环一代又一代，完美的游戏生成了。NPC 自发维护着游戏，服从于氪金玩家的规则，服务于氪金玩家的利益。\n\n一个没有灵魂的 NPC 参与游戏也就参与了，不会有太多的想法，但当你觉醒了自己的灵魂，发现了这一套体系的问题所在，但你被迫只能参与，没法操纵自己的身体。如果你有幸做到思考与实践，那么很大程度上，你会看到这个时代对你指指点点（正常过日子好了诶，别人都这么过来的），但是问题就在与别人都这么过来的就一定对的吗？如果这是对的，那么为什么现在的他们多数都还是那副样子并没有什么特别呢？\n\n最后的最后，这个世界，我只想说一句——\n\n> 欢迎来到《地球Online》",
+    "href": "/notes/earth-online"
+  },
+  {
+    "slug": "education-reflection",
+    "locale": "zh",
+    "type": "note",
+    "title": "教育",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "反思过去近二十年的学生生涯，强调个体的独特性和多样性。回忆中真正美好的并非繁重的作业和考试，而是简单而充实的生活体验。指出现代人虽然物质丰富，却常感空虚，呼吁停止内卷，强调每个人的生活都应有不同的答案，鼓励改变现状以打破僵局。",
+    "date": "2024-10-19T00:00:00.000Z",
+    "tags": [
+      "思考",
+      "生活",
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/124bbdbf-a033-8062-8d44-f0d4198d63c0",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 267.52000000000004
+    },
+    "excerpt": "【高中生晚11点上厕所被判重大违纪，现在的高中堪比“监狱”！-哔哩哔哩】 https://b23.tv/uTQDSAS\n看了视频，回想起来自己过去这近二十年的学生生涯有感而发。\n一向如此不代表就合适，更何况变本加厉。我们是人，是一个个独立的个体，有着各自的喜好，各自的特长与短处。\n很多人说工作后回想学生时代很美好， 可真正美好的，并不是早上五点半在闹钟中被惊醒，不是晚上十二点仍然做不完的作业，不是一张张永远做不完的试卷，不是一周为数不多的课外活动都要被语数英替代几节，不是上课想上个厕所都得举手报告；而是不需要考虑什",
+    "html": "<p>【高中生晚11点上厕所被判重大违纪，现在的高中堪比“监狱”！-哔哩哔哩】 <a href=\"https://b23.tv/uTQDSAS\">https://b23.tv/uTQDSAS</a></p>\n<p>看了视频，回想起来自己过去这近二十年的学生生涯有感而发。</p>\n<p>一向如此不代表就合适，更何况变本加厉。我们是人，是一个个独立的个体，有着各自的喜好，各自的特长与短处。</p>\n<p>很多人说工作后回想学生时代很美好， 可真正美好的，并不是早上五点半在闹钟中被惊醒，不是晚上十二点仍然做不完的作业，不是一张张永远做不完的试卷，不是一周为数不多的课外活动都要被语数英替代几节，不是上课想上个厕所都得举手报告；而是不需要考虑什么时候被裁的日子，是简简单单却又充满惊喜的平淡生活，是遇到某个人时产生的那份朦胧的情感，是那体育课上尽情挥洒的汗水。</p>\n<p>那时没有手机，没有money，好像什么都没有，但我们的心中却那么充实，感觉拥有了全世界。现如今有了手机，有了money，本应更加满足，但很多人偏偏心却空了。如果只是一两个人有这个问题，那或许能说是个人的问题，但当这个问题普及成这般的时候，问题的根源就不在个人身上了。</p>\n<p>吃苦不值得被歌颂，人生这场“考试”，没有，也不应该有标准答案。每份答卷都可以是满分。 不要内卷了，不要内卷了，不要内卷了。</p>\n<p>在这个时代，确实有很多事情要改，改完后的结果好坏也的确犹未可知，但如果没人去改变，那僵局永远存在。</p>",
+    "content": "【高中生晚11点上厕所被判重大违纪，现在的高中堪比“监狱”！-哔哩哔哩】 [https://b23.tv/uTQDSAS](https://b23.tv/uTQDSAS)\n\n看了视频，回想起来自己过去这近二十年的学生生涯有感而发。\n\n一向如此不代表就合适，更何况变本加厉。我们是人，是一个个独立的个体，有着各自的喜好，各自的特长与短处。\n\n很多人说工作后回想学生时代很美好， 可真正美好的，并不是早上五点半在闹钟中被惊醒，不是晚上十二点仍然做不完的作业，不是一张张永远做不完的试卷，不是一周为数不多的课外活动都要被语数英替代几节，不是上课想上个厕所都得举手报告；而是不需要考虑什么时候被裁的日子，是简简单单却又充满惊喜的平淡生活，是遇到某个人时产生的那份朦胧的情感，是那体育课上尽情挥洒的汗水。\n\n那时没有手机，没有money，好像什么都没有，但我们的心中却那么充实，感觉拥有了全世界。现如今有了手机，有了money，本应更加满足，但很多人偏偏心却空了。如果只是一两个人有这个问题，那或许能说是个人的问题，但当这个问题普及成这般的时候，问题的根源就不在个人身上了。\n\n吃苦不值得被歌颂，人生这场“考试”，没有，也不应该有标准答案。每份答卷都可以是满分。 不要内卷了，不要内卷了，不要内卷了。\n\n在这个时代，确实有很多事情要改，改完后的结果好坏也的确犹未可知，但如果没人去改变，那僵局永远存在。",
+    "href": "/notes/education-reflection"
+  },
+  {
+    "slug": "japan-travel-notes",
+    "locale": "zh",
+    "type": "note",
+    "title": "日本旅游",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "日本旅行のハイライトには、金閣寺の美しい紅葉、二三坂の抹茶チョコレート店、清水寺の伝統的な雰囲気、大阪ユニバーサルスタジオのスリリングなジェットコースター体験、迷いやすい日本の地下鉄の利用法、心斎橋でのショッピングの注意点が含まれています。特に、Suicaカードの便利さと、免税手続きに必要なパ…",
+    "date": "2024-12-04T00:00:00.000Z",
+    "tags": [
+      "旅游",
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/151bbdbf-a033-80b6-80b8-e0baa2f8047f",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 321.04
+    },
+    "excerpt": "1️⃣ 金阁寺 这是个大大超出预期的地点，本来对于寺庙的预期最大的是清水寺，但实际真正到达金阁寺的一瞬间，门口的那一排红枫就已经震撼到我了。进去以后的实际金寺被一群彩色的绿植所簇拥着，一只凤凰立在其顶，超级美。\n\n\n2️⃣ 二三坂 由于下雨的关系（而且雨还不小），实际体验是另一种韵味。但因为一天走了太多的关系而且二三坂坡度着实还是有点的，实在是有点累。但这里有抹茶的那家店（卖糖的），强推他们家的抹茶巧克力，真的好好吃（只买了两盒的我事后该多买点）。\n3️⃣ 清水寺 和二三坂紧邻，往上走到顶就是清水寺，由于天气关系且",
+    "html": "<p>1️⃣ 金阁寺 这是个大大超出预期的地点，本来对于寺庙的预期最大的是清水寺，但实际真正到达金阁寺的一瞬间，门口的那一排红枫就已经震撼到我了。进去以后的实际金寺被一群彩色的绿植所簇拥着，一只凤凰立在其顶，超级美。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635512.JPG\" alt=\"文章配图\"></p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"文章配图\"></p>\n<p>2️⃣ 二三坂 由于下雨的关系（而且雨还不小），实际体验是另一种韵味。但因为一天走了太多的关系而且二三坂坡度着实还是有点的，实在是有点累。但这里有抹茶的那家店（卖糖的），强推他们家的抹茶巧克力，真的好好吃（只买了两盒的我事后该多买点）。</p>\n<p>3️⃣ 清水寺 和二三坂紧邻，往上走到顶就是清水寺，由于天气关系且我们已经是晚上了，可惜没看到满是红叶的场景。整体风格比较传统。</p>\n<p>4️⃣ 大阪环球 好莱坞过山车无敌！！！我从没想到过山车可以这么嗨，osaka lover这一首bgm配上过山车的失重感（时间上也比我想象的要久一些）以及迎面而来的风，很难用言语表达这种感觉。</p>\n<p>5️⃣ 关于地铁 日本的地铁真的很迷很迷很迷！也可能是我头一回去，几天的行程有很多时间都耽搁在了迷路。不要用高德，一定要用google maps，然后google maps中有些地铁线路的标识实际日本地铁是没有标的，有时候可以看标，但有时候必须看全称，所以你如果找不到对应地铁的英文简称标识的话就找全称！不过suica card真的很好用，苹果手机这方面确实方便，全程不需要打开手机，靠近碰一下就过。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"文章配图\"></p>\n<p>6️⃣ 关于购物 日本心斋桥大多商店基本统一8点关门，所以你如果要购物的话一定要合理安排时间，以及记得带上护照，免税需要这个。至于饮食的话反而不用太过担心，因为有不少关门比较晚的店家（但旺季会出现很长的排队现象）。</p>",
+    "content": "1️⃣ 金阁寺 这是个大大超出预期的地点，本来对于寺庙的预期最大的是清水寺，但实际真正到达金阁寺的一瞬间，门口的那一排红枫就已经震撼到我了。进去以后的实际金寺被一群彩色的绿植所簇拥着，一只凤凰立在其顶，超级美。\n\n![文章配图](https://oss.kinda.info/image/202412041635512.JPG)\n\n![文章配图](https://oss.kinda.info/image/202412041635218.JPG)\n\n2️⃣ 二三坂 由于下雨的关系（而且雨还不小），实际体验是另一种韵味。但因为一天走了太多的关系而且二三坂坡度着实还是有点的，实在是有点累。但这里有抹茶的那家店（卖糖的），强推他们家的抹茶巧克力，真的好好吃（只买了两盒的我事后该多买点）。\n\n3️⃣ 清水寺 和二三坂紧邻，往上走到顶就是清水寺，由于天气关系且我们已经是晚上了，可惜没看到满是红叶的场景。整体风格比较传统。\n\n4️⃣ 大阪环球 好莱坞过山车无敌！！！我从没想到过山车可以这么嗨，osaka lover这一首bgm配上过山车的失重感（时间上也比我想象的要久一些）以及迎面而来的风，很难用言语表达这种感觉。\n\n5️⃣ 关于地铁 日本的地铁真的很迷很迷很迷！也可能是我头一回去，几天的行程有很多时间都耽搁在了迷路。不要用高德，一定要用google maps，然后google maps中有些地铁线路的标识实际日本地铁是没有标的，有时候可以看标，但有时候必须看全称，所以你如果找不到对应地铁的英文简称标识的话就找全称！不过suica card真的很好用，苹果手机这方面确实方便，全程不需要打开手机，靠近碰一下就过。\n\n![文章配图](https://oss.kinda.info/image/202412041635465.JPG)\n\n6️⃣ 关于购物 日本心斋桥大多商店基本统一8点关门，所以你如果要购物的话一定要合理安排时间，以及记得带上护照，免税需要这个。至于饮食的话反而不用太过担心，因为有不少关门比较晚的店家（但旺季会出现很长的排队现象）。",
+    "href": "/notes/japan-travel-notes"
+  },
+  {
+    "slug": "media-governance-reflection",
+    "locale": "zh",
+    "type": "note",
+    "title": "完善对国内自媒体的管控迫在眉睫",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "文章探讨了男女对立的根源，认为这种对立源于误解和极端思维的传播。强调男女关系的本质是互惠互利，婚姻的起源在于物质保障而非爱情。当前社会矛盾主要在于贫富差距，而自媒体的极端言论加剧了对立，模糊了真正的问题。建议减少对自媒体的关注，培养批判性思维，并呼吁政府加强对自媒体的监管，以促进理性对话和理解。",
+    "date": "2025-01-31T00:00:00.000Z",
+    "tags": [
+      "思考",
+      "生活",
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/6beba509-dfce-493f-b76b-214e3014178d",
+    "metadata": {
+      "readingTime": 2,
+      "wordCount": 594.6
+    },
+    "excerpt": "\n菩提本无树，明镜亦非台；本来无一物，何处惹尘埃。\n\n看着纷杂的自媒体的推送，没来由的心中多了很多的烦恼。\n男女本身没有什么对立的地方，唯一存在较大的不同那就是女生存在子宫要生孩子，而这本身并不是男性的错，遇到事情就拿这个说话等于忽视了两件事情。\n\n\n其一：男性在女性生育期间的所有付出\n\n\n其二：生育这件事情并不是给男方生孩子，而是双方的爱情结晶\n\n\n如果对这两者没有清晰的认知，那请你千万别生。\n婚姻的起源\n自远古时代，男女结合的目的本身就是彼此利益互换\n\n\n女方给男方提供性需求价值\n\n\n男方能够给予女方足够的保护",
+    "html": "<blockquote>\n<p>菩提本无树，明镜亦非台；本来无一物，何处惹尘埃。</p>\n</blockquote>\n<p>看着纷杂的自媒体的推送，没来由的心中多了很多的烦恼。</p>\n<p>男女本身没有什么对立的地方，唯一存在较大的不同那就是女生存在子宫要生孩子，而这本身并不是男性的错，遇到事情就拿这个说话等于忽视了两件事情。</p>\n<ul>\n<li>\n<p>其一：男性在女性生育期间的所有付出</p>\n</li>\n<li>\n<p>其二：生育这件事情并不是给男方生孩子，而是双方的爱情结晶</p>\n</li>\n</ul>\n<p>如果对这两者没有清晰的认知，那请你千万别生。</p>\n<h2>婚姻的起源</h2>\n<p>自远古时代，男女结合的目的本身就是彼此利益互换</p>\n<ul>\n<li>\n<p>女方给男方提供性需求价值</p>\n</li>\n<li>\n<p>男方能够给予女方足够的保护来度过相对虚弱的生育期</p>\n</li>\n</ul>\n<p>爱情并不是在婚姻之前产生的，恰恰相反，婚姻产生之后经过很久很久，当物质得到一定的满足，人们有足够的精力去思考更多的人性的光辉面，才产生了爱情这种概念。</p>\n<p>当下引起男女对立的人，本质上非蠢即坏，而且是极蠢极坏。就目前而言，国内真正的矛盾在于贫富悬殊，即资源分配不平衡导致的阶级矛盾。但资方通过掌控各大自媒体平台，在极大程度上掌控了对舆论的引导权。刻意迎合部分极端女权/男权的想法，就目前国内而言，极端女权更为严重的多，这极大的增长了这些极端化的思维，同时在通过召集水军，进一步宣传极端思维主义，打压异性，促使两极分化，从而令人们无心顾及真正的矛盾所在——贫富阶级矛盾。更有甚者，一些境外势力通过渗透自媒体的角角落落进一步来促进极端思维的诞生与传播，从而促使中国自内部瓦解。</p>\n<p>这种舆论导向不仅加剧了社会矛盾，也模糊了真正需要解决的问题。我们应该警惕这种操纵，努力促进理性对话和互相理解。只有摒弃偏见、超越对立，我们才能共同面对和解决更深层次的社会问题。</p>\n<blockquote>\n<p>偏听则暗，兼听则明。</p>\n</blockquote>\n<p>在这种复杂的社会环境中，我们每个人都有责任保持清醒的头脑，不被片面的信息所误导。我们应该努力培养批判性思维，主动寻求多元化的信息来源，以形成更全面、客观的观点。只有这样，我们才能真正理解并解决社会中的深层次问题，而不是被表面的对立所分散注意力。</p>\n<h2>实践上</h2>\n<h3>从群众出发</h3>\n<p>我们可以尽量减少对自媒体的关注和浏览，同时关闭所有自媒体的推送，能关闭的个性推荐尽量关闭，尤其减少某音、某书的相关推荐（当然，就眼下的B站而言，亦是如此）。能屏蔽的账号尽量屏蔽。</p>\n<h3>从政府出发</h3>\n<p>资本都是逐利的，所以本质上无法真正让资本进行自控，这方面必须要政府进行监督。增强对各大自媒体平台的管控，尤其注意极端思维的诞生与传播。自自媒体诞生以来，无论是各种谣言还是极端思维的传播成本大大降低，仅仅几秒钟的视频，几十字的文案，一秒钟内便能够通过网络传播到全国各地。为什么从前的时候没有这么多极端思维？那是因为没有网络，传播的成本远大于创造的成本。</p>\n<p>为什么我常常推荐多看书或者长博客而少看自媒体？因为前者需要的成本是很高的，真正去做这些事情的人不是奔着赚快钱去的，他们在做的是真正的记录和引导。</p>",
+    "content": "> 菩提本无树，明镜亦非台；本来无一物，何处惹尘埃。\n\n看着纷杂的自媒体的推送，没来由的心中多了很多的烦恼。\n\n男女本身没有什么对立的地方，唯一存在较大的不同那就是女生存在子宫要生孩子，而这本身并不是男性的错，遇到事情就拿这个说话等于忽视了两件事情。\n\n- 其一：男性在女性生育期间的所有付出\n\n- 其二：生育这件事情并不是给男方生孩子，而是双方的爱情结晶\n\n如果对这两者没有清晰的认知，那请你千万别生。\n\n## 婚姻的起源\n\n自远古时代，男女结合的目的本身就是彼此利益互换\n\n- 女方给男方提供性需求价值\n\n- 男方能够给予女方足够的保护来度过相对虚弱的生育期\n\n爱情并不是在婚姻之前产生的，恰恰相反，婚姻产生之后经过很久很久，当物质得到一定的满足，人们有足够的精力去思考更多的人性的光辉面，才产生了爱情这种概念。\n\n当下引起男女对立的人，本质上非蠢即坏，而且是极蠢极坏。就目前而言，国内真正的矛盾在于贫富悬殊，即资源分配不平衡导致的阶级矛盾。但资方通过掌控各大自媒体平台，在极大程度上掌控了对舆论的引导权。刻意迎合部分极端女权/男权的想法，就目前国内而言，极端女权更为严重的多，这极大的增长了这些极端化的思维，同时在通过召集水军，进一步宣传极端思维主义，打压异性，促使两极分化，从而令人们无心顾及真正的矛盾所在——贫富阶级矛盾。更有甚者，一些境外势力通过渗透自媒体的角角落落进一步来促进极端思维的诞生与传播，从而促使中国自内部瓦解。\n\n这种舆论导向不仅加剧了社会矛盾，也模糊了真正需要解决的问题。我们应该警惕这种操纵，努力促进理性对话和互相理解。只有摒弃偏见、超越对立，我们才能共同面对和解决更深层次的社会问题。\n\n> 偏听则暗，兼听则明。\n\n在这种复杂的社会环境中，我们每个人都有责任保持清醒的头脑，不被片面的信息所误导。我们应该努力培养批判性思维，主动寻求多元化的信息来源，以形成更全面、客观的观点。只有这样，我们才能真正理解并解决社会中的深层次问题，而不是被表面的对立所分散注意力。\n\n## 实践上\n\n### 从群众出发\n\n我们可以尽量减少对自媒体的关注和浏览，同时关闭所有自媒体的推送，能关闭的个性推荐尽量关闭，尤其减少某音、某书的相关推荐（当然，就眼下的B站而言，亦是如此）。能屏蔽的账号尽量屏蔽。\n\n### 从政府出发\n\n资本都是逐利的，所以本质上无法真正让资本进行自控，这方面必须要政府进行监督。增强对各大自媒体平台的管控，尤其注意极端思维的诞生与传播。自自媒体诞生以来，无论是各种谣言还是极端思维的传播成本大大降低，仅仅几秒钟的视频，几十字的文案，一秒钟内便能够通过网络传播到全国各地。为什么从前的时候没有这么多极端思维？那是因为没有网络，传播的成本远大于创造的成本。\n\n为什么我常常推荐多看书或者长博客而少看自媒体？因为前者需要的成本是很高的，真正去做这些事情的人不是奔着赚快钱去的，他们在做的是真正的记录和引导。",
+    "href": "/notes/media-governance-reflection"
+  },
+  {
+    "slug": "notion-webhooks",
+    "locale": "zh",
+    "type": "note",
+    "title": "喜大普奔，Notion终于支持WebHook了",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。 有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了 我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持…",
+    "date": "2025-04-03T00:00:00.000Z",
+    "tags": [
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/1c9bbdbf-a033-8022-8e0e-ef3186a6f6c4",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 106.2
+    },
+    "excerpt": "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。\n有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了\n我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。\n灵感这不就来了！\n具体操作\n处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api",
+    "html": "<p>今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。</p>\n<p>有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了</p>\n<p>我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。</p>\n<p>灵感这不就来了！</p>\n<h1>具体操作</h1>\n<p>处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api触发笔记服务部署，bingo！链路打通！</p>",
+    "content": "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。\n\n有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了\n\n我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。\n\n灵感这不就来了！\n\n# 具体操作\n\n处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api触发笔记服务部署，bingo！链路打通！",
+    "href": "/notes/notion-webhooks"
+  },
+  {
+    "slug": "robotaxi-reflection",
+    "locale": "zh",
+    "type": "note",
+    "title": "萝卜快跑引起的思考",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "在国内，追逐AI应用落地可能导致人工智能替代人类的问题，尤其在当前国内的情况下。大规模增加无人驾驶汽车可能导致大量司机失业，进而增加无业游民，导致社会混乱。",
+    "date": "2024-07-23T00:00:00.000Z",
+    "tags": [
+      "ai",
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/d8195951-b1df-4cf8-b844-5b990ec623fb",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 100.12
+    },
+    "excerpt": "在国内，任何公司都以盈利为第一目标，这种场景下是很难去真正做出底层突破的。\n狂热追逐ai应用落地只会导致ai高度替换人类，在真正的未来，人人富足，生产力极大丰富的时候，那将不是问题，但就眼下的国内而言，是完全不合适的。\n\n2023年2月24日，百度\"萝卜快跑\"自动驾驶出租车在武汉市的公路上行驶。\n大幅的增加无人驾驶汽车会导致大批量的司机失业，继而导致无业游民的增加。一方面没钱赚，另一方面没事情做，社会就会很快变的混乱。",
+    "html": "<p>在国内，任何公司都以盈利为第一目标，这种场景下是很难去真正做出底层突破的。</p>\n<p>狂热追逐ai应用落地只会导致ai高度替换人类，在真正的未来，人人富足，生产力极大丰富的时候，那将不是问题，但就眼下的国内而言，是完全不合适的。</p>\n<p><img src=\"/images/archive/kinda-info/robotaxi-reflection/image-1.jpg\" alt=\"文章配图\"></p>\n<p><em>2023年2月24日，百度\"萝卜快跑\"自动驾驶出租车在武汉市的公路上行驶。</em></p>\n<p>大幅的增加无人驾驶汽车会导致大批量的司机失业，继而导致无业游民的增加。一方面没钱赚，另一方面没事情做，社会就会很快变的混乱。</p>",
+    "content": "在国内，任何公司都以盈利为第一目标，这种场景下是很难去真正做出底层突破的。\n\n狂热追逐ai应用落地只会导致ai高度替换人类，在真正的未来，人人富足，生产力极大丰富的时候，那将不是问题，但就眼下的国内而言，是完全不合适的。\n\n![文章配图](/images/archive/kinda-info/robotaxi-reflection/image-1.jpg)\n\n_2023年2月24日，百度\"萝卜快跑\"自动驾驶出租车在武汉市的公路上行驶。_\n\n大幅的增加无人驾驶汽车会导致大批量的司机失业，继而导致无业游民的增加。一方面没钱赚，另一方面没事情做，社会就会很快变的混乱。",
+    "href": "/notes/robotaxi-reflection"
+  },
+  {
+    "slug": "values-and-effort",
+    "locale": "zh",
+    "type": "note",
+    "title": "价值观的分辨",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "评价一个人的指标应该是他是否有目标的同时也在为之努力，而不是仅仅看他是否在赚钱。问题出在财富分配标准和社会奖励机制上，导致家长和孩子的角度不同。财富分配问题需要解决，以避免对努力的人产生误解和不公正的评价。",
+    "date": "2024-07-25T00:00:00.000Z",
+    "tags": [
+      "思考",
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/1611047c-237a-4600-99d3-48135a67d261",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 189.84000000000003
+    },
+    "excerpt": "评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n\n评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n个人觉得：问题不是出在家长身上，也不是出在孩子身上，是出在财富分配标准和社会奖励机制上。\n家长角度：\n理想的底线是生存，任何人最起码应该保证自己的生存，如果连生存都需要靠别人，那还谈何理想目标。\n孩子角度：\n我已经很努力了，我也有我自己的目标，我只是没有赚到钱，为什么就一定说我这样子的人是不要好的人呢？\n其实双方都没有错，只",
+    "html": "<p>评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。</p>\n<hr>\n<blockquote>\n<p>评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。</p>\n</blockquote>\n<p>个人觉得：问题不是出在家长身上，也不是出在孩子身上，是出在财富分配标准和社会奖励机制上。</p>\n<p>家长角度：</p>\n<p>理想的底线是生存，任何人最起码应该保证自己的生存，如果连生存都需要靠别人，那还谈何理想目标。</p>\n<p>孩子角度：</p>\n<p>我已经很努力了，我也有我自己的目标，我只是没有赚到钱，为什么就一定说我这样子的人是不要好的人呢？</p>\n<p>其实双方都没有错，只是角度不同。本质上是财富的分配出了问题，并且很巧妙的，不知道被哪方人员给长辈们成功渲染了一种思维，那就是，你长久的不赚钱，一直靠我们，就是不太好，如果孩子在努力，那么大多数家长或许会一定程度上认可，但是依然避免不了心里放不下，或者说有一定芥蒂。</p>",
+    "content": "评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n---\n\n> 评价一个人的指标不应该是他是否在赚钱，是否能够赚钱，而应该是他是否有目标的同时也在为之努力。\n\n个人觉得：问题不是出在家长身上，也不是出在孩子身上，是出在财富分配标准和社会奖励机制上。\n\n家长角度：\n\n理想的底线是生存，任何人最起码应该保证自己的生存，如果连生存都需要靠别人，那还谈何理想目标。\n\n孩子角度：\n\n我已经很努力了，我也有我自己的目标，我只是没有赚到钱，为什么就一定说我这样子的人是不要好的人呢？\n\n其实双方都没有错，只是角度不同。本质上是财富的分配出了问题，并且很巧妙的，不知道被哪方人员给长辈们成功渲染了一种思维，那就是，你长久的不赚钱，一直靠我们，就是不太好，如果孩子在努力，那么大多数家长或许会一定程度上认可，但是依然避免不了心里放不下，或者说有一定芥蒂。",
+    "href": "/notes/values-and-effort"
+  },
+  {
+    "slug": "what-to-do-and-not-do",
+    "locale": "zh",
+    "type": "note",
+    "title": "该做什么不该做什么",
+    "eyebrow": "旧站归档 · KINDA.INFO",
+    "summary": "生活就像一片荒野，在荒野中我们才能找到自己。文章提到了拒绝多巴胺、欢迎内啡肽的生理基础，不要频繁放纵自己和长期呆在舒适区的问题，以及学会主动、不要过度准备、拒绝拖延症、活在当下和减少与人交流出门放空的方法来应对郁闷的情绪。",
+    "date": "2026-04-27T00:00:00.000Z",
+    "tags": [
+      "生活",
+      "思考",
+      "归档"
+    ],
+    "featured": false,
+    "source": "https://kinda.info/post/bd43b6d9-e9dc-45ef-bc0e-c21fc6ce8b7d",
+    "metadata": {
+      "readingTime": 3,
+      "wordCount": 795.2400000000001
+    },
+    "excerpt": "人生是旷野，在旷野中，我们才能找到自己。\n\n\n为什么写这篇\n今天本来心情并不怎么好，有种莫名其妙的烦躁感，可能因为最近有太多莫名其妙的事情了，一件接一件，打破了很多接下来的安排。但这趟出门让我豁然开朗了一些。也因此对让自己郁闷的原因以及让自己开朗的方法作一番记录。\n生理基础\n拒绝多巴胺，欢迎内啡肽。（非绝对）\n\n多巴胺\n\n\n多巴胺是什么？它是一种能带来能量和动力的神经传导物质，不仅能左右人们的行为，还参与情爱过程，激发人对异性情感的产生。此外，多巴胺对我们的身心健康有着至关重要的作用，同时还跟愉悦和满足感有关，当我",
+    "html": "<p>人生是旷野，在旷野中，我们才能找到自己。</p>\n<p><img src=\"https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402112218604.jpg\" alt=\"文章配图\"></p>\n<hr>\n<h2>为什么写这篇</h2>\n<p>今天本来心情并不怎么好，有种莫名其妙的烦躁感，可能因为最近有太多莫名其妙的事情了，一件接一件，打破了很多接下来的安排。但这趟出门让我豁然开朗了一些。也因此对让自己郁闷的原因以及让自己开朗的方法作一番记录。</p>\n<h2>生理基础</h2>\n<p>拒绝多巴胺，欢迎内啡肽。（非绝对）</p>\n<ul>\n<li>多巴胺</li>\n</ul>\n<blockquote>\n<p>多巴胺是什么？它是一种能带来能量和动力的神经传导物质，不仅能左右人们的行为，还参与情爱过程，激发人对异性情感的产生。此外，多巴胺对我们的身心健康有着至关重要的作用，同时还跟愉悦和满足感有关，当我们经历新鲜、刺激或具有挑战性的事情时，大脑中就会分泌多巴胺。</p>\n</blockquote>\n<ul>\n<li>内啡肽</li>\n</ul>\n<blockquote>\n<p>内啡肽（endorphin）亦称安多芬或脑内啡，是一种内成性（脑下垂体分泌）的类吗啡生物化学合成物激素。它是由脑下垂体和脊椎动物的丘脑下部所分泌的氨基化合物（肽） 。它能与吗啡受体结合，产生跟吗啡、鸦片剂一样的止痛效果和欣快感。等同天然的镇痛剂。利用药物可增加脑内啡的分泌效果。</p>\n</blockquote>\n<blockquote>\n<p>内啡肽是使人感觉喜乐的激素，想要摆脱担心和忧虑就必须得到这一激素的帮助。为了能经常分泌内啡肽，最好带着欢笑活着。这是以分泌喜乐激素内啡肽来减轻痛苦的一个生命法则。内啡肽同血清素一样，有必要就分泌，无必要就减少，若内啡肽的生产遗传基因麻木，无所反应，就无法感觉到喜乐和幸福。因此，完全从忧郁症中解放出来的途径，是生活的环境总要符合内啡肽和血清素的需要。</p>\n</blockquote>\n<h2>不要频繁放纵自己</h2>\n<p>频繁的放纵自己，沉迷”奶头乐“，一刷 b 站就停不下来，打开此类软件后就忘记自己打开它的目的，沉迷下滑无法自拔，频繁 xxoo（手动狗头）。长时间的沉迷于这些行为会导致多巴胺频繁分泌。 多巴胺恢复稳态是需要时间的的，如果你在前一次的情绪恢复（多巴胺恢复稳态）之前又一次的刺激他，那么会导致你的快乐的阈值变高，此时原先你觉得 happy 的事情将会对你的情绪快乐毫无作用。需要更大的刺激来令多巴胺继续分泌，而这就会导致你陷入一个极度的恶性循坏。如果你真的陷入了这样的循环，那么你需要逼自己远离那些之前令你陷入这个循环的事情一阵子，这段时间可能是两周，也可能是一个月，这确实需要一段很长的时间，但你一定要坚持克制自己，不然这可能会毁了你。</p>\n<h2>不要长期呆在舒适区</h2>\n<blockquote>\n<p>鸟儿想学会飞翔，都要先跳下悬崖。</p>\n</blockquote>\n<p>长期呆在自己的舒适区，不敢跨出脚步，不仅会导致自己失去前进的动力，更会导致自己精神逐渐摆烂，能力退步，形成恶性循环。要学会走出去，跨出去。</p>\n<h2>学会主动</h2>\n<p>遇事总选择被动等待，很少主动出击，和人有关的事情更是如此，这会导致你错过无数的机会。无论是事业上还是情感上，好事儿都对主动的人青睐有加。</p>\n<h2>不要过度准备</h2>\n<blockquote>\n<p>Just do it</p>\n</blockquote>\n<p>经常会有这种情况发生，明明在别人看来自己已经准备的差不多了，但是自己往往会觉得还缺点什么。</p>\n<p>长期如此会严重损害自己的积极性和自信心。人类的行动是需要积极反馈才能有做下去的动力的。</p>\n<p>学会 MVP 思想，边尝试边准备，避免过度准备。</p>\n<h2>拒绝拖延症</h2>\n<blockquote>\n<p>明日复明日，明日何其多。我生待明日，万事成蹉跎。</p>\n</blockquote>\n<p>总是能多拖一时就多拖一时，能多拖一天就多拖一天。长期如此会导致事情堆积，失去处理的动力。并且未来是无法预测的，能当下解决就尽量当下解决，不要拖延。</p>\n<h2>活在当下</h2>\n<p>尽可能不要安排太遥远的事情，这个遥远不仅指的能力上，也指的时间上，活在当下，减少期待，未来的生活谁都无法准确预料到。</p>\n<h2>减少和人的交流，出门放空</h2>\n<p>当你郁闷的时候，任何人和你聊天，你都会有一种发自心底的烦躁感，你的言辞也会带有一股闷气，此时和别人说一些生活琐事大概率只会导致情况更为严重，甚至包括和家人沟通。</p>\n<p>如果此时天气好，那么不要犹豫，直接出门散步溜达，避免去人多的地方，去户外走走，运动运动；如果天气不好，那么可以去室内泳池游个泳，去健身房健个身，去球馆打个球，去 ktv 狂吼一嗓。各种方式都行，只要是你喜欢的发泄情绪的方式，当然，得是有益的=。=。</p>",
+    "content": "人生是旷野，在旷野中，我们才能找到自己。\n\n![文章配图](https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402112218604.jpg)\n\n---\n\n## 为什么写这篇\n\n今天本来心情并不怎么好，有种莫名其妙的烦躁感，可能因为最近有太多莫名其妙的事情了，一件接一件，打破了很多接下来的安排。但这趟出门让我豁然开朗了一些。也因此对让自己郁闷的原因以及让自己开朗的方法作一番记录。\n\n## 生理基础\n\n拒绝多巴胺，欢迎内啡肽。（非绝对）\n\n- 多巴胺\n\n> 多巴胺是什么？它是一种能带来能量和动力的神经传导物质，不仅能左右人们的行为，还参与情爱过程，激发人对异性情感的产生。此外，多巴胺对我们的身心健康有着至关重要的作用，同时还跟愉悦和满足感有关，当我们经历新鲜、刺激或具有挑战性的事情时，大脑中就会分泌多巴胺。\n\n- 内啡肽\n\n> 内啡肽（endorphin）亦称安多芬或脑内啡，是一种内成性（脑下垂体分泌）的类吗啡生物化学合成物激素。它是由脑下垂体和脊椎动物的丘脑下部所分泌的氨基化合物（肽） 。它能与吗啡受体结合，产生跟吗啡、鸦片剂一样的止痛效果和欣快感。等同天然的镇痛剂。利用药物可增加脑内啡的分泌效果。\n\n> 内啡肽是使人感觉喜乐的激素，想要摆脱担心和忧虑就必须得到这一激素的帮助。为了能经常分泌内啡肽，最好带着欢笑活着。这是以分泌喜乐激素内啡肽来减轻痛苦的一个生命法则。内啡肽同血清素一样，有必要就分泌，无必要就减少，若内啡肽的生产遗传基因麻木，无所反应，就无法感觉到喜乐和幸福。因此，完全从忧郁症中解放出来的途径，是生活的环境总要符合内啡肽和血清素的需要。\n\n## 不要频繁放纵自己\n\n频繁的放纵自己，沉迷”奶头乐“，一刷 b 站就停不下来，打开此类软件后就忘记自己打开它的目的，沉迷下滑无法自拔，频繁 xxoo（手动狗头）。长时间的沉迷于这些行为会导致多巴胺频繁分泌。 多巴胺恢复稳态是需要时间的的，如果你在前一次的情绪恢复（多巴胺恢复稳态）之前又一次的刺激他，那么会导致你的快乐的阈值变高，此时原先你觉得 happy 的事情将会对你的情绪快乐毫无作用。需要更大的刺激来令多巴胺继续分泌，而这就会导致你陷入一个极度的恶性循坏。如果你真的陷入了这样的循环，那么你需要逼自己远离那些之前令你陷入这个循环的事情一阵子，这段时间可能是两周，也可能是一个月，这确实需要一段很长的时间，但你一定要坚持克制自己，不然这可能会毁了你。\n\n## 不要长期呆在舒适区\n\n> 鸟儿想学会飞翔，都要先跳下悬崖。\n\n长期呆在自己的舒适区，不敢跨出脚步，不仅会导致自己失去前进的动力，更会导致自己精神逐渐摆烂，能力退步，形成恶性循环。要学会走出去，跨出去。\n\n## 学会主动\n\n遇事总选择被动等待，很少主动出击，和人有关的事情更是如此，这会导致你错过无数的机会。无论是事业上还是情感上，好事儿都对主动的人青睐有加。\n\n## 不要过度准备\n\n> Just do it\n\n经常会有这种情况发生，明明在别人看来自己已经准备的差不多了，但是自己往往会觉得还缺点什么。\n\n长期如此会严重损害自己的积极性和自信心。人类的行动是需要积极反馈才能有做下去的动力的。\n\n学会 MVP 思想，边尝试边准备，避免过度准备。\n\n## 拒绝拖延症\n\n> 明日复明日，明日何其多。我生待明日，万事成蹉跎。\n\n总是能多拖一时就多拖一时，能多拖一天就多拖一天。长期如此会导致事情堆积，失去处理的动力。并且未来是无法预测的，能当下解决就尽量当下解决，不要拖延。\n\n## 活在当下\n\n尽可能不要安排太遥远的事情，这个遥远不仅指的能力上，也指的时间上，活在当下，减少期待，未来的生活谁都无法准确预料到。\n\n## 减少和人的交流，出门放空\n\n当你郁闷的时候，任何人和你聊天，你都会有一种发自心底的烦躁感，你的言辞也会带有一股闷气，此时和别人说一些生活琐事大概率只会导致情况更为严重，甚至包括和家人沟通。\n\n如果此时天气好，那么不要犹豫，直接出门散步溜达，避免去人多的地方，去户外走走，运动运动；如果天气不好，那么可以去室内泳池游个泳，去健身房健个身，去球馆打个球，去 ktv 狂吼一嗓。各种方式都行，只要是你喜欢的发泄情绪的方式，当然，得是有益的=。=。",
+    "href": "/notes/what-to-do-and-not-do"
   }
 ]

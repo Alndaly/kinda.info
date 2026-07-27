@@ -107,3 +107,6 @@ pnpm content:import-legacy
 导入器会保留标题、日期、标签、代码、列表、提示框、公式、表格和图片，并将
 Notion 私有图片保存到 `public/images/archive/`。两个来源重复的 Neo4j 文章由现有
 `notes/neo4j-python-guide.mdx` 统一承接，不会重复生成。
+
+旧版 `/posts` 与 `/post/<UUID>` 地址会通过永久重定向进入新的 `/notes` 路由，
+历史收藏和外部链接无需手动更新。

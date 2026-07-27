@@ -1,4 +1,4 @@
-import { access, mkdir, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
@@ -42,17 +42,9 @@ const huaqindaSlugs = {
   'Sample采样器': 'stable-diffusion-samplers',
 };
 
-const kindaSlugs = {
-  'bd43b6d9-e9dc-45ef-bc0e-c21fc6ce8b7d': 'what-to-do-and-not-do',
-  '1debbdbf-a033-80ac-81cc-f45aff58df33': 'docker-wait-strategy',
-  '1c9bbdbf-a033-8022-8e0e-ef3186a6f6c4': 'notion-webhooks',
-  '6beba509-dfce-493f-b76b-214e3014178d': 'media-governance-reflection',
-  '151bbdbf-a033-80b6-80b8-e0baa2f8047f': 'japan-travel-notes',
-  '124bbdbf-a033-8062-8d44-f0d4198d63c0': 'education-reflection',
-  '605376f7-370c-43b6-bff7-fcab974f989d': 'earth-online',
-  '1611047c-237a-4600-99d3-48135a67d261': 'values-and-effort',
-  'd8195951-b1df-4cf8-b844-5b990ec623fb': 'robotaxi-reflection',
-};
+const kindaSlugs = JSON.parse(
+  await readFile(path.join(projectRoot, 'lib', 'legacy-post-slugs.json'), 'utf8'),
+);
 
 const duplicateTitles = new Set(['neo4j', 'neo4j介绍以及基本操作']);
 

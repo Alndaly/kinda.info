@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { permanentRedirect } from 'next/navigation';
 import { hasLocale, localizeHref } from '@/lib/i18n';
 
 export default async function LegacyPostsPage({
@@ -7,5 +7,5 @@ export default async function LegacyPostsPage({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  redirect(hasLocale(lang) ? localizeHref(lang, '/notes') : '/notes');
+  permanentRedirect(hasLocale(lang) ? localizeHref(lang, '/notes') : '/notes');
 }
