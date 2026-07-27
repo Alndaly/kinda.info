@@ -3,9 +3,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
-import { allEntries, formatDate, getEntry } from '@/lib/content';
-import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
+import { allEntries, formatDate, getEntry, getEntrySeo } from '@/lib/content';
+import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  contentLanguage,
+  jsonLdGraph,
+  personId,
+  socialImage,
+  websiteId,
+} from '@/lib/seo';
+import { siteConfig } from '@/site.config';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -20,16 +31,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hasLocale(lang)) return {};
   const photo = getEntry('photo', slug, lang);
   if (!photo) return {};
-  const baseHref = `/photography/${slug}`;
+  const seo = getEntrySeo('photo', slug, lang);
+  const image = socialImage(photo.cover);
   return {
     title: photo.title,
     description: photo.summary,
-    alternates: getLocaleAlternates(lang, baseHref),
+    keywords: photo.tags,
+    authors: [{ name: siteConfig.author, url: localizeHref(lang, '/about') }],
+    alternates: seo.alternates,
+    robots: seo.isFallback ? { index: false, follow: true } : undefined,
     openGraph: {
+      type: 'website',
+      siteName: siteConfig.siteName,
       title: photo.title,
       description: photo.summary,
-      url: photo.href,
-      images: photo.cover ? [photo.cover] : ['/og.png'],
+      url: seo.alternates.canonical,
+      locale: photo.locale === 'zh' ? 'zh_CN' : 'en_US',
+      alternateLocale: seo.availableLocales
+        .filter((locale) => locale !== photo.locale)
+        .map((locale) => (locale === 'zh' ? 'zh_CN' : 'en_US')),
+      images: [{ url: image, alt: photo.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: photo.title,
+      description: photo.summary,
+      images: [image],
     },
   };
 }
@@ -40,9 +67,38 @@ export default async function PhotoPage({ params }: Props) {
   const dictionary = getDictionary(lang).photography;
   const photo = getEntry('photo', slug, lang);
   if (!photo) notFound();
+  const seo = getEntrySeo('photo', slug, lang);
+  const canonicalUrl = absoluteUrl(seo.alternates.canonical);
+  const photoJsonLd = jsonLdGraph(
+    {
+      '@type': 'ImageObject',
+      '@id': `${canonicalUrl}#photo`,
+      name: photo.title,
+      caption: photo.summary,
+      description: photo.summary,
+      url: canonicalUrl,
+      contentUrl: absoluteUrl(socialImage(photo.cover)),
+      dateCreated: photo.date,
+      inLanguage: contentLanguage(photo.locale),
+      keywords: photo.tags,
+      creator: { '@id': personId },
+      creditText: siteConfig.author,
+      copyrightNotice: `© ${siteConfig.author}`,
+      isPartOf: { '@id': websiteId },
+      ...(photo.location
+        ? { contentLocation: { '@type': 'Place', name: photo.location } }
+        : {}),
+    },
+    breadcrumbJsonLd(photo.locale, [
+      { name: siteConfig.siteName, href: '/' },
+      { name: getDictionary(photo.locale).photography.metadataTitle, href: '/photography' },
+      { name: photo.title, href: `/photography/${slug}` },
+    ]),
+  );
 
   return (
     <article className="photo-detail">
+      {!seo.isFallback && <JsonLd data={photoJsonLd} />}
       <div className="site-container">
         <Link href={localizeHref(lang, '/photography')} className="back-link">
           <ArrowLeft /> {dictionary.back}

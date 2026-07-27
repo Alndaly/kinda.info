@@ -3,7 +3,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowUpRight, Asterisk, BookOpenText, MessageCircle, Play } from 'lucide-react';
+import { JsonLd } from '@/components/json-ld';
 import { getDictionary, getLocaleAlternates, hasLocale } from '@/lib/i18n';
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  contentLanguage,
+  jsonLdGraph,
+  personId,
+  websiteId,
+} from '@/lib/seo';
 import { siteConfig } from '@/site.config';
 
 type Props = { params: Promise<{ lang: string }> };
@@ -16,6 +25,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: dictionary.metadataTitle,
     description: dictionary.metadataDescription,
     alternates: getLocaleAlternates(lang, '/about'),
+    openGraph: {
+      type: 'profile',
+      siteName: siteConfig.siteName,
+      title: dictionary.metadataTitle,
+      description: dictionary.metadataDescription,
+      url: lang === 'zh' ? '/about' : '/en/about',
+      locale: lang === 'zh' ? 'zh_CN' : 'en_US',
+      images: [
+        {
+          url: '/images/july-portrait.jpg',
+          width: 1080,
+          height: 1440,
+          alt: dictionary.portraitAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: dictionary.metadataTitle,
+      description: dictionary.metadataDescription,
+      images: ['/images/july-portrait.jpg'],
+    },
   };
 }
 
@@ -23,9 +54,27 @@ export default async function AboutPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
   const dictionary = getDictionary(lang).about;
+  const canonicalUrl = absoluteUrl(lang === 'zh' ? '/about' : '/en/about');
+  const profileJsonLd = jsonLdGraph(
+    {
+      '@type': 'ProfilePage',
+      '@id': `${canonicalUrl}#profile`,
+      url: canonicalUrl,
+      name: dictionary.metadataTitle,
+      description: dictionary.metadataDescription,
+      inLanguage: contentLanguage(lang),
+      isPartOf: { '@id': websiteId },
+      mainEntity: { '@id': personId },
+    },
+    breadcrumbJsonLd(lang, [
+      { name: siteConfig.siteName, href: '/' },
+      { name: dictionary.metadataTitle, href: '/about' },
+    ]),
+  );
 
   return (
     <div className="site-container page-top">
+      <JsonLd data={profileJsonLd} />
       <header className="about-hero">
         <div>
           <span className="section-index">Index / 04</span>

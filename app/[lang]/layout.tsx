@@ -4,7 +4,9 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import { JsonLd } from '@/components/json-ld';
 import { getDictionary, getLocaleAlternates, hasLocale, locales } from '@/lib/i18n';
+import { absoluteUrl, personId, websiteId } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
 import { notFound } from 'next/navigation';
 import 'katex/dist/katex.min.css';
@@ -36,7 +38,15 @@ export async function generateMetadata({ params }: Pick<Props, 'params'>): Promi
     applicationName: siteConfig.siteName,
     authors: [{ name: siteConfig.author, url: lang === 'zh' ? '/about' : '/en/about' }],
     creator: siteConfig.author,
+    publisher: siteConfig.author,
     keywords: [...dictionary.keywords],
+    category: lang === 'zh' ? '个人博客、摄影与独立开发' : 'Personal blog, photography and indie development',
+    referrer: 'origin-when-cross-origin',
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
     alternates: getLocaleAlternates(lang, '/'),
     openGraph: {
       type: 'website',
@@ -52,6 +62,7 @@ export async function generateMetadata({ params }: Pick<Props, 'params'>): Promi
           width: 1729,
           height: 910,
           alt: dictionary.title,
+          type: 'image/png',
         },
       ],
     },
@@ -75,6 +86,35 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
+  const dictionary = getDictionary(lang);
+  const globalJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': websiteId,
+        url: siteConfig.siteUrl,
+        name: siteConfig.siteName,
+        alternateName: siteConfig.title,
+        description: dictionary.metadata.description,
+        inLanguage: ['zh-CN', 'en'],
+        publisher: { '@id': personId },
+      },
+      {
+        '@type': 'Person',
+        '@id': personId,
+        name: siteConfig.author,
+        alternateName: siteConfig.authorAlternateNames,
+        url: absoluteUrl('/about'),
+        image: absoluteUrl('/images/july-portrait.jpg'),
+        sameAs: [
+          `https://github.com/${siteConfig.github}`,
+          siteConfig.bilibili,
+          siteConfig.xiaohongshu,
+        ],
+      },
+    ],
+  };
 
   return (
     <html
@@ -82,7 +122,16 @@ export default async function RootLayout({ children, params }: Props) {
       suppressHydrationWarning
       data-scroll-behavior="smooth"
     >
+      <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={`${siteConfig.siteName} RSS`}
+          href="/feed.xml"
+        />
+      </head>
       <body>
+        <JsonLd data={globalJsonLd} />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="page-noise" aria-hidden="true" />
           <SiteHeader locale={lang} />

@@ -1,5 +1,5 @@
 import { entries, type Entry } from '@/.velite';
-import { localizeHref, type Locale } from '@/lib/i18n';
+import { locales, localizeHref, type Locale } from '@/lib/i18n';
 
 export type EntryType = Entry['type'];
 
@@ -49,6 +49,37 @@ export function getEntry(type: EntryType, slug: string, locale: Locale = 'zh') {
     (entry) => entry.locale === 'zh' && entry.type === type && entry.slug === slug,
   );
   return fallback ? withLocalizedHref(fallback, locale) : undefined;
+}
+
+export function getEntrySeo(type: EntryType, slug: string, requestedLocale: Locale) {
+  const baseHref = `/${
+    type === 'note' ? 'notes' : type === 'photo' ? 'photography' : 'projects'
+  }/${slug}`;
+  const availableLocales = locales.filter((locale) =>
+    allEntries.some(
+      (entry) => entry.type === type && entry.slug === slug && entry.locale === locale,
+    ),
+  );
+  const canonicalLocale = availableLocales.includes(requestedLocale)
+    ? requestedLocale
+    : availableLocales.includes('zh')
+      ? 'zh'
+      : availableLocales[0];
+
+  const languages: Record<string, string> = {};
+  if (availableLocales.includes('zh')) languages['zh-CN'] = baseHref;
+  if (availableLocales.includes('en')) languages.en = localizeHref('en', baseHref);
+  if (canonicalLocale) languages['x-default'] = localizeHref(canonicalLocale, baseHref);
+
+  return {
+    availableLocales,
+    canonicalLocale,
+    isFallback: canonicalLocale !== requestedLocale,
+    alternates: {
+      canonical: canonicalLocale ? localizeHref(canonicalLocale, baseHref) : baseHref,
+      languages,
+    },
+  };
 }
 
 export function formatDate(

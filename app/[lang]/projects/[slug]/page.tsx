@@ -5,9 +5,20 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
-import { allEntries, getEntry } from '@/lib/content';
-import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
+import { allEntries, getEntry, getEntrySeo } from '@/lib/content';
+import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  contentLanguage,
+  jsonLdGraph,
+  personId,
+  socialImage,
+  websiteId,
+} from '@/lib/seo';
+import { siteConfig } from '@/site.config';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -22,16 +33,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hasLocale(lang)) return {};
   const project = getEntry('project', slug, lang);
   if (!project) return {};
-  const baseHref = `/projects/${slug}`;
+  const seo = getEntrySeo('project', slug, lang);
+  const image = socialImage(project.cover);
   return {
     title: project.title,
     description: project.summary,
-    alternates: getLocaleAlternates(lang, baseHref),
+    keywords: project.tags,
+    authors: [{ name: siteConfig.author, url: localizeHref(lang, '/about') }],
+    alternates: seo.alternates,
+    robots: seo.isFallback ? { index: false, follow: true } : undefined,
     openGraph: {
+      type: 'website',
+      siteName: siteConfig.siteName,
       title: project.title,
       description: project.summary,
-      url: project.href,
-      images: project.cover ? [project.cover] : ['/og.png'],
+      url: seo.alternates.canonical,
+      locale: project.locale === 'zh' ? 'zh_CN' : 'en_US',
+      alternateLocale: seo.availableLocales
+        .filter((locale) => locale !== project.locale)
+        .map((locale) => (locale === 'zh' ? 'zh_CN' : 'en_US')),
+      images: [{ url: image, alt: project.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: project.title,
+      description: project.summary,
+      images: [image],
     },
   };
 }
@@ -42,9 +69,34 @@ export default async function ProjectPage({ params }: Props) {
   const dictionary = getDictionary(lang).projects;
   const project = getEntry('project', slug, lang);
   if (!project) notFound();
+  const seo = getEntrySeo('project', slug, lang);
+  const canonicalUrl = absoluteUrl(seo.alternates.canonical);
+  const projectJsonLd = jsonLdGraph(
+    {
+      '@type': 'CreativeWork',
+      '@id': `${canonicalUrl}#project`,
+      name: project.title,
+      headline: project.title,
+      description: project.summary,
+      url: canonicalUrl,
+      dateCreated: project.date,
+      inLanguage: contentLanguage(project.locale),
+      image: absoluteUrl(socialImage(project.cover)),
+      keywords: project.tags,
+      author: { '@id': personId },
+      isPartOf: { '@id': websiteId },
+      ...(project.link ? { sameAs: project.link } : {}),
+    },
+    breadcrumbJsonLd(project.locale, [
+      { name: siteConfig.siteName, href: '/' },
+      { name: getDictionary(project.locale).projects.title, href: '/projects' },
+      { name: project.title, href: `/projects/${slug}` },
+    ]),
+  );
 
   return (
     <article>
+      {!seo.isFallback && <JsonLd data={projectJsonLd} />}
       <header className="project-detail-header site-container">
         <Link href={localizeHref(lang, '/projects')} className="back-link">
           <ArrowLeft /> {dictionary.back}
@@ -67,7 +119,14 @@ export default async function ProjectPage({ params }: Props) {
           </div>
           {project.cover && (
             <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-muted">
-              <Image src={project.cover} alt="" fill priority sizes="50vw" className="object-cover" />
+              <Image
+                src={project.cover}
+                alt={project.title}
+                fill
+                priority
+                sizes="50vw"
+                className="object-cover"
+              />
             </div>
           )}
         </div>

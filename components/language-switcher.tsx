@@ -6,9 +6,10 @@ import type { Locale } from '@/lib/i18n';
 export function LanguageSwitcher({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const isEnglish = locale === 'en';
+  const visiblePath = pathname.replace(/^\/zh(?=\/|$)/, '') || '/';
   const href = isEnglish
-    ? pathname.replace(/^\/en(?=\/|$)/, '') || '/'
-    : `/en${pathname === '/' ? '' : pathname}`;
+    ? visiblePath.replace(/^\/en(?=\/|$)/, '') || '/'
+    : `/en${visiblePath === '/' ? '' : visiblePath}`;
 
   return (
     <a

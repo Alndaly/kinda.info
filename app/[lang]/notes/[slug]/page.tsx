@@ -3,10 +3,21 @@ import Link from 'next/link';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { ArrowLeft, CalendarDays, Clock3, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
-import { allEntries, formatDate, getEntry } from '@/lib/content';
-import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
+import { allEntries, formatDate, getEntry, getEntrySeo } from '@/lib/content';
+import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
 import { getCanonicalPostSlug } from '@/lib/legacy-routes';
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  contentLanguage,
+  jsonLdGraph,
+  personId,
+  socialImage,
+  websiteId,
+} from '@/lib/seo';
+import { siteConfig } from '@/site.config';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -21,17 +32,37 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!hasLocale(lang)) return {};
   const note = getEntry('note', slug, lang);
   if (!note) return {};
-  const baseHref = `/notes/${slug}`;
+  const seo = getEntrySeo('note', slug, lang);
+  const image = socialImage(note.cover);
   return {
     title: note.title,
     description: note.summary,
-    alternates: getLocaleAlternates(lang, baseHref),
+    keywords: note.tags,
+    authors: [{ name: siteConfig.author, url: localizeHref(lang, '/about') }],
+    alternates: seo.alternates,
+    robots: seo.isFallback ? { index: false, follow: true } : undefined,
     openGraph: {
       type: 'article',
+      siteName: siteConfig.siteName,
       title: note.title,
       description: note.summary,
-      url: note.href,
-      images: ['/og.png'],
+      url: seo.alternates.canonical,
+      locale: note.locale === 'zh' ? 'zh_CN' : 'en_US',
+      alternateLocale: seo.availableLocales
+        .filter((locale) => locale !== note.locale)
+        .map((locale) => (locale === 'zh' ? 'zh_CN' : 'en_US')),
+      publishedTime: note.date,
+      modifiedTime: note.updated ?? note.date,
+      section: getDictionary(note.locale).notes.title,
+      authors: [siteConfig.author],
+      tags: note.tags,
+      images: [{ url: image, alt: note.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: note.title,
+      description: note.summary,
+      images: [image],
     },
   };
 }
@@ -48,9 +79,37 @@ export default async function NotePage({ params }: Props) {
     }
     notFound();
   }
+  const seo = getEntrySeo('note', slug, lang);
+  const canonicalUrl = absoluteUrl(seo.alternates.canonical);
+  const articleJsonLd = jsonLdGraph(
+    {
+      '@type': 'BlogPosting',
+      '@id': `${canonicalUrl}#article`,
+      headline: note.title,
+      description: note.summary,
+      url: canonicalUrl,
+      mainEntityOfPage: canonicalUrl,
+      datePublished: note.date,
+      dateModified: note.updated ?? note.date,
+      inLanguage: contentLanguage(note.locale),
+      image: absoluteUrl(socialImage(note.cover)),
+      keywords: note.tags,
+      wordCount: Math.round(note.metadata.wordCount),
+      isAccessibleForFree: true,
+      author: { '@id': personId },
+      publisher: { '@id': personId },
+      isPartOf: { '@id': websiteId },
+    },
+    breadcrumbJsonLd(note.locale, [
+      { name: siteConfig.siteName, href: '/' },
+      { name: getDictionary(note.locale).notes.title, href: '/notes' },
+      { name: note.title, href: `/notes/${slug}` },
+    ]),
+  );
 
   return (
     <article>
+      {!seo.isFallback && <JsonLd data={articleJsonLd} />}
       <header className="article-header site-container">
         <Link href={localizeHref(lang, '/notes')} className="back-link">
           <ArrowLeft /> {dictionary.back}

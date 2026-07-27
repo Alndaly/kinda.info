@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PhotoCard } from '@/components/photo-card';
 import { getEntries } from '@/lib/content';
-import { getDictionary, getLocaleAlternates, hasLocale } from '@/lib/i18n';
+import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
+import { siteConfig } from '@/site.config';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -14,6 +15,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: dictionary.metadataTitle,
     description: dictionary.description,
     alternates: getLocaleAlternates(lang, '/photography'),
+    openGraph: {
+      type: 'website',
+      siteName: siteConfig.siteName,
+      title: dictionary.metadataTitle,
+      description: dictionary.description,
+      url: localizeHref(lang, '/photography'),
+      locale: lang === 'zh' ? 'zh_CN' : 'en_US',
+      images: [{ url: '/og.png', alt: dictionary.metadataTitle }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: dictionary.metadataTitle,
+      description: dictionary.description,
+      images: ['/og.png'],
+    },
   };
 }
 

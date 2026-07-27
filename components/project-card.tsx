@@ -12,7 +12,7 @@ export function ProjectCard({ entry, index }: { entry: Entry; index: number }) {
           {entry.cover ? (
             <Image
               src={entry.cover}
-              alt=""
+              alt={entry.title}
               fill
               priority={index === 0}
               sizes="(max-width: 768px) 100vw, 50vw"
