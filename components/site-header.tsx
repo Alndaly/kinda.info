@@ -14,7 +14,7 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="site-container flex h-[74px] items-center justify-between gap-5">
         <Link href="/" className="group flex items-center gap-2" aria-label="Kinda 首页">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-paper transition-transform duration-500 group-hover:rotate-90 dark:bg-paper dark:text-ink">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-paper transition-transform duration-500 group-hover:rotate-90">
             <Asterisk className="h-5 w-5" strokeWidth={1.7} />
           </span>
           <span className="font-display text-2xl font-semibold tracking-[-0.04em]">
@@ -24,7 +24,7 @@ export function SiteHeader() {
 
         <nav
           aria-label="主导航"
-          className="hidden items-center gap-1 rounded-full border border-line/80 bg-paper/75 p-1 backdrop-blur-xl md:flex dark:bg-ink/75"
+          className="hidden items-center gap-1 rounded-full border border-line/80 bg-paper/75 p-1 backdrop-blur-xl md:flex"
         >
           {navigation.map((item) => (
             <Link
