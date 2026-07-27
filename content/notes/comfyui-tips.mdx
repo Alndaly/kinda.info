@@ -3,7 +3,6 @@ slug: "comfyui-tips"
 locale: zh
 type: note
 title: "ComfyUI 实用排错手册"
-eyebrow: "历史笔记 · HUAQINDA"
 summary: "集中记录 InstantID、LayerDiffuse、macOS 兼容、局部重绘、IP-Adapter 与 Anything Everywhere 的排错思路。"
 date: 2024-08-07
 updated: 2024-08-09
@@ -13,7 +12,6 @@ tags:
   - "ComfyUI"
   - "工具"
   - "教程"
-source: "https://huaqinda.com/article/e2610347-6c23-48e9-8077-8f098bed2338"
 featured: false
 ---
 
@@ -27,9 +25,9 @@ featured: false
 - 分开验证身份参考与位置参考；
 - 出现 `NoneType has no attribute shape` 时，先检查模型体系和节点版本是否匹配。
 
-![InstantID 工作流示例](/images/archive/huaqinda/comfyui-tips/5cefd838-2579-44fa-83d8-aa91b8edb313.png)
+![InstantID 工作流示例](/images/notes/comfyui-tips/5cefd838-2579-44fa-83d8-aa91b8edb313.png)
 
-![InstantID 参数示例](/images/archive/huaqinda/comfyui-tips/91d10415-84f7-42cc-aa45-421c27d0a698.png)
+![InstantID 参数示例](/images/notes/comfyui-tips/91d10415-84f7-42cc-aa45-421c27d0a698.png)
 
 ## LayerDiffuse 与 Apple 芯片
 
@@ -60,11 +58,11 @@ else:
 
 没有专用 inpainting 模型时，可以通过模型差分提取 inpainting 部分，再与目标模型合并。这种做法依赖两个底模结构兼容，合并前应先备份并做小规模对照。
 
-![Inpainting 模型合并示例](/images/archive/huaqinda/comfyui-tips/386077f3-cec2-49a2-a0a6-f69d85ed7657.png)
+![Inpainting 模型合并示例](/images/notes/comfyui-tips/386077f3-cec2-49a2-a0a6-f69d85ed7657.png)
 
 修补区域边缘过硬时，可以扩大并羽化遮罩，让去噪区域覆盖接缝；必要时配合 Differential Diffusion 一类节点。
 
-![遮罩扩展示例](/images/archive/huaqinda/comfyui-tips/d951b3ba-f7cc-492d-b732-ac2301704473.png)
+![遮罩扩展示例](/images/notes/comfyui-tips/d951b3ba-f7cc-492d-b732-ac2301704473.png)
 
 ## IP-Adapter：把结构与风格分开调
 
@@ -74,11 +72,11 @@ Mad Scientist 一类高级节点允许分别调整不同层的权重。与其记
 - 只保留风格相关层：观察色彩、材质和笔触；
 - 减弱结构相关层：减少构图与轮廓复制。
 
-![IP-Adapter 分层权重示例](/images/archive/huaqinda/comfyui-tips/7c22f716-81a6-4237-80d4-761bb8ad4baf.png)
+![IP-Adapter 分层权重示例](/images/notes/comfyui-tips/7c22f716-81a6-4237-80d4-761bb8ad4baf.png)
 
 如果正向和负向同时使用参考图，要明确每一路是在增强什么、抑制什么。每次只调整一组权重并保存种子，才能得到可比较的结果。
 
-![IP-Adapter 正负参考示例](/images/archive/huaqinda/comfyui-tips/39fe7208-bfdb-40a2-8be0-8502ba71ff06.png)
+![IP-Adapter 正负参考示例](/images/notes/comfyui-tips/39fe7208-bfdb-40a2-8be0-8502ba71ff06.png)
 
 ## 用 Anything Everywhere 整理工作流
 

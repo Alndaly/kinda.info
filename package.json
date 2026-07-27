@@ -9,7 +9,6 @@
   "scripts": {
     "dev": "concurrently -k -n content,next \"velite --watch\" \"next dev --turbopack\"",
     "build": "velite --clean && next build --webpack",
-    "content:import-legacy": "node scripts/import-legacy-notes.mjs",
     "start": "next start",
     "lint": "next lint"
   },

@@ -3,13 +3,11 @@ slug: "aliyun-oss-notes"
 locale: zh
 type: note
 title: "阿里云 OSS 跨域与 Region 配置"
-eyebrow: "历史笔记 · HUAQINDA"
 summary: "排查 OSS 请求的 403 与跨域问题：确认允许的请求头，并在 JavaScript SDK 中使用带 oss 前缀的 Region。"
 date: 2025-01-13
 tags:
   - "开发"
   - "OSS"
-source: "https://huaqinda.com/article/17abbdbf-a033-8062-a94d-f26a62e75afd"
 featured: false
 ---
 
@@ -19,7 +17,7 @@ featured: false
 
 除了允许来源和请求方法，还要把浏览器实际发送的请求头加入 Allowed Headers。使用 STS、分片上传或自定义元数据时，遗漏请求头可能直接得到 403。
 
-![OSS CORS 配置示例](/images/archive/huaqinda/aliyun-oss-notes/17abbdbf-a033-80f5-aacb-eb9e2835c8a5.png)
+![OSS CORS 配置示例](/images/notes/aliyun-oss-notes/17abbdbf-a033-80f5-aacb-eb9e2835c8a5.png)
 
 排查时可以在浏览器 Network 面板里查看预检请求：
 

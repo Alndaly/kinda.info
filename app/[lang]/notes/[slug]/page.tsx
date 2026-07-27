@@ -1,13 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound, permanentRedirect } from 'next/navigation';
-import { ArrowLeft, CalendarDays, Clock3, ExternalLink } from 'lucide-react';
+import { notFound } from 'next/navigation';
+import { ArrowLeft, CalendarDays, Clock3 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, formatDate, getEntry, getEntrySeo } from '@/lib/content';
 import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
-import { getCanonicalPostSlug } from '@/lib/legacy-routes';
 import {
   absoluteUrl,
   breadcrumbJsonLd,
@@ -72,13 +71,7 @@ export default async function NotePage({ params }: Props) {
   if (!hasLocale(lang)) notFound();
   const dictionary = getDictionary(lang).notes;
   const note = getEntry('note', slug, lang);
-  if (!note) {
-    const canonicalSlug = getCanonicalPostSlug(slug);
-    if (canonicalSlug !== slug) {
-      permanentRedirect(localizeHref(lang, `/notes/${canonicalSlug}`));
-    }
-    notFound();
-  }
+  if (!note) notFound();
   const seo = getEntrySeo('note', slug, lang);
   const canonicalUrl = absoluteUrl(seo.alternates.canonical);
   const articleJsonLd = jsonLdGraph(
@@ -123,11 +116,6 @@ export default async function NotePage({ params }: Props) {
           <div className="article-meta">
             <span><CalendarDays /> {formatDate(note.date, lang)}</span>
             <span><Clock3 /> {note.metadata.readingTime} {dictionary.minRead}</span>
-            {note.source ? (
-              <a href={note.source} target="_blank" rel="noreferrer">
-                <ExternalLink /> {dictionary.source}
-              </a>
-            ) : null}
           </div>
         </div>
       </header>

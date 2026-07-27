@@ -11,7 +11,6 @@ export default defineConfig({
           locale: s.enum(['zh', 'en']).default('zh'),
           type: s.enum(['note', 'photo', 'project']),
           title: s.string(),
-          eyebrow: s.string().optional(),
           summary: s.string(),
           date: s.isodate(),
           updated: s.isodate().optional(),
@@ -20,10 +19,8 @@ export default defineConfig({
           featured: s.boolean().default(false),
           location: s.string().optional(),
           link: s.string().optional(),
-          source: s.string().optional(),
           status: s.enum(['active', 'experiment', 'archive']).optional(),
           metadata: s.metadata(),
-          excerpt: s.excerpt(),
           html: s.markdown(),
           content: s.raw(),
         })

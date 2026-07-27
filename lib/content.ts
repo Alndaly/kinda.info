@@ -7,10 +7,6 @@ export const allEntries = [...entries].sort(
   (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
 );
 
-export const notes = allEntries.filter((entry) => entry.type === 'note');
-export const photos = allEntries.filter((entry) => entry.type === 'photo');
-export const projects = allEntries.filter((entry) => entry.type === 'project');
-
 function withLocalizedHref(entry: Entry, locale: Locale): Entry {
   if (entry.locale === locale) return entry;
   const baseHref = entry.href.replace(/^\/en(?=\/|$)/, '') || '/';
