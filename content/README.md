@@ -110,6 +110,8 @@ pnpm content:import-legacy
 Neo4j 文章由现有 `notes/neo4j-python-guide.mdx` 统一承接，不会重复生成。
 
 内容高度重叠的碎片笔记会合并到主题指南中；被合并的 slug 仍然保留永久重定向。
+已经下线的 `kinda.info/post/*` 仅作为导入入口，不会写入生成内容的 `source`；
+仍可访问的站外原文才会显示“历史来源”。
 
 旧版 `/posts` 与 `/post/<UUID>` 地址会通过永久重定向进入新的 `/notes` 路由，
 历史收藏和外部链接无需手动更新。

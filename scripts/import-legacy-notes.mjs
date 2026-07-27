@@ -598,7 +598,7 @@ function renderFrontmatter(note) {
     ...(note.tags.length
       ? ['tags:', ...note.tags.map((tag) => `  - ${yamlString(tag)}`)]
       : ['tags: []']),
-    `source: ${yamlString(note.source)}`,
+    note.source ? `source: ${yamlString(note.source)}` : '',
     'featured: false',
     '---',
   ]
@@ -706,8 +706,8 @@ async function importKinda() {
   const notes = [];
 
   for (const id of ids) {
-    const source = `https://kinda.info/post/${id}`;
-    const html = await fetchText(source);
+    const legacyUrl = `https://kinda.info/post/${id}`;
+    const html = await fetchText(legacyUrl);
     const article = extractArticle(html);
     const title = decodeHtml(article.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '')
       .replace(/<[^>]+>/g, '')
@@ -743,7 +743,6 @@ async function importKinda() {
       date,
       updated: date,
       tags: normalizeTags(tags),
-      source,
       body,
     });
   }
@@ -776,13 +775,18 @@ async function applyEditorial(notes) {
     }
 
     if (merge.includeBody !== false) {
+      const sourceLink = source.source
+        ? `> 历史来源：[查看合并前的原始笔记](${source.source})`
+        : '';
       target.body = [
         target.body.trim(),
         '---',
         `## ${merge.heading}`,
         source.body.trim(),
-        `> 历史来源：[查看合并前的原始笔记](${source.source})`,
-      ].join('\n\n');
+        sourceLink,
+      ]
+        .filter(Boolean)
+        .join('\n\n');
     }
 
     target.tags = [...new Set([...target.tags, ...source.tags])];
