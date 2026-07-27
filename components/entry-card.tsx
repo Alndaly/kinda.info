@@ -3,14 +3,19 @@ import { ArrowUpRight } from 'lucide-react';
 import type { Entry } from '@/.velite';
 import { Badge } from '@/components/ui/badge';
 import { formatShortDate } from '@/lib/content';
+import { getDictionary, type Locale } from '@/lib/i18n';
 
 export function EntryCard({
   entry,
   index,
+  locale = 'zh',
 }: {
   entry: Entry;
   index: number;
+  locale?: Locale;
 }) {
+  const readLabel = getDictionary(locale).notes.readAria;
+
   return (
     <article className="entry-row group">
       <div className="entry-index">{String(index + 1).padStart(2, '0')}</div>
@@ -34,7 +39,7 @@ export function EntryCard({
           </p>
         </Link>
       </div>
-      <Link className="entry-arrow" href={entry.href} aria-label={`阅读 ${entry.title}`}>
+      <Link className="entry-arrow" href={entry.href} aria-label={`${readLabel} ${entry.title}`}>
         <ArrowUpRight />
       </Link>
     </article>

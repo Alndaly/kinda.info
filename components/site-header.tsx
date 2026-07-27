@@ -1,19 +1,27 @@
 import Link from 'next/link';
 import { Asterisk } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { ModeToggle } from '@/components/mode-toggle';
+import { getDictionary, localizeHref, type Locale } from '@/lib/i18n';
 
 const navigation = [
-  { href: '/notes', label: '笔记', index: '01' },
-  { href: '/photography', label: '摄影', index: '02' },
-  { href: '/projects', label: '作品', index: '03' },
-  { href: '/about', label: '关于', index: '04' },
-];
+  { href: '/notes', key: 'notes', index: '01' },
+  { href: '/photography', key: 'photography', index: '02' },
+  { href: '/projects', key: 'projects', index: '03' },
+  { href: '/about', key: 'about', index: '04' },
+] as const;
 
-export function SiteHeader() {
+export function SiteHeader({ locale }: { locale: Locale }) {
+  const dictionary = getDictionary(locale).header;
+
   return (
     <header className="site-header">
       <div className="site-container flex h-[74px] items-center justify-between gap-5">
-        <Link href="/" className="group flex items-center gap-2" aria-label="Kinda 首页">
+        <Link
+          href={localizeHref(locale, '/')}
+          className="group flex items-center gap-2"
+          aria-label={dictionary.homeLabel}
+        >
           <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-paper transition-transform duration-500 group-hover:rotate-90">
             <Asterisk className="h-5 w-5" strokeWidth={1.7} />
           </span>
@@ -23,17 +31,17 @@ export function SiteHeader() {
         </Link>
 
         <nav
-          aria-label="主导航"
+          aria-label={dictionary.navigationLabel}
           className="hidden items-center gap-1 rounded-full border border-line/80 bg-paper/75 p-1 backdrop-blur-xl md:flex"
         >
           {navigation.map((item) => (
             <Link
               key={item.href}
-              href={item.href}
+              href={localizeHref(locale, item.href)}
               className="nav-pill group"
             >
               <span className="mr-1.5 text-[9px] opacity-45">{item.index}</span>
-              {item.label}
+              {dictionary.items[item.key]}
             </Link>
           ))}
         </nav>
@@ -43,19 +51,24 @@ export function SiteHeader() {
             href="mailto:1142704468@qq.com"
             className="hidden text-xs font-semibold uppercase tracking-[0.16em] transition-opacity hover:opacity-55 sm:block"
           >
-            Say hello
+            {dictionary.hello}
           </Link>
+          <LanguageSwitcher locale={locale} />
           <ModeToggle />
         </div>
       </div>
 
       <nav
-        aria-label="移动端导航"
+        aria-label={dictionary.mobileNavigationLabel}
         className="site-container flex gap-1 overflow-x-auto border-t border-line/70 py-2 md:hidden"
       >
         {navigation.map((item) => (
-          <Link key={item.href} href={item.href} className="nav-pill shrink-0">
-            {item.label}
+          <Link
+            key={item.href}
+            href={localizeHref(locale, item.href)}
+            className="nav-pill shrink-0"
+          >
+            {dictionary.items[item.key]}
           </Link>
         ))}
       </nav>

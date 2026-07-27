@@ -160,6 +160,25 @@
   background: hsl(var(--ink));
 }
 
+.language-switch {
+  display: grid;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid hsl(var(--line));
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.language-switch:hover {
+  color: hsl(var(--paper));
+  border-color: hsl(var(--ink));
+  background: hsl(var(--ink));
+}
+
 .footer-link {
   display: flex;
   min-width: 8rem;

@@ -1,6 +1,7 @@
 [
   {
     "slug": "personal-internet",
+    "locale": "zh",
     "type": "note",
     "title": "重建一小块属于自己的互联网",
     "eyebrow": "Internet Gardening",
@@ -22,6 +23,7 @@
   },
   {
     "slug": "soft-engineering",
+    "locale": "zh",
     "type": "note",
     "title": "柔软的工程学",
     "eyebrow": "Field Note No. 07",
@@ -44,6 +46,7 @@
   },
   {
     "slug": "neo4j-python-guide",
+    "locale": "zh",
     "type": "note",
     "title": "用 Python 驯服图数据库：Neo4j 实用手册",
     "eyebrow": "Engineering Note",
@@ -66,6 +69,7 @@
   },
   {
     "slug": "after-rain",
+    "locale": "zh",
     "type": "photo",
     "title": "雨停以后",
     "eyebrow": "Frame 001",
@@ -89,6 +93,7 @@
   },
   {
     "slug": "july-self",
+    "locale": "zh",
     "type": "photo",
     "title": "七月，自画像",
     "eyebrow": "Frame 002",
@@ -112,6 +117,7 @@
   },
   {
     "slug": "quiet-distance",
+    "locale": "zh",
     "type": "photo",
     "title": "很远，也很安静",
     "eyebrow": "Frame 003",
@@ -135,6 +141,7 @@
   },
   {
     "slug": "kinda-utils",
+    "locale": "zh",
     "type": "project",
     "title": "@kinda/utils",
     "eyebrow": "Open Source",
@@ -159,6 +166,7 @@
   },
   {
     "slug": "openstudio",
+    "locale": "zh",
     "type": "project",
     "title": "OpenStudio",
     "eyebrow": "AI-native Video Studio",
@@ -184,6 +192,7 @@
   },
   {
     "slug": "revornix",
+    "locale": "zh",
     "type": "project",
     "title": "Revornix",
     "eyebrow": "Local-first AI Workspace",
@@ -209,6 +218,7 @@
   },
   {
     "slug": "uniapi",
+    "locale": "zh",
     "type": "project",
     "title": "UniAPI",
     "eyebrow": "Public API Infrastructure",
@@ -234,6 +244,7 @@
   },
   {
     "slug": "unit-one",
+    "locale": "zh",
     "type": "project",
     "title": "Unit One",
     "eyebrow": "Community Product",
@@ -255,5 +266,273 @@
     "html": "<p>Unit One 是一次完整但暂时停下来的社区产品尝试。</p>\n<p>我在这个项目里思考内容归属、成员关系和社区治理，也第一次更具体地感受到：技术实现只是产品的一部分，真正决定社区走向的是持续的运营与共识。</p>\n<p>把它留在这里，不是因为它已经完成，而是因为认真做过的实验也值得拥有一个位置。</p>",
     "content": "Unit One 是一次完整但暂时停下来的社区产品尝试。\n\n我在这个项目里思考内容归属、成员关系和社区治理，也第一次更具体地感受到：技术实现只是产品的一部分，真正决定社区走向的是持续的运营与共识。\n\n把它留在这里，不是因为它已经完成，而是因为认真做过的实验也值得拥有一个位置。",
     "href": "/projects/unit-one"
+  },
+  {
+    "slug": "neo4j-python-guide",
+    "locale": "en",
+    "type": "note",
+    "title": "Taming a Graph Database with Python",
+    "eyebrow": "Engineering Note",
+    "summary": "A practical Neo4j and Python field guide covering connections, CRUD operations, relationships, constraints, indexes, and batch work.",
+    "date": "2025-02-04T00:00:00.000Z",
+    "updated": "2025-02-04T00:00:00.000Z",
+    "tags": [
+      "Python",
+      "Database"
+    ],
+    "featured": false,
+    "metadata": {
+      "readingTime": 2,
+      "wordCount": 454
+    },
+    "excerpt": "Neo4j with Python\nNeo4j stores information as nodes, relationships, and properties. The official Python driver lets an application communicate with the database over Bolt while keeping Cypher queries explicit.\nflowchart LR\n    A[\"Python application\"] -->|Bolt|",
+    "html": "<h1>Neo4j with Python</h1>\n<p>Neo4j stores information as nodes, relationships, and properties. The official Python driver lets an application communicate with the database over Bolt while keeping Cypher queries explicit.</p>\n<pre><code class=\"language-mermaid\">flowchart LR\n    A[\"Python application\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"Nodes\"]\n    B --> D[\"Relationships\"]\n    C --> E[\"Properties\"]\n    D --> E\n</code></pre>\n<blockquote>\n<p>[!NOTE]\nThese examples focus on the driver layer. In production, keep credentials in environment variables and add complete session-level error handling.</p>\n</blockquote>\n<h2>Install and connect</h2>\n<pre><code class=\"language-shell\">pip install neo4j\n</code></pre>\n<pre><code class=\"language-python\">from neo4j import GraphDatabase\n\nuri = \"bolt://localhost:7687\"\nusername = \"neo4j\"\npassword = \"your_password\"\n\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n</code></pre>\n<h2>Create, read, update, and delete nodes</h2>\n<pre><code class=\"language-python\">def create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    return tx.run(query, node_id=node_id).single()\n\ndef update_node(tx, node_id, new_label):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    SET n.label = $new_label\n    \"\"\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\ndef delete_node(tx, node_id):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    DETACH DELETE n\n    \"\"\"\n    tx.run(query, node_id=node_id)\n</code></pre>\n<p>Use explicit read and write transactions so retry and routing behavior remain predictable:</p>\n<pre><code class=\"language-python\">with driver.session() as session:\n    session.execute_write(create_node, \"animal_1\", \"Dog\")\n    record = session.execute_read(get_node, \"animal_1\")\n</code></pre>\n<h2>Relationships</h2>\n<pre><code class=\"language-python\">def connect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n    MATCH (b:Animal {custom_id: $target_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n</code></pre>\n<p>To remove a relationship without deleting either node:</p>\n<pre><code class=\"language-python\">def disconnect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n          -[r:KNOWS]->\n          (b:Animal {custom_id: $target_id})\n    DELETE r\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n</code></pre>\n<h2>Constraints and indexes</h2>\n<p>Create schema rules before loading production data:</p>\n<pre><code class=\"language-cypher\">CREATE CONSTRAINT animal_custom_id IF NOT EXISTS\nFOR (n:Animal) REQUIRE n.custom_id IS UNIQUE;\n\nCREATE INDEX animal_label IF NOT EXISTS\nFOR (n:Animal) ON (n.label);\n</code></pre>\n<p>The unique constraint protects identity; the index accelerates common label lookups.</p>\n<h2>Batch creation</h2>\n<p><code>UNWIND</code> keeps bulk writes in one query:</p>\n<pre><code class=\"language-python\">def create_many(tx, nodes):\n    query = \"\"\"\n    UNWIND $nodes AS item\n    CREATE (n:Animal {\n        custom_id: item.custom_id,\n        label: item.label\n    })\n    \"\"\"\n    tx.run(query, nodes=nodes)\n\nnodes = [\n    {\"custom_id\": \"animal_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"animal_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"animal_3\", \"label\": \"Fox\"},\n]\n\nwith driver.session() as session:\n    session.execute_write(create_many, nodes)\n</code></pre>\n<p>Always close the driver when the application shuts down:</p>\n<pre><code class=\"language-python\">driver.close()\n</code></pre>",
+    "content": "# Neo4j with Python\n\nNeo4j stores information as nodes, relationships, and properties. The official Python driver lets an application communicate with the database over Bolt while keeping Cypher queries explicit.\n\n```mermaid\nflowchart LR\n    A[\"Python application\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"Nodes\"]\n    B --> D[\"Relationships\"]\n    C --> E[\"Properties\"]\n    D --> E\n```\n\n> [!NOTE]\n> These examples focus on the driver layer. In production, keep credentials in environment variables and add complete session-level error handling.\n\n## Install and connect\n\n```shell\npip install neo4j\n```\n\n```python\nfrom neo4j import GraphDatabase\n\nuri = \"bolt://localhost:7687\"\nusername = \"neo4j\"\npassword = \"your_password\"\n\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n```\n\n## Create, read, update, and delete nodes\n\n```python\ndef create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    return tx.run(query, node_id=node_id).single()\n\ndef update_node(tx, node_id, new_label):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    SET n.label = $new_label\n    \"\"\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\ndef delete_node(tx, node_id):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    DETACH DELETE n\n    \"\"\"\n    tx.run(query, node_id=node_id)\n```\n\nUse explicit read and write transactions so retry and routing behavior remain predictable:\n\n```python\nwith driver.session() as session:\n    session.execute_write(create_node, \"animal_1\", \"Dog\")\n    record = session.execute_read(get_node, \"animal_1\")\n```\n\n## Relationships\n\n```python\ndef connect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n    MATCH (b:Animal {custom_id: $target_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n```\n\nTo remove a relationship without deleting either node:\n\n```python\ndef disconnect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n          -[r:KNOWS]->\n          (b:Animal {custom_id: $target_id})\n    DELETE r\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n```\n\n## Constraints and indexes\n\nCreate schema rules before loading production data:\n\n```cypher\nCREATE CONSTRAINT animal_custom_id IF NOT EXISTS\nFOR (n:Animal) REQUIRE n.custom_id IS UNIQUE;\n\nCREATE INDEX animal_label IF NOT EXISTS\nFOR (n:Animal) ON (n.label);\n```\n\nThe unique constraint protects identity; the index accelerates common label lookups.\n\n## Batch creation\n\n`UNWIND` keeps bulk writes in one query:\n\n```python\ndef create_many(tx, nodes):\n    query = \"\"\"\n    UNWIND $nodes AS item\n    CREATE (n:Animal {\n        custom_id: item.custom_id,\n        label: item.label\n    })\n    \"\"\"\n    tx.run(query, nodes=nodes)\n\nnodes = [\n    {\"custom_id\": \"animal_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"animal_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"animal_3\", \"label\": \"Fox\"},\n]\n\nwith driver.session() as session:\n    session.execute_write(create_many, nodes)\n```\n\nAlways close the driver when the application shuts down:\n\n```python\ndriver.close()\n```",
+    "href": "/en/notes/neo4j-python-guide"
+  },
+  {
+    "slug": "personal-internet",
+    "locale": "en",
+    "type": "note",
+    "title": "Rebuilding a Small Piece of My Own Internet",
+    "eyebrow": "Internet Gardening",
+    "summary": "When every expression is compressed into the same feed, a personal website can still be a room with a window, a desk, and a pace of its own.",
+    "date": "2026-06-18T00:00:00.000Z",
+    "tags": [
+      "Web",
+      "Life"
+    ],
+    "featured": false,
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 228
+    },
+    "excerpt": "Social platforms feel like busy streets. They let us meet many people, but they also ask every sentence to prove within seconds that it deserves attention.\nA personal website is different. There is no recommendation engine urging me onward and no publishing rh",
+    "html": "<p>Social platforms feel like busy streets. They let us meet many people, but they also ask every sentence to prove within seconds that it deserves attention.</p>\n<p>A personal website is different. There is no recommendation engine urging me onward and no publishing rhythm that must be filled. It can be slow, opinionated, and willing to keep long notes useful to only a few people.</p>\n<h2>A room, not a display case</h2>\n<p>I do not want this site to exhibit only the “best” work. I would rather preserve the process: why a project began, why a piece of code was rewritten, and what the weather felt like behind a photograph.</p>\n<p>The site becomes more like a room. Visitors can see unfinished things on the desk and notice what its owner has been caring about lately.</p>\n<blockquote>\n<p>[!IMPORTANT]\n<strong>A principle</strong></p>\n<p>Choose a form for the expression first, then choose tools for that form. Never let a publishing system decide what you are allowed to say.</p>\n</blockquote>\n<h2>Local files are a kind of freedom</h2>\n<p>In the end, every note is simply an MDX file in a repository. There is no remote database, proprietary editor, or format that disappears with a service. The text can be versioned, moved, searched, and opened in the most ordinary way many years from now.</p>\n<p>It may not be the most efficient publishing workflow, but it feels honest—and durable.</p>",
+    "content": "Social platforms feel like busy streets. They let us meet many people, but they also ask every sentence to prove within seconds that it deserves attention.\n\nA personal website is different. There is no recommendation engine urging me onward and no publishing rhythm that must be filled. It can be slow, opinionated, and willing to keep long notes useful to only a few people.\n\n## A room, not a display case\n\nI do not want this site to exhibit only the “best” work. I would rather preserve the process: why a project began, why a piece of code was rewritten, and what the weather felt like behind a photograph.\n\nThe site becomes more like a room. Visitors can see unfinished things on the desk and notice what its owner has been caring about lately.\n\n> [!IMPORTANT]\n> **A principle**\n>\n> Choose a form for the expression first, then choose tools for that form. Never let a publishing system decide what you are allowed to say.\n\n## Local files are a kind of freedom\n\nIn the end, every note is simply an MDX file in a repository. There is no remote database, proprietary editor, or format that disappears with a service. The text can be versioned, moved, searched, and opened in the most ordinary way many years from now.\n\nIt may not be the most efficient publishing workflow, but it feels honest—and durable.",
+    "href": "/en/notes/personal-internet"
+  },
+  {
+    "slug": "soft-engineering",
+    "locale": "en",
+    "type": "note",
+    "title": "Soft Engineering",
+    "eyebrow": "Field Note No. 07",
+    "summary": "Good software is more than correct, fast, and scalable. It should understand hesitation, allow mistakes, and leave room to breathe.",
+    "date": "2026-07-20T00:00:00.000Z",
+    "updated": "2026-07-24T00:00:00.000Z",
+    "tags": [
+      "Thinking",
+      "Design"
+    ],
+    "featured": true,
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 314
+    },
+    "excerpt": "We often discuss software using hard words: constraints, validation, permissions, failure, circuit breakers. They matter, of course, but people do not think of themselves as inputs waiting to be validated.\nPeople hesitate. They forget. At one in the morning, t",
+    "html": "<p>We often discuss software using hard words: <strong>constraints, validation, permissions, failure, circuit breakers</strong>. They matter, of course, but people do not think of themselves as inputs waiting to be validated.</p>\n<p>People hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.</p>\n<h2>Beyond correctness, there is feeling</h2>\n<p>A form can correctly return <code>400</code> after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.</p>\n<blockquote>\n<p>[!TIP]\n<strong>A simple test</strong></p>\n<p>When an error is unavoidable, protect the person’s work first. Explain the system second.</p>\n</blockquote>\n<p>That means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.</p>\n<h2>Build room into the system</h2>\n<p>Softness is not the absence of boundaries. It requires more precise boundaries.</p>\n<ul>\n<li>Slow dangerous actions down so there is time to reconsider.</li>\n<li>Keep frequent actions fast so the interface does not stand between a person and their intent.</li>\n<li>Be honest about uncertain results instead of pretending confidence with a polished percentage.</li>\n<li>Treat an empty state as an invitation to the next action, not merely “no data.”</li>\n</ul>\n<p>A mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.</p>\n<h2>In the end</h2>\n<p>Every branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.</p>\n<p>If engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.</p>",
+    "content": "We often discuss software using hard words: **constraints, validation, permissions, failure, circuit breakers**. They matter, of course, but people do not think of themselves as inputs waiting to be validated.\n\nPeople hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.\n\n## Beyond correctness, there is feeling\n\nA form can correctly return `400` after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.\n\n> [!TIP]\n> **A simple test**\n>\n> When an error is unavoidable, protect the person’s work first. Explain the system second.\n\nThat means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.\n\n## Build room into the system\n\nSoftness is not the absence of boundaries. It requires more precise boundaries.\n\n- Slow dangerous actions down so there is time to reconsider.\n- Keep frequent actions fast so the interface does not stand between a person and their intent.\n- Be honest about uncertain results instead of pretending confidence with a polished percentage.\n- Treat an empty state as an invitation to the next action, not merely “no data.”\n\nA mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.\n\n## In the end\n\nEvery branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.\n\nIf engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.",
+    "href": "/en/notes/soft-engineering"
+  },
+  {
+    "slug": "after-rain",
+    "locale": "en",
+    "type": "photo",
+    "title": "After the Rain",
+    "eyebrow": "Frame 001",
+    "summary": "The rain had just stopped, and the city polished every ordinary light until it shone again.",
+    "date": "2024-09-22T00:00:00.000Z",
+    "tags": [
+      "City",
+      "Night"
+    ],
+    "cover": "https://oss.kinda.info/image/202409222153357.png",
+    "featured": true,
+    "location": "Shanghai",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 53
+    },
+    "excerpt": "I did not leave home with a particular photograph in mind. After the rain, the road looked like photographic paper that had not fully developed, holding the lights and the long shadows of people passing by.\nI like moments this brief: the city remains noisy, bu",
+    "html": "<p>I did not leave home with a particular photograph in mind. After the rain, the road looked like photographic paper that had not fully developed, holding the lights and the long shadows of people passing by.</p>\n<p>I like moments this brief: the city remains noisy, but the light makes it gentler than usual.</p>",
+    "content": "I did not leave home with a particular photograph in mind. After the rain, the road looked like photographic paper that had not fully developed, holding the lights and the long shadows of people passing by.\n\nI like moments this brief: the city remains noisy, but the light makes it gentler than usual.",
+    "href": "/en/photography/after-rain"
+  },
+  {
+    "slug": "july-self",
+    "locale": "en",
+    "type": "photo",
+    "title": "July, a Self-Portrait",
+    "eyebrow": "Frame 002",
+    "summary": "In the hottest part of the year, I kept a portrait of the person who still believed in being wholehearted.",
+    "date": "2024-07-16T00:00:00.000Z",
+    "tags": [
+      "Portrait",
+      "Everyday"
+    ],
+    "cover": "https://oss.kinda.info/image/202407162310900.jpg",
+    "featured": false,
+    "location": "Hangzhou",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 56
+    },
+    "excerpt": "When the camera turns toward you, it becomes surprisingly difficult to know where to put your hands.\nEventually I stopped searching for the correct expression and let the shutter keep what was actually there. A photograph does not have to explain who I am. It ",
+    "html": "<p>When the camera turns toward you, it becomes surprisingly difficult to know where to put your hands.</p>\n<p>Eventually I stopped searching for the correct expression and let the shutter keep what was actually there. A photograph does not have to explain who I am. It only has to prove that, in this July, I was here.</p>",
+    "content": "When the camera turns toward you, it becomes surprisingly difficult to know where to put your hands.\n\nEventually I stopped searching for the correct expression and let the shutter keep what was actually there. A photograph does not have to explain who I am. It only has to prove that, in this July, I was here.",
+    "href": "/en/photography/july-self"
+  },
+  {
+    "slug": "quiet-distance",
+    "locale": "en",
+    "type": "photo",
+    "title": "Far Away, and Quiet",
+    "eyebrow": "Frame 003",
+    "summary": "Some landscapes do not ask us to arrive. Looking from a distance for a while is enough.",
+    "date": "2024-01-21T00:00:00.000Z",
+    "tags": [
+      "Landscape",
+      "Travel"
+    ],
+    "cover": "https://oss.kinda.info/image/202401211555429.jpeg",
+    "featured": false,
+    "location": "Somewhere",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 52
+    },
+    "excerpt": "Things in the distance can remain complete precisely because we cannot touch them.\nAfter taking this photograph, I stood there for a long time. Nothing worth recording happened—only wind and slowly changing light. Looking back, what I remember most clearly is ",
+    "html": "<p>Things in the distance can remain complete precisely because we cannot touch them.</p>\n<p>After taking this photograph, I stood there for a long time. Nothing worth recording happened—only wind and slowly changing light. Looking back, what I remember most clearly is that stretch of time in which nothing happened at all.</p>",
+    "content": "Things in the distance can remain complete precisely because we cannot touch them.\n\nAfter taking this photograph, I stood there for a long time. Nothing worth recording happened—only wind and slowly changing light. Looking back, what I remember most clearly is that stretch of time in which nothing happened at all.",
+    "href": "/en/photography/quiet-distance"
+  },
+  {
+    "slug": "kinda-utils",
+    "locale": "en",
+    "type": "project",
+    "title": "@kinda/utils",
+    "eyebrow": "Open Source",
+    "summary": "A TypeScript toolbox for common foundations, so the same small problem only needs to be solved once.",
+    "date": "2024-02-12T00:00:00.000Z",
+    "tags": [
+      "TypeScript",
+      "Open Source"
+    ],
+    "cover": "https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402121954106.png",
+    "featured": true,
+    "link": "https://github.com/Alndaly/kinda-utils",
+    "status": "active",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 88
+    },
+    "excerpt": "@kinda/utils grew out of meeting the same foundational problems across different projects.\nIt is not trying to become an enormous dependency that does everything. It is closer to a small toolbox you can pick up without hesitation: explicit behavior, reliable t",
+    "html": "<p><code>@kinda/utils</code> grew out of meeting the same foundational problems across different projects.</p>\n<p>It is not trying to become an enormous dependency that does everything. It is closer to a small toolbox you can pick up without hesitation: explicit behavior, reliable types, and as few hidden decisions as possible.</p>\n<h2>What matters to me</h2>\n<ul>\n<li>An API should be understandable from its name.</li>\n<li>TypeScript types are part of the product, not supplementary documentation.</li>\n<li>Every utility should be small enough to test in isolation—and easy to replace in the future.</li>\n</ul>",
+    "content": "`@kinda/utils` grew out of meeting the same foundational problems across different projects.\n\nIt is not trying to become an enormous dependency that does everything. It is closer to a small toolbox you can pick up without hesitation: explicit behavior, reliable types, and as few hidden decisions as possible.\n\n## What matters to me\n\n- An API should be understandable from its name.\n- TypeScript types are part of the product, not supplementary documentation.\n- Every utility should be small enough to test in isolation—and easy to replace in the future.",
+    "href": "/en/projects/kinda-utils"
+  },
+  {
+    "slug": "openstudio",
+    "locale": "en",
+    "type": "project",
+    "title": "OpenStudio",
+    "eyebrow": "AI-native Video Studio",
+    "summary": "A local-first, AI-native video studio bringing editing, agents, automated workflows, and multi-platform publishing into one desktop app.",
+    "date": "2026-07-16T00:00:00.000Z",
+    "tags": [
+      "AI",
+      "Video",
+      "Electron"
+    ],
+    "cover": "/images/projects/openstudio-cover.svg",
+    "featured": true,
+    "link": "https://github.com/Alndaly/OpenStudio",
+    "status": "active",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 135
+    },
+    "excerpt": "OpenStudio is my attempt at a complete answer to the next generation of video creation tools. The product is currently called Mibu.\nIt does not place a chat box beside a conventional editor. It combines an NLE core, an AI application center, a creative-agent w",
+    "html": "<p>OpenStudio is my attempt at a complete answer to the next generation of video creation tools. The product is currently called <strong>Mibu</strong>.</p>\n<p>It does not place a chat box beside a conventional editor. It combines an NLE core, an AI application center, a creative-agent workspace, and multi-platform publishing into one continuous production flow.</p>\n<h2>From footage to publishing</h2>\n<ul>\n<li>Rough cuts can be shaped directly from a transcript before exporting the final video.</li>\n<li>Nestable workflows turn repeated steps into automated production lines.</li>\n<li>A browser pool manages persistent sessions so publishing, RPA, and agents can safely reuse account state.</li>\n<li>Electron, FastAPI, React, and SQLite form a genuinely local-first desktop architecture.</li>\n</ul>\n<p>I want it to become a creation space that feels both complete and open: the tools understand intent, while the creator keeps the final judgment.</p>",
+    "content": "OpenStudio is my attempt at a complete answer to the next generation of video creation tools. The product is currently called **Mibu**.\n\nIt does not place a chat box beside a conventional editor. It combines an NLE core, an AI application center, a creative-agent workspace, and multi-platform publishing into one continuous production flow.\n\n## From footage to publishing\n\n- Rough cuts can be shaped directly from a transcript before exporting the final video.\n- Nestable workflows turn repeated steps into automated production lines.\n- A browser pool manages persistent sessions so publishing, RPA, and agents can safely reuse account state.\n- Electron, FastAPI, React, and SQLite form a genuinely local-first desktop architecture.\n\nI want it to become a creation space that feels both complete and open: the tools understand intent, while the creator keeps the final judgment.",
+    "href": "/en/projects/openstudio"
+  },
+  {
+    "slug": "revornix",
+    "locale": "en",
+    "type": "project",
+    "title": "Revornix",
+    "eyebrow": "Local-first AI Workspace",
+    "summary": "An open-source, local-first AI information workspace that turns unread links, documents, and audio into knowledge you can actually use again.",
+    "date": "2025-04-06T00:00:00.000Z",
+    "tags": [
+      "AI",
+      "Knowledge",
+      "Open Source"
+    ],
+    "cover": "/images/projects/revornix-cover.svg",
+    "featured": true,
+    "link": "https://revornix.com",
+    "status": "active",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 137
+    },
+    "excerpt": "Faced with an endless stream, Revornix takes a quieter approach: collect what deserves to stay and let AI handle the rest.\nWeb pages, PDFs, Office documents, plain text, audio, and screenshots become structured content before entering vector search and a perso",
+    "html": "<p>Faced with an endless stream, Revornix takes a quieter approach: collect what deserves to stay and let AI handle the rest.</p>\n<p>Web pages, PDFs, Office documents, plain text, audio, and screenshots become structured content before entering vector search and a personal knowledge graph. From there they can become summaries, illustrated reports, two-voice podcasts, and notifications delivered when you are ready.</p>\n<h2>Information should do more than sit in a collection</h2>\n<p>Revornix has been local-first and self-hostable from the beginning. People control their data, models, and infrastructure; parsing, embedding, summarization, and generation engines remain replaceable.</p>\n<p>I am less interested in building another read-later app than in creating a complete information pipeline: <strong>collect, understand, organize, and deliver</strong>. Things saved with care should eventually become knowledge that can be searched, connected, and used to make something new.</p>",
+    "content": "Faced with an endless stream, Revornix takes a quieter approach: collect what deserves to stay and let AI handle the rest.\n\nWeb pages, PDFs, Office documents, plain text, audio, and screenshots become structured content before entering vector search and a personal knowledge graph. From there they can become summaries, illustrated reports, two-voice podcasts, and notifications delivered when you are ready.\n\n## Information should do more than sit in a collection\n\nRevornix has been local-first and self-hostable from the beginning. People control their data, models, and infrastructure; parsing, embedding, summarization, and generation engines remain replaceable.\n\nI am less interested in building another read-later app than in creating a complete information pipeline: **collect, understand, organize, and deliver**. Things saved with care should eventually become knowledge that can be searched, connected, and used to make something new.",
+    "href": "/en/projects/revornix"
+  },
+  {
+    "slug": "uniapi",
+    "locale": "en",
+    "type": "project",
+    "title": "UniAPI",
+    "eyebrow": "Public API Infrastructure",
+    "summary": "A simple and reliable public API service whose foundational endpoints can be used without registration, maintained as infrastructure for university projects.",
+    "date": "2023-09-21T00:00:00.000Z",
+    "tags": [
+      "API",
+      "Go",
+      "Infrastructure"
+    ],
+    "cover": "/images/projects/uniapi-cover.svg",
+    "featured": false,
+    "link": "https://uniapi.top",
+    "status": "active",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 114
+    },
+    "excerpt": "UniAPI began with a straightforward need: give projects a unified, clear, and dependable interface for common capabilities.\nIts foundational APIs can be called without registration, and the documentation tries to make every input and response unsurprising. Rea",
+    "html": "<p>UniAPI began with a straightforward need: give projects a unified, clear, and dependable interface for common capabilities.</p>\n<p>Its foundational APIs can be called without registration, and the documentation tries to make every input and response unsurprising. Real projects depend on it, so stability, extensibility, and rapid iteration are daily obligations rather than marketing language.</p>\n<h2>Do the foundational work well</h2>\n<p>UniAPI combines a documentation site, management console, and backend services. The newer Go service uses a layered structure designed for larger systems, keeping clear boundaries around configuration, logging, domain models, use cases, and HTTP transport.</p>\n<p>It does not use complexity to demonstrate technical ability. It simply tries to make “calling a tool” feel easy again.</p>",
+    "content": "UniAPI began with a straightforward need: give projects a unified, clear, and dependable interface for common capabilities.\n\nIts foundational APIs can be called without registration, and the documentation tries to make every input and response unsurprising. Real projects depend on it, so stability, extensibility, and rapid iteration are daily obligations rather than marketing language.\n\n## Do the foundational work well\n\nUniAPI combines a documentation site, management console, and backend services. The newer Go service uses a layered structure designed for larger systems, keeping clear boundaries around configuration, logging, domain models, use cases, and HTTP transport.\n\nIt does not use complexity to demonstrate technical ability. It simply tries to make “calling a tool” feel easy again.",
+    "href": "/en/projects/uniapi"
+  },
+  {
+    "slug": "unit-one",
+    "locale": "en",
+    "type": "project",
+    "title": "Unit One",
+    "eyebrow": "Community Product",
+    "summary": "A product experiment in private communities, designed to return content, relationships, and the member experience to the community itself.",
+    "date": "2024-02-11T00:00:00.000Z",
+    "tags": [
+      "Product",
+      "Community"
+    ],
+    "cover": "https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402121949063.png",
+    "featured": false,
+    "link": "https://docs.unit-one.top",
+    "status": "archive",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 75
+    },
+    "excerpt": "Unit One was a complete community-product experiment that has, for now, come to a stop.\nIt gave me room to think about ownership of content, relationships between members, and community governance. It also made one lesson concrete: implementation is only part ",
+    "html": "<p>Unit One was a complete community-product experiment that has, for now, come to a stop.</p>\n<p>It gave me room to think about ownership of content, relationships between members, and community governance. It also made one lesson concrete: implementation is only part of a product; sustained care and shared understanding determine where a community goes.</p>\n<p>I keep it here not because it is finished, but because experiments pursued seriously deserve a place of their own.</p>",
+    "content": "Unit One was a complete community-product experiment that has, for now, come to a stop.\n\nIt gave me room to think about ownership of content, relationships between members, and community governance. It also made one lesson concrete: implementation is only part of a product; sustained care and shared understanding determine where a community goes.\n\nI keep it here not because it is finished, but because experiments pursued seriously deserve a place of their own.",
+    "href": "/en/projects/unit-one"
   }
 ]

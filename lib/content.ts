@@ -1,4 +1,5 @@
 import { entries, type Entry } from '@/.velite';
+import { localizeHref, type Locale } from '@/lib/i18n';
 
 export type EntryType = Entry['type'];
 
@@ -10,12 +11,52 @@ export const notes = allEntries.filter((entry) => entry.type === 'note');
 export const photos = allEntries.filter((entry) => entry.type === 'photo');
 export const projects = allEntries.filter((entry) => entry.type === 'project');
 
-export function getEntry(type: EntryType, slug: string) {
-  return allEntries.find((entry) => entry.type === type && entry.slug === slug);
+function withLocalizedHref(entry: Entry, locale: Locale): Entry {
+  if (entry.locale === locale) return entry;
+  const baseHref = entry.href.replace(/^\/en(?=\/|$)/, '') || '/';
+  return { ...entry, href: localizeHref(locale, baseHref) };
 }
 
-export function formatDate(date: string, options?: Intl.DateTimeFormatOptions) {
-  return new Intl.DateTimeFormat('zh-CN', {
+export function getEntries(locale: Locale, type?: EntryType) {
+  const localized = allEntries.filter(
+    (entry) => entry.locale === locale && (!type || entry.type === type),
+  );
+
+  if (locale === 'zh') return localized;
+
+  const translatedKeys = new Set(localized.map((entry) => `${entry.type}:${entry.slug}`));
+  const fallbacks = allEntries
+    .filter(
+      (entry) =>
+        entry.locale === 'zh' &&
+        (!type || entry.type === type) &&
+        !translatedKeys.has(`${entry.type}:${entry.slug}`),
+    )
+    .map((entry) => withLocalizedHref(entry, locale));
+
+  return [...localized, ...fallbacks].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+}
+
+export function getEntry(type: EntryType, slug: string, locale: Locale = 'zh') {
+  const localized = allEntries.find(
+    (entry) => entry.locale === locale && entry.type === type && entry.slug === slug,
+  );
+  if (localized) return localized;
+
+  const fallback = allEntries.find(
+    (entry) => entry.locale === 'zh' && entry.type === type && entry.slug === slug,
+  );
+  return fallback ? withLocalizedHref(fallback, locale) : undefined;
+}
+
+export function formatDate(
+  date: string,
+  locale: Locale = 'zh',
+  options?: Intl.DateTimeFormatOptions,
+) {
+  return new Intl.DateTimeFormat(locale === 'zh' ? 'zh-CN' : 'en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

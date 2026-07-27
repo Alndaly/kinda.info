@@ -8,6 +8,7 @@ export default defineConfig({
       schema: s
         .object({
           slug: s.string(),
+          locale: s.enum(['zh', 'en']).default('zh'),
           type: s.enum(['note', 'photo', 'project']),
           title: s.string(),
           eyebrow: s.string().optional(),
@@ -25,16 +26,20 @@ export default defineConfig({
           html: s.markdown(),
           content: s.raw(),
         })
-        .transform((entry) => ({
-          ...entry,
-          href: `/${
+        .transform((entry) => {
+          const href = `/${
             entry.type === 'note'
               ? 'notes'
               : entry.type === 'photo'
                 ? 'photography'
                 : 'projects'
-          }/${entry.slug}`,
-        })),
+          }/${entry.slug}`;
+
+          return {
+            ...entry,
+            href: entry.locale === 'en' ? `/en${href}` : href,
+          };
+        }),
     },
   },
 });

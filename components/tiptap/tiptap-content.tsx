@@ -3,7 +3,6 @@
 import { useMemo } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
 import { Markdown } from '@tiptap/markdown';
 import CalloutNode from './extensions/callout-node';
 import ImageNode from './extensions/image-node';
@@ -37,7 +36,6 @@ export function TiptapContent({
       editable: false,
       extensions: [
         StarterKit.configure({ codeBlock: false }),
-        Underline,
         ImageNode,
         CalloutNode,
         MathBlockNode,

@@ -1,0 +1,46 @@
+---
+slug: soft-engineering
+locale: en
+type: note
+title: Soft Engineering
+eyebrow: Field Note No. 07
+summary: Good software is more than correct, fast, and scalable. It should understand hesitation, allow mistakes, and leave room to breathe.
+date: 2026-07-20
+updated: 2026-07-24
+tags:
+  - Thinking
+  - Design
+featured: true
+---
+
+We often discuss software using hard words: **constraints, validation, permissions, failure, circuit breakers**. They matter, of course, but people do not think of themselves as inputs waiting to be validated.
+
+People hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.
+
+## Beyond correctness, there is feeling
+
+A form can correctly return `400` after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.
+
+> [!TIP]
+> **A simple test**
+>
+> When an error is unavoidable, protect the person’s work first. Explain the system second.
+
+That means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.
+
+## Build room into the system
+
+Softness is not the absence of boundaries. It requires more precise boundaries.
+
+- Slow dangerous actions down so there is time to reconsider.
+- Keep frequent actions fast so the interface does not stand between a person and their intent.
+- Be honest about uncertain results instead of pretending confidence with a polished percentage.
+- Treat an empty state as an invitation to the next action, not merely “no data.”
+
+A mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.
+
+## In the end
+
+Every branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.
+
+If engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.

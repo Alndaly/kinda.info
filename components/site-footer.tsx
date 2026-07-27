@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { ArrowUpRight, Asterisk } from 'lucide-react';
+import { getDictionary, localizeHref, type Locale } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
 
-export function SiteFooter() {
+export function SiteFooter({ locale }: { locale: Locale }) {
+  const dictionary = getDictionary(locale).footer;
+
   return (
     <footer className="mt-28 border-t border-line">
       <div className="site-container">
@@ -10,9 +13,9 @@ export function SiteFooter() {
           <div>
             <Asterisk className="mb-5 h-6 w-6 text-accent" />
             <p className="max-w-xl font-display text-3xl leading-[1.15] tracking-[-0.035em] sm:text-4xl">
-              愿我们仍然对世界好奇，
+              {dictionary.manifesto[0]}
               <br />
-              也仍然有力气把它做好。
+              {dictionary.manifesto[1]}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4 text-sm md:justify-self-end">
@@ -22,26 +25,26 @@ export function SiteFooter() {
             <Link className="footer-link" href={`mailto:${siteConfig.email}`}>
               Email <ArrowUpRight />
             </Link>
-            <Link className="footer-link" href="/notes">
-              Notes <ArrowUpRight />
+            <Link className="footer-link" href={localizeHref(locale, '/notes')}>
+              {dictionary.notes} <ArrowUpRight />
             </Link>
-            <Link className="footer-link" href="/photography">
-              Frames <ArrowUpRight />
+            <Link className="footer-link" href={localizeHref(locale, '/photography')}>
+              {dictionary.frames} <ArrowUpRight />
             </Link>
             <Link className="footer-link" href={siteConfig.bilibili} target="_blank" rel="noreferrer">
               Bilibili <ArrowUpRight />
             </Link>
             <Link className="footer-link" href={siteConfig.xiaohongshu} target="_blank" rel="noreferrer">
-              小红书 <ArrowUpRight />
+              {dictionary.xiaohongshu} <ArrowUpRight />
             </Link>
-            <Link className="footer-link" href="/about#contact">
-              公众号 <ArrowUpRight />
+            <Link className="footer-link" href={localizeHref(locale, '/about#contact')}>
+              {dictionary.wechat} <ArrowUpRight />
             </Link>
           </div>
         </div>
         <div className="flex flex-col gap-2 border-t border-line py-5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:flex-row sm:justify-between">
           <span>© {new Date().getFullYear()} {siteConfig.author}</span>
-          <span>Made slowly in HangZhou · Built from local MDX</span>
+          <span>{dictionary.made}</span>
         </div>
       </div>
     </footer>
