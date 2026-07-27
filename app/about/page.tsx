@@ -18,14 +18,14 @@ export default function AboutPage() {
         </div>
         <div className="about-portrait">
           <Image
-            src="https://oss.kinda.info/image/202407162310900.jpg"
-            alt="Kinda"
+            src="/images/july-portrait.jpg"
+            alt="七月在旅途中"
             fill
             priority
             sizes="(max-width: 768px) 90vw, 38vw"
             className="object-cover"
           />
-          <span>Self portrait / 2024</span>
+          <span>Portrait / July</span>
         </div>
       </header>
 

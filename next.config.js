@@ -10,6 +10,11 @@ const nextConfig = {
         hostname: 'oss.kinda.info',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'alnda-public.oss-cn-hangzhou.aliyuncs.com',
+        pathname: '/**',
+      },
     ],
   },
 };

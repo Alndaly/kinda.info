@@ -26,7 +26,7 @@ export default function HomePage() {
               </p>
               <h1 className="hero-title">
                 Kinda
-                <span>阡陌</span>
+                <span>七月</span>
               </h1>
               <p className="mt-8 max-w-xl text-base leading-8 text-muted-foreground sm:text-lg">
                 一个关于代码、影像和生活感受的个人档案。
@@ -50,14 +50,14 @@ export default function HomePage() {
           <div className="hero-collage">
             <div className="hero-photo">
               <Image
-                src="https://oss.kinda.info/image/202409222153357.png"
-                alt="Kinda 的一帧生活影像"
+                src="/images/july-portrait.jpg"
+                alt="七月在旅途中"
                 fill
                 priority
                 sizes="(max-width: 1024px) 90vw, 42vw"
                 className="object-cover"
               />
-              <span>35° N / 121° E</span>
+              <span>ON THE ROAD / JULY</span>
             </div>
             <div className="hero-stamp" aria-hidden="true">
               <span>KEEP CURIOUS · STAY SOFT · </span>

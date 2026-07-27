@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Revornix project cover</title>
+  <desc id="desc">An abstract knowledge graph for the local-first AI workspace.</desc>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="42%" r="58%">
+      <stop offset="0" stop-color="#364d71"/>
+      <stop offset=".55" stop-color="#172238"/>
+      <stop offset="1" stop-color="#0b101b"/>
+    </radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+  <rect width="1200" height="750" fill="url(#glow)"/>
+  <g stroke="#91b5ec" stroke-opacity=".28" fill="none">
+    <path d="M138 194 342 316 505 170 711 326 938 186 1062 374 846 570 602 472 384 604 178 460Z"/>
+    <path d="M342 316 602 472M505 170 602 472M711 326 846 570M178 460 342 316M711 326 1062 374"/>
+  </g>
+  <g fill="#b9d4ff">
+    <circle cx="138" cy="194" r="6"/><circle cx="342" cy="316" r="9"/><circle cx="505" cy="170" r="6"/>
+    <circle cx="711" cy="326" r="11"/><circle cx="938" cy="186" r="6"/><circle cx="1062" cy="374" r="8"/>
+    <circle cx="846" cy="570" r="7"/><circle cx="602" cy="472" r="12"/><circle cx="384" cy="604" r="5"/><circle cx="178" cy="460" r="7"/>
+  </g>
+  <circle cx="602" cy="472" r="64" fill="#6998df" opacity=".22" filter="url(#blur)"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#f4f7ff">
+    <text x="82" y="92" font-size="18" font-weight="700" letter-spacing="7" opacity=".68">LOCAL-FIRST · OPEN SOURCE</text>
+    <text x="76" y="420" font-size="136" font-weight="800" letter-spacing="-7">REVORNIX</text>
+    <text x="84" y="480" font-size="22" letter-spacing="6" opacity=".62">COLLECT → UNDERSTAND → CONNECT</text>
+  </g>
+  <rect x="84" y="636" width="250" height="42" rx="21" fill="#dce9ff"/>
+  <text x="110" y="663" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" letter-spacing="3" fill="#172238">AI KNOWLEDGE SPACE</text>
+</svg>

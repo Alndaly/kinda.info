@@ -14,6 +14,7 @@ export function ProjectCard({ entry, index }: { entry: Entry; index: number }) {
               src={entry.cover}
               alt=""
               fill
+              priority={index === 0}
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover opacity-90 transition duration-700 group-hover:scale-105"
             />
