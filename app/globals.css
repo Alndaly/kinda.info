@@ -751,11 +751,12 @@
 }
 
 .mdx-prose {
+  --mdx-body-font-size: clamp(1.05rem, 1.5vw, 1.18rem);
   width: min(100% - 2rem, 46rem);
   margin: clamp(4rem, 9vw, 7rem) auto 0;
   color: hsl(var(--foreground));
   font-family: "Iowan Old Style", "Baskerville", "Songti SC", "STSong", serif;
-  font-size: clamp(1.05rem, 1.5vw, 1.18rem);
+  font-size: var(--mdx-body-font-size);
   line-height: 2;
 }
 
@@ -826,9 +827,11 @@
   content: "✦";
   position: absolute;
   left: -1.25rem;
-  top: 0.02rem;
+  top: var(--mdx-body-font-size);
+  transform: translateY(-50%);
   color: hsl(var(--accent));
   font-size: 0.65rem;
+  line-height: 1;
 }
 
 .mdx-prose ol {
