@@ -13,9 +13,10 @@ Kinda 的个人数字档案：笔记、摄影与独立项目。
 
 ## 本地开发
 
-项目固定使用 pnpm 11：
+项目固定使用 Node.js 24 和 pnpm 11。使用 nvm 时可先切换到仓库声明的版本：
 
 ```bash
+nvm use
 pnpm install --frozen-lockfile
 pnpm dev
 ```
