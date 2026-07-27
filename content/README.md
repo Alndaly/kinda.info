@@ -14,6 +14,7 @@ date: 2026-07-27
 tags:
   - Design
 featured: false
+source: https://example.com/original # 可选，历史内容的原始地址
 ---
 ```
 
@@ -51,6 +52,17 @@ flowchart LR
 ```
 ````
 
+### 表格
+
+使用标准 GFM 表格语法，窄屏下会自动横向滚动，并适配浅色与深色主题。
+
+```md
+| 节点 | 用途 |
+| --- | --- |
+| Callout | 补充说明 |
+| Mermaid | 流程图 |
+```
+
 ### 数学公式
 
 ```md
@@ -82,3 +94,16 @@ flowchart LR
 ```
 
 这些标签借鉴了 Revornix 的节点格式，因此内容在两个项目之间迁移时不需要重新设计数据结构。
+
+## 历史文档归档
+
+`notes/archive/` 保存从旧站迁移的历史文章。重新同步 `huaqinda.com` 与旧版
+`kinda.info/posts` 时运行：
+
+```bash
+pnpm content:import-legacy
+```
+
+导入器会保留标题、日期、标签、代码、列表、提示框、公式、表格和图片，并将
+Notion 私有图片保存到 `public/images/archive/`。两个来源重复的 Neo4j 文章由现有
+`notes/neo4j-python-guide.mdx` 统一承接，不会重复生成。

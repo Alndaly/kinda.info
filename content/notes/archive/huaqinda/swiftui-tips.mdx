@@ -1,0 +1,224 @@
+---
+slug: "swiftui-tips"
+locale: zh
+type: note
+title: "SwiftUI一些注意点和技巧"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "Q1: 如果遇到在别的地方需要修改swiftui界面时，但又无法直接操作页面内的数据时，该怎么办呢？ 方法一： 使用 @Published 和 ObservableObject 通过 ObservableObject 和 @Published 将状态管理抽离到一个外部的共享数据模型中，然后通过…"
+date: 2024-12-10
+updated: 2025-01-11
+tags:
+  - "开发"
+  - "SwiftUI"
+  - "归档"
+source: "https://huaqinda.com/article/158bbdbf-a033-80d9-9f49-f035aa42c39b"
+featured: false
+---
+
+### Q1: 如果遇到在别的地方需要修改swiftui界面时，但又无法直接操作页面内的数据时，该怎么办呢？
+
+#### 方法一：
+
+**使用 @Published 和 ObservableObject**
+
+通过 ObservableObject 和 @Published 将状态管理抽离到一个外部的共享数据模型中，然后通过 @EnvironmentObject 或 @StateObject 将数据绑定到页面。
+
+**示例代码**
+
+1. 定义状态管理类
+
+```swift
+import SwiftUI
+import Combine
+
+class SharedData: ObservableObject {
+    @Published var message: String = "Hello, World!"
+    @Published var count: Int = 0
+}
+```
+
+2. 在视图中使用 @StateObject 或 @EnvironmentObject
+
+```swift
+struct ContentView: View {
+    @StateObject var sharedData = SharedData() // 如果是全局共享数据，可以用 @EnvironmentObject
+
+    var body: some View {
+        VStack {
+            Text(sharedData.message)
+                .font(.title)
+
+            Button("Increment Count") {
+                sharedData.count += 1
+            }
+
+            Text("Count: \(sharedData.count)")
+        }
+        .onReceive(sharedData.$message) { newMessage in
+            print("Message changed to: \(newMessage)")
+        }
+    }
+}
+```
+
+3. 在其他地方更新数据
+
+```swift
+let sharedData = SharedData()
+sharedData.message = "New Message"
+sharedData.count = 42
+```
+
+当 sharedData.message 或 sharedData.count 被修改时，ContentView 会自动更新。
+
+#### 方法二
+
+使用NotificationCenter.default.post，这个方法基本无敌，可以在任何地方使用，不局限于swiftui页面。
+
+**示例代码**
+
+1. 定义通知的名称
+
+```swift
+extension Notification.Name {
+    static let navigateToPage = Notification.Name("navigateToPage")
+}
+```
+
+2. 在某处发送通知
+
+```swift
+let userInfo: [String: Any] = ["targetPage": "DetailPage", "data": "Example Data"]
+NotificationCenter.default.post(name: .navigateToPage, object: nil, userInfo: userInfo)
+```
+
+3. 在 SwiftUI 页面接收通知
+
+- 通过onReceive接受
+
+```swift
+import SwiftUI
+
+struct ContentView: View {
+    @State private var shouldNavigate: Bool = false
+    @State private var navigationData: String = ""
+
+    var body: some View {
+        NavigationStack {
+            VStack {
+                Text("Home Page")
+                NavigationLink(destination: DetailView(data: navigationData), isActive: $shouldNavigate) {
+                    EmptyView()
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .navigateToPage)) { notification in
+                if let userInfo = notification.userInfo,
+                   let targetPage = userInfo["targetPage"] as? String,
+                   let data = userInfo["data"] as? String,
+                   targetPage == "DetailPage" {
+                    navigationData = data
+                    shouldNavigate = true
+                }
+            }
+        }
+    }
+}
+
+struct DetailView: View {
+    let data: String
+
+    var body: some View {
+        Text("Detail Page with data: \(data)")
+    }
+}
+```
+
+- 通过.sink自己控制监听
+
+> [!TIP]
+> 注意这种方式需要自己取消监听
+
+```swift
+struct ContentView: View {
+	@State private var notificationCancellable: AnyCancellable?
+
+	...
+
+	notificationCancellable = NotificationCenter.default
+	            .publisher(for: .navigateToPage)
+	            .sink { handleNotification($0) }
+
+	func handleNotification(_ notification: Notification) {
+			if let userInfo = notification.userInfo, let object = notification.object {
+			    // 在这里执行你的逻辑
+			    ...
+	    }
+	}
+
+	var body: some View {
+	        ZStack {
+			        ...
+	        }
+	        .onDisappear {
+				        // 取消监听
+		            notificationCancellable?.cancel()
+	        }
+	    }
+}
+```
+
+---
+
+### **Q2: 有时候遇到页面崩溃出现黄色感叹号的情况，但一时找不到逻辑原因？**
+
+可以留心观察你的代码结构。
+
+一定要注意如果使用`NavigationStack`的话，`navigationDestination`和`navigationTitle`一定要在`NavigationStack`内部。
+
+---
+
+### **Q3: 当应用从后台进入前台的时候，默认是不会触发当前页面的**`**.onAppear**`**或者**`**.task**`**事件的，此时如果想要每次进入前台的时候都触发数据更新该怎么办？**
+
+可以在对应页面订阅进入前台事件，具体代码如下：
+
+```swift
+import SwiftUI
+
+struct ContentView: View {
+    var body: some View {
+        Text("Hello, World!")
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                handleAppWillEnterForeground()
+            }
+    }
+
+    private func handleAppWillEnterForeground() {
+        print("App entered foreground")
+        }
+    }
+}
+```
+
+也可以通过`onChange`监听设备场景
+
+```swift
+import SwiftUI
+
+struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
+
+    var body: some View {
+        Text("Hello, World!")
+            .onChange(of: scenePhase) { newPhase in
+                if newPhase == .active {
+                    handleAppWillEnterForeground()
+                }
+            }
+    }
+
+    private func handleAppWillEnterForeground() {
+        print("App entered foreground via scenePhase")
+        // 在这里执行你的逻辑
+    }
+}
+```

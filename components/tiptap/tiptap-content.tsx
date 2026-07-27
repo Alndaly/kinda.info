@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Markdown } from '@tiptap/markdown';
+import { TableKit } from '@tiptap/extension-table';
 import CalloutNode from './extensions/callout-node';
 import ImageNode from './extensions/image-node';
 import CodeBlockNode from './extensions/code-block-node';
@@ -40,12 +41,17 @@ export function TiptapContent({
         CalloutNode,
         MathBlockNode,
         MathInlineNode,
+        TableKit,
         VideoEmbedNode,
         MapEmbedNode,
         FileAttachmentNode,
         AudioAttachmentNode,
         CodeBlockNode,
-        Markdown,
+        Markdown.configure({
+          markedOptions: {
+            gfm: true,
+          },
+        }),
       ],
       content: normalized,
       contentType: 'markdown',

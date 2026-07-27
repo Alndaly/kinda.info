@@ -1,0 +1,15 @@
+---
+slug: "tailwind-line-clamp-notes"
+locale: zh
+type: note
+title: "一些前端样式的注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "有时候遇到tailwindcss的line clamp不生效的情况，可能是其上级应用了 whitespace nowrap 类，这个会阻止换行，但是line clamp默认依赖换行。所以需要去掉这个类，或者当前级补充 whitespace normal 。"
+date: 2025-06-30
+tags:
+  - "归档"
+source: "https://huaqinda.com/article/222bbdbf-a033-80e1-af24-d25577114efb"
+featured: false
+---
+
+有时候遇到tailwindcss的line-clamp不生效的情况，可能是其上级应用了`whitespace-nowrap`类，这个会阻止换行，但是line-clamp默认依赖换行。所以需要去掉这个类，或者当前级补充`whitespace-normal`。

@@ -1,0 +1,186 @@
+---
+slug: "swiftui-apns-notes"
+locale: zh
+type: note
+title: "SwiftUI APNS的一些注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "操作步骤 相关数据 前往https://developer.apple.com/account MembershipDetailsCard页面获取自己的teamId 前往https://developer.apple.com/account/resources/authkeys/list生成新…"
+date: 2024-12-08
+updated: 2024-12-23
+tags:
+  - "开发"
+  - "实用教程"
+  - "swift"
+  - "归档"
+source: "https://huaqinda.com/article/156bbdbf-a033-80cc-9409-e621cb1af7fb"
+featured: false
+---
+
+## 操作步骤
+
+### 相关数据
+
+前往[https://developer.apple.com/account#MembershipDetailsCard](https://developer.apple.com/account#MembershipDetailsCard)页面获取自己的teamId
+
+前往[https://developer.apple.com/account/resources/authkeys/list](https://developer.apple.com/account/resources/authkeys/list)生成新的key，获取其keyId并且将其文件下载。
+
+### python的范本
+
+```python
+import httpx
+import time
+import uuid
+import json
+import jwt
+import os
+
+current_dir = os.path.dirname(__file__)
+
+teamId = <your teamId>
+keyId = <your keyId>
+
+payload = {
+    "iss": teamId,
+    "iat": int(time.time()),
+}
+
+headers = {
+    "alg" : "ES256",
+    "kid" : keyId
+}
+
+# Apple Developer下载的p8文件
+with open(os.path.join(current_dir, <authkeyfilename>), 'r') as f:
+    privateKey = f.read()
+
+token = jwt.encode(payload=payload, algorithm='ES256', headers=headers, key=privateKey)
+
+headers = {
+    "authorization": "bearer " + token,
+    "apns-topic": "com.qingyun.Receiver",
+    "apns-id": str(uuid.uuid4())
+}
+
+deviceToken = <your device token>
+
+url = 'https://api.sandbox.push.apple.com/3/device/{}'.format(deviceToken)
+
+def send_ios_notify(title, subtitle, body):
+    data = {
+        "aps" : {
+            "alert" : {
+                "title" : title,
+                "subtitle" : subtitle,
+                "body" : body
+            },
+            "sound": {
+                "name": "default"
+            },
+        },
+        "content-available": 1,
+        "navigateToPage": "12345"
+    }
+    with httpx.Client(http2=True) as client:  # 使用上下文管理器
+        try:
+            res = client.post(url=url, headers=headers, json=data)
+            print("推送成功:", res)
+        except Exception as e:
+            print("推送失败:", e)
+
+if __name__ == "__main__":
+    send_ios_notify("title", "subtitle", "body")
+```
+
+## 注意点
+
+### 结构
+
+apns-topic需要符合你的apple bundle identifier。
+
+"content-available": 1 是用来让通知能够app在后台时点击通知能被应用处理
+
+"navigateToPage": "12345"是额外自定义字段
+
+### 应用在后台时候点击通知打开指定页面
+
+```swift
+//
+//  AppDelegate.swift
+//  Receiver
+//
+//  Created by Kinda on 2024/12/7.
+//
+
+import SwiftUI
+import AuthenticationServices
+
+// 扩展Data，将Data编码转成正常字符串
+extension Data {
+    var hexString: String {
+        return map { String(format: "%02.2hhx", arguments: [$0]) }.joined()
+    }
+}
+
+private func registerForRemoteNotifications() {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+        if granted {
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        } else {
+            print("Notification permission not granted: \(String(describing: error))")
+        }
+    }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    var window: UIWindow?
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        registerForRemoteNotifications()
+        UNUserNotificationCenter.current().delegate = self
+        return true
+    }
+
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        // 如果注册成功，那么会调用此处函数
+        // 存储到 UserDefaults
+        UserDefaults.standard.set(deviceToken.hexString, forKey: "deviceToken")
+        print("deviceToken:", deviceToken.hexString)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("Failed to register for remote notifications: \(error)")
+    }
+
+    // 前台接收到通知时
+    func application(_ application: UIApplication, didReceiveRemoteNotification notification: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        NotificationCenter.default.post(name: .alert, object: notification)
+        completionHandler(.newData)
+    }
+
+    // 点击通知打开应用时处理
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                didReceive response: UNNotificationResponse,
+                withCompletionHandler completionHandler:
+                                @escaping () -> Void) {
+        NotificationCenter.default.post(name: .navigateToPage, object: response.notification.request.content.userInfo, userInfo: response.notification.request.content.userInfo)
+        completionHandler()
+    }
+}
+```
+
+其中
+
+```swift
+func application(_ application: UIApplication,
+                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+      registerForRemoteNotifications()
+      UNUserNotificationCenter.current().delegate = self
+      return true
+  }
+```
+
+这段代码很重要，如果你发现你的userNotificationCenter不生效的话，检查一下是否执行了UNUserNotificationCenter.current().delegate = self，也就是是否将本函数介入UNUserNotificationCenter的生命周期（此话只是我的一种粗糙理解，简单地讲就是是否让这个函数生效，别的delegate类型也是如此，一定要设置为self）。

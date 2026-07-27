@@ -1,0 +1,43 @@
+---
+slug: "aliyun-oss-notes"
+locale: zh
+type: note
+title: "阿里云OSS注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "跨域配置 配置跨域设置的时候，一定需要配置headers，如果不配置，那么返回结果会是403。 文章配图 region的一些问题 在js环境中 其中的region是 oss cn hangzhou ，一定要携带 oss 前缀。"
+date: 2025-01-13
+tags:
+  - "开发"
+  - "oss"
+  - "归档"
+source: "https://huaqinda.com/article/17abbdbf-a033-8062-a94d-f26a62e75afd"
+featured: false
+---
+
+### 跨域配置
+
+配置跨域设置的时候，一定需要配置headers，如果不配置，那么返回结果会是403。
+
+![文章配图](/images/archive/huaqinda/aliyun-oss-notes/17abbdbf-a033-80f5-aacb-eb9e2835c8a5.png)
+
+### region的一些问题
+
+在js环境中
+
+```javascript
+const client = new OSS({
+    // yourRegion填写Bucket所在地域。以华东1（杭州）为例，Region填写为cn-hangzhou。
+    region: region,
+    // 从STS服务获取的临时访问密钥（AccessKey ID和AccessKey Secret）。
+    accessKeyId: res.access_key_id,
+    accessKeySecret: res.access_key_secret,
+    // 从STS服务获取的安全令牌（SecurityToken）。
+    stsToken: res.security_token,
+    // 刷新临时访问凭证的时间间隔，单位为毫秒。
+    refreshSTSTokenInterval: 3600,
+    // 填写Bucket名称。
+    bucket: bucket
+});
+```
+
+其中的region是`oss-cn-hangzhou` ，一定要携带`oss-`前缀。

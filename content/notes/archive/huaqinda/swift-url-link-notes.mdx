@@ -1,0 +1,19 @@
+---
+slug: "swift-url-link-notes"
+locale: zh
+type: note
+title: "Swift URL link注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "如果发现全部操作都正确的情况下依然无法成功关联网站，仔细查看一下你的网站是否具有认证拦截功能。 比如你的网站是基于 nextjs 的，那么一定要注意middleware必须放行 /.well known/apple app site association 。"
+date: 2024-12-24
+tags:
+  - "开发"
+  - "SwiftUI"
+  - "归档"
+source: "https://huaqinda.com/article/166bbdbf-a033-8064-8b99-c4153ff3d311"
+featured: false
+---
+
+如果发现全部操作都正确的情况下依然无法成功关联网站，仔细查看一下你的网站是否具有认证拦截功能。
+
+比如你的网站是基于`nextjs`的，那么一定要注意middleware必须放行`/.well-known/apple-app-site-association` 。

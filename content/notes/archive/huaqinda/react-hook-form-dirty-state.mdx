@@ -1,0 +1,19 @@
+---
+slug: "react-hook-form-dirty-state"
+locale: zh
+type: note
+title: "react hook form注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "当你提交完成后，修改过后的字段中的isDirty属性依然是true，此时需要通过如下操作来使其变为fasle"
+date: 2025-03-02
+tags:
+  - "归档"
+source: "https://huaqinda.com/article/1aabbdbf-a033-80c5-bc29-e2b817718461"
+featured: false
+---
+
+当你提交完成后，修改过后的字段中的isDirty属性依然是true，此时需要通过如下操作来使其变为fasle
+
+```typescript
+form.reset({}, { keepValues: true })
+```

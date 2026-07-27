@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, CalendarDays, Clock3 } from 'lucide-react';
+import { ArrowLeft, CalendarDays, Clock3, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, formatDate, getEntry } from '@/lib/content';
@@ -57,6 +57,11 @@ export default async function NotePage({ params }: Props) {
           <div className="article-meta">
             <span><CalendarDays /> {formatDate(note.date, lang)}</span>
             <span><Clock3 /> {note.metadata.readingTime} {dictionary.minRead}</span>
+            {note.source ? (
+              <a href={note.source} target="_blank" rel="noreferrer">
+                <ExternalLink /> {dictionary.source}
+              </a>
+            ) : null}
           </div>
         </div>
       </header>

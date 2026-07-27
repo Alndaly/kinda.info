@@ -1,0 +1,20 @@
+---
+slug: "swift-development-notes"
+locale: zh
+type: note
+title: "Swift开发注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "https://gist.github.com/Alndaly/ac8bf212f3eadea10cc5099af5174305 注意当你和我上述代码类似的时候，router.navigate跳转页面的时候会发生bug，会先成功跳转，然后迅速跳转到TestView1页面去。 貌似是因为如果用r…"
+date: 2024-09-23
+tags:
+  - "开发"
+  - "归档"
+source: "https://huaqinda.com/article/10abbdbf-a033-80e6-a786-ca96527eaed6"
+featured: false
+---
+
+[https://gist.github.com/Alndaly/ac8bf212f3eadea10cc5099af5174305](https://gist.github.com/Alndaly/ac8bf212f3eadea10cc5099af5174305)
+
+注意当你和我上述代码类似的时候，router.navigate跳转页面的时候会发生bug，会先成功跳转，然后迅速跳转到TestView1页面去。
+
+貌似是因为如果用router进行函数式页面跳转就不能给TabView设置selection，去掉这个参数就可以正常跳转了，后续待研究有没有别的方式解决这一问题，毕竟selection作为当前tab标识不能去掉在多数时候。

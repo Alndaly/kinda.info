@@ -1,0 +1,25 @@
+---
+slug: "notion-webhooks"
+locale: zh
+type: note
+title: "喜大普奔，Notion终于支持WebHook了"
+eyebrow: "旧站归档 · KINDA.INFO"
+summary: "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。 有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了 我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持…"
+date: 2025-04-03
+tags:
+  - "归档"
+source: "https://kinda.info/post/1c9bbdbf-a033-8022-8e0e-ef3186a6f6c4"
+featured: false
+---
+
+今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。
+
+有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了
+
+我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。
+
+灵感这不就来了！
+
+# 具体操作
+
+处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api触发笔记服务部署，bingo！链路打通！

@@ -1,0 +1,21 @@
+---
+slug: "minio-presigned-upload"
+locale: zh
+type: note
+title: "minio注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "如果你选择用预签名方式上传文件的话，那么注意在你的请求头中只能有一种认证方式。 即：即然选择了预签名方式，那么就不要再请求头中带有任何Token相关信息。 S3系列预签名上传文件应该都是这样子的！ 如果用了Alamofire的拦截，那么注意这方面的上传请求需要特殊处理。"
+date: 2025-08-05
+tags:
+  - "归档"
+source: "https://huaqinda.com/article/246bbdbf-a033-8064-ad9f-e6000a05c40a"
+featured: false
+---
+
+如果你选择用预签名方式上传文件的话，那么注意在你的请求头中只能有一种认证方式。
+
+即：即然选择了预签名方式，那么就不要再请求头中带有任何Token相关信息。
+
+S3系列预签名上传文件应该都是这样子的！
+
+如果用了Alamofire的拦截，那么注意这方面的上传请求需要特殊处理。

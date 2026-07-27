@@ -1,0 +1,41 @@
+---
+slug: "swift-fastapi-nextjs-qr-login"
+locale: zh
+type: note
+title: "Swift配合FastAPI以及NextJS做扫码登录"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "技术选型 前端：nextjs 后端：fastapi 手机端：swift 实际步骤概括 web端建立一个uuid，基于这个uuid连接后端websocket，后端返回一个基于这个uuid的登录二维码。 手机扫描到二维码后，发送给后端一个该uuid的二维码已经扫描的状态。 后端返回给web端该二维…"
+date: 2024-12-09
+updated: 2024-12-22
+tags:
+  - "开发"
+  - "实用教程"
+  - "swift"
+  - "FastAPI"
+  - "nextjs"
+  - "归档"
+source: "https://huaqinda.com/article/157bbdbf-a033-809d-8a41-e3a4b17da5fa"
+featured: false
+---
+
+## 技术选型
+
+前端：nextjs
+
+后端：fastapi
+
+手机端：swift
+
+## 实际步骤概括
+
+web端建立一个uuid，基于这个uuid连接后端websocket，后端返回一个基于这个uuid的登录二维码。
+
+手机扫描到二维码后，发送给后端一个该uuid的二维码已经扫描的状态。
+
+后端返回给web端该二维码已经被扫描，web端基于这一情况修改二维码，补充已扫描蒙版。
+
+手机端确认登录，发送给后端该uuid可以登录。
+
+后端返回给web端登录成功，并且传输token给web端。
+
+## 详细步骤

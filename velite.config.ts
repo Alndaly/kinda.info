@@ -20,6 +20,7 @@ export default defineConfig({
           featured: s.boolean().default(false),
           location: s.string().optional(),
           link: s.string().optional(),
+          source: s.string().optional(),
           status: s.enum(['active', 'experiment', 'archive']).optional(),
           metadata: s.metadata(),
           excerpt: s.excerpt(),

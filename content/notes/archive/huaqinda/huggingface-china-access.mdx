@@ -1,0 +1,29 @@
+---
+slug: "huggingface-china-access"
+locale: zh
+type: note
+title: "huggingface国内访问问题"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "国内服务器如果想部署一些token embedding项目，当用到huggingface的模型的时候可能会发生无法访问等问题，这时可以使用huggingface在国内的镜像站。 链接 HF Mirror 对于huggingface库，你需要修改环境变量 想永久生效的话，把这一行加到 /.zsh…"
+date: 2025-02-04
+tags:
+  - "开发"
+  - "人工智能"
+  - "归档"
+source: "https://huaqinda.com/article/190bbdbf-a033-8013-95f8-cc96233a9086"
+featured: false
+---
+
+国内服务器如果想部署一些token embedding项目，当用到huggingface的模型的时候可能会发生无法访问等问题，这时可以使用huggingface在国内的镜像站。
+
+链接
+
+[HF-Mirror](https://hf-mirror.com/)
+
+对于huggingface库，你需要修改环境变量
+
+```bash
+export HF_ENDPOINT=https://hf-mirror.com
+```
+
+想永久生效的话，把这一行加到~/.zshrc底部，然后source ~/.zshrc即可。

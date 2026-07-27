@@ -1,0 +1,54 @@
+---
+slug: "docker-wait-strategy"
+locale: zh
+type: note
+title: "docker等待问题"
+eyebrow: "旧站归档 · KINDA.INFO"
+summary: "docker中如何让一个服务等待另一个服务成功运行后再启动？ 通过如下代码配置mysql的healthycheck 通过如下代码配置等待mysql正常运行后再启动api服务"
+date: 2025-04-23
+tags:
+  - "归档"
+source: "https://kinda.info/post/1debbdbf-a033-80ac-81cc-f45aff58df33"
+featured: false
+---
+
+docker中如何让一个服务等待另一个服务成功运行后再启动？
+
+通过如下代码配置mysql的healthycheck
+
+```
+  mysql:
+    container_name: mysql
+    image:
+      mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ...
+      MYSQL_DATABASE: ...
+    volumes:
+       - ./volumes/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--host=localhost", "--user=...", "--password=..."]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+```
+
+通过如下代码配置等待mysql正常运行后再启动api服务
+
+```
+ api:
+    container_name: api
+    build:
+      context: api
+      dockerfile: Dockerfile
+    command: ["sh", "-c", "python -m script.init_sql_base_data && fastapi run main.py --proxy-headers --host 0.0.0.0 --port 8001"]
+    volumes:
+      - ./api:/app
+    depends_on:
+      mysql:
+        condition: service_healt
+    env_file:
+      - ./api/.env.development
+```

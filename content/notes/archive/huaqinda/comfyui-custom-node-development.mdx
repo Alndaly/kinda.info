@@ -1,0 +1,39 @@
+---
+slug: "comfyui-custom-node-development"
+locale: zh
+type: note
+title: "如何开发自定义节点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "此文档还在撰写中 前面介绍了那么多的节点，不知道有没有同学产生这样的疑惑：那我该怎么做自己的节点呢？🤔今天我们这一章节就来讲讲： 如何创建自己的插件节点 。 首先切到你的ComfyUI插件节点目录，创建一个你自己的插件文件夹，比如 ComfyUI July Nodes 。 于我而言，具体目录…"
+date: 2024-09-02
+tags:
+  - "人工智能"
+  - "开发"
+  - "归档"
+source: "https://huaqinda.com/article/c1ae971e-5517-4068-ae91-62d0729b50d1"
+featured: false
+---
+
+> [!TIP]
+> 此文档还在撰写中
+
+前面介绍了那么多的节点，不知道有没有同学产生这样的疑惑：那我该怎么做自己的节点呢？🤔今天我们这一章节就来讲讲：**如何创建自己的插件节点**。
+
+首先切到你的ComfyUI插件节点目录，创建一个你自己的插件文件夹，比如 `ComfyUI-July-Nodes` 。
+
+于我而言，具体目录如下：
+
+```bash
+$ pwd
+/Users/kinda/Developer/AI/ComfyUI/custom_nodes/ComfyUI-July-Nodes
+```
+
+创建完成后，请cd到你的插件目录下。
+
+```bash
+$ cd /Users/kinda/Developer/AI/ComfyUI/custom_nodes/ComfyUI-July-Nodes
+```
+
+新建一个 `nodes.py` 文件作为节点组文件，后续所有节点都将会在这个文件中撰写。
+
+新建一个 `__init__.py` 文件，这个文件想必常用python的人应该很熟悉了，因为某些历史原因，python的文件夹如果想要作为包的话必须要在其内添加这么一个文件。而在我们这里也不例外，同时这个文件中也将导出我们的所有节点信息的字典。

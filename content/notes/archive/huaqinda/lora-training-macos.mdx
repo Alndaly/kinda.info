@@ -1,0 +1,229 @@
+---
+slug: "lora-training-macos"
+locale: zh
+type: note
+title: "lora模型训练"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "本文档针对使用m系列芯片的MacBook用户，详细介绍了如何快速开始训练LoRA模型，包括从下载和启动kohya仓库、图像裁剪、打标、设置训练参数、选择底模、建立训练文件夹到具体的训练步骤。此外，还提供了详细的参数选择指南和优化建议，确保用户能够高效地完成LoRA模型的训练。"
+date: 2024-07-16
+updated: 2024-08-07
+tags:
+  - "工具"
+  - "实用教程"
+  - "人工智能"
+  - "推荐"
+  - "热门文章"
+  - "必看精选"
+  - "归档"
+source: "https://huaqinda.com/article/ba1c2a33-e4cb-415c-9657-5f7530405dbd"
+featured: false
+---
+
+## **lora 模型训练**
+
+> [!WARNING]
+> 注意，本文档只针对m系列芯片的macbook用户。
+
+### **快速开始**
+
+#### **下载 kohya 仓库**
+
+```bash
+git clone git@github.com:bmaltais/kohya_ss.git
+```
+
+#### **启动 kohya**
+
+```bash
+cd kohya_ss./gui.sh
+```
+
+#### **图像裁剪**
+
+webui 自带裁剪功能，具体如下
+
+![文章配图](https://oss.kinda.info/image/202403060009884.png)
+
+> [!WARNING]
+> webui默认的人像焦点裁剪有时候并不是那么可靠，需要在完成之后检查一遍。如果人物比较瘦长的情况下的的话还可能导致人物被裁剪，这种情况建议手动裁切或者扩充边沿。
+
+> [!TIP]
+> 裁剪结果也不一定要选择512*512，因为sd在训练的时候会预先根据不同图片大小进行分桶。
+
+#### **打标**
+
+下面这个仓库是公认的比较合适的打标仓库（似乎对于二次元风格更合适一些，应该是因为都是基于标签制的，并且标签来自于[https://safebooru.org](https://safebooru.org/)这一网站经训练生成的）。
+
+[https://github.com/picobyte/stable-diffusion-webui-wd14-tagger](https://github.com/picobyte/stable-diffusion-webui-wd14-tagger)
+
+把项目克隆到 sd 的 extensions 目录下，然后重启 sd 即可。
+
+```bash
+cd ./extensionsgit clone git@github.com:picobyte/stable-diffusion-webui-wd14-tagger.git
+```
+
+![文章配图](https://oss.kinda.info/image/202403061424310.png)
+
+注意下面的 Additional tags，这里你需要填入这个 lora 的触发词语，在最终打标完成的 txt 文件中这个触发词语会被加入并且置于 prompts 的第一个。
+
+#### **设置训练参数**
+
+详见[参数选择](https://human-ai.site/image/lora#%E5%8F%82%E6%95%B0%E9%80%89%E6%8B%A9)
+
+#### **选底模**
+
+详见[参数选择](https://human-ai.site/image/lora#%E5%8F%82%E6%95%B0%E9%80%89%E6%8B%A9)
+
+#### **建立训练文件夹（注意：文件夹的相关路径不要有中文和空格）**
+
+1. 建立一个文件夹，命名为你的训练项目名字。比如 NingGuang。
+1. 在 NingGuang 目录下新建三个文件夹，分别命名为 image、log、models。
+1. 进入 image 文件夹，新建一个格式为【Repeat_Concept】，Repeat 的意义是重复学习训练集图片的次数，二次元图片选择 5-10 即可，三次元图片细节较为复杂可以选择设置在 10-30 之间，Concept 代表概念，训练对象的主要概念名称，最好是你设置的提示词就好了，同时，如果你想训练的 lora 有多个概念，可以选择新建多个不同的文件夹植入不同概念。比如：6_NingGuang，格式将裁切并且打标完成的图片即其标签拖到
+1. 填写相关信息到 kohya_ss 内，注意 image folder 需要是你的 image 文件夹的路径而不是其下面的概念文件夹路径。
+  ![文章配图](https://oss.kinda.info/image/202403061425301.png)
+
+#### **开始训练**
+
+### **参数选择**
+
+#### **Source Model**
+
+![文章配图](https://oss.kinda.info/image/202403061428677.png)
+
+此处最好选择 custom，然后自行填入本地的模型，否则 sd 会自动下载对应基底模型，速度相对而言会很慢。
+
+作为模型训练的基底模型，一般会选择如下三种之一。
+
+|  | SD 1.4/1.5 | SDXL 0.9/1.0 | SD 2.0/2.1 |
+| --- | --- | --- | --- |
+| 原始训练集尺寸 | 512*512 | 768*768 | 1024*1024 |
+| 原始绘制精度/图像质量 | 很一般 | 较佳 | 非常强 |
+| 训练需求 | 低 | 较高 | 非常高 |
+| 流传广度/模型市场占比 | 高 | 低 | 中 |
+
+> [!TIP]
+> 不同的基地模型一些底层构造不同，因此选择特定版本的底模时必须结合相应版本的models使用，否则的话会报错。
+
+如果是训练动漫人物的话，那么可以选择使用这个模型作为底模，这是 novalai 的初版泄漏模型。
+
+[deepghs/animefull-latest-ckpt at main](https://huggingface.co/deepghs/animefull-latest-ckpt/tree/main)
+
+但是 novalai 的模型已经很老了，所以也可以选择 AnyThing 等较新的模型，如下所示。
+
+|  | 真实系风格图像 | 二次元风格图像 |
+| --- | --- | --- |
+| 始祖级模型 | Stable Diffusion 1.5 | Anime-full (NAI 模型) |
+| 风格中立的融合模型 | ChillOut MixRealistic VisionMajicMix Realistic… | AnyLoRAAnything V3/V5ReV Animated… |
+
+Stable Diffusion 和 Novel AI Leaks 模型的对比如下所示。
+
+|  | Stable Diffusion SD 原版模型系列 | Novel AI Leaks Novel AI 泄露模型 |
+| --- | --- | --- |
+| 原始/微调训练标注类型 | （原始）自然语言 | （微调）Danbooru Tag |
+| 原始/微调训练图片类型 | （原始）大部分为真实照片（即部分绘画艺术作品） | （微调）二次元动漫风格图片 |
+| 衍生 | 大量真实系大模型可以使用自然语言，也可以使用 Tag | 大量二次元大模型使用 Tag 出图效果更好 |
+
+#### **Lora type**
+
+不同的 lora 类型分别具有如下特征，可根据需要决定。其实一般情况下 IA3 就很合适了。
+
+![文章配图](https://oss.kinda.info/image/202403061436918.png)
+
+#### **Train Batch Size**
+
+一次训练几张图片
+
+数值越大，由于总的图片数目固定，相对的总的需要训练的步数也就越少，但同时对显存的占用也就更高了，需要注意电脑的相关配置，如果显存在 10 个 G 一下的话建议保持 1 就好。
+
+#### **Epoch**
+
+一个 epoch 就是对整个训练数据集的一次完整遍历。epoch 的迭代次数影响着模型的训练效果，过少的 epoch 可能导致模型未能充分学习，而过多的 epoch 可能导致过拟合。
+
+#### **Max train steps**
+
+最大的训练步数，不管总步数你设置的是多少步，此处都会做拦截，即训练部署到这个数值的时候会自动停止。
+
+#### **Save every N epochs**
+
+每隔几次遍历生成一个 lora 模型。
+
+#### **Learning Rate**
+
+学习率，对于比较复杂的对象可以调整的大一些，对于比较简单的对象一定要调整的小一些。学习率过大可能导致过拟合，而过小可能导致欠拟合。一般情况下，参数设计合理的时候，学习率调整的比较大则可以适当降低训练步数，但也可能会导致跳过最优解。
+
+#### **Optimizer**
+
+优化器，一般情况下选择默认的 AdamW8bit 即可，选择 Prodigy（神童）则会自动更新各项学习率，即你只需要把所有的学习率均设置为 1 即可。
+
+> [!WARNING]
+> 注意，如果是macbook系列，这里不能使用AdamW8bit，需要选择不依赖cuda的优化器比如AdamW。
+
+#### **Enable buckets**
+
+应用分辨率桶，开启这一项后可以不需要对图片做固定尺寸裁剪，多数情况下默认开启。但是太多的桶会影响训练结果，所以尽可能的保持训练图片尺寸一致。
+
+#### **LR Scheduler**
+
+学习率调度器，这一项一般默认即可，如果设置为 cosine_with_restarts 则会一定程度上可以避免局部最优解的问题，在设置成 cosine_with_restarts 的同时记得设置下面的 LR number of cycles，这样才能够令这一参数生效，一般 LR number of cycles 设置为 3-5 即可，如果训练对象比较复杂可以适当增大。
+
+#### **Network Rank (Dimension)**
+
+> [!TIP]
+> lora模型的网络情况参数1
+
+对应的是从原始矩阵中抽出来的行列，会直接影响模型大小（正比）。图形越是复杂，这一项可以考虑 64/128，因为学习到的特征项也就越多了。图形如果比较简单的话，一般使用 32/16/8 即可。二次元图形一般使用 16 即可，三次元才会考虑 64 即以上。对了，这一项很吃显存，如果显存比较低的情况下建议值低点就好。
+
+#### **Network Alpha**
+
+> [!TIP]
+> lora模型的网络情况参数2
+
+对应的是最终生成的 lora 对基地模型的影响程度，值越接近于 Network Rank 则 lora 对基底模型的影响就越小，值越接近于 0 则对基地模型的微调影响越大，一般情况下采取 Rank 的一半即可。
+
+**网络模型的参数参考**
+
+> [!TIP]
+> 如果是训练三次元图片，那么考虑翻倍。
+
+![文章配图](https://oss.kinda.info/image/202403061450500.png)
+
+#### **Mixed precision & Save precision**
+
+计算精度和保存的精度，实测 mac m1pro 芯片此处使用 fp16 似乎会导致报错，可以将其修改为 no 或者在启动 webui 脚本的时候加上 `—no-half` 命令。
+
+#### **Cache latents**
+
+缓存图片图片向量空间，这一项会在开始训练之前先把所有图片的向量空间缓存，在训练的过程中只需要反复读取即可，否则的话则需要一张一张的读取，开启之后会大幅增加训练速度。
+
+#### **Cache latents to disk**
+
+缓存图片图片向量空间到磁盘，这一项会保存图片向量空间到硬盘，在多次使用同一批次图片训练时能够起到优化训练速度的作用（即减去了初次图片向量读条的时间），但实测下来会对实际的训练时间有一定增加影响，可能是因为硬盘读取时间的问题。
+
+#### **CrossAttention**
+
+交叉注意力，如果你是 n 卡强烈建议开启，可以提高模型训练效率，能够降低显存需求并且显著提高训练速度，但注意 mac 用户暂不支持这一项，开启会导致报错。
+
+#### **Memory efficient attention**
+
+能够一定程度上压缩显存使用，低配用户可以选择开启，效果不如 xformers 好，且对训练速度影响较大，一般不建议开启。
+
+#### **LR warmup**
+
+开启这一项会使得在开始训练的时候保持一个比较高的学习率，能够让模型高效的被训练，一般建议一定程度上开启，10%就不错了。
+
+#### **Sample every n steps**
+
+每隔多少步生成一个预览，便于直观的看模型当前训练的效果如何。
+
+### **拟合情况总结**
+
+| 过拟合怎么办 | 欠拟合怎么办 |
+| --- | --- |
+| 适当降低学习率 | 适当提高学习率 |
+| 缩短学习步长 | 延长学习步长 |
+| 降低https://www.notion.so/AI-6c8f2445c20444a3a960804d7dab31d0?pvs=21，提高https://www.notion.so/AI-6c8f2445c20444a3a960804d7dab31d0?pvs=21(opens in a new tab) | 提高https://www.notion.so/AI-6c8f2445c20444a3a960804d7dab31d0?pvs=21，降低https://www.notion.so/AI-6c8f2445c20444a3a960804d7dab31d0?pvs=21(opens in a new tab) |
+| 减小https://www.notion.so/AI-6c8f2445c20444a3a960804d7dab31d0?pvs=21数值(opens in a new tab) | 增大https://www.notion.so/AI-6c8f2445c20444a3a960804d7dab31d0?pvs=21数值(opens in a new tab) |
+| 使用正则化训练 |  |
+
+> [!TIP]
+> 其他尝试也可以是更换LoRA类型，尝试另一种优化器/调度器，对训练集作调整，……

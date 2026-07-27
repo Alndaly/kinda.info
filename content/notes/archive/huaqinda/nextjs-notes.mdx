@@ -1,0 +1,67 @@
+---
+slug: "nextjs-notes"
+locale: zh
+type: note
+title: "NextJS注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "静态文件返回格式 注意如果你的静态文件是没有后缀的，nextjs将会无法判断文件格式，这种情况下你如果直接访问静态文件会自动下载。 需要在 next.config.ts 中配置相关字段。 比如基于public目录下的 /.well known/apple app site associatio…"
+date: 2024-12-24
+updated: 2025-03-13
+tags:
+  - "开发"
+  - "nextjs"
+  - "归档"
+source: "https://huaqinda.com/article/166bbdbf-a033-8028-a147-dc61c966c87c"
+featured: false
+---
+
+### 静态文件返回格式
+
+注意如果你的静态文件是没有后缀的，nextjs将会无法判断文件格式，这种情况下你如果直接访问静态文件会自动下载。
+
+需要在`next.config.ts`中配置相关字段。
+
+比如基于public目录下的`/.well-known/apple-app-site-association`文件就需要做如下处理。
+
+```swift
+
+const nextConfig: NextConfig = {
+	...
+  headers: async () => {
+    return [
+      {
+        source: "/.well-known/apple-app-site-association",
+        headers: [{ key: "content-type", value: "application/json" }]
+      }
+    ]
+  },
+  ...
+}
+```
+
+### order of Hooks报错
+
+React has detected a change in the order of Hooks called by LinkAI. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: [https://react.dev/link/rules-of-hooks](https://react.dev/link/rules-of-hooks)
+
+如果遇到这个问题，需要注意你的界面代码中是否存在多个return，前面的return是否提前阻止了一些hooks的代码，这会导致后续代码无法执行从而报错。
+
+解决方法
+
+1. 将return的不同情况放到代码最后部分
+1. 抽离出return另一种可能的逻辑到外层，将hooks统一放到内层。（推荐方式）
+
+```typescript
+'use client';
+
+import { useAiChatStore } from '@/store/ai-chat';
+
+const AIChatHydratedClient = ({ children }: { children: React.ReactNode }) => {
+	const _hasHydrated = useAiChatStore((state) => state._hasHydrated);
+
+	if (!_hasHydrated) return null;
+
+	return children;
+};
+
+export default AIChatHydratedClient;
+```

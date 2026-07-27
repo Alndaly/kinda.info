@@ -1,0 +1,56 @@
+---
+slug: "css-tailwind-notes"
+locale: zh
+type: note
+title: "css和tailwindcss的一些注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "flex 1和overflow auto一起时无法生效 起因 在使用tailwincss的项目中，使用 flex 1 嵌套的子元素当高度超过父元素的时候 overflow auto 不再生效。 网上找到的资料： https://stackoverflow.com/questions/63475…"
+date: 2025-01-14
+updated: 2025-01-15
+tags:
+  - "开发"
+  - "css"
+  - "归档"
+source: "https://huaqinda.com/article/17bbbdbf-a033-801c-850a-cc036920045e"
+featured: false
+---
+
+## flex-1和overflow-auto一起时无法生效
+
+### 起因
+
+在使用tailwincss的项目中，使用`flex-1`嵌套的子元素当高度超过父元素的时候`overflow-auto`不再生效。
+
+网上找到的资料：
+
+- [https://stackoverflow.com/questions/63475073/css-flex-basis-0-has-different-behaviour-to-flex-basis-0px/63475286#63475286](https://stackoverflow.com/questions/63475073/css-flex-basis-0-has-different-behaviour-to-flex-basis-0px/63475286#63475286)
+- [https://stackoverflow.com/questions/63475073/css-flex-basis-0-has-different-behaviour-to-flex-basis-0px/63475286#63475286](https://stackoverflow.com/questions/63475073/css-flex-basis-0-has-different-behaviour-to-flex-basis-0px/63475286#63475286)
+
+### 实际原因
+
+`flex-1`简写的原版是`flex: 1 1 0%`，其中第三个`0%`代表的是`flex-basis: 0%`。
+
+而`flex-basis: 0%`和`flex-basis: 0px`是不一样的，前者是基于父级的主轴，当前者的主轴长度是通过`min-h`来确定的时候，也就是没有准确数值的时候，子元素计算时会无法得出，这时候子元素的`flex-basis`会回滚到`auto`。也就是基于子元素的内容确定，故而导致高度被撑开，无法固定，其`overflow-auto`也就无法生效了。
+
+> [!TIP]
+> 如果你的`overflow-auto`层级元素的上级还有`flex-1`选项的时候，一定要确保父元素的`flex-direction`是符合你的排列的，比如纵向布局就必须是`column`，简写也就是`flex-col`，否则依然不会生效！
+
+### 解决方案
+
+将`overflow-auto`层级的元素的`flex-basis`设置为`0px`或者`0` 。
+
+**错误写法 **❌
+
+```html
+<div className='flex overflow-auto flex-col px-5 flex-1'>
+...
+</div>
+```
+
+**正确写法 ✅**
+
+```html
+<div className='flex overflow-auto flex-col px-5' style={{flex: '1 1 0}}>
+...
+</div>
+```

@@ -1,0 +1,216 @@
+---
+slug: "pytorch-coreml-workflow"
+locale: zh
+type: note
+title: "pytorch和coreml的流程以及一些注意点"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "Apple官方视频讲解 !WARNING 其中有些代码已经有点过时了，其中的模型的类型和type等代码实际都不对，请根据下文的代码来。 https://developer.apple.com/cn/videos/play/tech talks/10154/ 范例 图片model转化为corem…"
+date: 2024-09-24
+updated: 2024-10-04
+tags:
+  - "工具"
+  - "开发"
+  - "人工智能"
+  - "归档"
+source: "https://huaqinda.com/article/ce474de6-19c9-461f-b6a5-3767d52176f7"
+featured: false
+---
+
+## Apple官方视频讲解
+
+> [!WARNING]
+> 其中有些代码已经有点过时了，其中的模型的类型和type等代码实际都不对，请根据下文的代码来。
+
+[https://developer.apple.com/cn/videos/play/tech-talks/10154/](https://developer.apple.com/cn/videos/play/tech-talks/10154/)
+
+## 范例
+
+### 图片model转化为coreml模型
+
+代码来源：
+
+[Converting a PyTorch Segmentation Model — Guide to Core ML Tools](https://apple.github.io/coremltools/docs-guides/source/pytorch-conversion-examples.html)
+
+```python
+import urllib
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+import torch
+import torch.nn as nn
+import torchvision
+import json
+
+from torchvision import transforms
+from PIL import Image
+
+import coremltools as ct
+
+# Load the model (deeplabv3)
+model = torch.hub.load('pytorch/vision:v0.6.0', 'deeplabv3_resnet101', pretrained=True).eval()
+
+# Load a sample image (cat_dog.jpg)
+input_image = Image.open("cat_dog.jpg")
+input_image.show()
+
+preprocess = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize(
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225],
+    ),
+])
+
+input_tensor = preprocess(input_image)
+input_batch = input_tensor.unsqueeze(0)
+
+with torch.no_grad():
+    output = model(input_batch)['out'][0]
+torch_predictions = output.argmax(0)
+
+def display_segmentation(input_image, output_predictions):
+    # Create a color palette, selecting a color for each class
+    palette = torch.tensor([2 ** 25 - 1, 2 ** 15 - 1, 2 ** 21 - 1])
+    colors = torch.as_tensor([i for i in range(21)])[:, None] * palette
+    colors = (colors % 255).numpy().astype("uint8")
+
+    # Plot the semantic segmentation predictions of 21 classes in each color
+    r = Image.fromarray(
+        output_predictions.byte().cpu().numpy()
+    ).resize(input_image.size)
+    r.putpalette(colors)
+
+    # Overlay the segmentation mask on the original image
+    alpha_image = input_image.copy()
+    alpha_image.putalpha(255)
+    r = r.convert("RGBA")
+    r.putalpha(128)
+    seg_image = Image.alpha_composite(alpha_image, r)
+    # display(seg_image) -- doesn't work
+    seg_image.show()
+
+display_segmentation(input_image, torch_predictions)
+
+# Wrap the Model to Allow Tracing*
+class WrappedDeeplabv3Resnet101(nn.Module):
+
+    def __init__(self):
+        super(WrappedDeeplabv3Resnet101, self).__init__()
+        self.model = torch.hub.load('pytorch/vision:v0.6.0', 'deeplabv3_resnet101', pretrained=True).eval()
+
+    def forward(self, x):
+        res = self.model(x)
+        x = res["out"]
+        return x
+
+# Trace the Wrapped Model
+traceable_model = WrappedDeeplabv3Resnet101().eval()
+trace = torch.jit.trace(traceable_model, input_batch)
+
+# Convert the model
+mlmodel = ct.convert(
+    trace,
+    inputs=[ct.TensorType(name="input", shape=input_batch.shape)],
+)
+
+# Save the ML Program model without new metadata
+mlmodel.save("SegmentationModel_no_metadata.mlpackage")
+
+# Load the saved model
+mlmodel = ct.models.MLModel("SegmentationModel_no_metadata.mlpackage")
+
+# Add new metadata for preview in Xcode
+labels_json = {"labels": ["background", "aeroplane", "bicycle", "bird", "board", "bottle", "bus", "car", "cat", "chair", "cow", "diningTable", "dog", "horse", "motorbike", "person", "pottedPlant", "sheep", "sofa", "train", "tvOrMonitor"]}
+
+mlmodel.user_defined_metadata["com.apple.coreml.model.preview.type"] = "imageSegmenter"
+mlmodel.user_defined_metadata['com.apple.coreml.model.preview.params'] = json.dumps(labels_json)
+
+mlmodel.save("SegmentationModel_with_metadata.mlpackage")
+```
+
+### 语言model转化为coreml模型
+
+代码来源：
+
+[Converting a Natural Language Processing Model — Guide to Core ML Tools](https://apple.github.io/coremltools/docs-guides/source/convert-nlp-model.html)
+
+```python
+import torch
+import numpy as np
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+import coremltools as ct
+
+class FinishMySentence(torch.nn.Module):
+    def __init__(self, model=None, eos=198):
+        super(FinishMySentence, self).__init__()
+        self.eos = torch.tensor([eos])
+        self.next_token_predictor = model
+        self.default_token = torch.tensor([0])
+
+    def forward(self, x):
+        sentence = x
+        token = self.default_token
+        while token != self.eos:
+            predictions, _ = self.next_token_predictor(sentence)
+            token = torch.argmax(predictions[-1, :], dim=0, keepdim=True)
+            sentence = torch.cat((sentence, token), 0)
+
+        return sentence
+
+token_predictor = GPT2LMHeadModel.from_pretrained("gpt2", torchscript=True).eval()
+
+random_tokens = torch.randint(10000, (5,))
+traced_token_predictor = torch.jit.trace(token_predictor, random_tokens)
+
+model = FinishMySentence(model=traced_token_predictor)
+scripted_model = torch.jit.script(model)
+
+mlmodel = ct.convert(
+    scripted_model,
+    # Range for the sequence dimension to be between [1, 64]
+    inputs=[ct.TensorType(name="context", shape=(ct.RangeDim(1, 64),), dtype=np.int32)],
+)
+
+sentence_fragment = "The Manhattan bridge is"
+
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+context = torch.tensor(tokenizer.encode(sentence_fragment))
+
+torch_out = scripted_model(context)
+generated_text_torch = tokenizer.decode(torch_out)
+print("Fragment: {}".format(sentence_fragment))
+print("Completed: {}".format(generated_text_torch))
+
+coreml_inputs = {"context": context.to(torch.int32).numpy()}
+prediction_dict = mlmodel.predict(coreml_inputs)
+generated_tensor = prediction_dict["sentence_2"]
+generated_text = tokenizer.decode(generated_tensor)
+print("Fragment: {}".format(sentence_fragment))
+print("Completed: {}".format(generated_text))
+```
+
+## 注意点
+
+### 返回结果只能是tensors或者tuples of tensors
+
+![文章配图](/images/archive/huaqinda/pytorch-coreml-workflow/10bbbdbf-a033-8027-a2fe-d8877e01a98b.png)
+
+假设上述 `self.model` 返回的是一个带有 `out` key的 `dict` ，那么直接 `torch.jit.trace` 会报错，需要给他像上面这样子包裹一层 `WrapperModel` ，让其最终 `forward` 还是返回一个 `tensor` 对象才可以。
+
+### 操作函数必须是python原生或者pytorch原生
+
+如果要转为 `torchscript` ，那么必须确保所有函数都是python的基础函数，不能使用类似于math之类的仓库，这类仓库的操作 `torch.jit.trace` 或者 `torch.jit.script` 无法识别，会弹出警告并且实际会忽视这些操作。
+
+### 评估模式的选择
+
+![文章配图](/images/archive/huaqinda/pytorch-coreml-workflow/10bbbdbf-a033-80eb-92d5-cf1662a37951.png)
+
+如上所示，在 `torch.jit.trace` 之前，多数人想要确保模型处于评估模式，这确保所有层级都配置为推断，而不是训练，对于大多数层级，这并不重要。但例如，如果你的模型中有一个dropout层或者BatchNorm层，设置评估模式将确保它被禁用，而当转换器遇到被禁用的操作时，将会忽视它们，把它们视为传递操作。（这样是合理的，不需要改为train模式，因为本身在预测的时候就需要参数固定）
+
+### 类型注释
+
+![文章配图](/images/archive/huaqinda/pytorch-coreml-workflow/9c0ba062-320f-4d43-a6f6-76061f3bf629.png)
+
+像上述代码中的话，默认 `torch.jit.script` 函数会把所有的类型当作 `Tensor`，也就是说 `_list` 被视作`List[torch.Tensor]`，但是 `range(10)` 生成的是 `int` 类型，`int` 不符合 `Tensor` ，自然也就报错了。要修复的话需要改成如下
+
+![文章配图](/images/archive/huaqinda/pytorch-coreml-workflow/10bbbdbf-a033-80f6-8069-e3ba6162aff3.png)

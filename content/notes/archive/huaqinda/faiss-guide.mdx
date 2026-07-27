@@ -1,0 +1,652 @@
+---
+slug: "faiss-guide"
+locale: zh
+type: note
+title: "Faiss的使用"
+eyebrow: "旧站归档 · HUAQINDA"
+summary: "我们日常使用的各种 APP 中的许多功能，都离不开相似度检索技术。比如一个接一个的新闻和视频推荐、各种常见的对话机器人、保护我们日常账号安全的风控系统、能够用哼唱来找到歌曲的听歌识曲，甚至就连外卖配送的最佳路线选择也都有着它的身影。 相信很多同学是第一次听说它，或者只知道它的大名，而不知该如何…"
+date: 2024-08-07
+tags:
+  - "ai"
+  - "向量检索"
+  - "开发"
+  - "实用教程"
+  - "归档"
+source: "https://huaqinda.com/article/c2a14509-8501-405e-a0b9-23b302942bea"
+featured: false
+---
+
+我们日常使用的各种 APP 中的许多功能，都离不开相似度检索技术。比如一个接一个的新闻和视频推荐、各种常见的对话机器人、保护我们日常账号安全的风控系统、能够用哼唱来找到歌曲的听歌识曲，甚至就连外卖配送的最佳路线选择也都有着它的身影。
+
+相信很多同学是第一次听说它，或者只知道它的大名，而不知该如何使用它。本篇文章，我们就来聊聊 faiss，分享这个“黑科技”是如何发挥神奇的“魔法”的。
+
+### **写在前面**
+
+faiss 是相似度检索方案中的佼佼者，是来自 Meta AI（原 Facebook Research）的[开源项目](https://github.com/facebookresearch/faiss)，也是目前最流行的、效率比较高的相似度检索方案之一。虽然它和相似度检索这门技术颇受欢迎，在出现在了各种我们所熟知的“大厂”应用的功能中，但毕竟属于小众场景，有着不低的掌握门槛和复杂性。
+
+所以，不要想着一口气就完全掌握它，咱们一步一步来。
+
+当然，如果你实在懒得了解，希望能够和写简单的 Web 项目一样，写几行 CRUD 就能够完成高效的向量检索功能，可以试试启动一个 [Milvus 实例](https://github.com/milvus-io/milvus)。或者更懒一些的话，可以试着使用 Cloud 服务，来完成高性能的向量检索。
+
+### **了解 Faiss 的工作机制和适用场景**
+
+在正式使用 faiss 之前，我们需要先了解它的工作机制。
+
+当我们把通过模型或者 AI 应用处理好的数据喂给它之后（“一堆特征向量”），它会根据一些固定的套路，例如像传统数据库进行查询优化加速那样，为这些数据建立索引。避免我们进行数据查询的时候，需要笨拙的在海量数据中进行一一比对，这就是它能够实现“高性能向量检索”的秘密。
+
+我们熟知的互联网企业中比较赚钱的“搜广推”（搜索、广告、推荐）业务中，会使用它解决这些场景下的向量召回工作。在这些场景下，系统需要根据多个维度进行数据关联计算，因为实际业务场景中数据量非常大，很容易形成类似“笛卡尔积”这种变态的结果，即使减少维度数量，进行循环遍历，来获取某几个向量的相似度计算，在海量数据的场景下也是不现实的。
+
+而 Faiss 就是解决这类海量数据场景下，想要快速得到和查询内容相似结果（Top K 个相似结果），为数不多的靠谱方案之一。
+
+和我们在常见数据库里指定字段类型一样， Faiss 也能够指定数据类型，比如 IndexFlatL2、IndexHNSW、IndexIVF等二十来种类型，虽然类型名称看起来比较怪，和传统的字符串、数字、日期等数据看起来不大一样，但这些场景将能够帮助我们在不同的数据规模、业务场景下，带来出乎意料的高性能数据检索能力。反过来说，在不同的业务场景、不同数据量级、不同索引类型和参数大小的情况下，我们的应用性能指标也会存在非常大的差异，如何选择合适的索引，也是一门学问。（下文会提到）
+
+除了支持丰富的索引类型之外，faiss 还能够运行在 CPU 和 GPU 两种环境中，同时可以使用 C++ 或者 Python 进行调用，也有开发者做了 Go-Faiss ，来满足 Golang 场景下的 faiss 使用。
+
+对 Faiss 有了初步认识之后，我们来进行 Faiss 使用的前置准备。
+
+### **环境准备**
+
+为了尽可能减少不必要的问题，本篇文章中，我们使用 Linux 操作系统作为 faiss 的基础环境，同时使用 Python 作为和 faiss 交互的方式。
+
+在之前的文章中，我介绍过如何准备 Linux 环境 和 Python 环境，如果你是 Linux 系统新手，可以阅读这篇文章，从零到一完成系统环境的准备：《[在笔记本上搭建高性价比的 Linux 学习环境：基础篇](https://soulteary.com/2022/06/21/building-a-cost-effective-linux-learning-environment-on-a-laptop-the-basics.html)》；如果你不熟悉 Python 的环境配置，建议阅读这篇文章[《用让新海诚本人惊讶的 AI 模型制作属于你的动漫视频》](https://soulteary.com/2022/06/04/create-your-own-anime-video-with-an-ai-model-that-surprised-makoto-shinkai.html)，参考“准备工作”部分，完成 “Conda” 的安装配置。
+
+在一切准备就绪之后，我们可以根据自己的设备状况，选择使用 CPU 版本的 faiss 还是 GPU 版本的 faiss，以及选择是否要指定搭配固定 CUDA 版本使用：
+
+```python
+# 创建一个干净的环境
+conda create -n faiss -y
+# 激活这个环境
+conda activate faiss
+# 安装 CPU 版本
+conda install -c pytorch python=3.8 faiss-cpu -y
+# 或者，安装 GPU 版本
+conda install -c pytorch python=3.8 faiss-gpu -y
+# 或者，搭配指定 CUDA 版本使用
+conda install -c pytorch python=3.8 faiss-gpu cudatoolkit=10.2 -y
+```
+
+在配置安装的时候，推荐使用 3.8 版本的 Python，避免不必要的兼容性问题。在准备好环境之后，我们就能够正式进入神奇的向量数据世界啦。
+
+### **构建向量数据**
+
+可以是txt、doc、pdf，都可以，但注意要分段，同时最好每段的长度尽量区别不大。
+
+在embedding之后每段的tokens的shape必须要完全一致！
+
+具体的embedding可以通过sentencepiece或者sentence_transformers都可以。
+
+两者相关的操作可以见对应文档网站。
+
+前文提到了，适合 faiss 施展拳脚的地方是向量数据的世界，所以，需要先进行向量数据的构建准备。
+
+本文作为入门篇，就先不聊如何对声音（音频）、电影（视频）、指纹和人脸（图片）等数据进行向量数据构建啦。我们从最简单的文本数据上手，实现一个“基于向量检索技术的文本搜索功能”。接下来，我将以我比较喜欢的小说 “哈利波特”为例，你可以根据自己的喜好调整要使用的文本数据。从网络上下载好要处理为向量的文本数据（txt 文档）。
+
+#### **简单针对数据进行 ETL**
+
+我这里的原始 TXT 文档尺寸是 3 MB 大小，为了减少不必要的向量转化计算量，我们先对内容进行必要的预处理（数据的 ETL 过程），去掉不必要的重复内容，空行等：
+
+```bash
+cat /Users/soulteary/《哈利波特》.txt | tr -d ' ' | sed '/^[[:space:]]*$/d' > data.txt
+```
+
+打开文本仔细观察，数据中有一些行中的文本数据格外长，是由好多个句子组成的，会对我们的向量特征计算、以及精准定位检索结果造成影响的。所以，我们还需要进行进一步的内容调整，将多个长句拆成每行一个的短句子。
+
+为了更好的解决句子换行的问题，以及避免将一段人物对话中的多个句子拆散到多行，我们可以使用一段简单的 Node.js 脚本来处理数据：
+
+```javascript
+const { readFileSync, writeFileSync } = require("fs");
+
+const raw = readFileSync("./hp.txt", "utf-8")
+  .split("\n")
+  .map((line) => line.replace(/。/g, "。\n").split("\n"))
+  .flat()
+  .join("\n")
+  .replace(/“([\S]+?)”/g, (match) => match.replace(/\n/g, ""))
+  .replace(/“([\S\r\n]+?)”/g, (match) => match.replace(/[\r\n]/g, ""))
+  .split("\n")
+  .map((line) => line.replace(/s/g, "").trim().replace(/s/g, "—"))
+  .filter((line) => line)
+  .join("\n");
+
+writeFileSync("./ready.txt", raw);
+```
+
+我们执行 `node .` 将文本处理完毕之后，当前文件夹中将出现一个名为 `ready.txt` 的文本文件。
+
+为了方便后文中，我们更具象的了解向量数据库的资源占用，我们顺手查看下整理好的文本文件占磁盘空间是多少：
+
+```bash
+du -hs ready.txt
+5.5M	ready.txt
+```
+
+#### **使用模型将文本转换为向量**
+
+为了将文本转换为向量数据，我们需要使用能够处理文本嵌入的模型。我这里选择的模型是来自人大、腾讯 AI Lab、北大（按论文作者顺序）联合推出的《[UER: An Open-Source Toolkit for Pre-training Models](https://arxiv.org/abs/1909.05658)》预训练模型。
+
+关于这个预训练模型的相关资料：
+
+- HuggingFace [https://huggingface.co/uer/sbert-base-chinese-nli](https://huggingface.co/uer/sbert-base-chinese-nli)
+- 训练数据 [https://github.com/liuhuanyong/ChineseTextualInference/](https://github.com/liuhuanyong/ChineseTextualInference/)
+
+想要使用模型，我们需要先安装一些 Python 的基础软件包：
+
+```bash
+pip install sentence_transformers pandas
+```
+
+在依赖安装完毕之后，我们可以在终端中输入 `python` 来进入 Python 交互式终端，首先将我们准备好的文本文件使用 `pandas` 解析为 DataFrames 。
+
+```bash
+import pandas as pd
+df = pd.read_csv("ready.txt", sep="#",header=None, names=["sentence"])
+print(df)
+```
+
+在执行之后，我们将看到类似下面的结果：
+
+```text
+                                      sentence
+0                                  《哈利波特》J.K罗琳
+1                                第一部 第一章 幸存的男孩
+2          住在四号普里怀特街的杜斯利先生及夫人非常骄傲地宣称自己是十分正常的人。
+3      但是他们最不希望见到的就是任何奇怪或神秘故事中的人物因为他们对此总是嗤之以鼻。
+4                      杜斯利先生是一家叫作格朗宁斯的钻机工厂的老板。
+...                                        ...
+60023                 哈利看着她茫然地低下头摸了摸额头上闪电形的伤疤。
+60024                                “我知道他会的。”
+60025                         十九年来哈利的伤疤再也没有疼过。
+60026                                   一切都很好。
+60027                                    （全书完）
+
+[60028 rows x 1 columns]
+```
+
+接下来，我们对载入内存的文本进行向量计算，对每一行数据进行“特征向量抽取”：
+
+```python
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer('uer/sbert-base-chinese-nli')
+sentences = df['sentence'].tolist()
+sentence_embeddings = model.encode(sentences)
+```
+
+这个过程会比较久，消耗时间将会和你的电脑性能相关，我这边使用一台 Zen2 的普通笔记本，大概需要运行接近半个小时，所以这个时间不妨站起来动一动，缓解一天的疲劳。
+
+当数据向量完毕之后，我们可以先执行 `sentence_embeddings.shape`，看看数据的状况：
+
+`(60028, 768)`
+
+执行完毕，我们将看到类似上面的结果，有六万条文本被向量化为了 768 维的向量数据。
+
+在搞定向量数据之后，我们来实现第一个向量搜索的 Demo。
+
+### **使用 faiss 实现最简单的向量检索功能**
+
+接下来，我们将使用 faiss 实现一个小功能，针对哈利波特小说全集内容，接触向量检索技术，完成相似内容搜索的功能。与我们使用“CTRL+F”或者把数据倒入 MySQL，使用 “%LIKE%” 去进行全文匹配不同，我们的工具性能，将会远远高于一般的检索方式。
+
+为了能够得到“快到飞起”的执行效率，在使用 faiss 查询大量数据之前，我们首先需要和其他追求效率的数据库软件一样，为数据建立索引，我们先来看看最简单的平面索引：`IndexFlatL2`。
+
+#### **借助平面索引，完成基础的相似内容查询功能**
+
+faiss 中最简单的索引，便是没有使用任何花哨技巧（压缩、分区等）的平面索引：`IndexFlatL2`。当我们使用这种索引的时候，我们查询的数据会和索引中所有数据进行距离计算，获取它们之间的 L2 距离（欧几里得距离）。因为它会尽职尽责的和所有数据进行比对，所以它是所有索引类型中最慢的一种，但是也是最简单和最准确的索引类型，同时，因为类型简单，也是内存占用量最低的类型。而它采取的遍历式查找，也会被从业者打趣称之为“暴力搜索”。
+
+![查询数据都在空间中的进欧式距离计算](https://oss.kinda.info/image/202408031052113.jpeg)
+
+在上文中，我们已经准备好了 768 维度的高维向量数据，接下来，我们就用这些数据来建立我们的第一堆“向量数据”的索引：
+
+```python
+import faiss
+
+dimension = sentence_embeddings.shape[1]
+index = faiss.IndexFlatL2(dimension)
+index.add(sentence_embeddings)
+```
+
+将我们数据的维度信息传递给 `faiss.IndexFlatL2` 函数，建立一个空的索引容器，然后使用 `index.add(sentence_embeddings)` 将我们在之前处理好的向量数据灌入这个索引容器中。
+
+执行完毕上面的代码之后，我们执行 `index.ntotal` 来查看索引的数据是否正确：
+
+```bash
+>>> index.ntotal
+60028
+```
+
+确认所有数据都被索引之后，我们来写一段最简单的程序，来进行查询，为了演示“相似性检索”，而不是“关键词匹配”，我们来搜索一个离谱的原文肯定没有的内容“哈利波特猛然睡醒”：
+
+```python
+topK = 5
+search = model.encode(["哈利波特猛然睡醒"])
+D, I = index.search(search, topK)
+df['sentence'].iloc[I[0]]
+```
+
+执行程序之后，我们将能够看到比较符合预期的神奇结果：
+
+```bash
+>>> topK = 5
+>>> search = model.encode(["哈利波特猛然睡醒"])
+>>> D, I = index.search(search, topK)
+>>> df['sentence'].iloc[I[0]]
+38216  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+37890  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+8009   那天晚上哈利失眠了。
+13996  最後哈利精疲力尽的爬上床猛拉他的四柱大床的蚊帐堵住射进来的一道月光翻身躺了进去而且几乎立即觉...
+45306  罗恩立刻就进入了梦乡但是哈利在上床之前从行李箱里翻出了他的那本《高级魔药制备》。
+Name: sentence, dtype: object
+```
+
+虽然没有完全匹配关键词，但是我们想要的内容还是被程序找到了。我们每天都在使用的搜索引擎背后的众多技术之一，也包括类似的向量检索（未来有机会的话，我们聊聊语义搜索）。
+
+#### **进一步了解向量检索的细节**
+
+我知道有一些同学，在惊叹上面这加起来不到 10 行的代码的效果之余，体验之后依旧对于“向量”的感知是零。为了让大家清清楚楚的“入坑”，我们先来展开聊聊上面的程序的含义。
+
+```python
+topK = 5
+search = model.encode(["哈利波特猛然睡醒"])
+D, I = index.search(search, topK)
+df['sentence'].iloc[I[0]]
+```
+
+第一行，`topK` 定义了我们要查找多少条最相似的数据，比如这里我就只想查询 5 条数据，避免有人说我水文章字数 :D
+
+第二行，我们通过 `model.encode` 方法，来将要搜索的内容“哈利波特猛然睡醒”编码为向量（行内人称这个过程的黑话为“embedding”）
+
+第三行，则是使用我们在前文中构建的 faiss 索引，来查找上面的“文本内容”，以及找到符合预期数量的条数后就停止查找。
+
+如果我们将 “`D` 和 `I`” 打印出来，可以看到类似下面的输出：
+
+```bash
+>>> print (D)
+[[206.22675 206.22675 212.70087 219.73259 221.30847]]
+>>> print (I)
+[[38216 37890  8009 13996 45306]]
+```
+
+前者指的是“数据置信度/可信度”，而后者指的是我们之前数据准备时灌入的文本数据的具体行数。
+
+最后一行，我们使用 `df['sentence'].iloc[I[0]]` 来利用 pandas 的 `DataFrame.iloc` 接口，基于查询结果的行数，找到对应的文本的原文。如果我们使用上面的 `[38216 37890 8009 13996 45306]` 替换 `iloc[I[0]]` 中的数据，得到的结果也是一样的：
+
+```bash
+>>> df['sentence'].iloc[[38216, 37890, 8009, 13996, 45306]]
+38216  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+37890  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+8009   那天晚上哈利失眠了。
+13996  最後哈利精疲力尽的爬上床猛拉他的四柱大床的蚊帐堵住射进来的一道月光翻身躺了进去而且几乎立即觉...
+45306  罗恩立刻就进入了梦乡但是哈利在上床之前从行李箱里翻出了他的那本《高级魔药制备》。
+Name: sentence, dtype: object
+```
+
+聊完程序的执行过程，我们来看看程序在“面对”的“向量”数据的真身是什么样的，以上文中结果中的第一条为例，我们将 `38216` 这条在 faiss 索引中存储的数据进行向量重建：
+
+```bash
+>>> index.reconstruct(38216)
+array([ 5.07521369e-02, -3.93364072e-01, -1.19723105e+00, -3.36433440e-01,
+        1.06395984e+00,  3.83257926e-01,  1.24985963e-01,  2.79548287e-01,
+       -7.02445269e-01,  7.59876966e-01, -5.09731807e-02, -5.78854322e-01,
+       -2.41243094e-01, -6.83130026e-01,  2.50904560e-01, -3.06654796e-02,
+        1.09606862e+00,  1.76596511e-02,  4.99801673e-02, -1.00713462e-01,
+...
+...
+        7.15905130e-01,  2.10034728e-01,  2.63317943e-01,  7.68652320e-01],
+      dtype=float32)
+>>> len(index.reconstruct(38216))
+768
+```
+
+“array”中的一堆使用科学计数法表示的数据，就是我们的向量数据，通过 `len` 方法来获取数据长度，我们能够确认数据长度为 768，这个数据长度，就是被我们称呼为维度的神奇数字（可以发挥想象，一个 768 维的立体世界）。
+
+好啦，对于目前的我们来说，了解到向量检索的过程和向量到这个程度就足够啦。如果你想对 “FLAT” 索引有更多了解，可以移步官方开源项目中的[facebookresearch/faiss/blob/main/benchs/bench_index_flat.py](https://soulteary.com/2022/09/03/vector-database-guide-talk-about-the-similarity-retrieval-technology-from-metaverse-big-company-faiss.html) 文件。
+
+#### **相似度检索性能不够该怎么办**
+
+在上文中提到过，因为这种索引的工作方式是“暴力搜索”，所以它的计算成本是非常高的，同样的，因为使用这样的方式，这种类型的索引也不能进行很好的“水平扩展”。
+
+当我们在这种类型的索引中进行数据相似度查询的时候，我们所查询的向量数据会和索引中的每一条数据记录进行比较，每一次搜索行为，都将带来 60028 次查询数据和其他数据进行 L2 距离计算。如果我们的数据量更大一些，比如要在海量的文档、图片、甚至是视频中进行数据查询，计算压力可想而知。
+
+为了避免这种因为数据量膨胀，而导致使用向量检索技术的搜索引擎、推荐系统、广告系统、风控系统等业务系统“停摆”，我们就需要引入一些工程上的小技巧啦，比如分区索引。
+
+在聊分区索引之前，为了能够有一个清晰的效果对比，我们先对前文中的数据查询做一个基础的“benchmark”。
+
+```python
+import faiss
+
+dimension = sentence_embeddings.shape[1]
+index = faiss.IndexFlatL2(dimension)
+index.add(sentence_embeddings)
+
+import time
+
+topK = 5
+search = model.encode(["哈利波特猛然睡醒"])
+
+costs = []
+for x in range(10):
+  t0 = time.time()
+  D, I = index.search(search, topK)
+  t1 = time.time()
+  costs.append(t1 - t0)
+
+print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))
+```
+
+当执行代码之后，我们将得到类似下面的结果：
+
+```bash
+>>> print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))
+平均耗时   9.185 ms
+```
+
+当然，除了计算方面的性能之外，存储方面的性能，我们也需要留意：
+
+```python
+import os
+
+dump_file = './dump'
+faiss.write_index(index, dump_file)
+file_size = os.path.getsize(dump_file)
+os.remove(dump_file)
+print ("%7.3f MB" % (file_size/1024/1024))
+```
+
+当程序执行完毕之后，我们得到使用平面索引占用了 `175.863 MB` 内存资源。
+
+### **为向量索引进行分区优化**
+
+和传统数据库一样，我们能够使用不同的手段来优化我们的“查询性能”。在向量数据库中，对于“向量检索”最简单的性能优化方案，便是对索引数据进行分区优化，将数据通过“沃罗诺伊图单元”（也被叫做泰森多边形）来进行切割（类似传统数据库分库分表）。
+
+![使用沃罗诺伊图单元拆分数据后的示意图](https://oss.kinda.info/image/202408031053458.jpeg)
+
+假设我们已经完成了对数据的分区优化，当我们想要进行针对某个数据的向量相似度检索时，会先针对向量数据和“沃罗诺伊图”的质心进行计算，求出它们之间的距离。然后，将我们的搜索范围限定在它和这个质心距离覆盖的单元内。
+
+因为我们缩小了搜索范围，并没有像平面索引一样，进行全量的“暴力搜索”，所以我们将得到一个近似精确的答案，以及相对于前文中的检索方式，更快的得到数据的查询结果。
+
+#### **实战分区索引**
+
+在了解了索引分区优化的原理后，我们来进行简单的实战：
+
+```python
+import faiss
+
+dimension = sentence_embeddings.shape[1]
+quantizer = faiss.IndexFlatL2(dimension)
+nlist = 50
+index = faiss.IndexIVFFlat(quantizer, dimension, nlist)
+
+index.train(sentence_embeddings)
+index.add(sentence_embeddings)
+print (index.ntotal)
+```
+
+在程序执行完毕之后，我们将得到上文中曾经出现的索引数据量结果：60028。依旧是先来解释下程序执行过程，我们通过指定 `faiss.IndexIVFFlat` 索引所需要的参数：`quantizer`、`dimension`、`nlist`，来告诉 faiss 我们想创建的分区索引的质心位置、索引数据维度，以及要划分出多少个数据分区（沃罗诺伊图数据单元）。
+
+因为我们构建的索引类型发生了变化，采用了 IVF 索引，根据[官方文档](https://github.com/facebookresearch/faiss/wiki/Guidelines-to-choose-an-index)，我们需要在添加数据之前，先针对数据进行“训练”（使用 `k-means` 对向量进行聚类），所以在 `index.add` 之前，我们需要调用 `index.train`。
+
+在完成了索引切换之后，我们对前文中的程序进行一些简单的调整，然后再跑个数据试试看：
+
+```python
+import faiss
+
+dimension = sentence_embeddings.shape[1]
+quantizer = faiss.IndexFlatL2(dimension)
+nlist = 50
+index = faiss.IndexIVFFlat(quantizer, dimension, nlist)
+
+index.train(sentence_embeddings)
+index.add(sentence_embeddings)
+
+import time
+
+topK = 5
+search = model.encode(["哈利波特猛然睡醒"])
+
+costs = []
+for x in range(10):
+  t0 = time.time()
+  D, I = index.search(search, topK)
+  t1 = time.time()
+  costs.append(t1 - t0)
+
+print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))`
+
+当程序运行完毕，我们将得到更加惊人的结果：
+```
+
+当程序运行完毕，我们将得到更加惊人的结果：
+
+`# >>> print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))
+平均耗时   0.167 ms`
+
+相比较平面索引，分区索引将查询延时从 9ms 降低到了 1ms 不到，节约了原先方案中的 98% 的时间。在了解分区索引的原理之后，这个方案看起来也解决了一定程度上，随着数据量膨胀，平面索引性能线行下降，最终可能无法满足业务诉求的问题。
+
+当然，除了要看性能表现之外，我们也需要关注查询结果是否有明显的不同，或者错误出现：
+
+```bash
+>>> df['sentence'].iloc[I[0]]
+13996  最後哈利精疲力尽的爬上床猛拉他的四柱大床的蚊帐堵住射进来的一道月光翻身躺了进去而且几乎立即觉...
+52571  哈利现在已经睡到了小天狼星的房间里。
+54641  赫敏睡熟了在她的毯子下攢作一团直到哈利呼唤她的名字很多此后她才醒了过来。
+34396  突然之间哈利明白了在最后那两张床上躺的人是谁。
+34122  他翻了个身不一会便再度睡去。
+Name: sentence, dtype: object
+```
+
+可以看到和前文中的结果有了明显的不同，虽然内容还是和“哈利波特”、“猛然”、“睡”、“醒” 中的某些关键词有关，但是相比较 IVF，结果精度有了明显的下降。
+
+在经过性能测试之后，我们知道 IVF 这种分区索引拥有着不俗的性能下限，所以通常情况，我们会通过增加 `index.nprobe` 数值，来告诉 faiss 搜索更多的“格子”，以便寻找到更合适的结果。实战起来，将会是类似这样：
+
+```python
+index.nprobe = 10
+
+import time
+
+topK = 5
+search = model.encode(["哈利波特猛然睡醒"])
+
+costs = []
+for x in range(10):
+  t0 = time.time()
+  D, I = index.search(search, topK)
+  t1 = time.time()
+  costs.append(t1 - t0)
+
+print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))
+
+df['sentence'].iloc[I[0]]
+```
+
+在程序执行之后，我们将得到类似下面的结果：
+
+```bash
+>>> index.nprobe = 10
+>>>
+>>> import time
+>>>
+>>> topK = 5
+>>> search = model.encode(["哈利波特猛然睡醒"])
+>>>
+>>> costs = []
+>>> for x in range(10):
+...   t0 = time.time()
+...   D, I = index.search(search, topK)
+...   t1 = time.time()
+...   costs.append(t1 - t0)
+...
+>>> print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))
+平均耗时   1.910 ms
+>>> df['sentence'].iloc[I[0]]
+37890  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+38216  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+8009   那天晚上哈利失眠了。
+13996  最後哈利精疲力尽的爬上床猛拉他的四柱大床的蚊帐堵住射进来的一道月光翻身躺了进去而且几乎立即觉...
+45306  罗恩立刻就进入了梦乡但是哈利在上床之前从行李箱里翻出了他的那本《高级魔药制备》。
+Name: sentence, dtype: object
+```
+
+不出意料，相似性检索的结果和我们使用平面索引完全一致了。当然，因为我们搜索的“单元格”更多了，所以搜索耗时也就从不到1ms增长到了接近2ms，但是即使如此，分区索引依旧比平面索引要快非常多。
+
+在实战中，我们需要根据业务的实际情况，来微调 `index.nprobe` 到合理的数值，所以如果遇到了搜索结果差强人意，别着急，慢慢调整，总能够得到你想要的结果。
+
+为了对比不同索引的内存消耗情况，我们同样也进行内存占用记录：
+
+```python
+import os
+
+dump_file = './dump'
+faiss.write_index(index, dump_file)
+file_size = os.path.getsize(dump_file)
+os.remove(dump_file)
+print ("%7.3f MB" % (file_size/1024/1024))
+```
+
+程序执行完毕，我们得到了 `176.468 MB` 的执行结果，相比较平面索引，内存占用略微大了一些。
+
+#### **如何重建分区后的向量数据**
+
+在聊“向量检索细节”的时候，我们曾使用过 `index.reconstruct(38216)` 来重建和查看某个向量的“细节”。
+
+但在分区索引（IVF）的场景中，我们使用这个方法，得到的结果将会是一段 Python 报错：
+
+```python
+>>> index.reconstruct(38216)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/soulteary/anaconda3/envs/faiss/lib/python/site-packages/faiss/__init__.py", line 427, in replacement_reconstruct
+    self.reconstruct_c(key, swig_ptr(x))
+  File "/home/soulteary/anaconda3/envs/faiss/lib/python/site-packages/faiss/swigfaiss_avx2.py", line 4717, in reconstruct
+    return _swigfaiss_avx2.IndexIVF_reconstruct(self, key, recons)
+RuntimeError: Error in faiss::DirectMap::idx_t faiss::DirectMap::get(faiss::DirectMap::idx_t) const at /opt/conda/conda-bld/faiss-pkg_1639741038719/work/faiss/invlists/DirectMap.cpp:81: direct map not initialized
+```
+
+为什么会产生这个问题，[官方文档也曾提到过](https://github.com/facebookresearch/faiss/wiki/Special-operations-on-indexes#reconstructing-vectors-from-an-index)。为了追求更快的查询性能，IndexIVF 和向量 ID IndexBinaryIVF 都存储在倒排列表中。所以，我们无法通过向量 ID 来反查索引中的内容，如果我们想要得到某个数据的内容，需要手动重建索引。我们需要先调用 `index.make_direct_map()` 来完成索引重建，接着就能像之前一样重新，获取某个具体的向量数据了。
+
+```python
+index.make_direct_map()
+index.reconstruct(38216)
+```
+
+### **尝试使用基于量化的索引类型**
+
+在上文中，我们针对一个不到 6MB 的文本文件进行向量化，以及构建 faiss 向量索引，得到的内存资源占用，都膨胀到了夸张的 170 多MB。那么，有没有什么办法，可以降低这个夸张的向量数据的内存资源占用呢？
+
+答案是肯定的，在 faiss 中，还有一类场景很重要，就是海量数据、以及数据快速增长的场景中，业务所使用的服务器资源的内存完全装不下我们的向量数据。无法支撑我们采用分区索引或者平面索引这种相对精确的相似性检索，我们需要想办法大幅降低内存占用。同时，因为数据量极大，即使采用能够性能提升非常明显的分区索引，也无法满足低延时的计算结果返回。
+
+这个时候，我们就需要采用“乘积量化（Product Quantization）”的方式，来建立 PQ 索引，帮助我们加速检索过程，同时减少内存空间占用。简单理解，乘积量化索引具备一定的压缩向量数据的功能，某种程度上，它和分区索引所采取的“加速”思想是类似的，都是减少计算量：分区索引采取的是划分大量“数据单元”，动态调整搜索范围；向量索引则更进一步，除了划分细粒度的“工作区域”外，还预先计算了不同向量数据之间的“距离”，让每一堆向量数据都是距离这堆向量数据的质心更近的数据。
+
+要实现上面这段看起来十分复杂的工作，其实只需要三个步骤：
+
+![文章配图](https://oss.kinda.info/image/202408031054093.jpeg)
+
+把向量“乘积量化”主要分三步
+
+1. 先将原始向量数据拆分为一些子向量。
+1. 对于每组子向量，分别进行聚类操作，获得每组向量的质心。
+1. 在向量中的子向量进行替换，使用距离它最近的向量集合的 ID。
+
+#### **实战量化索引**
+
+在了解了量化索引的原理之后，我们来见识下它的性能有多“夸张”：
+
+```python
+import faiss
+
+dimension = sentence_embeddings.shape[1]
+quantizer = faiss.IndexFlatL2(dimension)
+nlist = 50
+m = 8
+nbits_per_idx = 8
+index = faiss.IndexIVFPQ(quantizer, dimension, nlist, m, nbits_per_idx)
+
+index.train(sentence_embeddings)
+index.add(sentence_embeddings)
+index.nprobe = 100
+
+import time
+
+topK = 5
+search = model.encode(["哈利波特猛然睡醒"])
+
+costs = []
+for x in range(10):
+  t0 = time.time()
+  D, I = index.search(search, topK)
+  t1 = time.time()
+  costs.append(t1 - t0)
+
+print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))
+```
+
+当上面的程序执行之后，我们会得到比之前使用分区索引还惊艳的结果：
+
+```bash
+>>> print("平均耗时 %7.3f ms" % ((sum(costs) / len(costs)) * 1000.0))
+平均耗时   0.116 ms
+```
+
+除了惊艳的查询性能之外，内存资源占用也会非常惊艳。在执行和前文中一样的内存占用统计之后，我们将会看到一个非常离谱的结果：
+
+```bash
+>>> print ("%7.3f MB" % (file_size/1024/1024))
+  1.813 MB
+```
+
+当然，我在前文中也提到过，除了要关心性能之外，结果的质量也很重要：
+
+```bash
+>>> df['sentence'].iloc[I[0]]
+37890  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+30619  罗恩昨天在哈利一回来后就睡着了。
+38216  “我很好先生”哈利结巴的说擦着脸上的汗“我刚才只是睡着了做了个恶梦。
+49276  “我要去睡觉了”金妮打了一个呵欠“自从……我就一直没能好好的睡个觉了我需要休息。”
+33797  “他正在睡觉。待会儿我们一起去看他。比尔在陪着他他早上请了假。”
+Name: sentence, dtype: object
+```
+
+可以看到相比较平面索引和分区索引，`faiss.IndexIVFPQ` 的索引的默认结果有一些乱来了，而且即使我们调整 `nlist` ，效果的改善也比较有限。但是，在一些对于“结果精确度”要求不高的业务场景中，能够快速得到结果，就是最重要的结果。
+
+### **横向对比，要速度还是准确性？**
+
+在聊完常见的三种索引之后，我们来简单总结一下。
+
+平面索引（FLAT）是最朴实无华的索引，非常适合小数据量的场景下，能够带来非常精准的相似性检索结果，如果模型得当，我们可以为自己或者团队、公司打造一个不逊于谷歌搜索结果精度的“搜索引擎”。
+
+虽然分区索引（IVF）和量化索引（PQ）同样是使用了牺牲准确度，换取查询性能的策略，但是分区索引还是能够通过调整参数，来不断提升索引准确度的，只是在资源消耗方面，它和平面索引一样，资源消耗都相对比较大。
+
+随着业务数据量越来越大，我们使用量化索引的收益也会越来越大，能够帮助我们节约非常多的内存和服务器成本，以及提升非常非常大的查询性能下限，但是基于它的实现原理，我们注定无法通过它得到和分区索引以及平面索引一样的“精度”。
+
+当然，在一些场景下，我们可以考虑使用复合性索引，来让向量数据库检索程序，更加的贴合业务场景。
+
+### **其他**
+
+为能够耐心看完上面内容的读者“开个小灶”，在文章的开头，我们有针对数据进行向量化的尝试，这个尝试过程会跟随模型复杂度、机器性能、数据量而产生“神秘的变化”，一般的感知而言，模型越复杂、机器性能越差、数据量越多，我们需要处理的时间就越长。
+
+而我们在 faiss 中的数据都是储存在内存中的，这就不免存在我们辛辛苦苦计算好的向量数据，随着程序 crash 后，也随风而去了。想要解决这个问题，有一个比较笨的办法，就是将“embedding”后的数据进行本地保存，然后在程序出现问题之后，重新加载计算好的向量数据。
+
+例如，可以使用这个程序来保存我们的原始向量数据：
+
+```python
+save_file = "data.npy"
+
+import numpy as np
+np.save(save_file, sentence_embeddings)
+
+import os
+file_size = os.path.getsize(save_file)
+print ("%7.3f MB" % (file_size/1024/1024))
+```
+
+当程序执行完毕之后，我们就能在程序运行目录得到一个装满向量数据的“特殊存档了”。如果你检查这个文件的尺寸，你会发现结果和我们上文中计算平面索引，得到的内存占用是完全一致的。
+
+至于如何“加载存档”呢？也非常简单：
+
+```python
+import numpy as np
+sentence_embeddings = np.load("data.npy")
+```
+
+### **最后**
+
+好啦，写到这里，关于如何入坑向量数据库的第一篇内容就聊完啦。
+
+和前文中提到的一样，如果我们想要高效的使用 Faiss 来解决各种业务场景问题，需要灵活使用 FlatL2、 IVF、IVFPQ 等不同“特性”的索引，根据实际需求动态调整参数。
