@@ -2,20 +2,30 @@
 slug: "minio-presigned-upload"
 locale: zh
 type: note
-title: "minio注意点"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "如果你选择用预签名方式上传文件的话，那么注意在你的请求头中只能有一种认证方式。 即：即然选择了预签名方式，那么就不要再请求头中带有任何Token相关信息。 S3系列预签名上传文件应该都是这样子的！ 如果用了Alamofire的拦截，那么注意这方面的上传请求需要特殊处理。"
+title: "MinIO 预签名上传的认证陷阱"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "使用 S3 预签名 URL 上传文件时，认证信息只能出现一次；如果客户端配置了全局拦截器，还需要为上传请求单独放行。"
 date: 2025-08-05
-tags:
-  - "归档"
+tags: []
 source: "https://huaqinda.com/article/246bbdbf-a033-8064-ad9f-e6000a05c40a"
 featured: false
 ---
 
-如果你选择用预签名方式上传文件的话，那么注意在你的请求头中只能有一种认证方式。
+预签名 URL 已经把临时凭证、签名和过期时间编码在查询参数中。上传时如果又携带 `Authorization` 或其他 Token，服务端可能判断请求同时使用了两种认证方式并拒绝它。
 
-即：即然选择了预签名方式，那么就不要再请求头中带有任何Token相关信息。
+```bash
+curl -X PUT \
+  -H "Content-Type: image/jpeg" \
+  --upload-file ./photo.jpg \
+  "https://storage.example.com/bucket/photo.jpg?X-Amz-Algorithm=..."
+```
 
-S3系列预签名上传文件应该都是这样子的！
+需要注意两点：
 
-如果用了Alamofire的拦截，那么注意这方面的上传请求需要特殊处理。
+- 请求方法、`Content-Type` 和参与签名的请求头必须与生成 URL 时一致。
+- 不要让全局网络层自动追加 `Authorization`。
+
+如果 iOS 客户端使用 Alamofire 的 `RequestInterceptor` 注入登录 Token，应当为预签名上传建立单独的 `Session`，或根据目标 Host 和请求类型跳过认证适配。
+
+> [!TIP]
+> 遇到 `SignatureDoesNotMatch` 时，优先比较请求方法、路径、Content-Type、系统时间和参与签名的请求头，不要只检查 Access Key。

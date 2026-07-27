@@ -2,53 +2,69 @@
 slug: "docker-wait-strategy"
 locale: zh
 type: note
-title: "docker等待问题"
-eyebrow: "旧站归档 · KINDA.INFO"
-summary: "docker中如何让一个服务等待另一个服务成功运行后再启动？ 通过如下代码配置mysql的healthycheck 通过如下代码配置等待mysql正常运行后再启动api服务"
+title: "Docker Compose 服务依赖与健康检查"
+eyebrow: "历史笔记 · KINDA.INFO"
+summary: "让 API 在 MySQL 真正可用后再启动：为数据库配置 healthcheck，并用 depends_on 的 service_healthy 条件建立依赖。"
 date: 2025-04-23
-tags:
-  - "归档"
+tags: []
 source: "https://kinda.info/post/1debbdbf-a033-80ac-81cc-f45aff58df33"
 featured: false
 ---
 
-docker中如何让一个服务等待另一个服务成功运行后再启动？
+容器已经启动，不代表容器里的服务已经可用。数据库还在初始化时，如果 API 立刻发起连接，通常会得到一次没有必要的启动失败。
 
-通过如下代码配置mysql的healthycheck
+Docker Compose 可以用 `healthcheck` 描述“服务真正准备好了”的条件，再让依赖方等待这个状态。
 
-```
+## 为 MySQL 配置健康检查
+
+```yaml
+services:
   mysql:
+    image: mysql:latest
     container_name: mysql
-    image:
-      mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: ...
-      MYSQL_DATABASE: ...
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
-       - ./volumes/mysql:/var/lib/mysql
+      - ./volumes/mysql:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "--host=localhost", "--user=...", "--password=..."]
-      interval: 30s
-      timeout: 20s
-      retries: 3
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 ```
 
-通过如下代码配置等待mysql正常运行后再启动api服务
+## 让 API 等待数据库
 
-```
- api:
+```yaml
+  api:
     container_name: api
     build:
       context: api
       dockerfile: Dockerfile
-    command: ["sh", "-c", "python -m script.init_sql_base_data && fastapi run main.py --proxy-headers --host 0.0.0.0 --port 8001"]
+    command:
+      [
+        "sh",
+        "-c",
+        "python -m script.init_sql_base_data && fastapi run main.py --proxy-headers --host 0.0.0.0 --port 8001",
+      ]
     volumes:
       - ./api:/app
     depends_on:
       mysql:
-        condition: service_healt
+        condition: service_healthy
     env_file:
       - ./api/.env.development
 ```
+
+这里真正起作用的是 `condition: service_healthy`。它等待的是健康检查通过，而不是 MySQL 容器进入 `running` 状态。
+
+> [!NOTE]
+> 健康检查解决的是启动顺序，不替代应用自身的重试机制。生产环境里，API 仍然应该处理数据库短暂断线和重连。

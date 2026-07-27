@@ -2,26 +2,26 @@
 slug: "swift-corelocation-china-offset"
 locale: zh
 type: note
-title: "Swift的CoreLocation在国内存在定位偏差"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "Swift的CoreLocation定位在国内存在经纬度偏差，因为国内使用的是GCJ-02坐标系，而国际上使用的是WGS-84。需要使用算法进行转换，可以参考JZLocationConverter-Swift库。"
+title: "Swift Core Location 国内坐标偏移"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "Core Location 返回 WGS-84 坐标，而国内地图通常使用 GCJ-02；显示位置前需要识别数据来源和目标坐标系。"
 date: 2024-08-07
 tags:
   - "Swift"
-  - "Swift开发"
   - "工具"
   - "开发"
-  - "归档"
 source: "https://huaqinda.com/article/f9455e54-29b8-4f85-b597-4e2bf123816e"
 featured: false
 ---
 
-Swift的CLLocationManager类可以实时的获得我们位置的经纬度，并且可以通过经纬度在MapView上定位。
+`CLLocationManager` 返回的坐标基于 WGS-84，而国内互联网地图通常使用 GCJ-02。把 WGS-84 坐标直接绘制到 GCJ-02 地图上，就会出现肉眼可见的位置偏移。
 
-但是对于国内地图而言，使用CoreLocation定位所获得经纬度，是有一段较大距离的偏移的。
+需要区分两种情况：
 
-因为国内使用的是加密后的坐标系GCJ-02就是网络上叫的火星坐标，而国际上使用的是WGS-84。
+- MapKit 自带的用户位置蓝点通常已经由系统适配，不需要再次转换。
+- 把 `CLLocationCoordinate2D` 交给第三方国内地图或后端服务时，需要确认目标坐标系。
 
-而在MapView上直接显示UserAnnotation对应蓝点的经纬度是准确的，因为苹果已经对国内地图做了偏移适配，但目前而言我们无法直接调用苹果的适配函数，所以此处需要利用一些算法：
+如果目标使用 GCJ-02，可以在边界判断后进行 WGS-84 → GCJ-02 转换。现成实现可参考 [JZLocationConverter-Swift](https://github.com/JackZhouCn/JZLocationConverter-Swift)。
 
-详细可以借鉴[https://github.com/JackZhouCn/JZLocationConverter-Swift/tree/master](https://github.com/JackZhouCn/JZLocationConverter-Swift/tree/master)。
+> [!WARNING]
+> 不要对同一坐标重复转换。开始处理前，先明确数据来源和地图 SDK 分别使用哪一种坐标系。

@@ -43,7 +43,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           </div>
         </div>
         <div className="flex flex-col gap-2 border-t border-line py-5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:flex-row sm:justify-between">
-          <span>© {new Date().getFullYear()} {siteConfig.author}</span>
+          <span>© {new Date().getFullYear()} {dictionary.author}</span>
           <span>{dictionary.made}</span>
         </div>
       </div>

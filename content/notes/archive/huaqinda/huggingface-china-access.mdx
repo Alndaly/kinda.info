@@ -2,28 +2,39 @@
 slug: "huggingface-china-access"
 locale: zh
 type: note
-title: "huggingface国内访问问题"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "国内服务器如果想部署一些token embedding项目，当用到huggingface的模型的时候可能会发生无法访问等问题，这时可以使用huggingface在国内的镜像站。 链接 HF Mirror 对于huggingface库，你需要修改环境变量 想永久生效的话，把这一行加到 /.zsh…"
+title: "Hugging Face 国内访问配置"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "在国内网络环境中通过 HF-Mirror 获取模型，并用 HF_ENDPOINT 为 Hugging Face 工具链统一配置镜像地址。"
 date: 2025-02-04
 tags:
   - "开发"
-  - "人工智能"
-  - "归档"
+  - "AI"
 source: "https://huaqinda.com/article/190bbdbf-a033-8013-95f8-cc96233a9086"
 featured: false
 ---
 
-国内服务器如果想部署一些token embedding项目，当用到huggingface的模型的时候可能会发生无法访问等问题，这时可以使用huggingface在国内的镜像站。
+在国内网络环境中，服务器可能无法稳定访问 Hugging Face Hub。使用兼容镜像时，可以通过 `HF_ENDPOINT` 让 `huggingface_hub`、Transformers 等工具统一改用镜像地址。
 
-链接
-
-[HF-Mirror](https://hf-mirror.com/)
-
-对于huggingface库，你需要修改环境变量
+临时设置：
 
 ```bash
 export HF_ENDPOINT=https://hf-mirror.com
 ```
 
-想永久生效的话，把这一行加到~/.zshrc底部，然后source ~/.zshrc即可。
+验证变量：
+
+```bash
+echo "$HF_ENDPOINT"
+```
+
+如果希望长期生效，把导出语句写入当前 Shell 的配置文件，例如 `~/.zshrc`：
+
+```bash
+echo 'export HF_ENDPOINT=https://hf-mirror.com' >> ~/.zshrc
+source ~/.zshrc
+```
+
+镜像入口：[HF-Mirror](https://hf-mirror.com/)
+
+> [!NOTE]
+> 镜像解决的是网络可达性。访问受限模型时，仍然需要接受模型协议并配置有效的 Hugging Face Token。

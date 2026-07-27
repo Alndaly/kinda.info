@@ -2,66 +2,81 @@
 slug: "nextjs-notes"
 locale: zh
 type: note
-title: "NextJS注意点"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "静态文件返回格式 注意如果你的静态文件是没有后缀的，nextjs将会无法判断文件格式，这种情况下你如果直接访问静态文件会自动下载。 需要在 next.config.ts 中配置相关字段。 比如基于public目录下的 /.well known/apple app site associatio…"
+title: "Next.js 静态资源与 Universal Links 排错"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "处理无扩展名静态文件的 Content-Type、认证中间件误拦截 Universal Links，以及 React Hooks 调用顺序变化。"
 date: 2024-12-24
 updated: 2025-03-13
 tags:
   - "开发"
-  - "nextjs"
-  - "归档"
+  - "Next.js"
+  - "SwiftUI"
 source: "https://huaqinda.com/article/166bbdbf-a033-8028-a147-dc61c966c87c"
 featured: false
 ---
 
-### 静态文件返回格式
+这篇笔记集中记录三个容易表现成“莫名其妙”的 Next.js 问题：无扩展名静态文件被下载、Universal Links 关联失败，以及 Hooks 调用顺序变化。
 
-注意如果你的静态文件是没有后缀的，nextjs将会无法判断文件格式，这种情况下你如果直接访问静态文件会自动下载。
+## 为无扩展名文件声明 Content-Type
 
-需要在`next.config.ts`中配置相关字段。
+`apple-app-site-association` 没有扩展名，静态服务不一定会自动返回正确的媒体类型。可以在 `next.config.ts` 中显式设置响应头：
 
-比如基于public目录下的`/.well-known/apple-app-site-association`文件就需要做如下处理。
-
-```swift
+```typescript
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-	...
-  headers: async () => {
+  async headers() {
     return [
       {
-        source: "/.well-known/apple-app-site-association",
-        headers: [{ key: "content-type", value: "application/json" }]
-      }
+        source: '/.well-known/apple-app-site-association',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json',
+          },
+        ],
+      },
     ]
   },
-  ...
+}
+
+export default nextConfig
+```
+
+部署后用响应头验证，而不是只在浏览器里观察：
+
+```bash
+curl -I https://example.com/.well-known/apple-app-site-association
+```
+
+## 认证中间件不要拦截关联文件
+
+即使文件内容和 Content-Type 都正确，认证中间件的重定向仍然会让 Universal Links 验证失败。确保下面的路径可以匿名访问，并直接返回 `200`：
+
+```text
+/.well-known/apple-app-site-association
+```
+
+同样不要让它经过登录页、地区跳转或 HTML 错误页面。
+
+## Hooks 调用顺序变化
+
+出现下面的错误时：
+
+```text
+React has detected a change in the order of Hooks
+```
+
+通常是某个提前 `return` 让组件在不同渲染中调用了不同数量的 Hooks。所有 Hooks 都必须在条件返回之前执行：
+
+```tsx
+function HydratedContent({ children }: { children: React.ReactNode }) {
+  const hasHydrated = useStore((state) => state.hasHydrated)
+
+  if (!hasHydrated) return null
+
+  return children
 }
 ```
 
-### order of Hooks报错
-
-React has detected a change in the order of Hooks called by LinkAI. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: [https://react.dev/link/rules-of-hooks](https://react.dev/link/rules-of-hooks)
-
-如果遇到这个问题，需要注意你的界面代码中是否存在多个return，前面的return是否提前阻止了一些hooks的代码，这会导致后续代码无法执行从而报错。
-
-解决方法
-
-1. 将return的不同情况放到代码最后部分
-1. 抽离出return另一种可能的逻辑到外层，将hooks统一放到内层。（推荐方式）
-
-```typescript
-'use client';
-
-import { useAiChatStore } from '@/store/ai-chat';
-
-const AIChatHydratedClient = ({ children }: { children: React.ReactNode }) => {
-	const _hasHydrated = useAiChatStore((state) => state._hasHydrated);
-
-	if (!_hasHydrated) return null;
-
-	return children;
-};
-
-export default AIChatHydratedClient;
-```
+如果不同分支需要完全不同的逻辑，把它们拆成独立组件，比在同一组件中绕过 Hooks 更清楚。

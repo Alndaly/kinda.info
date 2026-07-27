@@ -2,24 +2,36 @@
 slug: "notion-webhooks"
 locale: zh
 type: note
-title: "喜大普奔，Notion终于支持WebHook了"
-eyebrow: "旧站归档 · KINDA.INFO"
-summary: "今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。 有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了 我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持…"
+title: "Notion Webhook 带来的实时发布链路"
+eyebrow: "历史笔记 · KINDA.INFO"
+summary: "从轮询变成事件驱动：接收 Notion Webhook，再调用 Vercel Deploy Hook，让内容更新自动触发网站构建。"
 date: 2025-04-03
-tags:
-  - "归档"
+tags: []
 source: "https://kinda.info/post/1c9bbdbf-a033-8022-8e0e-ef3186a6f6c4"
 featured: false
 ---
 
-今天打开notion的时候左下角弹出一个相当让我兴奋的东西——notion终于支持webhook了。
+Notion 支持 Webhook 以后，许多依赖轮询的自动化终于可以改成事件驱动。
 
-有了这个以后，意味着很多原先需要定时处理的功能现在可以近乎于实时的实现了
+对内容网站来说，一个很直接的应用是：Notion 页面发生变化时，由 Webhook 通知一个轻量服务，再通过 Vercel Deploy Hook 触发网站重新构建。
 
-我一下子就联想到我这个博客网站绑定的就是notion的文档，同时网页本身是部署在vercel上的，而Vercel是支持api hook触发部署的。
+```mermaid
+flowchart LR
+  A["Notion 页面更新"] --> B["Webhook 接收服务"]
+  B --> C["校验事件与去重"]
+  C --> D["Vercel Deploy Hook"]
+  D --> E["重新构建网站"]
+```
 
-灵感这不就来了！
+## 最小链路
 
-# 具体操作
+1. 为现有 Notion Integration 开启对应的事件订阅。
+2. 部署一个公开的 Webhook 接收地址。
+3. 完成平台要求的签名校验或验证流程。
+4. 对重复事件做幂等处理，避免连续触发多次部署。
+5. 调用 Vercel Deploy Hook，并记录构建结果。
 
-处理之前的Integration，让其支持webhook，同时在服务器上部署一个微服务，支持接受notion的webhook调用，然后微服务调用vercel的部署api触发笔记服务部署，bingo！链路打通！
+以前需要定时检查“内容有没有变化”，现在只在变化真正发生时工作。链路更及时，也减少了没有意义的请求。
+
+> [!NOTE]
+> Webhook 接收成功不代表部署一定成功。生产环境还需要保存事件状态，并为调用失败增加重试和告警。

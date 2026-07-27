@@ -1,4 +1,4 @@
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
@@ -45,8 +45,35 @@ const huaqindaSlugs = {
 const kindaSlugs = JSON.parse(
   await readFile(path.join(projectRoot, 'lib', 'legacy-post-slugs.json'), 'utf8'),
 );
+const legacyEditorial = JSON.parse(
+  await readFile(path.join(projectRoot, 'scripts', 'legacy-editorial.json'), 'utf8'),
+);
 
 const duplicateTitles = new Set(['neo4j', 'neo4j介绍以及基本操作']);
+
+const normalizedTags = {
+  ai: 'AI',
+  人工智能: 'AI',
+  nextjs: 'Next.js',
+  comfyui: 'ComfyUI',
+  css: 'CSS',
+  oss: 'OSS',
+  llm: 'LLM',
+  llama: 'Llama',
+  painting: 'AI 绘画',
+  swift: 'Swift',
+  Swift开发: 'Swift',
+  swiftdata: 'SwiftData',
+  lora: 'LoRA',
+  pytorch: 'PyTorch',
+  coreml: 'Core ML',
+  UI框架: 'UI',
+  旅游: '旅行',
+  '实用教程': '教程',
+  '必看精选': '精选',
+};
+
+const nonTopicTags = new Set(['归档', '精选', '推荐', '热门文章']);
 
 async function fetchText(url) {
   let lastError;
@@ -107,6 +134,52 @@ function normalizeDate(value) {
   const match = String(value ?? '').match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (!match) return '2024-01-01';
   return `${match[1]}-${match[2].padStart(2, '0')}-${match[3].padStart(2, '0')}`;
+}
+
+function polishLegacyBody(body) {
+  const replacements = [
+    [
+      '即：即然选择了预签名方式，那么就不要再请求头中带有任何Token相关信息。',
+      '既然选择了预签名方式，就不要再在请求头中携带任何 Token 认证信息。',
+    ],
+    [
+      '在使用tailwincss的项目中，使用`flex-1`嵌套的子元素当高度超过父元素的时候`overflow-auto`不再生效。',
+      '在 Tailwind CSS 项目中，如果 `flex-1` 子元素的内容高度超过父元素，`overflow-auto` 可能不会按预期生效。',
+    ],
+    [
+      '当你提交完成后，修改过后的字段中的isDirty属性依然是true，此时需要通过如下操作来使其变为fasle',
+      '保存完成后，如果修改过的字段仍然保持 `isDirty: true`，可以在保留当前值的同时重置表单状态：',
+    ],
+    [
+      '本文档基本是按照这篇文章翻译过来的，原文[samplers](https://stable-diffusion-art.com/samplers/)，感谢。',
+      '本文整理并翻译自 [Stable Diffusion Samplers](https://stable-diffusion-art.com/samplers/)，在原文基础上补充了个人使用时的判断。',
+    ],
+    [
+      '> 注意，本文档只针对m系列芯片的macbook用户。',
+      '> [!NOTE]\n> 本文面向 Apple 芯片（M 系列）的 Mac。',
+    ],
+    ['## flex-1和overflow-auto一起时无法生效', '## `flex-1` 与 `overflow-auto` 同时使用时滚动失效'],
+    ['## InstantID使用', '## InstantID 使用'],
+    ['## MacOS14.4中 `torchvision` 的适配问题', '## macOS 14.4 中 `torchvision` 的兼容问题'],
+    ['## Inpainting Model技巧', '## Inpainting Model 技巧'],
+    ['## Ipadapter应用', '## IP-Adapter 应用'],
+    ['## SQLAlchemy 可选筛选条件\n\n## 可选筛选条件', '## SQLAlchemy 可选筛选条件'],
+  ];
+
+  return replacements.reduce(
+    (result, [before, after]) => result.replaceAll(before, after),
+    body,
+  );
+}
+
+function normalizeTags(tags) {
+  return [
+    ...new Set(
+      tags
+        .map((tag) => normalizedTags[tag] ?? tag)
+        .filter((tag) => !nonTopicTags.has(tag)),
+    ),
+  ];
 }
 
 function languageName(value = '') {
@@ -522,8 +595,9 @@ function renderFrontmatter(note) {
     `summary: ${yamlString(note.summary)}`,
     `date: ${note.date}`,
     note.updated && note.updated !== note.date ? `updated: ${note.updated}` : '',
-    'tags:',
-    ...(note.tags.length ? note.tags.map((tag) => `  - ${yamlString(tag)}`) : ['  - "归档"']),
+    ...(note.tags.length
+      ? ['tags:', ...note.tags.map((tag) => `  - ${yamlString(tag)}`)]
+      : ['tags: []']),
     `source: ${yamlString(note.source)}`,
     'featured: false',
     '---',
@@ -568,11 +642,11 @@ async function importHuaqinda() {
     notes.push({
       slug,
       title: post.title,
-      eyebrow: '旧站归档 · HUAQINDA',
+      eyebrow: '历史笔记 · HUAQINDA',
       summary: summaryFrom(body, post.summary ?? post.ext?.summary),
       date: normalizeDate(post.publishDay),
       updated: normalizeDate(post.lastEditedDay),
-      tags: [...new Set([...(post.tags ?? []), '归档'])],
+      tags: normalizeTags(post.tags ?? []),
       source,
       body,
     });
@@ -655,7 +729,6 @@ async function importKinda() {
           decodeURIComponent(match[1]),
         ),
       ),
-      '归档',
     ];
     const body = await localizeMarkdownImages(
       htmlToMarkdown(cleanKindaArticle(article)),
@@ -665,11 +738,11 @@ async function importKinda() {
     notes.push({
       slug,
       title,
-      eyebrow: '旧站归档 · KINDA.INFO',
+      eyebrow: '历史笔记 · KINDA.INFO',
       summary: summaryFrom(body, summary),
       date,
       updated: date,
-      tags,
+      tags: normalizeTags(tags),
       source,
       body,
     });
@@ -678,9 +751,60 @@ async function importKinda() {
   return notes;
 }
 
+async function applyEditorial(notes) {
+  const bySlug = new Map(notes.map((note) => [note.slug, note]));
+
+  for (const note of notes) {
+    const override = legacyEditorial.entries[note.slug];
+    if (!override) continue;
+
+    if (override.title) note.title = override.title;
+    if (override.summary) note.summary = override.summary;
+    if (override.bodyFile) {
+      note.body = (
+        await readFile(path.join(projectRoot, override.bodyFile), 'utf8')
+      ).trim();
+    }
+  }
+
+  for (const merge of legacyEditorial.merges) {
+    const source = bySlug.get(merge.from);
+    const target = bySlug.get(merge.into);
+    if (!source && !target) continue;
+    if (!source || !target) {
+      throw new Error(`Unable to merge "${merge.from}" into "${merge.into}"`);
+    }
+
+    if (merge.includeBody !== false) {
+      target.body = [
+        target.body.trim(),
+        '---',
+        `## ${merge.heading}`,
+        source.body.trim(),
+        `> 历史来源：[查看合并前的原始笔记](${source.source})`,
+      ].join('\n\n');
+    }
+
+    target.tags = [...new Set([...target.tags, ...source.tags])];
+    const targetUpdated = target.updated ?? target.date;
+    const sourceUpdated = source.updated ?? source.date;
+    target.updated =
+      new Date(targetUpdated) > new Date(sourceUpdated) ? targetUpdated : sourceUpdated;
+    bySlug.delete(source.slug);
+  }
+
+  return [...bySlug.values()].map((note) => ({
+    ...note,
+    body: polishLegacyBody(note.body),
+    tags: normalizeTags(note.tags),
+  }));
+}
+
 async function writeNotes(folder, notes) {
   const directory = path.join(outputRoot, folder);
   await mkdir(directory, { recursive: true });
+  const staleFiles = (await readdir(directory)).filter((file) => file.endsWith('.mdx'));
+  await Promise.all(staleFiles.map((file) => unlink(path.join(directory, file))));
 
   for (const note of notes) {
     if (!note.body) throw new Error(`Empty article body for "${note.title}"`);
@@ -688,10 +812,17 @@ async function writeNotes(folder, notes) {
   }
 }
 
-const [huaqindaNotes, kindaNotes] = await Promise.all([importHuaqinda(), importKinda()]);
+const [importedHuaqindaNotes, importedKindaNotes] = await Promise.all([
+  importHuaqinda(),
+  importKinda(),
+]);
+const [huaqindaNotes, kindaNotes] = await Promise.all([
+  applyEditorial(importedHuaqindaNotes),
+  applyEditorial(importedKindaNotes),
+]);
 await writeNotes('huaqinda', huaqindaNotes);
 await writeNotes('kinda-info', kindaNotes);
 
 console.log(
-  `Imported ${huaqindaNotes.length} huaqinda.com notes and ${kindaNotes.length} kinda.info notes.`,
+  `Published ${huaqindaNotes.length} edited huaqinda.com notes and ${kindaNotes.length} edited kinda.info notes.`,
 );

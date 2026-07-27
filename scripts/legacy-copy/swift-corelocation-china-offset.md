@@ -1,0 +1,11 @@
+`CLLocationManager` 返回的坐标基于 WGS-84，而国内互联网地图通常使用 GCJ-02。把 WGS-84 坐标直接绘制到 GCJ-02 地图上，就会出现肉眼可见的位置偏移。
+
+需要区分两种情况：
+
+- MapKit 自带的用户位置蓝点通常已经由系统适配，不需要再次转换。
+- 把 `CLLocationCoordinate2D` 交给第三方国内地图或后端服务时，需要确认目标坐标系。
+
+如果目标使用 GCJ-02，可以在边界判断后进行 WGS-84 → GCJ-02 转换。现成实现可参考 [JZLocationConverter-Swift](https://github.com/JackZhouCn/JZLocationConverter-Swift)。
+
+> [!WARNING]
+> 不要对同一坐标重复转换。开始处理前，先明确数据来源和地图 SDK 分别使用哪一种坐标系。

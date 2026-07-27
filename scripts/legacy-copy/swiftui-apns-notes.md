@@ -1,0 +1,125 @@
+APNs 推送可以拆成四段：应用申请权限、系统返回设备令牌、服务端向 APNs 发请求、应用处理前台通知或用户点击。逐段验证，比直接调试完整链路更容易。
+
+## 1. 客户端注册
+
+应用启动时申请通知权限，并在用户同意后注册远程通知：
+
+```swift
+import SwiftUI
+import UserNotifications
+
+final class AppDelegate: NSObject, UIApplicationDelegate,
+                         UNUserNotificationCenterDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions:
+            [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+
+        UNUserNotificationCenter.current()
+            .requestAuthorization(options: [.alert, .badge, .sound]) {
+                granted, error in
+
+                guard granted, error == nil else { return }
+                DispatchQueue.main.async {
+                    application.registerForRemoteNotifications()
+                }
+            }
+
+        return true
+    }
+}
+```
+
+注册成功后，系统返回的是当前应用、设备和环境对应的 device token：
+
+```swift
+func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+) {
+    let token = deviceToken.map {
+        String(format: "%02.2hhx", $0)
+    }.joined()
+
+    // 通过已认证的接口上传到自己的服务端
+    print(token)
+}
+```
+
+Token 可能变化，不应把它写死，也不应把它当作用户身份。
+
+## 2. 服务端认证
+
+使用 APNs Auth Key 时，服务端需要：
+
+- Team ID；
+- Key ID；
+- `.p8` 私钥；
+- 应用 Bundle ID；
+- 目标环境中的 device token。
+
+服务端用 ES256 签发短期 JWT，并通过 HTTP/2 请求：
+
+```text
+POST https://api.sandbox.push.apple.com/3/device/<device-token>
+authorization: bearer <jwt>
+apns-topic: <bundle-id>
+```
+
+生产环境使用 `api.push.apple.com`。沙盒 token 与生产 token 不要混用。
+
+> [!WARNING]
+> `.p8` 私钥只能保存在服务端的密钥管理系统中，不能放进客户端、Git 仓库或公开日志。
+
+## 3. Payload
+
+```json
+{
+  "aps": {
+    "alert": {
+      "title": "新的内容",
+      "body": "点击查看详情"
+    },
+    "sound": "default"
+  },
+  "route": "/notes/example"
+}
+```
+
+`route` 是业务自定义字段。应用点击通知后从 `userInfo` 读取，并交给统一路由器处理。
+
+## 4. 接收与跳转
+
+前台展示由 `willPresent` 决定，用户点击由 `didReceive` 处理：
+
+```swift
+func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+) {
+    let userInfo = response.notification.request.content.userInfo
+    NotificationCenter.default.post(
+        name: .openNotificationRoute,
+        object: nil,
+        userInfo: userInfo
+    )
+    completionHandler()
+}
+```
+
+大型应用可以把通知事件写入共享路由状态，避免页面还没挂载时丢失事件。
+
+## 排错清单
+
+1. Capability 中是否开启 Push Notifications；
+2. Bundle ID、`apns-topic` 和签名环境是否一致；
+3. token 是否来自同一环境；
+4. JWT 的 `kid`、`iss` 与签发时间是否正确；
+5. 是否记录了 APNs 的状态码和响应原因；
+6. 真机是否允许通知，应用是否处于预期状态；
+7. 自定义字段是否超过 payload 限制或包含不可序列化数据。
+
+先用最小 alert payload 打通链路，再加入静默推送、角标和页面导航。

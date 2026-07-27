@@ -2,211 +2,120 @@
 slug: "whisper-cpp-guide"
 locale: zh
 type: note
-title: "语音转文字"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "该文档介绍了如何使用whisper.cpp进行语音转文字，包括克隆项目、获取和编译模型、运行示例、微调模型、内存占用、模型量化、Core ML支持、N卡加速及实时音频转文字功能。提供了详细的命令行示例和注意事项，适合对人工智能和语音处理感兴趣的用户。"
+title: "whisper.cpp 语音转写与字幕工作流"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "覆盖模型下载、量化、Core ML 与 CUDA 加速、实时转写，并补充从视频音轨到 SRT 和硬字幕的完整流程。"
 date: 2024-03-13
 updated: 2024-08-07
 tags:
-  - "推荐"
-  - "人工智能"
-  - "实用教程"
-  - "归档"
+  - "AI"
+  - "教程"
+  - "工具"
 source: "https://huaqinda.com/article/5f0be964-ada7-4418-bbe0-714970ad961a"
 featured: false
 ---
 
-> [!TIP]
-> 只有whisper.cpp文件和whisper.h文件是项目的核心文件，其他代码都是ggml的机器学习框架代码。
+`whisper.cpp` 把 Whisper 推理带到本地 C/C++ 环境，适合离线转写、字幕生成和端侧集成。项目命令与模型格式持续演进，下面保留稳定的工作流，不把某个历史二进制名称当作永久接口。
 
-examples中的代码是命令行中调用`./main ***`时实际调用whisper.cpp文件进行语音转文字的代码，可以自定义修改，令输出不再固定于范例格式。
-
-### **快速开始**
-
-#### **克隆 **`**whisper.cpp**`
+## 1. 获取并构建
 
 ```bash
-git clone git@github.com:ggerganov/whisper.cpp.git
-```
+git clone https://github.com/ggml-org/whisper.cpp.git
+cd whisper.cpp
 
-#### **获取模型**
-
-> [!TIP]
-> 为了能够在C/C++中加载，OpenAI提供的[原始Whisper PyTorch模型(opens in a new tab)](https://github.com/openai/whisper/blob/main/whisper/__init__.py#L17-L30)被转换成自定义的ggml格式。转换是通过 `[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)`[(opens in a new tab)](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py) 脚本执行的。
-
-有三种方法可以获取模型
-
-1. 使用 `[download-ggml-model.sh](https://github.com/ggerganov/whisper.cpp/blob/master/models/download-ggml-model.sh)`[(opens in a new tab)](https://github.com/ggerganov/whisper.cpp/blob/master/models/download-ggml-model.sh) 下载预转换的模型
-
-例子
-
-```bash
-$ ./download-ggml-model.sh
-base.enDownloading ggml model base.en ...models/ggml-base.en.bin          100%[=============================================>] 141.11M  5.41MB/s    in 22sDone! Model 'base.en' saved in 'models/ggml-base.en.bin'You can now use it like this:
-
-	$ ./main -m models/ggml-base.en.bin -f samples/jfk.wav
-```
-
-1. 手动下载预转换的模型
-
-ggml 模型可以从以下位置获取：
-
-- [https://huggingface.co/ggerganov/whisper.cpp/tree/main](https://huggingface.co/ggerganov/whisper.cpp/tree/main)
-- [https://ggml.ggerganov.com](https://ggml.ggerganov.com/)
-1. 使用 `[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)`转换
-
-下载由[OpenAI 提供的其中一个模型](https://github.com/openai/whisper/blob/main/whisper/__init__.py#L17-L30)，并使用 `[convert-pt-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-pt-to-ggml.py)`脚本生成 `ggml` 文件。
-
-示例转换，假设原始的 PyTorch 文件已下载到 `~/.cache/whisper`。将 `~/path/to/repo/whisper/` 更改为您 Whisper 源代码副本的位置：
-
-```bash
-mkdir models/whisper-medium
-python models/convert-pt-to-ggml.py ~/.cache/whisper/medium.pt ~/path/to/repo/whisper/ ./models/whisper-medium
-mv ./models/whisper-medium/ggml-model.bin models/ggml-medium.bin
-rmdir models/whisper-medium
-```
-
-#### **编译**
-
-现在，我们构建主示例。
-
-```bash
-# build the main example
-make
-```
-
-#### **运行**
-
-> [!TIP]
-> 注意，当前whisper.cpp的main示例仅支持16bit的wav媒体文件！所以在执行前需要先把媒体文件转为这个格式。
-
-可以通过如下命令解决：
-
-```bash
-ffmpeg -i input.mp3 -ar 16000 -ac 1 -c:a pcm_s16le output.wav
-```
-
-```bash
-./main -m models/ggml-base.en.bin -f output.wav
-```
-
-### **微调模型**
-
-社区正在努力创建使用额外训练数据进行细调的 Whisper 模型。例如，这篇[博文](https://huggingface.co/blog/zh/fine-tune-whisper)描述了使用 Hugging Face (HF) Transformer 实现的 Whisper 进行微调的方法。
-
-生成的模型与原始的 OpenAI 格式略有不同。要读取 HF 模型，您可以使用 `[convert-h5-to-ggml.py](https://github.com/ggerganov/whisper.cpp/blob/master/models/convert-h5-to-ggml.py)`脚本，如下所示：
-
-```bash
-git clone https://github.com/openai/whisper
-git clone https://github.com/ggerganov/whisper.cpp
-
-# clone HF fine-tuned model (this is just an example)
-git clone https://huggingface.co/openai/whisper-medium
-
-# convert the model to ggml
-python3 ./whisper.cpp/models/convert-h5-to-ggml.py ./whisper-medium/ ./whisper .
-```
-
-### **内存占用**
-
-| Model | Disk | Mem |
-| --- | --- | --- |
-| tiny | 75 MiB | ~273 MB |
-| base | 142 MiB | ~388 MB |
-| small | 466 MiB | ~852 MB |
-| medium 1.5 GiB | ~2.1 GB |  |
-| large | 2.9 GiB | ~3.9 GB |
-
-### **模型量化**
-
-`whisper.cpp` 支持对 ggml 模型进行量化，从而减少内存占用。要量化模型，请使用以下命令：
-
-```bash
-# quantize a model with Q5_0 method
-make quantize
-./quantize models/ggml-base.en.bin models/ggml-base.en-q5_0.bin q5_0
-
-# run the examples as usual, specifying the quantized model file
-./main -m models/ggml-base.en-q5_0.bin ./samples/gb0.wav
-```
-
-### **Core ML 支持**
-
-在苹果系列芯片的设备上，编码器推断可以通过 Core ML 在苹果神经引擎（ANE）上执行。这可以导致显著的加速，与仅 CPU 执行相比，速度提高了 3 倍以上。以下是生成 Core ML 模型并将其与 whisper.cpp 一起使用的说明：
-
-#### **安装所需要的库**
-
-```bash
-pip install ane_transformers
-pip install openai-whisper
-pip install coremltools
-```
-
-> [!TIP]
-> 想要成功安装 `coremltools`，你必须要安装 XCode 并且执行 `xcode-select --install` 安装命令行工具（一般安装git时这个也会一起安装）。 - 建议使用conda创建python虚拟环境，并且使用python 3.10版本 - 建议使用macos14即以上版本。
-
-#### **生成 Core ML 模型**
-
-举例如果是生成基于 base.en 模型的 Core ML 模型，执行以下命令：
-
-```bash
-./models/generate-coreml-model.sh base.en
-```
-
-#### **打包编译**
-
-```bash
-# using Makefile
-make clean
-WHISPER_COREML=1 make -j
-# using CMake
-cmake -B build -DWHISPER_COREML=1
+cmake -B build
 cmake --build build -j --config Release
 ```
 
-#### **运行**
+构建完成后，先查看生成的 CLI 帮助，确认当前参数：
 
 ```bash
-$ ./main -m models/ggml-base.en.bin -f samples/jfk.wav
-
-...
-
-whisper_init_state: loading Core ML model from 'models/ggml-base.en-encoder.mlmodelc'
-whisper_init_state: first run on a device may take a while ...
-whisper_init_state: Core ML model loaded
-system_info: n_threads = 4 / 10 | AVX = 0 | AVX2 = 0 | AVX512 = 0 | FMA = 0 | NEON = 1 | ARM_FMA = 1 | F16C = 0 | FP16_VA = 1 | WASM_SIMD = 0 | BLAS = 1 | SSE3 = 0 | VSX = 0 | COREML = 1 |
-
-...
+./build/bin/whisper-cli --help
 ```
 
-### **N卡支持**
+## 2. 下载模型
 
-在支持n卡的机器上，可以开启N卡加速。
-
-请确保你安装了[cuda](https://developer.nvidia.com/cuda-downloads)
+仓库提供模型下载脚本：
 
 ```bash
-make cleanWHISPER_CUBLAS=1 make -j
+./models/download-ggml-model.sh base
 ```
 
-### **实时音频转文字**
+模型越大，通常识别质量越高，同时需要更多内存和计算。中文转写不要选择带 `.en` 的纯英文模型。
+
+如果使用自行微调的 Hugging Face 模型，需要通过仓库当前提供的转换脚本生成兼容格式。转换前保留 tokenizer、配置和原始权重。
+
+## 3. 统一音频格式
+
+排错时先把输入转换为 16 kHz、单声道、16-bit PCM WAV：
 
 ```bash
-make stream./stream -m ./models/ggml-base.en.bin -t 8 --step 500 --length 5000
+ffmpeg -i input.mp4 \
+  -ar 16000 \
+  -ac 1 \
+  -c:a pcm_s16le \
+  output.wav
 ```
 
-### **信心程度显示**
-
-这种方式下会通过使用不同的颜色显示文字来表示 whisper.cpp 对音频的识别信心程度。
-
-![文章配图](https://user-images.githubusercontent.com/1991296/197356445-311c8643-9397-4e5e-b46e-0b4b4daa2530.png)
+再执行转写：
 
 ```bash
-./main -m models/ggml-base.en.bin -f samples/gb0.wav --print-colors
+./build/bin/whisper-cli \
+  -m models/ggml-base.bin \
+  -f output.wav \
+  -l zh
 ```
 
-### **实时字幕式**
+若当前版本的可执行文件或参数不同，以 `--help` 为准。
+
+## 4. 生成字幕
+
+使用 CLI 的 SRT 输出选项生成字幕文件，再用 ffmpeg 烧录：
 
 ```bash
-./main -m ./models/ggml-base.en.bin -f ./samples/jfk.wav -owtssource ./samples/jfk.wav.wtsffplay ./samples/jfk.wav.mp4
+ffmpeg -i input.mp4 \
+  -vf "subtitles=input.srt" \
+  -c:a copy \
+  output-with-subtitles.mp4
 ```
+
+字幕生成后应人工检查：
+
+- 专有名词和中英文混排；
+- 断句与阅读速度；
+- 时间轴是否重叠；
+- 长静音后的漂移；
+- 背景音乐或多人对话造成的误识别。
+
+如果平台支持外挂字幕，优先保留独立 SRT；硬字幕不可关闭，也不利于后续修改。
+
+## 5. 量化与加速
+
+量化可以降低模型体积和内存占用，但可能损失少量识别质量。先用原始模型建立准确率基线，再对比量化版本。
+
+Apple 平台可以使用 Metal 或 Core ML 路径，NVIDIA 环境可以使用 CUDA。具体构建开关会随项目版本变化，应该从当前仓库的构建文档确认，而不是复制旧 Makefile 命令。
+
+判断加速是否生效时，记录同一段音频的：
+
+- 总耗时与实时倍率；
+- 峰值内存；
+- 关键句错误率；
+- 首次运行与后续运行差异。
+
+## 6. 实时转写
+
+实时流式转写还要处理音频窗口、重叠区间和断句。窗口太短会缺少上下文，太长则增加延迟。先确定能接受的延迟，再调整 step、length 和 keep 等参数。
+
+> [!TIP]
+> 本地转写的完整质量来自“模型 + 音频预处理 + 语言设置 + 后处理”。只更换更大的模型，不一定能解决音量过低、声道混乱或专有名词的问题。
+
+## 一条可复现的字幕流程
+
+1. 用 ffmpeg 提取并标准化音轨；
+2. 固定模型、语言和推理参数；
+3. 输出 SRT；
+4. 人工校正术语、断句和时间轴；
+5. 保留原始 SRT；
+6. 按发布平台需要选择外挂或烧录字幕。
+
+这样既能享受自动转写的效率，也不会把未经检查的模型输出直接变成最终内容。

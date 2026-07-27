@@ -2,185 +2,141 @@
 slug: "swiftui-apns-notes"
 locale: zh
 type: note
-title: "SwiftUI APNS的一些注意点"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "操作步骤 相关数据 前往https://developer.apple.com/account MembershipDetailsCard页面获取自己的teamId 前往https://developer.apple.com/account/resources/authkeys/list生成新…"
+title: "SwiftUI APNs 推送实战"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "从 Team ID、Auth Key 和设备令牌，到服务端签名、推送请求与 SwiftUI 客户端接收，梳理 APNs 接入链路。"
 date: 2024-12-08
 updated: 2024-12-23
 tags:
   - "开发"
-  - "实用教程"
-  - "swift"
-  - "归档"
+  - "教程"
+  - "Swift"
 source: "https://huaqinda.com/article/156bbdbf-a033-80cc-9409-e621cb1af7fb"
 featured: false
 ---
 
-## 操作步骤
+APNs 推送可以拆成四段：应用申请权限、系统返回设备令牌、服务端向 APNs 发请求、应用处理前台通知或用户点击。逐段验证，比直接调试完整链路更容易。
 
-### 相关数据
+## 1. 客户端注册
 
-前往[https://developer.apple.com/account#MembershipDetailsCard](https://developer.apple.com/account#MembershipDetailsCard)页面获取自己的teamId
-
-前往[https://developer.apple.com/account/resources/authkeys/list](https://developer.apple.com/account/resources/authkeys/list)生成新的key，获取其keyId并且将其文件下载。
-
-### python的范本
-
-```python
-import httpx
-import time
-import uuid
-import json
-import jwt
-import os
-
-current_dir = os.path.dirname(__file__)
-
-teamId = <your teamId>
-keyId = <your keyId>
-
-payload = {
-    "iss": teamId,
-    "iat": int(time.time()),
-}
-
-headers = {
-    "alg" : "ES256",
-    "kid" : keyId
-}
-
-# Apple Developer下载的p8文件
-with open(os.path.join(current_dir, <authkeyfilename>), 'r') as f:
-    privateKey = f.read()
-
-token = jwt.encode(payload=payload, algorithm='ES256', headers=headers, key=privateKey)
-
-headers = {
-    "authorization": "bearer " + token,
-    "apns-topic": "com.qingyun.Receiver",
-    "apns-id": str(uuid.uuid4())
-}
-
-deviceToken = <your device token>
-
-url = 'https://api.sandbox.push.apple.com/3/device/{}'.format(deviceToken)
-
-def send_ios_notify(title, subtitle, body):
-    data = {
-        "aps" : {
-            "alert" : {
-                "title" : title,
-                "subtitle" : subtitle,
-                "body" : body
-            },
-            "sound": {
-                "name": "default"
-            },
-        },
-        "content-available": 1,
-        "navigateToPage": "12345"
-    }
-    with httpx.Client(http2=True) as client:  # 使用上下文管理器
-        try:
-            res = client.post(url=url, headers=headers, json=data)
-            print("推送成功:", res)
-        except Exception as e:
-            print("推送失败:", e)
-
-if __name__ == "__main__":
-    send_ios_notify("title", "subtitle", "body")
-```
-
-## 注意点
-
-### 结构
-
-apns-topic需要符合你的apple bundle identifier。
-
-"content-available": 1 是用来让通知能够app在后台时点击通知能被应用处理
-
-"navigateToPage": "12345"是额外自定义字段
-
-### 应用在后台时候点击通知打开指定页面
+应用启动时申请通知权限，并在用户同意后注册远程通知：
 
 ```swift
-//
-//  AppDelegate.swift
-//  Receiver
-//
-//  Created by Kinda on 2024/12/7.
-//
-
 import SwiftUI
-import AuthenticationServices
+import UserNotifications
 
-// 扩展Data，将Data编码转成正常字符串
-extension Data {
-    var hexString: String {
-        return map { String(format: "%02.2hhx", arguments: [$0]) }.joined()
-    }
-}
-
-private func registerForRemoteNotifications() {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
-        if granted {
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-        } else {
-            print("Notification permission not granted: \(String(describing: error))")
-        }
-    }
-}
-
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    var window: UIWindow?
-
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        registerForRemoteNotifications()
+final class AppDelegate: NSObject, UIApplicationDelegate,
+                         UNUserNotificationCenterDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions:
+            [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
         UNUserNotificationCenter.current().delegate = self
+
+        UNUserNotificationCenter.current()
+            .requestAuthorization(options: [.alert, .badge, .sound]) {
+                granted, error in
+
+                guard granted, error == nil else { return }
+                DispatchQueue.main.async {
+                    application.registerForRemoteNotifications()
+                }
+            }
+
         return true
     }
-
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // 如果注册成功，那么会调用此处函数
-        // 存储到 UserDefaults
-        UserDefaults.standard.set(deviceToken.hexString, forKey: "deviceToken")
-        print("deviceToken:", deviceToken.hexString)
-    }
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register for remote notifications: \(error)")
-    }
-
-    // 前台接收到通知时
-    func application(_ application: UIApplication, didReceiveRemoteNotification notification: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
-    ) {
-        NotificationCenter.default.post(name: .alert, object: notification)
-        completionHandler(.newData)
-    }
-
-    // 点击通知打开应用时处理
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                didReceive response: UNNotificationResponse,
-                withCompletionHandler completionHandler:
-                                @escaping () -> Void) {
-        NotificationCenter.default.post(name: .navigateToPage, object: response.notification.request.content.userInfo, userInfo: response.notification.request.content.userInfo)
-        completionHandler()
-    }
 }
 ```
 
-其中
+注册成功后，系统返回的是当前应用、设备和环境对应的 device token：
 
 ```swift
-func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-      registerForRemoteNotifications()
-      UNUserNotificationCenter.current().delegate = self
-      return true
-  }
+func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+) {
+    let token = deviceToken.map {
+        String(format: "%02.2hhx", $0)
+    }.joined()
+
+    // 通过已认证的接口上传到自己的服务端
+    print(token)
+}
 ```
 
-这段代码很重要，如果你发现你的userNotificationCenter不生效的话，检查一下是否执行了UNUserNotificationCenter.current().delegate = self，也就是是否将本函数介入UNUserNotificationCenter的生命周期（此话只是我的一种粗糙理解，简单地讲就是是否让这个函数生效，别的delegate类型也是如此，一定要设置为self）。
+Token 可能变化，不应把它写死，也不应把它当作用户身份。
+
+## 2. 服务端认证
+
+使用 APNs Auth Key 时，服务端需要：
+
+- Team ID；
+- Key ID；
+- `.p8` 私钥；
+- 应用 Bundle ID；
+- 目标环境中的 device token。
+
+服务端用 ES256 签发短期 JWT，并通过 HTTP/2 请求：
+
+```text
+POST https://api.sandbox.push.apple.com/3/device/<device-token>
+authorization: bearer <jwt>
+apns-topic: <bundle-id>
+```
+
+生产环境使用 `api.push.apple.com`。沙盒 token 与生产 token 不要混用。
+
+> [!WARNING]
+> `.p8` 私钥只能保存在服务端的密钥管理系统中，不能放进客户端、Git 仓库或公开日志。
+
+## 3. Payload
+
+```json
+{
+  "aps": {
+    "alert": {
+      "title": "新的内容",
+      "body": "点击查看详情"
+    },
+    "sound": "default"
+  },
+  "route": "/notes/example"
+}
+```
+
+`route` 是业务自定义字段。应用点击通知后从 `userInfo` 读取，并交给统一路由器处理。
+
+## 4. 接收与跳转
+
+前台展示由 `willPresent` 决定，用户点击由 `didReceive` 处理：
+
+```swift
+func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+) {
+    let userInfo = response.notification.request.content.userInfo
+    NotificationCenter.default.post(
+        name: .openNotificationRoute,
+        object: nil,
+        userInfo: userInfo
+    )
+    completionHandler()
+}
+```
+
+大型应用可以把通知事件写入共享路由状态，避免页面还没挂载时丢失事件。
+
+## 排错清单
+
+1. Capability 中是否开启 Push Notifications；
+2. Bundle ID、`apns-topic` 和签名环境是否一致；
+3. token 是否来自同一环境；
+4. JWT 的 `kid`、`iss` 与签发时间是否正确；
+5. 是否记录了 APNs 的状态码和响应原因；
+6. 真机是否允许通知，应用是否处于预期状态；
+7. 自定义字段是否超过 payload 限制或包含不可序列化数据。
+
+先用最小 alert payload 打通链路，再加入静默推送、角标和页面导航。

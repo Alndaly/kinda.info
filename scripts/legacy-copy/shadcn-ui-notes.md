@@ -1,0 +1,34 @@
+shadcn/ui 的 Form 组件建立在 React Hook Form 之上。遇到提交行为异常时，优先检查原生 `<form>` 结构和 React Hook Form 的状态生命周期。
+
+## 避免嵌套 `<form>`
+
+HTML 不允许表单嵌套。子组件需要保存局部数据时，最好只保留一个外层 `<form>`，把按钮改成 `type="button"`，再显式调用对应逻辑。
+
+如果历史结构暂时无法拆开，可以在子表单入口阻止事件继续传播：
+
+```typescript
+const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault()
+  event.stopPropagation()
+
+  void form.handleSubmit(onSuccess, onError)(event)
+}
+```
+
+这只能作为过渡方案。长期仍建议把嵌套表单重构为一个表单或彼此独立的两个表单。
+
+## 提交成功后重置 `isDirty`
+
+保存成功并不会自动告诉 React Hook Form“当前值已经成为新的初始值”。如果希望保留界面上的值，同时清除 dirty 状态，可以执行：
+
+```typescript
+form.reset(form.getValues())
+```
+
+如果只想保留值，也可以使用：
+
+```typescript
+form.reset({}, { keepValues: true })
+```
+
+前一种写法会明确把当前值设为新的默认值，后续判断 `isDirty` 时通常更直观。

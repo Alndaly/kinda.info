@@ -2,223 +2,116 @@
 slug: "swiftui-tips"
 locale: zh
 type: note
-title: "SwiftUI一些注意点和技巧"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "Q1: 如果遇到在别的地方需要修改swiftui界面时，但又无法直接操作页面内的数据时，该怎么办呢？ 方法一： 使用 @Published 和 ObservableObject 通过 ObservableObject 和 @Published 将状态管理抽离到一个外部的共享数据模型中，然后通过…"
+title: "SwiftUI 状态、导航与数据排错"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "整理状态所有权、NotificationCenter、页面导航、应用生命周期，以及 SwiftData 与 iCloudKit 配合时的实用注意事项。"
 date: 2024-12-10
 updated: 2025-01-11
 tags:
   - "开发"
   - "SwiftUI"
-  - "归档"
+  - "Swift"
+  - "SwiftData"
 source: "https://huaqinda.com/article/158bbdbf-a033-80d9-9f49-f035aa42c39b"
 featured: false
 ---
 
-### Q1: 如果遇到在别的地方需要修改swiftui界面时，但又无法直接操作页面内的数据时，该怎么办呢？
+SwiftUI 的许多“偶发问题”，本质上来自状态归属不清：谁创建状态、谁观察状态、谁负责导航。先理顺所有权，再选择工具。
 
-#### 方法一：
+## 页面内状态与共享状态
 
-**使用 @Published 和 ObservableObject**
+- `@State`：由当前 View 持有的轻量状态；
+- `@StateObject`：当前 View 创建并持有的引用模型；
+- `@ObservedObject`：模型由外部创建，当前 View 只观察；
+- `@EnvironmentObject`：跨层级共享，但依赖注入必须完整；
+- Observation 框架：在支持的系统中可减少样板代码。
 
-通过 ObservableObject 和 @Published 将状态管理抽离到一个外部的共享数据模型中，然后通过 @EnvironmentObject 或 @StateObject 将数据绑定到页面。
-
-**示例代码**
-
-1. 定义状态管理类
+不要在多个位置分别创建“同一个”状态模型，否则页面观察的实例与业务修改的实例可能不是同一个。
 
 ```swift
-import SwiftUI
-import Combine
-
-class SharedData: ObservableObject {
-    @Published var message: String = "Hello, World!"
-    @Published var count: Int = 0
+final class Session: ObservableObject {
+    @Published var message = "Hello"
 }
-```
 
-2. 在视图中使用 @StateObject 或 @EnvironmentObject
-
-```swift
-struct ContentView: View {
-    @StateObject var sharedData = SharedData() // 如果是全局共享数据，可以用 @EnvironmentObject
+struct RootView: View {
+    @StateObject private var session = Session()
 
     var body: some View {
-        VStack {
-            Text(sharedData.message)
-                .font(.title)
-
-            Button("Increment Count") {
-                sharedData.count += 1
-            }
-
-            Text("Count: \(sharedData.count)")
-        }
-        .onReceive(sharedData.$message) { newMessage in
-            print("Message changed to: \(newMessage)")
-        }
+        ContentView()
+            .environmentObject(session)
     }
 }
 ```
 
-3. 在其他地方更新数据
+## NotificationCenter 适合什么
 
-```swift
-let sharedData = SharedData()
-sharedData.message = "New Message"
-sharedData.count = 42
-```
-
-当 sharedData.message 或 sharedData.count 被修改时，ContentView 会自动更新。
-
-#### 方法二
-
-使用NotificationCenter.default.post，这个方法基本无敌，可以在任何地方使用，不局限于swiftui页面。
-
-**示例代码**
-
-1. 定义通知的名称
+NotificationCenter 适合系统事件或松耦合广播，例如推送点击、应用生命周期变化。普通页面状态更适合显式模型或路由器，否则事件来源难以追踪。
 
 ```swift
 extension Notification.Name {
-    static let navigateToPage = Notification.Name("navigateToPage")
+    static let openNotificationRoute =
+        Notification.Name("openNotificationRoute")
 }
-```
-
-2. 在某处发送通知
-
-```swift
-let userInfo: [String: Any] = ["targetPage": "DetailPage", "data": "Example Data"]
-NotificationCenter.default.post(name: .navigateToPage, object: nil, userInfo: userInfo)
-```
-
-3. 在 SwiftUI 页面接收通知
-
-- 通过onReceive接受
-
-```swift
-import SwiftUI
-
-struct ContentView: View {
-    @State private var shouldNavigate: Bool = false
-    @State private var navigationData: String = ""
-
-    var body: some View {
-        NavigationStack {
-            VStack {
-                Text("Home Page")
-                NavigationLink(destination: DetailView(data: navigationData), isActive: $shouldNavigate) {
-                    EmptyView()
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .navigateToPage)) { notification in
-                if let userInfo = notification.userInfo,
-                   let targetPage = userInfo["targetPage"] as? String,
-                   let data = userInfo["data"] as? String,
-                   targetPage == "DetailPage" {
-                    navigationData = data
-                    shouldNavigate = true
-                }
-            }
-        }
-    }
-}
-
-struct DetailView: View {
-    let data: String
-
-    var body: some View {
-        Text("Detail Page with data: \(data)")
-    }
-}
-```
-
-- 通过.sink自己控制监听
-
-> [!TIP]
-> 注意这种方式需要自己取消监听
-
-```swift
-struct ContentView: View {
-	@State private var notificationCancellable: AnyCancellable?
-
-	...
-
-	notificationCancellable = NotificationCenter.default
-	            .publisher(for: .navigateToPage)
-	            .sink { handleNotification($0) }
-
-	func handleNotification(_ notification: Notification) {
-			if let userInfo = notification.userInfo, let object = notification.object {
-			    // 在这里执行你的逻辑
-			    ...
-	    }
-	}
-
-	var body: some View {
-	        ZStack {
-			        ...
-	        }
-	        .onDisappear {
-				        // 取消监听
-		            notificationCancellable?.cancel()
-	        }
-	    }
-}
-```
-
----
-
-### **Q2: 有时候遇到页面崩溃出现黄色感叹号的情况，但一时找不到逻辑原因？**
-
-可以留心观察你的代码结构。
-
-一定要注意如果使用`NavigationStack`的话，`navigationDestination`和`navigationTitle`一定要在`NavigationStack`内部。
-
----
-
-### **Q3: 当应用从后台进入前台的时候，默认是不会触发当前页面的**`**.onAppear**`**或者**`**.task**`**事件的，此时如果想要每次进入前台的时候都触发数据更新该怎么办？**
-
-可以在对应页面订阅进入前台事件，具体代码如下：
-
-```swift
-import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello, World!")
-            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                handleAppWillEnterForeground()
+        Text("Home")
+            .onReceive(
+                NotificationCenter.default.publisher(
+                    for: .openNotificationRoute
+                )
+            ) { notification in
+                // 把事件交给路由状态
             }
-    }
-
-    private func handleAppWillEnterForeground() {
-        print("App entered foreground")
-        }
     }
 }
 ```
 
-也可以通过`onChange`监听设备场景
+使用 Combine 的 `sink` 手动订阅时，要保存并在合适的生命周期取消订阅；`onReceive` 通常更贴合 View 生命周期。
+
+## 应用回到前台
+
+页面不会因为应用从后台回来就重新触发 `onAppear`。需要刷新数据时，观察 `scenePhase`：
 
 ```swift
-import SwiftUI
-
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        Text("Hello, World!")
-            .onChange(of: scenePhase) { newPhase in
-                if newPhase == .active {
-                    handleAppWillEnterForeground()
+        Text("Home")
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    refresh()
                 }
             }
     }
 
-    private func handleAppWillEnterForeground() {
-        print("App entered foreground via scenePhase")
-        // 在这里执行你的逻辑
+    private func refresh() {
+        // 避免无条件重复请求
     }
 }
 ```
+
+刷新逻辑应当幂等，并根据上次更新时间判断是否真的需要请求。
+
+## NavigationStack 排错
+
+`navigationDestination` 和 `navigationTitle` 应放在对应 `NavigationStack` 的作用域内。复杂导航推荐使用单一 `NavigationPath` 或类型安全路由数组，让跳转来源统一。
+
+如果自定义 Router 与 `TabView(selection:)` 同时修改选中项和导航路径，可能发生“刚跳转又被重置”。解决思路不是移除 selection，而是把两个状态交给同一个上层协调：
+
+1. 明确切换 Tab 和压入页面的先后顺序；
+2. 避免 `onAppear` 无条件重置路径；
+3. 不要让多个 Router 同时写入同一个导航状态；
+4. 为 deep link 和推送建立单一入口。
+
+## SwiftData 与 iCloudKit
+
+启用 CloudKit 后，模型需要满足云端同步约束。常见问题包括：
+
+- 非可选属性没有默认值；
+- 关系缺少可兼容的删除规则；
+- 唯一性或迁移假设只在本地成立；
+- 容器、entitlement 与环境不一致。
+
+先用本地容器验证模型，再启用 CloudKit；启动时记录容器初始化错误，不要只观察“数据没有出现”。数据模型发生变化时，还要考虑已有用户的迁移路径。

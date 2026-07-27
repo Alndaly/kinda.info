@@ -1,0 +1,30 @@
+阿里云 OSS 前端直传最常见的两个问题，是 CORS 没有允许实际请求头，以及 SDK 的 Region 写法不完整。
+
+## CORS 返回 403
+
+除了允许来源和请求方法，还要把浏览器实际发送的请求头加入 Allowed Headers。使用 STS、分片上传或自定义元数据时，遗漏请求头可能直接得到 403。
+
+![OSS CORS 配置示例](/images/archive/huaqinda/aliyun-oss-notes/17abbdbf-a033-80f5-aacb-eb9e2835c8a5.png)
+
+排查时可以在浏览器 Network 面板里查看预检请求：
+
+- `OPTIONS` 是否成功；
+- `Access-Control-Request-Headers` 包含哪些字段；
+- 响应里的 `Access-Control-Allow-Headers` 是否全部覆盖。
+
+## Region 要包含 `oss-` 前缀
+
+JavaScript SDK 使用的 Region 不是 `cn-hangzhou`，而是 `oss-cn-hangzhou`：
+
+```javascript
+const client = new OSS({
+  region: 'oss-cn-hangzhou',
+  accessKeyId: credentials.accessKeyId,
+  accessKeySecret: credentials.accessKeySecret,
+  stsToken: credentials.securityToken,
+  bucket: 'your-bucket',
+  refreshSTSTokenInterval: 3_600_000,
+})
+```
+
+STS 临时凭证过期后需要重新获取，不要把长期 Access Key 放进浏览器代码。

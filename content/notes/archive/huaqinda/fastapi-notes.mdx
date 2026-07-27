@@ -2,70 +2,89 @@
 slug: "fastapi-notes"
 locale: zh
 type: note
-title: "FastAPI注意点"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "跨域问题 !TIP 跨域问题本质上多数情况下是浏览器检查返回的请求头中是否具有 Access Control Allow Origin 这一对象，如果遇到跨域类似的问题，并且后端开启cors的情况下，请检查返回的结果中是否具有这一属性。 fastapi中极容易遇到的问题就是当我全局捕获错误并且…"
+title: "FastAPI 实战排错：CORS、异常响应与查询筛选"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "从异常响应的 CORS 头，到 SQLAlchemy 可选筛选条件和分页顺序，整理几个容易被本地测试掩盖的后端问题。"
 date: 2024-12-22
+updated: 2025-02-04
 tags:
   - "开发"
   - "FastAPI"
-  - "归档"
 source: "https://huaqinda.com/article/164bbdbf-a033-8025-a237-d42ccdeefa85"
 featured: false
 ---
 
-## 跨域问题
+这篇笔记整理两个经常在本地测试正常、到了浏览器或真实查询条件下才出现的问题。
 
-> [!TIP]
-> 跨域问题本质上多数情况下是浏览器检查返回的请求头中是否具有`Access-Control-Allow-Origin`这一对象，如果遇到跨域类似的问题，并且后端开启cors的情况下，请检查返回的结果中是否具有这一属性。
+## 异常响应也需要 CORS 头
 
-fastapi中极容易遇到的问题就是当我全局捕获错误并且返回的时候，由于并未经过CorsMiddle的管道，导致跨域请求头忘记添加，从而浏览器端会报错。这个问题很难发现，因为后端调试大多用的postman，而postman是不具备浏览器环境的，从而请求会正常，因此难以发现。
+Postman 不执行浏览器的同源策略，所以“Postman 能请求”不能证明 CORS 配置正确。浏览器报跨域时，先检查真实响应是否包含 `Access-Control-Allow-Origin`。
+
+为了让未处理异常产生的响应也经过 CORS，可以让 `CORSMiddleware` 包裹整个 ASGI 应用：
 
 ```python
-import time
-import schemas
-from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from fastapi import status
 
-app = FastAPI()
+fastapi_app = FastAPI()
 
-origins = [
-    "*"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
+app = CORSMiddleware(
+    app=fastapi_app,
+    allow_origins=["https://app.example.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/")
-def read_root():
-    return '111'
-
-@app.exception_handler(Exception)
-async def unicorn_exception_handler(request: Request, exc: Exception):
-    print(f"记载报错，涉及请求{request}，错误{exc}")
-    res = schemas.common.ErrorResponse(message=str(exc))
-    return JSONResponse(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        content=res.model_dump(),
-        headers={
-            'Access-Control-Allow-Origin': '*',
-        }
-    )
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 ```
 
-注意，默认情况下`@app.exception_handler(Exception)`错误捕获不会主动处理跨域，也就是说`CORSMiddleware`默认情况下不会生效，需要手动增加`headers`。
+开发环境可以按需放宽来源；启用凭证时，生产环境应列出明确的 Origin。
+
+全局异常处理器只负责返回稳定的错误结构：
+
+```python
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+@fastapi_app.exception_handler(Exception)
+async def handle_unexpected_error(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Internal server error"},
+    )
+```
+
+不要把原始异常内容直接返回给客户端，详细堆栈应进入日志。
+
+## SQLAlchemy 可选筛选条件
+
+先建立基础查询，再按输入逐步增加筛选，最后应用分页：
+
+```python
+def search_documents(
+    db: Session,
+    keyword: str,
+    page_num: int = 1,
+    page_size: int = 20,
+    filters: dict | None = None,
+):
+    query = (
+        db.query(Document)
+        .filter(
+            Document.title.like(f"%{keyword}%"),
+            Document.deleted_at.is_(None),
+        )
+    )
+
+    if filters:
+        query = query.filter_by(**filters)
+
+    return (
+        query
+        .order_by(Document.created_at.desc())
+        .offset((page_num - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+```
+
+筛选必须发生在 `offset` 和 `limit` 之前，否则分页得到的不是完整过滤结果。对外暴露的筛选字段还应建立白名单，不要把任意字典直接交给数据库层。

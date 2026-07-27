@@ -9,5 +9,14 @@
   "605376f7-370c-43b6-bff7-fcab974f989d": "earth-online",
   "1611047c-237a-4600-99d3-48135a67d261": "values-and-effort",
   "d8195951-b1df-4cf8-b844-5b990ec623fb": "robotaxi-reflection",
-  "neo4j": "neo4j-python-guide"
+  "neo4j": "neo4j-python-guide",
+  "tailwind-line-clamp-notes": "css-tailwind-notes",
+  "react-hook-form-dirty-state": "shadcn-ui-notes",
+  "fastapi-sqlalchemy-tips": "fastapi-notes",
+  "nextjs-global-state": "nextjs-notes",
+  "swift-url-link-notes": "nextjs-notes",
+  "swift-development-notes": "swiftui-tips",
+  "swiftdata-notes": "swiftui-tips",
+  "video-subtitles-whisper-ffmpeg": "whisper-cpp-guide",
+  "comfyui-anything-everywhere": "comfyui-tips"
 }

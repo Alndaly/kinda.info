@@ -1,0 +1,99 @@
+把 PyTorch 模型带到 Apple 平台，关键不只是“转换成功”，而是让预处理、张量形状、输出语义和部署端保持一致。
+
+## 转换前先固定模型行为
+
+```python
+import torch
+
+model = load_model()
+model.eval()
+
+example = torch.rand(1, 3, 224, 224)
+
+with torch.no_grad():
+    reference = model(example)
+```
+
+在转换前确认：
+
+- 模型处于 `eval()` 模式；
+- 输入的 batch、通道顺序和尺寸明确；
+- 动态控制流是否会被追踪遗漏；
+- 输出是张量、元组还是字典；
+- 预处理和后处理是否属于模型的一部分。
+
+## 追踪与转换
+
+结构相对固定的模型可以先用 TorchScript 追踪：
+
+```python
+traced = torch.jit.trace(model, example)
+```
+
+再交给 `coremltools`：
+
+```python
+import coremltools as ct
+
+coreml_model = ct.convert(
+    traced,
+    inputs=[
+        ct.TensorType(
+            name="image",
+            shape=example.shape,
+        )
+    ],
+)
+
+coreml_model.save("Model.mlpackage")
+```
+
+如果输入尺寸需要变化，应显式声明可接受的范围，而不是假设转换器会自动理解：
+
+```python
+image_shape = ct.Shape(
+    shape=(1, 3, ct.RangeDim(224, 1024), ct.RangeDim(224, 1024))
+)
+```
+
+## 图像模型最容易错的地方
+
+- PyTorch 常用 `NCHW`，应用侧图像接口可能是 `NHWC`；
+- RGB 与 BGR 顺序不一致；
+- `[0, 255]`、`[0, 1]` 和归一化后的输入被混用；
+- resize、crop、mean/std 在两端重复执行；
+- 分割模型输出需要 resize 回原图并应用阈值。
+
+如果使用 `ct.ImageType`，可以把 scale 和 bias 放进模型输入声明；如果使用 `TensorType`，则要在 Swift 侧明确复现预处理。
+
+## 文本模型的额外复杂度
+
+文本模型通常包含 tokenizer、动态长度、缓存和模型不支持的算子。不要先把整个 pipeline 一次转换。更稳妥的方式是：
+
+1. 在 Python 中固定 tokenizer；
+2. 让模型只接收 token IDs 和必要的 mask；
+3. 用固定长度建立第一版；
+4. 对照每一层关键输出；
+5. 再考虑 flexible shape 和缓存。
+
+## 遇到算子不支持
+
+先缩小到最小可复现模型，再判断属于哪一类：
+
+- 算子可以用等价基础算子改写；
+- 追踪遗漏了 Python 控制流；
+- 输入形状导致转换器无法推断；
+- 算子需要自定义实现；
+- 当前部署目标不支持该精度或运算。
+
+不要一开始就改转换器源码。先把模型拆分，确认问题究竟来自 PyTorch 导出、MIL 转换还是 Core ML 运行时。
+
+## 转换后的验证
+
+用同一批固定输入比较 PyTorch 与 Core ML 输出：
+
+```python
+prediction = coreml_model.predict({"image": example.numpy()})
+```
+
+比较时不要只看“分类是否一样”，还应记录最大绝对误差、平均误差和关键任务指标。只有端到端预处理一致、误差可接受，转换才算完成。

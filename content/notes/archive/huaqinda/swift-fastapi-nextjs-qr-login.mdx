@@ -2,40 +2,61 @@
 slug: "swift-fastapi-nextjs-qr-login"
 locale: zh
 type: note
-title: "Swift配合FastAPI以及NextJS做扫码登录"
-eyebrow: "旧站归档 · HUAQINDA"
-summary: "技术选型 前端：nextjs 后端：fastapi 手机端：swift 实际步骤概括 web端建立一个uuid，基于这个uuid连接后端websocket，后端返回一个基于这个uuid的登录二维码。 手机扫描到二维码后，发送给后端一个该uuid的二维码已经扫描的状态。 后端返回给web端该二维…"
+title: "用 Next.js、FastAPI 与 Swift 实现扫码登录"
+eyebrow: "历史笔记 · HUAQINDA"
+summary: "用短期会话关联网页与手机，通过 WebSocket 同步扫码和确认状态，再用一次性 code 安全换取登录态。"
 date: 2024-12-09
 updated: 2024-12-22
 tags:
   - "开发"
-  - "实用教程"
-  - "swift"
+  - "教程"
+  - "Swift"
   - "FastAPI"
-  - "nextjs"
-  - "归档"
+  - "Next.js"
 source: "https://huaqinda.com/article/157bbdbf-a033-809d-8a41-e3a4b17da5fa"
 featured: false
 ---
 
-## 技术选型
+扫码登录的核心不是二维码本身，而是让浏览器和手机共同订阅同一次短期登录会话。
 
-前端：nextjs
+```mermaid
+sequenceDiagram
+  participant Web as Next.js 网页
+  participant API as FastAPI
+  participant App as Swift App
 
-后端：fastapi
+  Web->>API: 创建短期会话
+  API-->>Web: sessionId + 二维码内容
+  Web->>API: 建立 WebSocket
+  App->>API: 扫码并提交 sessionId
+  API-->>Web: scanned
+  App->>API: 用户确认登录
+  API-->>Web: confirmed
+  Web->>API: 用一次性 code 换取登录态
+```
 
-手机端：swift
+## 1. 创建会话
 
-## 实际步骤概括
+网页请求 FastAPI 创建随机 `sessionId`。服务端保存它的状态、过期时间和发起设备信息，再把只包含短期会话标识的二维码返回给网页。
 
-web端建立一个uuid，基于这个uuid连接后端websocket，后端返回一个基于这个uuid的登录二维码。
+二维码不要直接携带访问 Token，也不要放入长期有效的用户信息。
 
-手机扫描到二维码后，发送给后端一个该uuid的二维码已经扫描的状态。
+## 2. 同步扫码状态
 
-后端返回给web端该二维码已经被扫描，web端基于这一情况修改二维码，补充已扫描蒙版。
+网页用 `sessionId` 建立 WebSocket。Swift App 扫码后，把会话标识和当前已登录用户提交给服务端。服务端校验会话仍然有效，再向网页发送 `scanned`，让界面显示“已扫码，等待确认”。
 
-手机端确认登录，发送给后端该uuid可以登录。
+## 3. 在手机端确认
 
-后端返回给web端登录成功，并且传输token给web端。
+扫码不应自动完成登录。手机端需要展示目标设备和操作说明，由用户明确确认或拒绝。
 
-## 详细步骤
+确认后，服务端将会话更新为 `confirmed`，并向网页发送一个短期、一次性的授权 code。网页再通过 HTTPS 用 code 换取 Cookie 或 Token。
+
+## 4. 必须考虑的边界
+
+- 会话应在几分钟内过期，成功或取消后立即失效。
+- 状态只能按 `pending → scanned → confirmed` 前进。
+- WebSocket 断开后，网页可以通过一次普通请求恢复当前状态。
+- 服务端应限制创建和扫码频率，并记录异常尝试。
+- 浏览器的长期登录凭证不要通过 WebSocket 明文下发。
+
+这样拆分后，Next.js 负责展示，Swift 负责确认，FastAPI 保持唯一可信状态。

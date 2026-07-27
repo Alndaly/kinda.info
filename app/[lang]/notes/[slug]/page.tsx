@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { ArrowLeft, CalendarDays, Clock3, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, formatDate, getEntry } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
+import { getCanonicalPostSlug } from '@/lib/legacy-routes';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -40,7 +41,13 @@ export default async function NotePage({ params }: Props) {
   if (!hasLocale(lang)) notFound();
   const dictionary = getDictionary(lang).notes;
   const note = getEntry('note', slug, lang);
-  if (!note) notFound();
+  if (!note) {
+    const canonicalSlug = getCanonicalPostSlug(slug);
+    if (canonicalSlug !== slug) {
+      permanentRedirect(localizeHref(lang, `/notes/${canonicalSlug}`));
+    }
+    notFound();
+  }
 
   return (
     <article>

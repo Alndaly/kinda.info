@@ -73,7 +73,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             <div className="hero-note">
               <span>{dictionary.noteLabel}</span>
               <p>{dictionary.note[0]}<br />{dictionary.note[1]}</p>
-              <i>— K.</i>
+              <i>— J.</i>
             </div>
           </div>
         </div>
