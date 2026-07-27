@@ -1,9 +1,9 @@
-import { access, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
 const projectRoot = process.cwd();
-const outputRoot = path.join(projectRoot, 'content', 'notes', 'archive');
+const outputRoot = path.join(projectRoot, 'content', 'notes');
 const assetRoot = path.join(projectRoot, 'public', 'images', 'archive');
 
 const HUAQINDA_SITEMAP = 'https://huaqinda.com/sitemap.xml';
@@ -804,15 +804,11 @@ async function applyEditorial(notes) {
   }));
 }
 
-async function writeNotes(folder, notes) {
-  const directory = path.join(outputRoot, folder);
-  await mkdir(directory, { recursive: true });
-  const staleFiles = (await readdir(directory)).filter((file) => file.endsWith('.mdx'));
-  await Promise.all(staleFiles.map((file) => unlink(path.join(directory, file))));
-
+async function writeNotes(notes) {
+  await mkdir(outputRoot, { recursive: true });
   for (const note of notes) {
     if (!note.body) throw new Error(`Empty article body for "${note.title}"`);
-    await writeFile(path.join(directory, `${note.slug}.mdx`), renderFrontmatter(note));
+    await writeFile(path.join(outputRoot, `${note.slug}.mdx`), renderFrontmatter(note));
   }
 }
 
@@ -824,8 +820,7 @@ const [huaqindaNotes, kindaNotes] = await Promise.all([
   applyEditorial(importedHuaqindaNotes),
   applyEditorial(importedKindaNotes),
 ]);
-await writeNotes('huaqinda', huaqindaNotes);
-await writeNotes('kinda-info', kindaNotes);
+await writeNotes([...huaqindaNotes, ...kindaNotes]);
 
 console.log(
   `Published ${huaqindaNotes.length} edited huaqinda.com notes and ${kindaNotes.length} edited kinda.info notes.`,

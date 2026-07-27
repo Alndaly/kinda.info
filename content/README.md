@@ -95,10 +95,10 @@ flowchart LR
 
 这些标签借鉴了 Revornix 的节点格式，因此内容在两个项目之间迁移时不需要重新设计数据结构。
 
-## 历史文档归档
+## 历史文档导入
 
-`notes/archive/` 保存从旧站迁移的历史文章。重新同步 `huaqinda.com` 与旧版
-`kinda.info/posts` 时运行：
+从旧站迁移的文章与新笔记一样，直接保存在 `notes/`。重新同步 `huaqinda.com`
+与旧版 `kinda.info/posts` 时运行：
 
 ```bash
 pnpm content:import-legacy
@@ -106,8 +106,9 @@ pnpm content:import-legacy
 
 导入器会保留日期、代码、列表、提示框、公式、表格和图片，并将 Notion 私有图片
 保存到 `public/images/archive/`。随后通过 `scripts/legacy-editorial.json` 统一标题、
-摘要和合并规则，通过 `scripts/legacy-copy/` 保存经过编辑的正文。两个来源重复的
-Neo4j 文章由现有 `notes/neo4j-python-guide.mdx` 统一承接，不会重复生成。
+摘要和合并规则，通过 `scripts/legacy-copy/` 保存经过编辑的正文。生成的 MDX 会
+直接写入 `notes/`；两个来源重复的 Neo4j 文章由现有
+`notes/neo4j-python-guide.mdx` 统一承接，不会重复生成。
 
 内容高度重叠的碎片笔记会合并到主题指南中；被合并的 slug 仍然保留永久重定向。
 已经下线的 `kinda.info/post/*` 仅作为导入入口，不会写入生成内容的 `source`；
