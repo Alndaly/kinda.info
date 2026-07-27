@@ -99,14 +99,14 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         ))}
       </section>
 
-      <section className="section-space overflow-hidden border-y border-line bg-ink py-20 text-paper dark:bg-[#0d0d0b]">
+      <section className="inverse-section section-space overflow-hidden border-y py-20">
         <div className="site-container">
-          <div className="section-heading section-heading-dark">
+          <div className="section-heading">
             <div>
-              <span className="section-index text-paper/45">02 / Frames</span>
+              <span className="section-index">02 / Frames</span>
               <h2>{dictionary.recentFrames}</h2>
             </div>
-            <Link href={localizeHref(lang, '/photography')} className="text-link text-paper">
+            <Link href={localizeHref(lang, '/photography')} className="text-link">
               {dictionary.allFrames} <ArrowUpRight />
             </Link>
           </div>

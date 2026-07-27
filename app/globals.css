@@ -7,6 +7,10 @@
     --ink: 54 10% 9%;
     --line: 42 11% 76%;
     --accent-raw: 8 74% 52%;
+    --inverse-background: 54 10% 9%;
+    --inverse-foreground: 42 29% 92%;
+    --inverse-muted-foreground: 42 9% 66%;
+    --inverse-line: 48 8% 29%;
     --background: var(--paper);
     --foreground: var(--ink);
     --card: 42 24% 94%;
@@ -435,8 +439,24 @@
   border-color: hsl(var(--accent));
 }
 
-.section-heading-dark {
-  border-color: rgba(255, 255, 255, 0.2);
+.inverse-section {
+  color: hsl(var(--inverse-foreground));
+  background: hsl(var(--inverse-background));
+  border-color: hsl(var(--inverse-line));
+}
+
+.inverse-section .section-index,
+.inverse-section .photo-card .text-muted-foreground {
+  color: hsl(var(--inverse-muted-foreground));
+}
+
+.inverse-section .text-link,
+.inverse-section .photo-card {
+  color: hsl(var(--inverse-foreground));
+}
+
+.inverse-section .text-link:hover {
+  color: white;
 }
 
 .photo-home-grid {
