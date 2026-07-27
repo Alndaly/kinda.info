@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, Asterisk } from 'lucide-react';
+import { ArrowUpRight, Asterisk, BookOpenText, MessageCircle, Play } from 'lucide-react';
+import { siteConfig } from '@/site.config';
 
 export const metadata: Metadata = {
   title: '关于',
@@ -41,6 +42,77 @@ export default function AboutPage() {
             <Link className="text-link" href="https://github.com/Alndaly" target="_blank">GitHub <ArrowUpRight /></Link>
             <Link className="text-link" href="mailto:1142704468@qq.com">Email <ArrowUpRight /></Link>
           </div>
+        </div>
+      </section>
+
+      <section id="contact" className="about-contact">
+        <header className="about-contact-heading">
+          <span className="section-index">Elsewhere / 05</span>
+          <div>
+            <h2>在别处找到我</h2>
+            <p>文章、视频与生活碎片会落在不同的地方。挑一个你习惯的入口，我们在那里见。</p>
+          </div>
+        </header>
+
+        <div className="contact-grid">
+          <article className="contact-wechat">
+            <div className="contact-card-heading">
+              <span className="contact-index">01</span>
+              <MessageCircle aria-hidden="true" />
+            </div>
+            <div>
+              <span className="contact-kicker">WeChat Official Account</span>
+              <h3>微信公众号</h3>
+              <p>扫描二维码关注「七月文」，读一些更完整的文字。</p>
+            </div>
+            <div className="contact-qr">
+              <Image
+                src={siteConfig.wechatQr}
+                alt="微信公众号七月文二维码"
+                width={1200}
+                height={1164}
+                sizes="(max-width: 768px) 82vw, 34vw"
+              />
+            </div>
+          </article>
+
+          <Link
+            className="contact-channel contact-bilibili"
+            href={siteConfig.bilibili}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div className="contact-card-heading">
+              <span className="contact-index">02</span>
+              <Play aria-hidden="true" />
+            </div>
+            <div>
+              <span className="contact-kicker">Video / Making</span>
+              <h3>哔哩哔哩</h3>
+            </div>
+            <span className="contact-destination">
+              UID 391938956 <ArrowUpRight aria-hidden="true" />
+            </span>
+          </Link>
+
+          <Link
+            className="contact-channel contact-xiaohongshu"
+            href={siteConfig.xiaohongshu}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div className="contact-card-heading">
+              <span className="contact-index">03</span>
+              <BookOpenText aria-hidden="true" />
+            </div>
+            <div>
+              <span className="contact-kicker">Frames / Daily Life</span>
+              <h3>小红书</h3>
+            </div>
+            <span className="contact-destination">
+              去看看生活切片 <ArrowUpRight aria-hidden="true" />
+            </span>
+          </Link>
         </div>
       </section>
     </div>

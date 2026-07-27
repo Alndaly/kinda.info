@@ -11,5 +11,8 @@ export const siteConfig = {
   keywords: ['Kinda', '个人网站', '笔记', '摄影', '独立开发', 'MDX'],
   email: '1142704468@qq.com',
   github: 'Alndaly',
+  bilibili: 'https://space.bilibili.com/391938956',
+  xiaohongshu: 'https://xhslink.cn/m/2gpKCIOPcgc',
+  wechatQr: '/images/wechat-official-qr.jpg',
   siteRepo: 'kinda.info',
 } as const;

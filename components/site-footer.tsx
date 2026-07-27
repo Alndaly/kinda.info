@@ -28,11 +28,20 @@ export function SiteFooter() {
             <Link className="footer-link" href="/photography">
               Frames <ArrowUpRight />
             </Link>
+            <Link className="footer-link" href={siteConfig.bilibili} target="_blank" rel="noreferrer">
+              Bilibili <ArrowUpRight />
+            </Link>
+            <Link className="footer-link" href={siteConfig.xiaohongshu} target="_blank" rel="noreferrer">
+              小红书 <ArrowUpRight />
+            </Link>
+            <Link className="footer-link" href="/about#contact">
+              公众号 <ArrowUpRight />
+            </Link>
           </div>
         </div>
         <div className="flex flex-col gap-2 border-t border-line py-5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground sm:flex-row sm:justify-between">
           <span>© {new Date().getFullYear()} {siteConfig.author}</span>
-          <span>Made slowly in Shanghai · Built from local MDX</span>
+          <span>Made slowly in HangZhou · Built from local MDX</span>
         </div>
       </div>
     </footer>

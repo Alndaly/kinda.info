@@ -1456,6 +1456,168 @@
   line-height: 2;
 }
 
+.about-contact {
+  margin-top: clamp(7rem, 14vw, 13rem);
+  padding-top: clamp(2rem, 5vw, 4rem);
+  border-top: 1px solid hsl(var(--line));
+  scroll-margin-top: 7rem;
+}
+
+.about-contact-heading {
+  display: grid;
+  grid-template-columns: 0.45fr 1fr;
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: end;
+  margin-bottom: clamp(3rem, 7vw, 6rem);
+}
+
+.about-contact-heading h2 {
+  font-family: "Iowan Old Style", "Baskerville", "Songti SC", serif;
+  font-size: clamp(3.5rem, 8vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+}
+
+.about-contact-heading p {
+  max-width: 32rem;
+  margin-top: 1.5rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 1rem;
+}
+
+.contact-wechat,
+.contact-channel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid hsl(var(--line));
+  background: hsl(var(--paper));
+}
+
+.contact-wechat {
+  grid-row: span 2;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.contact-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.contact-card-heading > svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke-width: 1.4;
+}
+
+.contact-index,
+.contact-kicker {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.contact-wechat h3,
+.contact-channel h3 {
+  margin-top: 0.55rem;
+  font-family: "Iowan Old Style", "Baskerville", "Songti SC", serif;
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  line-height: 1;
+  letter-spacing: -0.055em;
+}
+
+.contact-wechat p {
+  max-width: 24rem;
+  margin-top: 1rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.contact-qr {
+  width: min(100%, 28rem);
+  margin: clamp(2rem, 5vw, 4rem) auto 0;
+  padding: 0.65rem;
+  background: white;
+  box-shadow: 0 24px 70px rgba(20, 19, 15, 0.1);
+  transform: rotate(-1deg);
+}
+
+.contact-qr img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.contact-channel {
+  --channel-color: var(--accent);
+  min-height: 17rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  transition: background-color 250ms ease, color 250ms ease, transform 250ms ease;
+}
+
+.contact-channel::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.28rem;
+  background: hsl(var(--channel-color));
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 280ms ease;
+}
+
+.contact-channel:hover {
+  background: hsl(var(--channel-color) / 0.08);
+  transform: translateX(0.25rem);
+}
+
+.contact-channel:hover::before {
+  transform: scaleY(1);
+}
+
+.contact-bilibili {
+  --channel-color: 195 89% 55%;
+}
+
+.contact-xiaohongshu {
+  --channel-color: 356 77% 53%;
+}
+
+.contact-destination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid hsl(var(--line));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.contact-destination svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 180ms ease;
+}
+
+.contact-channel:hover .contact-destination svg {
+  transform: translate(2px, -2px);
+}
+
 @keyframes slow-spin {
   to { transform: rotate(360deg); }
 }
@@ -1600,6 +1762,15 @@
 
   .about-columns {
     grid-template-columns: 1fr;
+  }
+
+  .about-contact-heading,
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-wechat {
+    grid-row: auto;
   }
 
   .mdx-callout {
