@@ -65,13 +65,22 @@ function parseCallout(source: string) {
 
 
 const calloutShell = [
-  '[--callout-tone:hsl(var(--accent))]',
+  // no default tone here: every kind sets its own in calloutTones, so the two
+  // never end up as same-specificity rules fighting over source order
   'relative block rounded-none border-0 border-l border-l-[var(--callout-tone)] font-display',
+  // a hairline on the other three sides so the block still reads as a block
+  // where the tinted background is nearly invisible
+  'border-y border-r border-y-[color-mix(in_srgb,var(--callout-tone)_16%,transparent)]',
+  'border-r-[color-mix(in_srgb,var(--callout-tone)_16%,transparent)]',
+  'dark:border-y-[color-mix(in_srgb,var(--callout-tone)_26%,transparent)]',
+  'dark:border-r-[color-mix(in_srgb,var(--callout-tone)_26%,transparent)]',
   'pl-[clamp(1.5rem,3.5vw,2rem)] pr-[clamp(1.25rem,3vw,1.8rem)]',
   'pt-[clamp(1.35rem,3vw,1.75rem)] pb-[clamp(1.45rem,3vw,1.9rem)]',
   '[@media(max-width:768px)]:pl-[1.35rem] [@media(max-width:768px)]:pr-4',
   '[@media(max-width:768px)]:pb-[1.35rem] [@media(max-width:768px)]:pt-5',
   'bg-[linear-gradient(100deg,color-mix(in_srgb,var(--callout-tone)_8%,transparent),color-mix(in_srgb,var(--callout-tone)_2%,transparent)_58%,transparent_90%)]',
+  // 8% of a tone disappears on the dark paper, so the mix goes up in dark mode
+  'dark:bg-[linear-gradient(100deg,color-mix(in_srgb,var(--callout-tone)_18%,transparent),color-mix(in_srgb,var(--callout-tone)_7%,transparent)_58%,transparent_94%)]',
   "before:absolute before:left-[-0.24rem] before:top-[1.72rem] before:h-[0.42rem] before:w-[0.42rem]",
   'before:rotate-45 before:bg-[var(--callout-tone)] before:shadow-[0_0_0_0.28rem_hsl(var(--paper))]',
   "before:content-['']",
@@ -79,7 +88,7 @@ const calloutShell = [
 
 /** Each kind of callout only swaps its tone. */
 const calloutTones: Record<CalloutType, string> = {
-  NOTE: '',
+  NOTE: '[--callout-tone:hsl(var(--accent))]',
   TIP: '[--callout-tone:#3d8059] dark:[--callout-tone:#78c497]',
   IMPORTANT: '[--callout-tone:#7454ab] dark:[--callout-tone:#b59bdd]',
   WARNING: '[--callout-tone:#9b640e] dark:[--callout-tone:#e0ad5a]',
@@ -96,7 +105,7 @@ const calloutLabel = [
 
 const calloutBody = [
   'grid gap-[0.45rem]',
-  '[&>p]:leading-[1.82]',
+  '[&>p]:leading-[1.82] [&>p]:text-foreground/90',
   '[&>p:first-child>strong:first-child]:inline-block',
   '[&>p:first-child>strong:first-child]:text-[1.04em] [&>p:first-child>strong:first-child]:font-[650]',
   '[&>p:first-child>strong:first-child]:tracking-[-0.025em]',

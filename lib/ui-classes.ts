@@ -133,6 +133,41 @@ export const articleMeta = [
 ].join(' ');
 
 /**
+ * Syntax colours for highlight.js / lowlight output. Written as variants on the
+ * code container because the token markup is generated, and drawn from the site
+ * palette so code sits in the same warm register as everything else.
+ */
+export const codeTokens = [
+  '[&_.hljs-comment]:text-[#8a8778] [&_.hljs-comment]:italic',
+  '[&_.hljs-quote]:text-[#8a8778] [&_.hljs-quote]:italic',
+  '[&_.hljs-keyword]:text-[#f08a6c] [&_.hljs-selector-tag]:text-[#f08a6c]',
+  '[&_.hljs-literal]:text-[#f08a6c] [&_.hljs-doctag]:text-[#f08a6c]',
+  '[&_.hljs-string]:text-[#cfe08a] [&_.hljs-regexp]:text-[#cfe08a]',
+  '[&_.hljs-addition]:text-[#8fd3a6] [&_.hljs-deletion]:text-[#f09b9b]',
+  '[&_.hljs-number]:text-[#e8bd77] [&_.hljs-symbol]:text-[#e8bd77]',
+  '[&_.hljs-bullet]:text-[#e8bd77] [&_.hljs-meta]:text-[#e8bd77]',
+  '[&_.hljs-title]:text-[#8fd3a6] [&_.hljs-name]:text-[#8fd3a6]',
+  '[&_.hljs-section]:text-[#8fd3a6] [&_.hljs-built_in]:text-[#8fd3a6]',
+  '[&_.hljs-function]:text-[#8fd3a6] [&_.hljs-title.function_]:text-[#8fd3a6]',
+  '[&_.hljs-type]:text-[#c2a8e8] [&_.hljs-class]:text-[#c2a8e8]',
+  '[&_.hljs-title.class_]:text-[#c2a8e8] [&_.hljs-params]:text-[#e8e5da]',
+  '[&_.hljs-attr]:text-[#8fc7dd] [&_.hljs-attribute]:text-[#8fc7dd]',
+  '[&_.hljs-property]:text-[#8fc7dd] [&_.hljs-variable]:text-[#e8e5da]',
+  '[&_.hljs-template-variable]:text-[#e8bd77] [&_.hljs-subst]:text-[#e8e5da]',
+  '[&_.hljs-tag]:text-[#8a8778] [&_.hljs-punctuation]:text-[#a8a598]',
+  '[&_.hljs-emphasis]:italic [&_.hljs-strong]:font-bold',
+  '[&_.hljs-link]:underline',
+].join(' ');
+
+/** Terminal-dark code surface, used by the node and by markdown fallback. */
+export const codeSurface = [
+  'bg-[#141512] text-[#e8e5da] selection:bg-accent/40 selection:text-white',
+  '[&::-webkit-scrollbar]:h-[0.45rem] [&::-webkit-scrollbar-track]:bg-transparent',
+  '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/[0.14]',
+  'hover:[&::-webkit-scrollbar-thumb]:bg-white/[0.22]',
+].join(' ');
+
+/**
  * The reading column. Markdown and tiptap emit their own HTML, so everything
  * inside it is styled from here with descendant variants.
  */
@@ -174,11 +209,14 @@ export const mdxProse = [
   '[&_blockquote]:my-12 [&_blockquote]:border-l-2 [&_blockquote]:border-accent',
   '[&_blockquote]:pl-6 [&_blockquote]:text-[1.35rem] [&_blockquote]:italic [&_blockquote]:leading-[1.7]',
   '[&_hr]:my-16 [&_hr]:border-0 [&_hr]:border-t [&_hr]:border-line',
-  '[&_pre]:my-10 [&_pre]:overflow-x-auto [&_pre]:rounded-[0.3rem] [&_pre]:border [&_pre]:border-line',
-  '[&_pre]:bg-ink [&_pre]:p-5 [&_pre]:font-code [&_pre]:text-[0.8rem] [&_pre]:leading-[1.7] [&_pre]:text-paper',
-  '[&_:not(pre)>code]:rounded-[0.25rem] [&_:not(pre)>code]:border [&_:not(pre)>code]:border-line',
-  '[&_:not(pre)>code]:bg-muted [&_:not(pre)>code]:px-[0.32rem] [&_:not(pre)>code]:py-[0.1rem]',
-  '[&_:not(pre)>code]:font-code [&_:not(pre)>code]:text-[0.82em]',
+  '[&_pre]:my-10 [&_pre]:overflow-x-auto [&_pre]:rounded-[0.5rem] [&_pre]:border [&_pre]:border-white/[0.08]',
+  '[&_pre]:bg-[#141512] [&_pre]:p-5 [&_pre]:font-code [&_pre]:text-[0.8rem] [&_pre]:leading-[1.7]',
+  '[&_pre]:text-[#e8e5da]',
+  // token colours for markdown that comes through the fallback path
+  codeTokens,
+  '[&_:not(pre)>code]:rounded-[0.3rem] [&_:not(pre)>code]:border [&_:not(pre)>code]:border-line/60',
+  '[&_:not(pre)>code]:bg-muted/60 [&_:not(pre)>code]:px-[0.34rem] [&_:not(pre)>code]:py-[0.12rem]',
+  '[&_:not(pre)>code]:font-code [&_:not(pre)>code]:text-[0.82em] [&_:not(pre)>code]:text-foreground',
 
   // tables
   '[&_.tableWrapper]:my-11 [&_.tableWrapper]:ml-[50%] [&_.tableWrapper]:-translate-x-1/2',
@@ -349,3 +387,4 @@ export const audioPanelTitle = [
   'mt-[0.32rem] py-[0.06em] font-display text-[1.35rem] font-semibold',
   'leading-[1.16] tracking-[-0.035em]',
 ].join(' ');
+

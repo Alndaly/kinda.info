@@ -10,30 +10,42 @@ import {
 import { Check, Copy, Workflow } from 'lucide-react';
 import { common, createLowlight } from 'lowlight';
 import { useEffect, useId, useState } from 'react';
+import { codeSurface, codeTokens } from '@/lib/ui-classes';
 
 const lowlight = createLowlight(common);
 
 
 /** Code and diagrams break out of the reading column. */
 const codeShell = [
-  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
-  'rounded-[0.35rem] border border-line bg-[#141512] font-code text-[#e8e5da]',
+  codeSurface,
+  codeTokens,
+  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden font-code',
+  'rounded-[0.5rem] border border-white/[0.08]',
+  'shadow-[0_1.25rem_2.5rem_hsl(var(--ink)/0.12),inset_0_1px_0_rgba(255,255,255,0.04)]',
 ].join(' ');
 
 const mermaidShell = [
   'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
-  'rounded-[0.35rem] border border-line bg-card font-code text-foreground',
+  'rounded-[0.5rem] border border-line bg-card font-code text-foreground',
+  'shadow-[0_1.25rem_2.5rem_hsl(var(--ink)/0.07)]',
 ].join(' ');
 
 const codeHeader = [
-  'flex min-h-[2.8rem] items-center justify-between gap-4 border-b border-white/[0.12]',
-  'bg-[#1b1c18] px-[0.9rem] font-sans text-[0.62rem] font-bold uppercase tracking-[0.12em]',
-  'text-[#aaa99f]',
-  '[&_span]:inline-flex [&_span]:items-center [&_span]:gap-[0.4rem]',
-  '[&_button]:inline-flex [&_button]:items-center [&_button]:gap-[0.4rem]',
-  '[&_button]:transition-colors [&_button]:duration-[160ms] [&_button]:ease-[ease]',
-  'hover:[&_button]:text-white',
-  '[&_svg]:h-[0.8rem] [&_svg]:w-[0.8rem]',
+  'flex min-h-[2.6rem] items-center justify-between gap-4 border-b border-white/[0.07]',
+  // opaque, because the mermaid shell behind it is a light card
+  'bg-[#1b1c18] px-[0.95rem] font-mono text-[0.58rem] tracking-[0.14em] text-[#9c9a8c]',
+  // a lit dot marks the language, the way a terminal tab would
+  '[&>span:first-child]:inline-flex [&>span:first-child]:items-center [&>span:first-child]:gap-[0.5rem]',
+  "[&>span:first-child]:before:h-[0.32rem] [&>span:first-child]:before:w-[0.32rem]",
+  '[&>span:first-child]:before:rounded-full [&>span:first-child]:before:bg-accent/70',
+  "[&>span:first-child]:before:content-['']",
+  '[&_button]:inline-flex [&_button]:items-center [&_button]:gap-[0.4rem] [&_button]:rounded-full',
+  '[&_button]:px-[0.5rem] [&_button]:py-[0.2rem]',
+  '[&_button]:transition-[color,background-color] [&_button]:duration-[160ms] [&_button]:ease-[ease]',
+  'hover:[&_button]:bg-white/[0.06] hover:[&_button]:text-[#e8e5da]',
+  '[&_svg]:h-[0.78rem] [&_svg]:w-[0.78rem]',
+  // the copy button confirms in the memo colour instead of only swapping icon
+  '[&_button[data-copied=true]]:text-memo',
 ].join(' ');
 
 function MermaidPreview({ source }: { source: string }) {
@@ -112,7 +124,7 @@ function CodeBlockView({ node }: NodeViewProps) {
       <NodeViewWrapper className={mermaidShell} data-node="mermaid">
         <div className={codeHeader} data-node="code-header" contentEditable={false}>
           <span><Workflow /> {labels.diagram}</span>
-          <button type="button" onClick={copy}>
+          <button type="button" onClick={copy} data-copied={copied}>
             {copied ? <Check /> : <Copy />}
             {copied ? labels.copied : labels.copySource}
           </button>
@@ -127,7 +139,7 @@ function CodeBlockView({ node }: NodeViewProps) {
     <NodeViewWrapper className={codeShell}>
       <div className={codeHeader} data-node="code-header" contentEditable={false}>
         <span>{language || 'plaintext'}</span>
-        <button type="button" onClick={copy}>
+        <button type="button" onClick={copy} data-copied={copied}>
           {copied ? <Check /> : <Copy />}
           {copied ? labels.copied : labels.copy}
         </button>

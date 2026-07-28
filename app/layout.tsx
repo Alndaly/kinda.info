@@ -6,7 +6,6 @@ import '@fontsource-variable/newsreader';
 import '@fontsource-variable/newsreader/wght-italic.css';
 import '@fontsource-variable/noto-serif-sc';
 import 'katex/dist/katex.min.css';
-import 'highlight.js/styles/github-dark.css';
 import './globals.css';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
