@@ -42,7 +42,7 @@ type GlobalAudioContextValue = {
   dismiss: () => void;
 };
 
-const STORAGE_KEY = 'kinda:global-audio:v1';
+const STORAGE_KEY = 'kinda:global-audio:v2';
 const GlobalAudioContext = createContext<GlobalAudioContextValue | null>(null);
 
 type PersistedAudioState = {

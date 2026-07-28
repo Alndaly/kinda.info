@@ -22,58 +22,61 @@ type LocalizedTrack = Omit<AudioTrack, 'title' | 'artist' | 'subtitle'> & {
 
 const backgroundTracks: LocalizedTrack[] = [
   {
-    id: 'bgm:morning-room',
+    id: 'bgm:a-kind-of-hope',
     title: {
-      zh: '晨光经过桌面',
-      en: 'Morning Light on the Desk',
+      zh: 'A Kind Of Hope',
+      en: 'A Kind Of Hope',
     },
     artist: {
-      zh: '七月 · 环境声景',
-      en: 'July · Ambient Studies',
+      zh: 'Scott Buckley · CC BY 4.0',
+      en: 'Scott Buckley · CC BY 4.0',
     },
     subtitle: {
-      zh: '柔和、清醒，适合阅读与缓慢开始',
-      en: 'Soft and clear, made for reading and slow beginnings',
+      zh: '苦甜的钢琴、弦乐与氛围合成器，适合安静阅读',
+      en: 'Bittersweet piano, strings, and ambient synth for quiet reading',
     },
-    src: '/audio/bgm/morning-room.ogg',
+    src: '/audio/bgm/a-kind-of-hope.mp3',
     kind: 'bgm',
-    accent: '#d9a441',
+    href: 'https://www.scottbuckley.com.au/library/a-kind-of-hope/',
+    accent: '#cf9d4f',
   },
   {
-    id: 'bgm:darkroom-rain',
+    id: 'bgm:childhood',
     title: {
-      zh: '雨落在暗房',
-      en: 'Rain in the Darkroom',
+      zh: 'Childhood',
+      en: 'Childhood',
     },
     artist: {
-      zh: '七月 · 环境声景',
-      en: 'July · Ambient Studies',
+      zh: 'Scott Buckley · CC BY 4.0',
+      en: 'Scott Buckley · CC BY 4.0',
     },
     subtitle: {
-      zh: '低饱和的雨夜底色，留给照片和长句',
-      en: 'A muted rainy-night bed for photographs and long sentences',
+      zh: '简单的钢琴与弦乐，留给照片、回忆和缓慢的片刻',
+      en: 'Simple piano and strings for photographs, memories, and slow moments',
     },
-    src: '/audio/bgm/darkroom-rain.ogg',
+    src: '/audio/bgm/childhood.mp3',
     kind: 'bgm',
-    accent: '#547a8c',
+    href: 'https://www.scottbuckley.com.au/library/childhood/',
+    accent: '#a87972',
   },
   {
-    id: 'bgm:after-hours-build',
+    id: 'bgm:borealis',
     title: {
-      zh: '深夜仍在构建',
-      en: 'Still Building After Hours',
+      zh: 'Borealis',
+      en: 'Borealis',
     },
     artist: {
-      zh: '七月 · 环境声景',
-      en: 'July · Ambient Studies',
+      zh: 'Scott Buckley · CC BY 4.0',
+      en: 'Scott Buckley · CC BY 4.0',
     },
     subtitle: {
-      zh: '克制的脉冲与低频，陪一段专注时间',
-      en: 'Restrained pulses and low tones for a focused stretch',
+      zh: '缓慢、沉思而略带明亮感的氛围音乐，适合深夜专注',
+      en: 'Slow, contemplative ambience with a subtle lift for late-night focus',
     },
-    src: '/audio/bgm/after-hours-build.ogg',
+    src: '/audio/bgm/borealis.mp3',
     kind: 'bgm',
-    accent: '#8b6b9f',
+    href: 'https://www.scottbuckley.com.au/library/borealis/',
+    accent: '#62829c',
   },
 ];
 

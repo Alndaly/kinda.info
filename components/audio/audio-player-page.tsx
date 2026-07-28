@@ -195,7 +195,12 @@ export function AudioPlayerPage({
           </div>
 
           {currentTrack?.href ? (
-            <Link className="audio-source-link" href={currentTrack.href}>
+            <Link
+              className="audio-source-link"
+              href={currentTrack.href}
+              target={currentTrack.href.startsWith('http') ? '_blank' : undefined}
+              rel={currentTrack.href.startsWith('http') ? 'noreferrer' : undefined}
+            >
               {labels.returnToSource} <ArrowUpRight />
             </Link>
           ) : null}
@@ -237,7 +242,13 @@ export function AudioPlayerPage({
                   {active && playing ? <Pause /> : <Play />}
                 </button>
                 <div>
-                  <small>{track.artist}</small>
+                  <small>
+                    {track.href ? (
+                      <Link href={track.href} target="_blank" rel="noreferrer">
+                        {track.artist} <ArrowUpRight />
+                      </Link>
+                    ) : track.artist}
+                  </small>
                   <h3>{track.title}</h3>
                   <p>{track.subtitle}</p>
                 </div>

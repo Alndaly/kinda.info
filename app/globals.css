@@ -4554,6 +4554,22 @@
   letter-spacing: 0.12em;
 }
 
+.audio-library-card small a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  transition: opacity 180ms ease;
+}
+
+.audio-library-card small a:hover {
+  opacity: 0.62;
+}
+
+.audio-library-card small svg {
+  width: 0.62rem;
+  height: 0.62rem;
+}
+
 .audio-library-card h3 {
   margin-top: 0.5rem;
   font-family: var(--font-display);
