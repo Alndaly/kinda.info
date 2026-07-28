@@ -5017,8 +5017,11 @@
   }
 }
 
-/* CJK glyphs need more vertical room than the Latin display face. */
-[lang="zh-CN"] :where(h1, h2, h3) {
-  padding-block: 0.07em;
-  line-height: 1.14;
+/* CJK glyphs need more vertical room than the Latin display face. A default in
+   the base layer, so leading-* / py-* utilities on a heading still win. */
+@layer base {
+  [lang="zh-CN"] :where(h1, h2, h3) {
+    padding-block: 0.07em;
+    line-height: 1.14;
+  }
 }
