@@ -2,7 +2,9 @@ import Link from 'next/link';
 import { Asterisk } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ModeToggle } from '@/components/mode-toggle';
+import { SiteSearch } from '@/components/site-search';
 import { getDictionary, localizeHref, type Locale } from '@/lib/i18n';
+import { createSearchIndex } from '@/lib/search';
 
 const navigation = [
   { href: '/notes', key: 'notes', index: '01' },
@@ -13,6 +15,8 @@ const navigation = [
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const dictionary = getDictionary(locale).header;
+  const searchDictionary = getDictionary(locale).search;
+  const searchIndex = createSearchIndex(locale);
 
   return (
     <header className="site-header">
@@ -47,6 +51,11 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="flex items-center gap-2">
+          <SiteSearch
+            locale={locale}
+            records={searchIndex}
+            labels={searchDictionary}
+          />
           <Link
             href="mailto:1142704468@qq.com"
             className="hidden text-xs font-semibold uppercase tracking-[0.16em] transition-opacity hover:opacity-55 sm:block"

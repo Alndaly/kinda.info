@@ -31,3 +31,9 @@ pnpm start
 ```
 
 构建会先生成 Velite 内容索引，再执行 Next.js 静态页面生成。
+
+## 搜索与评论
+
+全站搜索索引在构建时直接从 Velite 内容生成，不依赖外部搜索服务。访客可以点击页头搜索按钮，或使用 `⌘ K` / `Ctrl K` 打开搜索。
+
+评论使用 [Utterances](https://github.com/apps/utterances) 与 GitHub Issues。首次启用时，需要为 `Alndaly/kinda.info` 安装 Utterances GitHub App；之后笔记、摄影和作品详情页会自动创建并复用对应的评论 Issue。中英文同 slug 页面使用同一个讨论串。

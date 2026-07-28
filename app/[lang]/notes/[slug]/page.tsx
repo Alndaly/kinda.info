@@ -11,6 +11,7 @@ import {
   AutomaticTranslationNotice,
 } from '@/components/article-language-tools';
 import { ArticleReadingTools } from '@/components/article-reading-tools';
+import { Comments } from '@/components/comments';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, formatDate, getEntries, getEntry, getEntrySeo } from '@/lib/content';
@@ -78,6 +79,7 @@ export default async function NotePage({ params }: Props) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
   const dictionary = getDictionary(lang).notes;
+  const commentsDictionary = getDictionary(lang).comments;
   const note = getEntry('note', slug, lang);
   if (!note) notFound();
   const seo = getEntrySeo('note', slug, lang);
@@ -196,6 +198,13 @@ export default async function NotePage({ params }: Props) {
             ) : <span />}
           </nav>
         </footer>
+        <Comments
+          locale={lang}
+          type="note"
+          slug={slug}
+          repo={siteConfig.commentsRepo}
+          labels={commentsDictionary}
+        />
       </article>
     </ArticleLanguageProvider>
   );

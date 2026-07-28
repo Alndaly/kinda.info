@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Comments } from '@/components/comments';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, getEntry, getEntrySeo } from '@/lib/content';
@@ -69,6 +70,7 @@ export default async function ProjectPage({ params }: Props) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
   const dictionary = getDictionary(lang).projects;
+  const commentsDictionary = getDictionary(lang).comments;
   const project = getEntry('project', slug, lang);
   if (!project) notFound();
   const seo = getEntrySeo('project', slug, lang);
@@ -144,6 +146,13 @@ export default async function ProjectPage({ params }: Props) {
       <div className="mdx-prose">
         <TiptapContent content={project.content} fallbackHtml={project.html} />
       </div>
+      <Comments
+        locale={lang}
+        type="project"
+        slug={slug}
+        repo={siteConfig.commentsRepo}
+        labels={commentsDictionary}
+      />
     </article>
   );
 }

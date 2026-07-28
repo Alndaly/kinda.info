@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { Comments } from '@/components/comments';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, formatDate, getEntries, getEntry, getEntrySeo } from '@/lib/content';
@@ -65,6 +66,7 @@ export default async function PhotoPage({ params }: Props) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
   const dictionary = getDictionary(lang).photography;
+  const commentsDictionary = getDictionary(lang).comments;
   const photo = getEntry('photo', slug, lang);
   if (!photo) notFound();
   const seo = getEntrySeo('photo', slug, lang);
@@ -137,6 +139,13 @@ export default async function PhotoPage({ params }: Props) {
       <div className="mdx-prose mdx-prose-photo">
         <TiptapContent content={photo.content} fallbackHtml={photo.html} />
       </div>
+      <Comments
+        locale={lang}
+        type="photo"
+        slug={slug}
+        repo={siteConfig.commentsRepo}
+        labels={commentsDictionary}
+      />
     </article>
   );
 }
