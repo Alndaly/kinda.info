@@ -1622,81 +1622,112 @@
 }
 
 .tiptap-callout {
-  display: grid;
-  grid-template-columns: 7.5rem minmax(0, 1fr);
-  gap: 1.5rem;
-  padding: 1.4rem 1.5rem;
-  border: 1px solid hsl(var(--line));
-  border-left: 3px solid hsl(var(--accent));
-  border-radius: 0.25rem;
-  background: hsl(var(--muted) / 0.42);
+  --callout-tone: hsl(var(--accent));
+  position: relative;
+  display: block;
+  padding: clamp(1.35rem, 3vw, 1.75rem) clamp(1.25rem, 3vw, 1.8rem)
+    clamp(1.45rem, 3vw, 1.9rem) clamp(1.5rem, 3.5vw, 2rem);
+  border: 0;
+  border-left: 1px solid var(--callout-tone);
+  border-radius: 0;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--callout-tone) 8%, transparent),
+    color-mix(in srgb, var(--callout-tone) 2%, transparent) 58%,
+    transparent 90%
+  );
   font-family: var(--font-display);
+}
+
+.tiptap-callout::before {
+  content: "";
+  position: absolute;
+  top: 1.72rem;
+  left: -0.24rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  background: var(--callout-tone);
+  box-shadow: 0 0 0 0.28rem hsl(var(--paper));
+  transform: rotate(45deg);
 }
 
 .tiptap-callout-label {
   display: flex;
+  width: fit-content;
   align-items: center;
   gap: 0.45rem;
-  padding-top: 0.18rem;
-  color: hsl(var(--accent));
+  margin-bottom: 0.85rem;
+  color: var(--callout-tone);
   font-family: ui-sans-serif, sans-serif;
-  font-size: 0.58rem;
+  font-size: 0.55rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.17em;
+  line-height: 1;
+}
+
+.tiptap-callout-label::after {
+  content: "";
+  width: clamp(2.5rem, 8vw, 5rem);
+  height: 1px;
+  margin-left: 0.15rem;
+  background: currentColor;
+  opacity: 0.28;
 }
 
 .tiptap-callout-label svg {
-  width: 0.9rem;
-  height: 0.9rem;
+  width: 0.82rem;
+  height: 0.82rem;
+  stroke-width: 1.8;
+}
+
+.tiptap-callout-body {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.tiptap-callout-body > p {
+  line-height: 1.82;
+}
+
+.tiptap-callout-body > p:first-child > strong:first-child {
+  display: inline-block;
+  color: hsl(var(--foreground));
+  font-size: 1.04em;
+  font-weight: 650;
+  letter-spacing: -0.025em;
 }
 
 .tiptap-callout-tip {
-  border-left-color: #4c956c;
+  --callout-tone: #3d8059;
 }
 
-.tiptap-callout-tip .tiptap-callout-label {
-  color: #3d8059;
-}
-
-.dark .tiptap-callout-tip .tiptap-callout-label {
-  color: #78c497;
+.dark .tiptap-callout-tip {
+  --callout-tone: #78c497;
 }
 
 .tiptap-callout-important {
-  border-left-color: #8062b7;
+  --callout-tone: #7454ab;
 }
 
-.tiptap-callout-important .tiptap-callout-label {
-  color: #7454ab;
-}
-
-.dark .tiptap-callout-important .tiptap-callout-label {
-  color: #b59bdd;
+.dark .tiptap-callout-important {
+  --callout-tone: #b59bdd;
 }
 
 .tiptap-callout-warning {
-  border-left-color: #cc8b24;
+  --callout-tone: #9b640e;
 }
 
-.tiptap-callout-warning .tiptap-callout-label {
-  color: #a16a14;
-}
-
-.dark .tiptap-callout-warning .tiptap-callout-label {
-  color: #e0ad5a;
+.dark .tiptap-callout-warning {
+  --callout-tone: #e0ad5a;
 }
 
 .tiptap-callout-caution {
-  border-left-color: #c94b4b;
+  --callout-tone: #b23d3d;
 }
 
-.tiptap-callout-caution .tiptap-callout-label {
-  color: #b23d3d;
-}
-
-.dark .tiptap-callout-caution .tiptap-callout-label {
-  color: #e98989;
+.dark .tiptap-callout-caution {
+  --callout-tone: #e98989;
 }
 
 .tiptap-figure {
@@ -3097,8 +3128,7 @@
   }
 
   .tiptap-callout {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+    padding: 1.25rem 1rem 1.35rem 1.35rem;
   }
 
   .tiptap-audio {
