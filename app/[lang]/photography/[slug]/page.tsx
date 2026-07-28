@@ -19,7 +19,8 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer } from '@/lib/ui-classes';
+import { siteContainer, mdxProse, mdxProsePhoto } from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -158,7 +159,7 @@ export default async function PhotoPage({ params }: Props) {
           </div>
         </div>
       )}
-      <div className="mdx-prose mdx-prose-photo">
+      <div data-prose className={cn(mdxProse, mdxProsePhoto)}>
         <TiptapContent content={photo.content} fallbackHtml={photo.html} />
       </div>
       <Comments

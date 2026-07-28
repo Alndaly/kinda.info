@@ -211,7 +211,6 @@ export function TiptapContent({
   if (!editor) {
     return (
       <div
-        className="tiptap-reader tiptap-fallback"
         data-reader=""
         aria-label={contentLabel}
         dangerouslySetInnerHTML={{ __html: fallbackHtml }}
@@ -219,5 +218,5 @@ export function TiptapContent({
     );
   }
 
-  return <EditorContent editor={editor} className="tiptap-reader" />;
+  return <EditorContent editor={editor} />;
 }

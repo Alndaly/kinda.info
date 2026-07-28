@@ -22,7 +22,7 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer, projectStatus } from '@/lib/ui-classes';
+import { siteContainer, projectStatus, mdxProse } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 type ProjectStyle = CSSProperties & { '--project-accent': string };
@@ -164,7 +164,7 @@ export default async function ProjectPage({ params }: Props) {
           )}
         </div>
       </header>
-      <div className="mdx-prose">
+      <div data-prose className={mdxProse}>
         <TiptapContent content={project.content} fallbackHtml={project.html} />
       </div>
       <Comments

@@ -132,12 +132,72 @@ export const articleMeta = [
   '[&_svg]:w-[0.85rem]',
 ].join(' ');
 
-/** The reading column. Markdown/tiptap output is styled from here. */
+/**
+ * The reading column. Markdown and tiptap emit their own HTML, so everything
+ * inside it is styled from here with descendant variants.
+ */
 export const mdxProse = [
   '[--mdx-body-font-size:clamp(1.05rem,1.5vw,1.18rem)]',
   'mx-auto mt-[clamp(4rem,9vw,7rem)] w-[min(100%-2rem,46rem)]',
   'font-display text-[length:var(--mdx-body-font-size)] leading-loose text-foreground',
+
+  // the editor surface itself
+  // :where() keeps the default block rhythm at low specificity so the heading
+  // margins below still win, the way the old rule order did.
+  '[&_[data-reader]]:outline-none [&_:where([data-reader])>*+*]:mt-[1.6rem]',
+  '[&_[data-node-view-wrapper]]:my-11',
+  '[&_[data-node-view-wrapper]_[data-node-view-content]>*]:my-0',
+  '[&_.ProseMirror-selectednode]:outline-none',
+
+  // headings
+  '[&_:is(h1,h2,h3)]:font-display [&_:is(h1,h2,h3)]:leading-[1.25]',
+  '[&_:is(h1,h2,h3)]:tracking-[-0.035em] [&_:is(h1,h2,h3)]:text-foreground',
+  '[&_:is(h1,h2,h3)]:scroll-mt-28',
+  '[&_h1]:mt-18 [&_h1]:text-[3rem]',
+  '[&_h2]:mt-18 [&_h2]:text-[2.15rem]',
+  '[&_h3]:mt-12 [&_h3]:text-[1.55rem]',
+
+  // body copy
+  '[&_:is(p,li)]:text-foreground/[0.88]',
+  '[&_strong]:font-bold [&_strong]:text-foreground',
+  '[&_a]:text-accent [&_a]:underline [&_a]:decoration-1 [&_a]:underline-offset-[0.2em]',
+
+  // lists
+  '[&_:is(ul,ol)]:pl-[1.3rem] [&_ul]:list-none [&_ol]:list-decimal',
+  '[&_ul_li]:relative',
+  "[&_ul_li]:before:absolute [&_ul_li]:before:left-[-1.25rem]",
+  '[&_ul_li]:before:top-[var(--mdx-body-font-size)] [&_ul_li]:before:-translate-y-1/2',
+  "[&_ul_li]:before:text-[0.65rem] [&_ul_li]:before:leading-none [&_ul_li]:before:text-accent",
+  "[&_ul_li]:before:content-['✦']",
+
+  // quotes, rules, code
+  '[&_blockquote]:my-12 [&_blockquote]:border-l-2 [&_blockquote]:border-accent',
+  '[&_blockquote]:pl-6 [&_blockquote]:text-[1.35rem] [&_blockquote]:italic [&_blockquote]:leading-[1.7]',
+  '[&_hr]:my-16 [&_hr]:border-0 [&_hr]:border-t [&_hr]:border-line',
+  '[&_pre]:my-10 [&_pre]:overflow-x-auto [&_pre]:rounded-[0.3rem] [&_pre]:border [&_pre]:border-line',
+  '[&_pre]:bg-ink [&_pre]:p-5 [&_pre]:font-code [&_pre]:text-[0.8rem] [&_pre]:leading-[1.7] [&_pre]:text-paper',
+  '[&_:not(pre)>code]:rounded-[0.25rem] [&_:not(pre)>code]:border [&_:not(pre)>code]:border-line',
+  '[&_:not(pre)>code]:bg-muted [&_:not(pre)>code]:px-[0.32rem] [&_:not(pre)>code]:py-[0.1rem]',
+  '[&_:not(pre)>code]:font-code [&_:not(pre)>code]:text-[0.82em]',
+
+  // tables
+  '[&_.tableWrapper]:my-11 [&_.tableWrapper]:ml-[50%] [&_.tableWrapper]:-translate-x-1/2',
+  '[&_.tableWrapper]:w-[min(100vw-2rem,62rem)] [&_.tableWrapper]:overflow-x-auto',
+  '[&_.tableWrapper]:rounded-[0.35rem] [&_.tableWrapper]:border [&_.tableWrapper]:border-line',
+  '[&_.tableWrapper]:bg-background',
+  '[&_table]:w-full [&_table]:min-w-[34rem] [&_table]:border-collapse',
+  '[&_table]:font-sans [&_table]:text-[0.82rem] [&_table]:leading-[1.65]',
+  '[&_:is(th,td)]:border-b [&_:is(th,td)]:border-r [&_:is(th,td)]:border-line',
+  '[&_:is(th,td)]:px-4 [&_:is(th,td)]:py-[0.85rem] [&_:is(th,td)]:text-left [&_:is(th,td)]:align-top',
+  '[&_:is(th,td):last-child]:border-r-0 [&_tr:last-child_td]:border-b-0',
+  '[&_th]:bg-muted/[0.72] [&_th]:text-[0.68rem] [&_th]:font-extrabold [&_th]:uppercase',
+  '[&_th]:tracking-[0.08em] [&_th]:text-foreground',
+  '[&_tbody_tr]:transition-colors [&_tbody_tr]:duration-[160ms] [&_tbody_tr]:ease-[ease]',
+  'hover:[&_tbody_tr]:bg-muted/[0.38]',
 ].join(' ');
+
+/** Photo essays centre their short captions. */
+export const mdxProsePhoto = 'text-center text-[1.2rem]';
 
 export const articleEndMessage = [
   'text-center',
