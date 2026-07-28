@@ -11,6 +11,14 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { useGlobalAudio } from '@/components/audio/global-audio-provider';
+import {
+  audioEmptyState,
+  audioListRow,
+  audioRemoveButton,
+  audioScrollList,
+  audioTrackRow,
+} from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 export type AudioQueueSheetLabels = {
   queue: string;
@@ -23,6 +31,21 @@ export type AudioQueueSheetLabels = {
   nowPlaying: string;
   close: string;
 };
+
+
+const sheetKicker = [
+  '[&>span]:text-[0.48rem] [&>span]:font-extrabold [&>span]:uppercase',
+  '[&>span]:tracking-[0.16em] [&>span]:text-accent',
+].join(' ');
+
+const sheetTabs = [
+  'grid grid-cols-2 rounded-full border border-line bg-secondary/55 p-1',
+  '[&_button]:flex [&_button]:h-[2.3rem] [&_button]:gap-[0.45rem] [&_button]:rounded-full',
+  '[&_button]:text-[0.58rem] [&_button]:text-muted-foreground [&_button]:shadow-none',
+  '[&_button[data-active=true]]:bg-ink [&_button[data-active=true]]:text-paper',
+  '[&_button>svg]:h-[0.78rem] [&_button>svg]:w-[0.78rem]',
+  '[&_button>span]:ml-auto [&_button>span]:font-mono [&_button>span]:text-[0.45rem]',
+].join(' ');
 
 export function AudioQueueSheet({
   open,
@@ -51,10 +74,10 @@ export function AudioQueueSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="audio-queue-sheet"
+        className="grid w-[min(29rem,100vw)] grid-rows-[auto_auto_minmax(0,1fr)_auto] gap-5 p-6"
         closeLabel={labels.close}
       >
-        <SheetHeader className="audio-queue-sheet-header">
+        <SheetHeader className={cn(sheetKicker, 'pr-12')}>
           <span>QUEUE / KINDA AUDIO</span>
           <SheetTitle>{view === 'queue' ? labels.queue : labels.recent}</SheetTitle>
           <SheetDescription>
@@ -62,7 +85,7 @@ export function AudioQueueSheet({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="audio-sheet-tabs" role="tablist">
+        <div className={sheetTabs} role="tablist">
           <Button
             type="button"
             variant="ghost"
@@ -87,14 +110,14 @@ export function AudioQueueSheet({
           </Button>
         </div>
 
-        <div className="audio-sheet-list">
+        <div className={cn(audioScrollList, 'flex flex-1 flex-col [&_ol]:list-none')}>
           {list.length ? (
             <ol>
               {list.map((track, index) => (
-                <li key={`${view}-${track.id}-${index}`}>
+                <li className={audioListRow} key={`${view}-${track.id}-${index}`}>
                   <button
                     type="button"
-                    className="audio-sheet-track"
+                    className={cn(audioTrackRow, 'px-[0.2rem] py-[0.88rem]')}
                     onClick={() => {
                       if (view === 'queue') {
                         playFromQueue(index);
@@ -106,9 +129,7 @@ export function AudioQueueSheet({
                   >
                     <span>{String(index + 1).padStart(2, '0')}</span>
                     <div>
-                      <strong className="min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis font-[family-name:var(--font-display)] text-[0.82rem] font-[620] leading-[1.3]">
-                        {track.title}
-                      </strong>
+                      <strong>{track.title}</strong>
                       <small>{track.artist}</small>
                     </div>
                     <Play />
@@ -116,7 +137,7 @@ export function AudioQueueSheet({
                   {view === 'queue' ? (
                     <button
                       type="button"
-                      className="audio-sheet-remove"
+                      className={audioRemoveButton}
                       onClick={() => removeFromQueue(track.id)}
                       aria-label={`${labels.remove}: ${track.title}`}
                     >
@@ -127,7 +148,7 @@ export function AudioQueueSheet({
               ))}
             </ol>
           ) : (
-            <div className="audio-sheet-empty">
+            <div className={cn(audioEmptyState, 'w-full min-h-0 flex-1')}>
               {view === 'queue' ? <ListMusic /> : <Clock3 />}
               <p>{empty}</p>
             </div>
@@ -138,7 +159,7 @@ export function AudioQueueSheet({
           <Button
             type="button"
             variant="outline"
-            className="audio-sheet-clear"
+            className="flex w-full gap-[0.45rem] rounded-full text-[0.6rem] shadow-none [&>svg]:h-[0.78rem] [&>svg]:w-[0.78rem]"
             onClick={view === 'queue' ? clearQueue : clearRecent}
           >
             <Trash2 /> {labels.clear}

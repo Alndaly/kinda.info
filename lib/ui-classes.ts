@@ -301,3 +301,51 @@ export const photoLedger = [
   '[&_dt]:text-[0.56rem] [&_dt]:uppercase [&_dt]:tracking-[0.16em] [&_dt]:text-muted-foreground',
   '[&_dd]:mt-[0.45rem] [&_dd]:font-display [&_dd]:text-[1.15rem]',
 ].join(' ');
+
+/* ── Player: pieces shared by the library, the side panel and the sheets ── */
+
+/** Row wrapper: track button on the left, its action on the right. */
+export const audioListRow = [
+  'relative grid grid-cols-[minmax(0,1fr)_auto] items-center border-t border-line',
+  'last:border-b',
+].join(' ');
+
+/** Index · title/artist · icon. CJK titles clip horizontally only. */
+export const audioTrackRow = [
+  'grid min-w-0 grid-cols-[1.6rem_minmax(0,1fr)_auto] items-center gap-[0.55rem] text-left',
+  '[&>span]:font-mono [&>span]:text-[0.45rem] [&>span]:italic [&>span]:text-muted-foreground',
+  '[&>div]:grid [&>div]:min-w-0',
+  '[&_strong]:min-w-0 [&_strong]:overflow-x-clip [&_strong]:overflow-y-visible',
+  '[&_strong]:whitespace-nowrap [&_strong]:text-ellipsis [&_strong]:font-display',
+  '[&_strong]:text-[0.82rem] [&_strong]:font-[620] [&_strong]:leading-[1.3]',
+  '[&_small]:mt-[0.22rem] [&_small]:overflow-hidden [&_small]:whitespace-nowrap',
+  '[&_small]:text-ellipsis [&_small]:text-[0.45rem] [&_small]:text-muted-foreground',
+  '[&>svg]:h-[0.72rem] [&>svg]:w-[0.72rem] [&>svg]:text-[var(--audio-accent)]',
+].join(' ');
+
+export const audioRemoveButton = [
+  'grid h-[1.8rem] w-[1.8rem] place-items-center rounded-full text-muted-foreground',
+  'hover:bg-secondary hover:text-ink',
+  '[&>svg]:h-[0.68rem] [&>svg]:w-[0.68rem]',
+].join(' ');
+
+export const audioEmptyState = [
+  'grid place-content-center justify-items-center gap-3 text-center text-muted-foreground',
+  '[&>svg]:h-[1.2rem] [&>svg]:w-[1.2rem] [&>svg]:opacity-55',
+  '[&>p]:max-w-[13rem] [&>p]:text-[0.58rem] [&>p]:leading-[1.55]',
+].join(' ');
+
+/** Scroll area that keeps its momentum to itself. */
+export const audioScrollList = [
+  'min-h-0 overflow-y-auto overscroll-contain',
+  '[scrollbar-width:thin] [scrollbar-color:hsl(var(--line))_transparent]',
+].join(' ');
+
+export const audioPanelKicker = [
+  'text-[0.45rem] font-extrabold uppercase tracking-[0.16em] text-[var(--audio-accent)]',
+].join(' ');
+
+export const audioPanelTitle = [
+  'mt-[0.32rem] py-[0.06em] font-display text-[1.35rem] font-semibold',
+  'leading-[1.16] tracking-[-0.035em]',
+].join(' ');

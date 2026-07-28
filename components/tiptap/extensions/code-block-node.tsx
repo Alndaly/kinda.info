@@ -132,7 +132,7 @@ function CodeBlockView({ node }: NodeViewProps) {
           {copied ? labels.copied : labels.copy}
         </button>
       </div>
-      <pre className="m-0! overflow-x-auto rounded-none border-0 bg-transparent! p-[1.35rem]! text-inherit">
+      <pre className="m-0! overflow-x-auto rounded-none border-0 bg-transparent! p-[1.35rem]! text-inherit!">
         <NodeViewContent className="block whitespace-pre! text-[0.78rem] leading-[1.7]" />
       </pre>
     </NodeViewWrapper>
