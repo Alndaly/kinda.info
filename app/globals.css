@@ -225,7 +225,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow-x: clip;
   padding-block: clamp(3rem, 8vw, 7rem);
 }
 
@@ -258,6 +257,8 @@
 }
 
 .hero-collage {
+  --hero-stamp-safe-edge: clamp(1.5rem, 3vw, 2.25rem);
+  --hero-note-safe-edge: clamp(0.75rem, 1.5vw, 1rem);
   position: relative;
   min-height: 600px;
 }
@@ -294,10 +295,10 @@
   position: absolute;
   z-index: 2;
   top: 0;
-  right: -0.5rem;
+  right: var(--hero-stamp-safe-edge);
   display: grid;
   width: 8rem;
-  aspect-ratio: 1;
+  height: 8rem;
   place-items: center;
   border-radius: 50%;
   color: hsl(var(--accent));
@@ -311,21 +312,24 @@
   font-size: 1.1rem;
 }
 
-.hero-stamp span {
+.hero-stamp svg {
   width: 100%;
   height: 100%;
-  padding: 0.65rem;
-  font-size: 0.56rem;
-  letter-spacing: 0.18em;
-  word-spacing: 0.2rem;
-  text-align: center;
-  line-height: 6.8rem;
+  overflow: visible;
+}
+
+.hero-stamp text {
+  fill: currentColor;
+  font-family: ui-sans-serif, sans-serif;
+  font-size: 7px;
+  font-weight: 750;
+  letter-spacing: 1.35px;
 }
 
 .hero-note {
   position: absolute;
   z-index: 3;
-  right: -1.2rem;
+  right: var(--hero-note-safe-edge);
   bottom: 2%;
   width: 13rem;
   padding: 1.2rem;
@@ -2972,16 +2976,13 @@
   }
 
   .hero-stamp {
+    right: 1.5rem;
     width: 6rem;
-  }
-
-  .hero-stamp span {
-    line-height: 4.8rem;
-    font-size: 0.45rem;
+    height: 6rem;
   }
 
   .hero-note {
-    right: 0;
+    right: 1rem;
     width: 10.5rem;
     padding: 0.9rem;
   }

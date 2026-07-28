@@ -68,7 +68,19 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               <span>ON THE ROAD / JULY</span>
             </div>
             <div className="hero-stamp" aria-hidden="true">
-              <span>KEEP CURIOUS · STAY SOFT · </span>
+              <svg viewBox="0 0 120 120" role="presentation">
+                <defs>
+                  <path
+                    id="hero-stamp-orbit"
+                    d="M 60 8 A 52 52 0 1 1 59.99 8"
+                  />
+                </defs>
+                <text>
+                  <textPath href="#hero-stamp-orbit" startOffset="1%">
+                    KEEP CURIOUS · STAY SOFT · KEEP CURIOUS · STAY SOFT ·
+                  </textPath>
+                </text>
+              </svg>
             </div>
             <div className="hero-note">
               <span>{dictionary.noteLabel}</span>
