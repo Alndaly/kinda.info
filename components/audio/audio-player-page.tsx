@@ -582,9 +582,22 @@ export function AudioPlayerPage({
               <span>01 / LIBRARY</span>
               <h2>{ui.collection}</h2>
             </div>
-            <Button type="button" size="icon" variant="outline" onClick={playAll}>
-              <Play />
-              <span className="sr-only">{labels.play}</span>
+            <Button
+              type="button"
+              size="icon"
+              variant="outline"
+              onClick={toggleMainPlayback}
+              aria-pressed={playing}
+              aria-busy={loading}
+            >
+              {loading ? (
+                <LoaderCircle className="animate-spinner" />
+              ) : playing ? (
+                <Pause />
+              ) : (
+                <Play />
+              )}
+              <span className="sr-only">{playing ? labels.pause : labels.play}</span>
             </Button>
           </div>
           <p>{tracks.length} {ui.trackCount} · {ui.libraryDescription}</p>

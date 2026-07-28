@@ -19,7 +19,10 @@ const vinylCompact = 'w-[3.7rem] shadow-[0_0.65rem_1.4rem_rgba(20,18,13,0.24)]';
 
 const vinylLabel = [
   'relative z-[1] grid aspect-square w-[35%] place-items-center rounded-full text-[#171713]',
-  'bg-[radial-gradient(circle_at_35%_28%,rgba(255,255,255,.34),transparent_30%),var(--audio-accent)]',
+  // the sheen is an image, the accent underneath is a colour — two utilities,
+  // because bg-[…] with a comma would make both of them background-image
+  'bg-[color:var(--audio-accent)]',
+  'bg-[image:radial-gradient(circle_at_35%_28%,rgba(255,255,255,.34),transparent_30%)]',
   'shadow-[inset_0_0_0_1px_rgba(0,0,0,.16)]',
   '[&>svg]:h-[1.05rem] [&>svg]:w-[1.05rem]',
   '[&>span]:-my-2 [&>span]:font-display [&>span]:text-[clamp(0.85rem,2vw,1.35rem)]',
