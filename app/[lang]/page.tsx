@@ -122,7 +122,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               {dictionary.allFrames} <ArrowUpRight />
             </Link>
           </div>
-          <div className="photo-home-grid">
+          <div
+            className="photo-home-grid"
+            data-count={Math.min(photos.length, 3)}
+          >
             {photos.slice(0, 3).map((photo, index) => (
               <PhotoCard
                 key={photo.slug}

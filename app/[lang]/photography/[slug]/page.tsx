@@ -65,8 +65,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PhotoPage({ params }: Props) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
-  const dictionary = getDictionary(lang).photography;
-  const commentsDictionary = getDictionary(lang).comments;
+  const translations = getDictionary(lang);
+  const dictionary = translations.photography;
+  const commentsDictionary = translations.comments;
   const photo = getEntry('photo', slug, lang);
   if (!photo) notFound();
   const seo = getEntrySeo('photo', slug, lang);
@@ -131,7 +132,7 @@ export default async function PhotoPage({ params }: Props) {
             />
           </div>
           <div className="photo-detail-caption">
-            <span>© {siteConfig.author}</span>
+            <span>© {translations.footer.author}</span>
             <span>{photo.location} / {photo.date.replaceAll('-', '.')}</span>
           </div>
         </div>

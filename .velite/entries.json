@@ -62,72 +62,6 @@
     "href": "/notes/soft-engineering"
   },
   {
-    "slug": "after-rain",
-    "locale": "zh",
-    "type": "photo",
-    "title": "雨停以后",
-    "summary": "雨刚停，城市把所有平常的灯都重新擦亮了一遍。",
-    "date": "2024-09-22T00:00:00.000Z",
-    "tags": [
-      "城市",
-      "夜"
-    ],
-    "cover": "https://oss.kinda.info/image/202409222153357.png",
-    "featured": true,
-    "location": "Shanghai",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 40.88
-    },
-    "html": "<p>那天没有特意带着拍摄计划出门。雨停以后，路面像一张还没完全定影的相纸，把灯和行人的影子都留得很长。</p>\n<p>我喜欢这种短暂的时刻：城市仍旧嘈杂，但光线让它显得比平时温柔。</p>",
-    "content": "那天没有特意带着拍摄计划出门。雨停以后，路面像一张还没完全定影的相纸，把灯和行人的影子都留得很长。\n\n我喜欢这种短暂的时刻：城市仍旧嘈杂，但光线让它显得比平时温柔。",
-    "href": "/photography/after-rain"
-  },
-  {
-    "slug": "july-self",
-    "locale": "zh",
-    "type": "photo",
-    "title": "七月，自画像",
-    "summary": "在一年最热的时候，留下一张还愿意相信热烈的自己。",
-    "date": "2024-07-16T00:00:00.000Z",
-    "tags": [
-      "人像",
-      "日常"
-    ],
-    "cover": "https://oss.kinda.info/image/202407162310900.jpg",
-    "featured": false,
-    "location": "Hangzhou",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 43.120000000000005
-    },
-    "html": "<p>镜头朝向自己的时候，人会忽然不知道该把手放在哪里。</p>\n<p>后来我不再寻找一个标准的表情，只是让快门记下那一刻真正的样子。照片不需要说明我是谁，它只是证明：这个七月，我确实在这里。</p>",
-    "content": "镜头朝向自己的时候，人会忽然不知道该把手放在哪里。\n\n后来我不再寻找一个标准的表情，只是让快门记下那一刻真正的样子。照片不需要说明我是谁，它只是证明：这个七月，我确实在这里。",
-    "href": "/photography/july-self"
-  },
-  {
-    "slug": "quiet-distance",
-    "locale": "zh",
-    "type": "photo",
-    "title": "很远，也很安静",
-    "summary": "有些风景并不要求我们抵达，只要在远处看一会儿就好。",
-    "date": "2024-01-21T00:00:00.000Z",
-    "tags": [
-      "风景",
-      "旅行"
-    ],
-    "cover": "https://oss.kinda.info/image/202401211555429.jpeg",
-    "featured": false,
-    "location": "Somewhere",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 45.36000000000001
-    },
-    "html": "<p>远处的东西因为无法触碰，反而更容易保持完整。</p>\n<p>拍完这张照片后，我站了很久。没有发生值得记录的事件，只有风，只有缓慢变化的光。后来想起那一天，最清楚的反而就是这段什么都没有发生的时间。</p>",
-    "content": "远处的东西因为无法触碰，反而更容易保持完整。\n\n拍完这张照片后，我站了很久。没有发生值得记录的事件，只有风，只有缓慢变化的光。后来想起那一天，最清楚的反而就是这段什么都没有发生的时间。",
-    "href": "/photography/quiet-distance"
-  },
-  {
     "slug": "kinda-utils",
     "locale": "zh",
     "type": "project",
@@ -321,72 +255,6 @@
     "html": "<p>We often discuss software using hard words: <strong>constraints, validation, permissions, failure, circuit breakers</strong>. They matter, of course, but people do not think of themselves as inputs waiting to be validated.</p>\n<p>People hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.</p>\n<h2>Beyond correctness, there is feeling</h2>\n<p>A form can correctly return <code>400</code> after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.</p>\n<blockquote>\n<p>[!TIP]\n<strong>A simple test</strong></p>\n<p>When an error is unavoidable, protect the person’s work first. Explain the system second.</p>\n</blockquote>\n<p>That means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.</p>\n<h2>Build room into the system</h2>\n<p>Softness is not the absence of boundaries. It requires more precise boundaries.</p>\n<ul>\n<li>Slow dangerous actions down so there is time to reconsider.</li>\n<li>Keep frequent actions fast so the interface does not stand between a person and their intent.</li>\n<li>Be honest about uncertain results instead of pretending confidence with a polished percentage.</li>\n<li>Treat an empty state as an invitation to the next action, not merely “no data.”</li>\n</ul>\n<p>A mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.</p>\n<h2>In the end</h2>\n<p>Every branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.</p>\n<p>If engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.</p>",
     "content": "We often discuss software using hard words: **constraints, validation, permissions, failure, circuit breakers**. They matter, of course, but people do not think of themselves as inputs waiting to be validated.\n\nPeople hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.\n\n## Beyond correctness, there is feeling\n\nA form can correctly return `400` after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.\n\n> [!TIP]\n> **A simple test**\n>\n> When an error is unavoidable, protect the person’s work first. Explain the system second.\n\nThat means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.\n\n## Build room into the system\n\nSoftness is not the absence of boundaries. It requires more precise boundaries.\n\n- Slow dangerous actions down so there is time to reconsider.\n- Keep frequent actions fast so the interface does not stand between a person and their intent.\n- Be honest about uncertain results instead of pretending confidence with a polished percentage.\n- Treat an empty state as an invitation to the next action, not merely “no data.”\n\nA mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.\n\n## In the end\n\nEvery branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.\n\nIf engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.",
     "href": "/en/notes/soft-engineering"
-  },
-  {
-    "slug": "after-rain",
-    "locale": "en",
-    "type": "photo",
-    "title": "After the Rain",
-    "summary": "The rain had just stopped, and the city polished every ordinary light until it shone again.",
-    "date": "2024-09-22T00:00:00.000Z",
-    "tags": [
-      "City",
-      "Night"
-    ],
-    "cover": "https://oss.kinda.info/image/202409222153357.png",
-    "featured": true,
-    "location": "Shanghai",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 53
-    },
-    "html": "<p>I did not leave home with a particular photograph in mind. After the rain, the road looked like photographic paper that had not fully developed, holding the lights and the long shadows of people passing by.</p>\n<p>I like moments this brief: the city remains noisy, but the light makes it gentler than usual.</p>",
-    "content": "I did not leave home with a particular photograph in mind. After the rain, the road looked like photographic paper that had not fully developed, holding the lights and the long shadows of people passing by.\n\nI like moments this brief: the city remains noisy, but the light makes it gentler than usual.",
-    "href": "/en/photography/after-rain"
-  },
-  {
-    "slug": "july-self",
-    "locale": "en",
-    "type": "photo",
-    "title": "July, a Self-Portrait",
-    "summary": "In the hottest part of the year, I kept a portrait of the person who still believed in being wholehearted.",
-    "date": "2024-07-16T00:00:00.000Z",
-    "tags": [
-      "Portrait",
-      "Everyday"
-    ],
-    "cover": "https://oss.kinda.info/image/202407162310900.jpg",
-    "featured": false,
-    "location": "Hangzhou",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 56
-    },
-    "html": "<p>When the camera turns toward you, it becomes surprisingly difficult to know where to put your hands.</p>\n<p>Eventually I stopped searching for the correct expression and let the shutter keep what was actually there. A photograph does not have to explain who I am. It only has to prove that, in this July, I was here.</p>",
-    "content": "When the camera turns toward you, it becomes surprisingly difficult to know where to put your hands.\n\nEventually I stopped searching for the correct expression and let the shutter keep what was actually there. A photograph does not have to explain who I am. It only has to prove that, in this July, I was here.",
-    "href": "/en/photography/july-self"
-  },
-  {
-    "slug": "quiet-distance",
-    "locale": "en",
-    "type": "photo",
-    "title": "Far Away, and Quiet",
-    "summary": "Some landscapes do not ask us to arrive. Looking from a distance for a while is enough.",
-    "date": "2024-01-21T00:00:00.000Z",
-    "tags": [
-      "Landscape",
-      "Travel"
-    ],
-    "cover": "https://oss.kinda.info/image/202401211555429.jpeg",
-    "featured": false,
-    "location": "Somewhere",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 52
-    },
-    "html": "<p>Things in the distance can remain complete precisely because we cannot touch them.</p>\n<p>After taking this photograph, I stood there for a long time. Nothing worth recording happened—only wind and slowly changing light. Looking back, what I remember most clearly is that stretch of time in which nothing happened at all.</p>",
-    "content": "Things in the distance can remain complete precisely because we cannot touch them.\n\nAfter taking this photograph, I stood there for a long time. Nothing worth recording happened—only wind and slowly changing light. Looking back, what I remember most clearly is that stretch of time in which nothing happened at all.",
-    "href": "/en/photography/quiet-distance"
   },
   {
     "slug": "kinda-utils",
@@ -1027,25 +895,6 @@
     "href": "/notes/education-reflection"
   },
   {
-    "slug": "japan-travel-notes",
-    "locale": "zh",
-    "type": "note",
-    "title": "京都与大阪旅行手记",
-    "summary": "金阁寺的红叶、雨中的二年坂、清水寺和大阪环球影城，以及第一次在日本搭地铁、购物与退税的实用经验。",
-    "date": "2024-12-04T00:00:00.000Z",
-    "tags": [
-      "旅行"
-    ],
-    "featured": false,
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 302.12
-    },
-    "html": "<p>第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。</p>\n<h2>金阁寺</h2>\n<p>金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635512.JPG\" alt=\"金阁寺与红叶\"></p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"金阁寺园林\"></p>\n<h2>雨中的二年坂与清水寺</h2>\n<p>去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。</p>\n<p>途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。</p>\n<p>二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。</p>\n<h2>大阪环球影城</h2>\n<p>好莱坞美梦乘车游是当天最直接的快乐。<code>Osaka Lover</code> 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。</p>\n<h2>地铁与 Suica</h2>\n<p>第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。</p>\n<ul>\n<li>导航优先使用 Google Maps。</li>\n<li>找不到线路简称时，直接核对线路全称和终点方向。</li>\n<li>不要只看颜色，不同系统之间可能重复。</li>\n<li>iPhone 里的 Suica 很方便，靠近闸机即可通过。</li>\n</ul>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"车站与线路\"></p>\n<h2>购物</h2>\n<p>心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。</p>\n<p>这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。</p>",
-    "content": "第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。\n\n## 金阁寺\n\n金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。\n\n![金阁寺与红叶](https://oss.kinda.info/image/202412041635512.JPG)\n\n![金阁寺园林](https://oss.kinda.info/image/202412041635218.JPG)\n\n## 雨中的二年坂与清水寺\n\n去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。\n\n途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。\n\n二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。\n\n## 大阪环球影城\n\n好莱坞美梦乘车游是当天最直接的快乐。`Osaka Lover` 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。\n\n## 地铁与 Suica\n\n第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。\n\n- 导航优先使用 Google Maps。\n- 找不到线路简称时，直接核对线路全称和终点方向。\n- 不要只看颜色，不同系统之间可能重复。\n- iPhone 里的 Suica 很方便，靠近闸机即可通过。\n\n![车站与线路](https://oss.kinda.info/image/202412041635465.JPG)\n\n## 购物\n\n心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。\n\n这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。",
-    "href": "/notes/japan-travel-notes"
-  },
-  {
     "slug": "media-governance-reflection",
     "locale": "zh",
     "type": "note",
@@ -1139,5 +988,51 @@
     "html": "<p>有一段时间，我常被一种说不清来源的烦躁困住。计划被连续打断，注意力也越来越碎。后来有一天出门走了很久，情绪没有突然变好，但脑子终于重新安静下来。</p>\n<p>这篇记录不是一套人生准则，只是我在状态不好时愿意重新做一遍的事情。</p>\n<p><img src=\"https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402112218604.jpg\" alt=\"七月在路上\"></p>\n<h2>先离开信息流</h2>\n<p>短视频和无限滚动最危险的地方，不是它们毫无价值，而是我们很容易忘记自己为什么打开它们。</p>\n<p>状态不好时，我会主动给信息流设置边界：关掉推送，把手机放远一点，或者只允许自己在一个明确的时间段里使用。目的不是追求极端自律，而是让注意力重新回到自己手里。</p>\n<h2>用身体把情绪带出去</h2>\n<p>情绪堵住时，继续坐着分析往往没有帮助。天气好就散步、跑步或骑车；天气不好就游泳、去健身房，或者做任何自己愿意持续半小时的运动。</p>\n<p>身体开始活动以后，问题不一定消失，但它通常会恢复原本的尺寸。</p>\n<h2>完成一件足够小的事</h2>\n<p>过度准备常常是拖延更体面的样子。与其继续等待“完全准备好”，不如把下一步缩小：</p>\n<ul>\n<li>只写文档的第一段；</li>\n<li>只解决一个明确的报错；</li>\n<li>只整理桌面的一小块；</li>\n<li>只给应该联系的人发出第一条消息。</li>\n</ul>\n<p>行动产生的反馈，比反复想象结果更能恢复信心。</p>\n<h2>主动，但不过度消耗</h2>\n<p>机会往往更愿意靠近主动的人。该表达的喜欢、该提出的问题、该争取的合作，都不必永远等待别人先开口。</p>\n<p>但主动不等于在情绪最差的时候强迫自己社交。烦躁时，可以先减少无意义的沟通，等状态稳定以后再处理重要关系。暂时安静，是为了避免把情绪交给无辜的人。</p>\n<h2>把计划拉回今天</h2>\n<p>未来当然需要规划，但太遥远的安排容易变成新的压力。我更愿意问：今天结束以前，什么事情做完以后会让我轻松一点？</p>\n<p>生活不是靠一次彻底的觉悟被修好的。它更像相机的焦距，需要根据距离不断调整。状态偏掉了，就慢慢调回来；今天只能完成一点，也算重新开始。</p>",
     "content": "有一段时间，我常被一种说不清来源的烦躁困住。计划被连续打断，注意力也越来越碎。后来有一天出门走了很久，情绪没有突然变好，但脑子终于重新安静下来。\n\n这篇记录不是一套人生准则，只是我在状态不好时愿意重新做一遍的事情。\n\n![七月在路上](https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402112218604.jpg)\n\n## 先离开信息流\n\n短视频和无限滚动最危险的地方，不是它们毫无价值，而是我们很容易忘记自己为什么打开它们。\n\n状态不好时，我会主动给信息流设置边界：关掉推送，把手机放远一点，或者只允许自己在一个明确的时间段里使用。目的不是追求极端自律，而是让注意力重新回到自己手里。\n\n## 用身体把情绪带出去\n\n情绪堵住时，继续坐着分析往往没有帮助。天气好就散步、跑步或骑车；天气不好就游泳、去健身房，或者做任何自己愿意持续半小时的运动。\n\n身体开始活动以后，问题不一定消失，但它通常会恢复原本的尺寸。\n\n## 完成一件足够小的事\n\n过度准备常常是拖延更体面的样子。与其继续等待“完全准备好”，不如把下一步缩小：\n\n- 只写文档的第一段；\n- 只解决一个明确的报错；\n- 只整理桌面的一小块；\n- 只给应该联系的人发出第一条消息。\n\n行动产生的反馈，比反复想象结果更能恢复信心。\n\n## 主动，但不过度消耗\n\n机会往往更愿意靠近主动的人。该表达的喜欢、该提出的问题、该争取的合作，都不必永远等待别人先开口。\n\n但主动不等于在情绪最差的时候强迫自己社交。烦躁时，可以先减少无意义的沟通，等状态稳定以后再处理重要关系。暂时安静，是为了避免把情绪交给无辜的人。\n\n## 把计划拉回今天\n\n未来当然需要规划，但太遥远的安排容易变成新的压力。我更愿意问：今天结束以前，什么事情做完以后会让我轻松一点？\n\n生活不是靠一次彻底的觉悟被修好的。它更像相机的焦距，需要根据距离不断调整。状态偏掉了，就慢慢调回来；今天只能完成一点，也算重新开始。",
     "href": "/notes/what-to-do-and-not-do"
+  },
+  {
+    "slug": "japan-travel-notes",
+    "locale": "zh",
+    "type": "photo",
+    "title": "京都与大阪旅行手记",
+    "summary": "在金阁寺的红叶、雨中的二年坂与清水寺之间，留住第一次走进京都和大阪时遇见的光、颜色与片段。",
+    "date": "2024-12-04T00:00:00.000Z",
+    "tags": [
+      "旅行",
+      "京都",
+      "大阪"
+    ],
+    "cover": "https://oss.kinda.info/image/202412041635512.JPG",
+    "featured": true,
+    "location": "Kyoto / Osaka",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 302.12
+    },
+    "html": "<p>第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。</p>\n<h2>金阁寺</h2>\n<p>金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"金阁寺园林\"></p>\n<h2>雨中的二年坂与清水寺</h2>\n<p>去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。</p>\n<p>途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。</p>\n<p>二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。</p>\n<h2>大阪环球影城</h2>\n<p>好莱坞美梦乘车游是当天最直接的快乐。<code>Osaka Lover</code> 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。</p>\n<h2>地铁与 Suica</h2>\n<p>第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。</p>\n<ul>\n<li>导航优先使用 Google Maps。</li>\n<li>找不到线路简称时，直接核对线路全称和终点方向。</li>\n<li>不要只看颜色，不同系统之间可能重复。</li>\n<li>iPhone 里的 Suica 很方便，靠近闸机即可通过。</li>\n</ul>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"车站与线路\"></p>\n<h2>购物</h2>\n<p>心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。</p>\n<p>这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。</p>",
+    "content": "第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。\n\n## 金阁寺\n\n金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。\n\n![金阁寺园林](https://oss.kinda.info/image/202412041635218.JPG)\n\n## 雨中的二年坂与清水寺\n\n去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。\n\n途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。\n\n二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。\n\n## 大阪环球影城\n\n好莱坞美梦乘车游是当天最直接的快乐。`Osaka Lover` 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。\n\n## 地铁与 Suica\n\n第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。\n\n- 导航优先使用 Google Maps。\n- 找不到线路简称时，直接核对线路全称和终点方向。\n- 不要只看颜色，不同系统之间可能重复。\n- iPhone 里的 Suica 很方便，靠近闸机即可通过。\n\n![车站与线路](https://oss.kinda.info/image/202412041635465.JPG)\n\n## 购物\n\n心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。\n\n这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。",
+    "href": "/photography/japan-travel-notes"
+  },
+  {
+    "slug": "japan-travel-notes",
+    "locale": "en",
+    "type": "photo",
+    "title": "Kyoto and Osaka, Along the Way",
+    "summary": "Autumn leaves at Kinkaku-ji, rain on the slopes of Ninenzaka, and fragments of light and color from a first journey through Kyoto and Osaka.",
+    "date": "2024-12-04T00:00:00.000Z",
+    "tags": [
+      "Travel",
+      "Kyoto",
+      "Osaka"
+    ],
+    "cover": "https://oss.kinda.info/image/202412041635512.JPG",
+    "featured": true,
+    "location": "Kyoto / Osaka",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 391
+    },
+    "html": "<p>What stayed with me from my first visit to Kyoto and Osaka was not a complete itinerary, but a collection of precise images: red maples outside Kinkaku-ji, rain on a stone-paved slope, wind rushing past on a roller coaster, and the awkwardness of checking the train map over and over again.</p>\n<h2>Kinkaku-ji</h2>\n<p>Kinkaku-ji exceeded my expectations more than anywhere else on the trip. Before I even entered, the row of red maples by the gate was already enough to stop me. The golden pavilion sat among layers of trees, with the phoenix on its roof sharply outlined by the light.</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"The garden at Kinkaku-ji\"></p>\n<h2>Ninenzaka and Kiyomizu-dera in the rain</h2>\n<p>The rain was heavy when I reached Ninenzaka. It gave the stone road and traditional buildings a different color. The slope felt steeper than it looked in photographs, especially after a full day of walking.</p>\n<p>A shop along the way sold excellent matcha chocolate. I bought only two boxes and began regretting it as soon as I returned home.</p>\n<p>Kiyomizu-dera waits farther up the hill. By the time I arrived it was already dark, too late for the hillside of autumn leaves I had imagined, but the temple in the rainy night had a quietness of its own.</p>\n<h2>Universal Studios Japan</h2>\n<p>Hollywood Dream was the most immediate joy of the day. <code>Osaka Lover</code>, the weightlessness, and the wind arriving all at once lasted longer—and became more addictive—than I expected.</p>\n<h2>Trains and Suica</h2>\n<p>On a first encounter with Japan’s rail system, the most confusing part is that one route may appear under an abbreviation, a full name, and the branding of several operators.</p>\n<ul>\n<li>Use Google Maps as the primary guide.</li>\n<li>When an abbreviation is unclear, check the full line name and terminal direction.</li>\n<li>Do not rely on color alone; different systems may reuse the same one.</li>\n<li>Suica on an iPhone is convenient and works by simply holding the phone near the gate.</li>\n</ul>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"Station and railway lines\"></p>\n<h2>Shopping</h2>\n<p>Many shops around Shinsaibashi close at about eight in the evening, so shopping is best planned earlier. Tax-free purchases require a passport, so do not leave it at the hotel. Restaurants usually stay open later, although queues can be long during busy seasons.</p>\n<p>This is not a complete guide—only a few scenes and notes I hope to find again before the next journey.</p>",
+    "content": "What stayed with me from my first visit to Kyoto and Osaka was not a complete itinerary, but a collection of precise images: red maples outside Kinkaku-ji, rain on a stone-paved slope, wind rushing past on a roller coaster, and the awkwardness of checking the train map over and over again.\n\n## Kinkaku-ji\n\nKinkaku-ji exceeded my expectations more than anywhere else on the trip. Before I even entered, the row of red maples by the gate was already enough to stop me. The golden pavilion sat among layers of trees, with the phoenix on its roof sharply outlined by the light.\n\n![The garden at Kinkaku-ji](https://oss.kinda.info/image/202412041635218.JPG)\n\n## Ninenzaka and Kiyomizu-dera in the rain\n\nThe rain was heavy when I reached Ninenzaka. It gave the stone road and traditional buildings a different color. The slope felt steeper than it looked in photographs, especially after a full day of walking.\n\nA shop along the way sold excellent matcha chocolate. I bought only two boxes and began regretting it as soon as I returned home.\n\nKiyomizu-dera waits farther up the hill. By the time I arrived it was already dark, too late for the hillside of autumn leaves I had imagined, but the temple in the rainy night had a quietness of its own.\n\n## Universal Studios Japan\n\nHollywood Dream was the most immediate joy of the day. `Osaka Lover`, the weightlessness, and the wind arriving all at once lasted longer—and became more addictive—than I expected.\n\n## Trains and Suica\n\nOn a first encounter with Japan’s rail system, the most confusing part is that one route may appear under an abbreviation, a full name, and the branding of several operators.\n\n- Use Google Maps as the primary guide.\n- When an abbreviation is unclear, check the full line name and terminal direction.\n- Do not rely on color alone; different systems may reuse the same one.\n- Suica on an iPhone is convenient and works by simply holding the phone near the gate.\n\n![Station and railway lines](https://oss.kinda.info/image/202412041635465.JPG)\n\n## Shopping\n\nMany shops around Shinsaibashi close at about eight in the evening, so shopping is best planned earlier. Tax-free purchases require a passport, so do not leave it at the hotel. Restaurants usually stay open later, although queues can be long during busy seasons.\n\nThis is not a complete guide—only a few scenes and notes I hope to find again before the next journey.",
+    "href": "/en/photography/japan-travel-notes"
   }
 ]
