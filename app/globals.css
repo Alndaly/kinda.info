@@ -3659,9 +3659,11 @@
   position: relative;
   display: grid;
   width: calc(var(--audio-launcher-size) - 2px);
-  height: calc(var(--audio-launcher-size) - 2px);
+  height: auto;
+  aspect-ratio: 1;
   flex: 0 0 auto;
   order: 2;
+  align-self: center;
   place-items: center;
   border-radius: 50%;
   color: hsl(var(--paper));
@@ -3675,7 +3677,7 @@
 
 .audio-launcher-record {
   position: absolute;
-  inset: 0.24rem;
+  inset: 10%;
   border-radius: 50%;
   background:
     radial-gradient(
@@ -3717,36 +3719,53 @@
 }
 
 .audio-launcher-glyph {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   z-index: 1;
   display: grid;
-  width: 0.9rem;
-  height: 0.9rem;
+  width: 38%;
+  aspect-ratio: 1;
   place-items: center;
   color: hsl(var(--inverse-foreground));
   filter: drop-shadow(0 1px 2px hsl(var(--inverse-background) / 0.72));
+  transform: translate(-50%, -50%);
 }
 
-.audio-launcher-glyph svg {
-  width: 0.68rem;
-  height: 0.68rem;
-  fill: currentColor;
-  stroke-width: 1.8;
+.audio-launcher-glyph::before {
+  width: 54%;
+  height: 68%;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  content: "";
+  transform: translateX(9%);
 }
 
-.audio-launcher-glyph svg[data-lucide="play"] {
-  transform: translateX(0.04rem);
+.audio-launcher-glyph[data-icon="pause"]::before {
+  width: 58%;
+  height: 66%;
+  background:
+    linear-gradient(
+      90deg,
+      currentColor 0 34%,
+      transparent 34% 66%,
+      currentColor 66% 100%
+    );
+  clip-path: none;
+  transform: none;
 }
 
 .audio-launcher-reveal {
   display: grid;
+  width: 0;
   min-width: 0;
-  flex: 1;
+  flex: 0 0 0;
   order: 1;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.55rem;
-  padding-right: 0.35rem;
+  gap: 0;
+  padding-right: 0;
+  overflow: hidden;
   opacity: 0;
   transform: translateX(-0.45rem);
   pointer-events: none;
@@ -3757,7 +3776,12 @@
 
 .audio-launcher:hover .audio-launcher-reveal,
 .audio-launcher:focus-within .audio-launcher-reveal {
+  width: auto;
+  flex: 1 1 auto;
+  gap: 0.55rem;
+  padding-right: 0.35rem;
   opacity: 1;
+  overflow: visible;
   transform: translateX(0);
   pointer-events: auto;
   transition-delay: 55ms;

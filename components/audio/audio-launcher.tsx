@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowUpRight, Pause, Play } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useGlobalAudio } from '@/components/audio/global-audio-provider';
 import { getBackgroundTracks } from '@/lib/audio';
 import { localizeHref, type Locale } from '@/lib/i18n';
@@ -76,9 +76,11 @@ export function AudioLauncher({
         title={isPlaying ? labels.pause : labels.play}
       >
         <span className="audio-launcher-record" aria-hidden="true" />
-        <span className="audio-launcher-glyph" aria-hidden="true">
-          {isPlaying ? <Pause /> : <Play />}
-        </span>
+        <span
+          className="audio-launcher-glyph"
+          data-icon={isPlaying ? 'pause' : 'play'}
+          aria-hidden="true"
+        />
       </button>
 
       <div className="audio-launcher-reveal" aria-live="polite">
