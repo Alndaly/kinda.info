@@ -1283,6 +1283,10 @@
   transform: translateY(0);
 }
 
+.article-reading-rail[data-collision="media"] {
+  transform: translateX(-0.75rem);
+}
+
 .article-reading-label {
   display: flex;
   justify-content: space-between;

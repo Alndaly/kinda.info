@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ListTree } from 'lucide-react';
 import { useArticleLanguage } from '@/components/article-language-tools';
 
@@ -32,12 +32,15 @@ export function ArticleReadingTools({
   const [activeId, setActiveId] = useState('');
   const [progress, setProgress] = useState(0);
   const [isArticleActive, setIsArticleActive] = useState(false);
+  const [isRailColliding, setIsRailColliding] = useState(false);
+  const railRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const prose = document.querySelector<HTMLElement>('.mdx-prose');
     if (!prose) return;
 
     let headingObserver: IntersectionObserver | undefined;
+    let layoutFrame = 0;
 
     const collectOutline = () => {
       const usedIds = new Set<string>();
@@ -80,27 +83,63 @@ export function ArticleReadingTools({
       const start = window.scrollY + rect.top - window.innerHeight * 0.22;
       const distance = Math.max(prose.offsetHeight - window.innerHeight * 0.55, 1);
       const nextProgress = Math.min(Math.max((window.scrollY - start) / distance, 0), 1);
+      const rail = railRef.current;
+      const collisionPadding = 12;
+      const railBounds = rail && rail.offsetWidth && rail.offsetHeight
+        ? {
+            left: rail.offsetLeft - collisionPadding,
+            right: rail.offsetLeft + rail.offsetWidth + collisionPadding,
+            top: rail.offsetTop - collisionPadding,
+            bottom: rail.offsetTop + rail.offsetHeight + collisionPadding,
+          }
+        : null;
+      const collidesWithWideMedia = railBounds
+        ? [...prose.querySelectorAll<HTMLElement>('.tiptap-figure')].some((figure) => {
+            const figureBounds = figure.getBoundingClientRect();
+            return (
+              figureBounds.left < railBounds.right &&
+              figureBounds.right > railBounds.left &&
+              figureBounds.top < railBounds.bottom &&
+              figureBounds.bottom > railBounds.top
+            );
+          })
+        : false;
+
       setProgress(nextProgress);
       setIsArticleActive(
         rect.top < window.innerHeight * 0.78 &&
         rect.bottom > window.innerHeight * 0.32,
       );
+      setIsRailColliding(collidesWithWideMedia);
+    };
+
+    const scheduleLayoutUpdate = () => {
+      window.cancelAnimationFrame(layoutFrame);
+      layoutFrame = window.requestAnimationFrame(updateProgress);
     };
 
     collectOutline();
     updateProgress();
-    const mutationObserver = new MutationObserver(collectOutline);
+    scheduleLayoutUpdate();
+    const mutationObserver = new MutationObserver(() => {
+      collectOutline();
+      scheduleLayoutUpdate();
+    });
     mutationObserver.observe(prose, {
       characterData: true,
       childList: true,
       subtree: true,
     });
+    const resizeObserver = new ResizeObserver(updateProgress);
+    resizeObserver.observe(prose);
     window.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('resize', updateProgress);
 
     return () => {
       headingObserver?.disconnect();
       mutationObserver.disconnect();
+      resizeObserver.disconnect();
+      window.cancelAnimationFrame(layoutFrame);
       window.removeEventListener('scroll', updateProgress);
       window.removeEventListener('resize', updateProgress);
     };
@@ -122,9 +161,11 @@ export function ArticleReadingTools({
       {outline.length > 1 ? (
         <>
           <aside
+            ref={railRef}
             className="article-reading-rail"
             aria-label={contentsLabel}
-            data-visible={progress > 0.01 && isArticleActive}
+            data-collision={isRailColliding ? 'media' : 'none'}
+            data-visible={progress > 0.01 && isArticleActive && !isRailColliding}
           >
             <span className="article-reading-label">
               <span>{contentsLabel}</span>
