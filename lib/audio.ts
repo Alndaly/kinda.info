@@ -100,3 +100,7 @@ export function formatAudioTime(seconds: number) {
 export function canPersistTrack(track: AudioTrack) {
   return !track.ephemeral && Boolean(track.src) && !track.src.startsWith('blob:');
 }
+
+export function isPlayerPath(pathname: string) {
+  return /\/player\/?$/.test(pathname);
+}

@@ -15,7 +15,7 @@ import {
 import { AudioQueueSheet } from '@/components/audio/audio-queue-sheet';
 import { AudioVinyl } from '@/components/audio/audio-vinyl';
 import { useGlobalAudio } from '@/components/audio/global-audio-provider';
-import { formatAudioTime } from '@/lib/audio';
+import { formatAudioTime, isPlayerPath } from '@/lib/audio';
 import { localizeHref, type Locale } from '@/lib/i18n';
 
 export function GlobalMiniPlayer({
@@ -57,7 +57,7 @@ export function GlobalMiniPlayer({
     dismiss,
   } = useGlobalAudio();
 
-  if (!currentTrack || /\/player\/?$/.test(pathname)) return null;
+  if (!currentTrack || isPlayerPath(pathname)) return null;
   const playing = status === 'playing';
   const loading = status === 'loading';
 
@@ -85,7 +85,9 @@ export function GlobalMiniPlayer({
         aria-label={labels.mini.openPlayer}
       >
         <small>{labels.mini.nowPlaying}</small>
-        <strong>{currentTrack.title}</strong>
+        <strong className="mt-[0.1rem] min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis font-[family-name:var(--font-display)] text-base leading-[1.3]">
+          {currentTrack.title}
+        </strong>
         <span>{currentTrack.artist}</span>
       </Link>
 

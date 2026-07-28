@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 import { usePathname } from 'next/navigation';
-import { canPersistTrack, type AudioTrack } from '@/lib/audio';
+import { canPersistTrack, isPlayerPath, type AudioTrack } from '@/lib/audio';
 
 type AudioStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error';
 
@@ -40,6 +40,8 @@ type GlobalAudioContextValue = {
   skipPrevious: () => void;
   clearRecent: () => void;
   dismiss: () => void;
+  /** Last non-player page visited in this session; null when the player was opened directly. */
+  previousPath: string | null;
 };
 
 const STORAGE_KEY = 'kinda:global-audio:v2';
@@ -77,6 +79,14 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(0.72);
   const [muted, setMuted] = useState(false);
+  const [previousPath, setPreviousPath] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Remember where the reader came from so the player can send them back there.
+    // Kept in memory on purpose: a direct hit on /player has nothing to return to.
+    if (isPlayerPath(pathname)) return;
+    setPreviousPath(pathname);
+  }, [pathname]);
 
   useEffect(() => {
     currentTrackRef.current = currentTrack;
@@ -358,6 +368,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   }, [currentTrack, seek, skipNext, skipPrevious]);
 
   const value = useMemo<GlobalAudioContextValue>(() => ({
+    previousPath,
     currentTrack,
     queue,
     recent,
@@ -392,6 +403,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     playFromQueue,
     playTrack,
     prepareTrack,
+    previousPath,
     queue,
     recent,
     removeFromQueue,

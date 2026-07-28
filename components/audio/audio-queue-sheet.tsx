@@ -106,7 +106,9 @@ export function AudioQueueSheet({
                   >
                     <span>{String(index + 1).padStart(2, '0')}</span>
                     <div>
-                      <strong>{track.title}</strong>
+                      <strong className="min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis font-[family-name:var(--font-display)] text-[0.82rem] font-[620] leading-[1.3]">
+                        {track.title}
+                      </strong>
                       <small>{track.artist}</small>
                     </div>
                     <Play />

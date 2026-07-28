@@ -118,7 +118,9 @@ export function AudioPlayer({
         </button>
 
         <div className="tiptap-audio-copy">
-          <strong>{name}</strong>
+          <strong className="block min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis font-[family-name:var(--font-display)] text-[1.15rem] font-semibold leading-[1.3] min-[769px]:text-[1.35rem]">
+            {name}
+          </strong>
           <span>{isEnglish ? 'Audio note' : '音频笔记'}</span>
         </div>
 

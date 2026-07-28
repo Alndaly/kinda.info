@@ -86,7 +86,9 @@ export function AudioLauncher({
       <div className="audio-launcher-reveal" aria-live="polite">
         <span className="audio-launcher-copy">
           <small>{stateLabel}</small>
-          <strong>{visibleTrack.title || label}</strong>
+          <strong className="min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis text-ink font-[family-name:var(--font-display)] text-[0.74rem] font-[620] leading-[1.3]">
+            {visibleTrack.title || label}
+          </strong>
         </span>
         <Link
           href={localizeHref(locale, '/player')}

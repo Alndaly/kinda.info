@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -105,7 +106,9 @@ export function AudioPlayerPage({
     skipNext,
     skipPrevious,
     clearRecent,
+    previousPath,
   } = useGlobalAudio();
+  const router = useRouter();
   const [panel, setPanel] = useState<'queue' | 'recent'>('queue');
   const [queueOpen, setQueueOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
@@ -181,7 +184,9 @@ export function AudioPlayerPage({
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <div>
-                  <strong>{track.title}</strong>
+                  <strong className="min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis font-[family-name:var(--font-display)] text-[0.82rem] font-[620] leading-[1.3]">
+                    {track.title}
+                  </strong>
                   <small>{track.artist}</small>
                 </div>
                 {active && playing ? <Pause /> : <Play />}
@@ -257,7 +262,17 @@ export function AudioPlayerPage({
           </button>
           <LanguageSwitcher locale={locale} />
           <ModeToggle locale={locale} />
-          <Link className="audio-app-exit" href={localizeHref(locale, '/')}>
+          <Link
+            className="audio-app-exit"
+            href={previousPath ?? localizeHref(locale, '/')}
+            onClick={(event) => {
+              // Step back through history when we know the reader came from the site,
+              // so they land where they left off instead of on a fresh page.
+              if (!previousPath || event.metaKey || event.ctrlKey || event.shiftKey) return;
+              event.preventDefault();
+              router.back();
+            }}
+          >
             <ArrowLeft /> <span>{ui.back}</span>
           </Link>
         </div>
@@ -346,7 +361,9 @@ export function AudioPlayerPage({
                     >
                       <span>{String(index + 1).padStart(2, '0')}</span>
                       <div>
-                        <strong>{track.title}</strong>
+                        <strong className="min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis font-[family-name:var(--font-display)] text-[0.82rem] font-[620] leading-[1.3]">
+                          {track.title}
+                        </strong>
                         <small>{track.artist}</small>
                       </div>
                       <Play />

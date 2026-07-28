@@ -2235,22 +2235,8 @@
   grid-area: copy;
 }
 
-.tiptap-audio-copy strong,
 .tiptap-audio-copy span {
   display: block;
-}
-
-.tiptap-audio-copy strong {
-  overflow: hidden;
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 600;
-  line-height: 1.12;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tiptap-audio-copy span {
   margin-top: 0.3rem;
   color: hsl(var(--muted-foreground));
   font-family: ui-sans-serif, sans-serif;
@@ -3493,10 +3479,6 @@
     height: 3.5rem;
   }
 
-  .tiptap-audio-copy strong {
-    font-size: 1.15rem;
-  }
-
   .tiptap-map {
     height: 300px;
   }
@@ -3818,17 +3800,6 @@
   letter-spacing: 0.14em;
 }
 
-.audio-launcher-copy strong {
-  overflow: hidden;
-  color: hsl(var(--ink));
-  font-family: var(--font-display);
-  font-size: 0.74rem;
-  font-weight: 620;
-  line-height: 1.15;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .audio-launcher-link {
   display: grid;
   width: 1.75rem;
@@ -4032,16 +4003,6 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.17em;
-}
-
-.global-mini-copy strong {
-  margin-top: 0.1rem;
-  overflow: hidden;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .global-mini-copy span {
@@ -5299,18 +5260,6 @@
 .audio-sheet-track > div {
   display: grid;
   min-width: 0;
-}
-
-.audio-app-library-track strong,
-.audio-app-panel-track strong,
-.audio-sheet-track strong {
-  overflow: hidden;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 620;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .audio-app-library-track small,
