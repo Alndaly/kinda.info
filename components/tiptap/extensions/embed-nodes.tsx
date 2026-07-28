@@ -30,6 +30,35 @@ const createTokenizer = (name: string, tag: string) => ({
   },
 });
 
+
+/** Embeds and maps break out of the reading column. */
+const embedShell = [
+  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
+  'rounded-[0.35rem] border border-line bg-card',
+].join(' ');
+
+const embedLabel = [
+  'border-b border-line px-[0.9rem] py-[0.7rem] font-sans text-[0.58rem]',
+  'font-extrabold uppercase tracking-[0.15em] text-muted-foreground',
+].join(' ');
+
+const mapShell = [
+  embedShell,
+  'relative h-[380px] [@media(max-width:768px)]:h-[300px]',
+  '[&>iframe]:absolute [&>iframe]:inset-0 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0',
+].join(' ');
+
+const fileShell = [
+  'grid grid-cols-[auto_1fr_auto] items-center gap-[0.9rem] rounded-[0.35rem]',
+  'border border-line bg-card p-4',
+  'transition-[border-color,transform] duration-[160ms] ease-[ease]',
+  'hover:-translate-y-0.5 hover:border-accent',
+  '[&_svg]:w-4',
+  '[&_strong]:block [&_strong]:font-sans [&_strong]:text-[0.78rem]',
+  '[&_small]:mt-[0.15rem] [&_small]:block [&_small]:font-sans [&_small]:text-[0.62rem]',
+  '[&_small]:text-muted-foreground',
+].join(' ');
+
 function VideoView({ node }: NodeViewProps) {
   const isEnglish = isEnglishDocument();
   const provider = String(node.attrs.provider ?? 'youtube');
@@ -39,9 +68,9 @@ function VideoView({ node }: NodeViewProps) {
     : `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`;
 
   return (
-    <NodeViewWrapper className="tiptap-embed" data-node="embed" contentEditable={false}>
-      <div className="tiptap-embed-label">{provider === 'bilibili' ? 'Bilibili' : 'YouTube'} / Video</div>
-      <div className="tiptap-video-frame">
+    <NodeViewWrapper className={embedShell} data-node="embed" contentEditable={false}>
+      <div className={embedLabel}>{provider === 'bilibili' ? 'Bilibili' : 'YouTube'} / Video</div>
+      <div className="relative aspect-video [&>iframe]:absolute [&>iframe]:inset-0 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0">
         <iframe
           src={embedUrl}
           title={isEnglish ? 'Embedded video' : '嵌入视频'}
@@ -100,14 +129,19 @@ function MapView({ node }: NodeViewProps) {
   const embed = `https://www.google.com/maps?q=${encodeURIComponent(target)}&output=embed`;
 
   return (
-    <NodeViewWrapper className="tiptap-map" data-node="map" contentEditable={false}>
+    <NodeViewWrapper className={mapShell} data-node="map" contentEditable={false}>
       <iframe
         src={embed}
         title={isEnglish ? `Map: ${target}` : `地图：${target}`}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
-      <a href={href} target="_blank" rel="noreferrer">
+      <a
+        className="absolute bottom-4 left-4 inline-flex max-w-[calc(100%-2rem)] items-center gap-[0.45rem] bg-black/[0.68] px-[0.8rem] py-[0.6rem] font-sans text-[0.7rem] text-white backdrop-blur-[10px] [&>svg]:w-[0.85rem]"
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+      >
         <MapPin /> {target || (isEnglish ? 'View on map' : '在地图中查看')}
       </a>
     </NodeViewWrapper>
@@ -158,8 +192,10 @@ function FileView({ node }: NodeViewProps) {
   const size = String(node.attrs.size ?? '');
   return (
     <NodeViewWrapper contentEditable={false}>
-      <a className="tiptap-file" data-node="file" href={src} download>
-        <span><FileText /></span>
+      <a className={fileShell} data-node="file" href={src} download>
+        <span className="grid h-10 w-10 place-items-center rounded-full bg-ink text-paper">
+          <FileText />
+        </span>
         <span>
           <strong>{name}</strong>
           <small>

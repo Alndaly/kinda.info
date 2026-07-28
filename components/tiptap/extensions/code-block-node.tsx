@@ -13,6 +13,29 @@ import { useEffect, useId, useState } from 'react';
 
 const lowlight = createLowlight(common);
 
+
+/** Code and diagrams break out of the reading column. */
+const codeShell = [
+  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
+  'rounded-[0.35rem] border border-line bg-[#141512] font-code text-[#e8e5da]',
+].join(' ');
+
+const mermaidShell = [
+  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
+  'rounded-[0.35rem] border border-line bg-card font-code text-foreground',
+].join(' ');
+
+const codeHeader = [
+  'flex min-h-[2.8rem] items-center justify-between gap-4 border-b border-white/[0.12]',
+  'bg-[#1b1c18] px-[0.9rem] font-sans text-[0.62rem] font-bold uppercase tracking-[0.12em]',
+  'text-[#aaa99f]',
+  '[&_span]:inline-flex [&_span]:items-center [&_span]:gap-[0.4rem]',
+  '[&_button]:inline-flex [&_button]:items-center [&_button]:gap-[0.4rem]',
+  '[&_button]:transition-colors [&_button]:duration-[160ms] [&_button]:ease-[ease]',
+  'hover:[&_button]:text-white',
+  '[&_svg]:h-[0.8rem] [&_svg]:w-[0.8rem]',
+].join(' ');
+
 function MermaidPreview({ source }: { source: string }) {
   const isEnglish = typeof document !== 'undefined' &&
     document.documentElement.lang === 'en';
@@ -53,7 +76,7 @@ function MermaidPreview({ source }: { source: string }) {
 
   if (error) {
     return (
-      <div className="tiptap-mermaid-error">
+      <div className="p-6 font-sans text-xs leading-relaxed text-[#c64d4d]">
         {isEnglish ? 'Mermaid could not render: ' : 'Mermaid 无法渲染：'}{error}
       </div>
     );
@@ -61,7 +84,7 @@ function MermaidPreview({ source }: { source: string }) {
 
   return (
     <div
-      className="tiptap-mermaid-canvas"
+      className="grid min-h-60 place-items-center overflow-x-auto bg-[linear-gradient(hsl(var(--line)/0.35)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--line)/0.35)_1px,transparent_1px)] bg-[length:20px_20px] p-8 [&_svg]:h-auto [&_svg]:max-w-full"
       aria-label={isEnglish ? 'Mermaid diagram' : 'Mermaid 图表'}
       dangerouslySetInnerHTML={{ __html: svg }}
     />
@@ -86,8 +109,8 @@ function CodeBlockView({ node }: NodeViewProps) {
 
   if (language === 'mermaid') {
     return (
-      <NodeViewWrapper className="tiptap-mermaid" data-node="mermaid">
-        <div className="tiptap-code-header" data-node="code-header" contentEditable={false}>
+      <NodeViewWrapper className={mermaidShell} data-node="mermaid">
+        <div className={codeHeader} data-node="code-header" contentEditable={false}>
           <span><Workflow /> {labels.diagram}</span>
           <button type="button" onClick={copy}>
             {copied ? <Check /> : <Copy />}
@@ -101,15 +124,17 @@ function CodeBlockView({ node }: NodeViewProps) {
   }
 
   return (
-    <NodeViewWrapper className="tiptap-code-block">
-      <div className="tiptap-code-header" data-node="code-header" contentEditable={false}>
+    <NodeViewWrapper className={codeShell}>
+      <div className={codeHeader} data-node="code-header" contentEditable={false}>
         <span>{language || 'plaintext'}</span>
         <button type="button" onClick={copy}>
           {copied ? <Check /> : <Copy />}
           {copied ? labels.copied : labels.copy}
         </button>
       </div>
-      <pre><NodeViewContent className="tiptap-code-content" /></pre>
+      <pre className="m-0! overflow-x-auto rounded-none border-0 bg-transparent! p-[1.35rem]! text-inherit">
+        <NodeViewContent className="block whitespace-pre! text-[0.78rem] leading-[1.7]" />
+      </pre>
     </NodeViewWrapper>
   );
 }

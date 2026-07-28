@@ -30,7 +30,10 @@ function MathBlockView({ node }: NodeViewProps) {
   const formula = String(node.attrs.formula ?? '');
   const result = renderFormula(formula, true);
   return (
-    <NodeViewWrapper className="tiptap-math-block" contentEditable={false}>
+    <NodeViewWrapper
+      className="overflow-x-auto border-y border-line px-4 py-7 text-center"
+      contentEditable={false}
+    >
       {result.error ? <span>{result.error}</span> : <div dangerouslySetInnerHTML={{ __html: result.html }} />}
     </NodeViewWrapper>
   );
@@ -40,7 +43,11 @@ function MathInlineView({ node }: NodeViewProps) {
   const formula = String(node.attrs.formula ?? '');
   const result = renderFormula(formula, false);
   return (
-    <NodeViewWrapper as="span" className="tiptap-math-inline" contentEditable={false}>
+    <NodeViewWrapper
+      as="span"
+      className="inline-block max-w-full overflow-x-auto align-middle"
+      contentEditable={false}
+    >
       {result.error ? <span>{result.error}</span> : <span dangerouslySetInnerHTML={{ __html: result.html }} />}
     </NodeViewWrapper>
   );

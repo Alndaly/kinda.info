@@ -27,10 +27,13 @@ function ImageView({ node }: NodeViewProps) {
 
   return (
     <NodeViewWrapper>
-      <figure className="tiptap-figure" data-node="figure">
+      <figure
+        className="ml-[50%] w-[min(100vw-2rem,68rem)] -translate-x-1/2"
+        data-node="figure"
+      >
         <button
           type="button"
-          className="tiptap-image-button"
+          className="relative block w-full cursor-zoom-in overflow-hidden rounded-[0.2rem] border-0 bg-muted [&>img]:block [&>img]:h-auto [&>img]:w-full [&>img]:transition-[transform,filter] [&>img]:duration-500 [&>img]:ease-[ease] hover:[&>img]:scale-[1.012] hover:[&>img]:saturate-[1.04]"
           onClick={() => setOpen(true)}
           contentEditable={false}
           aria-label={isEnglish
@@ -38,14 +41,20 @@ function ImageView({ node }: NodeViewProps) {
             : `放大图片${alt ? `：${alt}` : ''}`}
         >
           {src ? <img src={src} alt={alt} /> : <span>Image unavailable</span>}
-          <span className="tiptap-image-expand"><Expand /></span>
+          <span className="absolute bottom-[0.8rem] right-[0.8rem] grid h-9 w-9 place-items-center rounded-full bg-black/50 text-white backdrop-blur-[10px] [&>svg]:w-[0.85rem]">
+            <Expand />
+          </span>
         </button>
-        {alt && <figcaption>{alt}</figcaption>}
+        {alt && (
+          <figcaption className="mt-3 text-center font-sans text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground">
+            {alt}
+          </figcaption>
+        )}
       </figure>
 
       {open && src && (
         <div
-          className="tiptap-lightbox"
+          className="fixed inset-0 z-[100] grid cursor-zoom-out place-items-center bg-[rgba(8,8,7,0.94)] px-4 py-16 text-white backdrop-blur-2xl [&>img]:max-h-[82vh] [&>img]:max-w-[min(94vw,1500px)] [&>img]:object-contain"
           role="dialog"
           aria-modal="true"
           aria-label={alt || (isEnglish ? 'Image preview' : '图片预览')}
