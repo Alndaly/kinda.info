@@ -7,6 +7,7 @@ import {
   type NodeViewProps,
 } from '@tiptap/react';
 import { Download, FileText, MapPin } from 'lucide-react';
+import { AudioPlayer } from '@/components/tiptap/audio-player';
 import {
   escapeHtmlAttribute,
   extractCustomBlockTag,
@@ -207,13 +208,11 @@ function AudioView({ node }: NodeViewProps) {
   const isEnglish = isEnglishDocument();
   const src = String(node.attrs.src ?? '');
   const name = String(node.attrs.name ?? '') || src.split('/').at(-1) || 'Audio';
+  const mime = String(node.attrs.mime ?? '');
+
   return (
-    <NodeViewWrapper className="tiptap-audio" contentEditable={false}>
-      <div>
-        <strong>{name}</strong>
-        <span>{isEnglish ? 'Audio note' : '音频笔记'}</span>
-      </div>
-      <audio controls preload="metadata" src={src} />
+    <NodeViewWrapper contentEditable={false}>
+      <AudioPlayer src={src} name={name} mime={mime} isEnglish={isEnglish} />
     </NodeViewWrapper>
   );
 }
