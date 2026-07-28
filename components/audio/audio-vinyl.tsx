@@ -3,19 +3,22 @@
 import type { CSSProperties } from 'react';
 import { AudioLines } from 'lucide-react';
 import type { AudioTrack } from '@/lib/audio';
+import { cn } from '@/lib/utils';
 
 export function AudioVinyl({
   track,
   playing,
   compact = false,
+  className,
 }: {
   track: AudioTrack | null;
   playing: boolean;
   compact?: boolean;
+  className?: string;
 }) {
   return (
     <div
-      className={`audio-vinyl ${compact ? 'audio-vinyl-compact' : ''}`}
+      className={cn('audio-vinyl', compact && 'audio-vinyl-compact', className)}
       data-playing={playing}
       style={{ '--audio-accent': track?.accent ?? '#e25943' } as CSSProperties}
       aria-hidden="true"

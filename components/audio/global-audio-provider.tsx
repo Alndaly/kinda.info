@@ -422,7 +422,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       {children}
       <audio
         ref={audioRef}
-        className="global-audio-element"
+        className="pointer-events-none fixed h-px w-px overflow-hidden [clip-path:inset(50%)]"
         src={currentTrack?.src || undefined}
         preload="metadata"
         muted={muted}
