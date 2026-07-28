@@ -210,8 +210,8 @@ export function ArticleTranslatedHeading() {
 
   return (
     <>
-      <h1>{language.title}</h1>
-      <p className="article-deck">{language.summary}</p>
+      <h1 data-document-title>{language.title}</h1>
+      <p className="article-deck" data-document-summary>{language.summary}</p>
     </>
   );
 }
@@ -243,8 +243,12 @@ export function AutomaticTranslationNotice({
 }
 
 function getSpeechText() {
-  const title = document.querySelector('.article-header h1')?.textContent ?? '';
-  const summary = document.querySelector('.article-deck')?.textContent ?? '';
+  const title = document.querySelector(
+    '[data-document-title], .article-header h1, .photo-detail h1, .project-detail h1',
+  )?.textContent ?? '';
+  const summary = document.querySelector(
+    '[data-document-summary], .article-deck',
+  )?.textContent ?? '';
   const reader = document.querySelector('.mdx-prose .tiptap-prosemirror, .mdx-prose .tiptap-fallback');
   if (!reader) return [title, summary].filter(Boolean).join('. ');
 
@@ -272,7 +276,7 @@ function getSpeechText() {
 function getArticleArtwork() {
   const articleImages = Array.from(
     document.querySelectorAll<HTMLImageElement>(
-      '.article-header img, .article-cover img, .mdx-prose img',
+      '[data-document-cover] img, .article-header img, .article-cover img, .mdx-prose img',
     ),
     (image) => image.currentSrc || image.src,
   );
@@ -289,6 +293,7 @@ function getArticleArtwork() {
 
 export function ArticleAudioPlayer({
   labels,
+  source,
 }: {
   labels: {
     listen: string;
@@ -297,6 +302,13 @@ export function ArticleAudioPlayer({
     resume: string;
     error: string;
     provider: string;
+  };
+  source?: {
+    id: string;
+    title: string;
+    summary?: string;
+    locale: Locale;
+    accent?: string;
   };
 }) {
   const language = useArticleLanguage();
@@ -310,8 +322,9 @@ export function ArticleAudioPlayer({
   } = useGlobalAudio();
   const speechLocale = language?.automatic && language.status === 'error'
     ? language.sourceLanguage
-    : language?.targetLanguage ?? 'zh';
-  const trackId = `narration:${language?.cacheKey ?? 'article'}:${speechLocale}`;
+    : language?.targetLanguage ?? source?.locale ?? 'zh';
+  const sourceId = language?.cacheKey ?? source?.id ?? 'article';
+  const trackId = `narration:${sourceId}:${speechLocale}`;
   const active = currentTrack?.id === trackId;
   const audioState = active ? status : 'idle';
 
@@ -323,12 +336,12 @@ export function ArticleAudioPlayer({
 
     await prepareTrack({
       id: trackId,
-      title: language?.title ?? labels.listen,
+      title: language?.title ?? source?.title ?? labels.listen,
       artist: labels.provider,
-      subtitle: language?.summary,
+      subtitle: language?.summary ?? source?.summary,
       kind: 'narration',
       href: window.location.pathname,
-      accent: '#e25943',
+      accent: source?.accent ?? '#e25943',
       artwork: getArticleArtwork(),
       ephemeral: true,
     }, async () => {

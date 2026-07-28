@@ -78,8 +78,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function NotePage({ params }: Props) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
-  const dictionary = getDictionary(lang).notes;
-  const commentsDictionary = getDictionary(lang).comments;
+  const translations = getDictionary(lang);
+  const dictionary = translations.notes;
+  const speechDictionary = translations.speech;
+  const commentsDictionary = translations.comments;
   const note = getEntry('note', slug, lang);
   if (!note) notFound();
   const seo = getEntrySeo('note', slug, lang);
@@ -145,12 +147,12 @@ export default async function NotePage({ params }: Props) {
             </div>
             <ArticleAudioPlayer
               labels={{
-                listen: dictionary.listen,
-                preparing: dictionary.preparingSpeech,
-                pause: dictionary.pauseSpeech,
-                resume: dictionary.resumeSpeech,
-                error: dictionary.speechError,
-                provider: dictionary.speechProvider,
+                listen: speechDictionary.listen,
+                preparing: speechDictionary.preparing,
+                pause: speechDictionary.pause,
+                resume: speechDictionary.resume,
+                error: speechDictionary.error,
+                provider: speechDictionary.provider,
               }}
             />
           </div>

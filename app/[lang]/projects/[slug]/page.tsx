@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { CSSProperties } from 'react';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArticleAudioPlayer } from '@/components/article-language-tools';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Comments } from '@/components/comments';
@@ -69,8 +70,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
-  const dictionary = getDictionary(lang).projects;
-  const commentsDictionary = getDictionary(lang).comments;
+  const translations = getDictionary(lang);
+  const dictionary = translations.projects;
+  const speechDictionary = translations.speech;
+  const commentsDictionary = translations.comments;
   const project = getEntry('project', slug, lang);
   if (!project) notFound();
   const seo = getEntrySeo('project', slug, lang);
@@ -119,8 +122,8 @@ export default async function ProjectPage({ params }: Props) {
               <Badge className="project-status">{dictionary.status[status]}</Badge>
               {project.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
             </div>
-            <h1>{project.title}</h1>
-            <p>{project.summary}</p>
+            <h1 data-document-title>{project.title}</h1>
+            <p data-document-summary>{project.summary}</p>
             {project.link && (
               <Button asChild className="project-visit mt-8 rounded-full">
                 <Link href={project.link} target="_blank">
@@ -128,9 +131,26 @@ export default async function ProjectPage({ params }: Props) {
                 </Link>
               </Button>
             )}
+            <ArticleAudioPlayer
+              source={{
+                id: `project:${project.slug}:${project.updated ?? project.date}`,
+                title: project.title,
+                summary: project.summary,
+                locale: project.locale,
+                accent: project.accent,
+              }}
+              labels={{
+                listen: speechDictionary.listen,
+                preparing: speechDictionary.preparing,
+                pause: speechDictionary.pause,
+                resume: speechDictionary.resume,
+                error: speechDictionary.error,
+                provider: speechDictionary.provider,
+              }}
+            />
           </div>
           {project.cover && (
-            <div className="project-detail-visual">
+            <div className="project-detail-visual" data-document-cover>
               <Image
                 src={project.cover}
                 alt={project.title}

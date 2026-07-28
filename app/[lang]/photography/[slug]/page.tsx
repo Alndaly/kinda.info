@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { ArticleAudioPlayer } from '@/components/article-language-tools';
 import { Comments } from '@/components/comments';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
@@ -67,6 +68,7 @@ export default async function PhotoPage({ params }: Props) {
   if (!hasLocale(lang)) notFound();
   const translations = getDictionary(lang);
   const dictionary = translations.photography;
+  const speechDictionary = translations.speech;
   const commentsDictionary = translations.comments;
   const photo = getEntry('photo', slug, lang);
   if (!photo) notFound();
@@ -115,12 +117,30 @@ export default async function PhotoPage({ params }: Props) {
             <br />
             {photo.location} · {formatDate(photo.date, lang)}
           </span>
-          <h1>{photo.title}</h1>
-          <p>{photo.summary}</p>
+          <h1 data-document-title>{photo.title}</h1>
+          <div className="photo-detail-summary">
+            <p data-document-summary>{photo.summary}</p>
+            <ArticleAudioPlayer
+              source={{
+                id: `photo:${photo.slug}:${photo.updated ?? photo.date}`,
+                title: photo.title,
+                summary: photo.summary,
+                locale: photo.locale,
+              }}
+              labels={{
+                listen: speechDictionary.listen,
+                preparing: speechDictionary.preparing,
+                pause: speechDictionary.pause,
+                resume: speechDictionary.resume,
+                error: speechDictionary.error,
+                provider: speechDictionary.provider,
+              }}
+            />
+          </div>
         </header>
       </div>
       {photo.cover && (
-        <div className="photo-detail-stage">
+        <div className="photo-detail-stage" data-document-cover>
           <div className="photo-detail-hero">
             <Image
               src={photo.cover}

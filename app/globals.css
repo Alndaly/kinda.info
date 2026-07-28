@@ -2564,6 +2564,20 @@
   line-height: 1.8;
 }
 
+.photo-detail-summary .article-audio,
+.project-detail-header .article-audio {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.photo-detail-summary .article-audio {
+  margin-top: 1.15rem;
+}
+
+.project-detail-header .article-audio {
+  margin-top: 1.75rem;
+}
+
 .photo-detail-stage {
   width: min(100% - 2rem, 1440px);
   margin-inline: auto;
