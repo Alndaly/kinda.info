@@ -12,8 +12,16 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { Locale } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
+import { headerControlSquare } from '@/lib/ui-classes';
 
-export function ModeToggle({ locale }: { locale: Locale }) {
+export function ModeToggle({
+	locale,
+	className,
+}: {
+	locale: Locale;
+	className?: string;
+}) {
 	const { setTheme } = useTheme();
 	const labels = locale === 'zh'
 		? { toggle: '切换主题', light: '浅色', dark: '深色', system: '跟随系统' }
@@ -25,7 +33,11 @@ export function ModeToggle({ locale }: { locale: Locale }) {
 				<Button
 					variant='outline'
 					size='icon'
-					className='header-control mode-switch relative rounded-full bg-transparent shadow-none outline-none'
+					className={cn(
+						headerControlSquare,
+						'relative rounded-full bg-transparent shadow-none outline-none',
+						className,
+					)}
 				>
 					<Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
 					<Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />

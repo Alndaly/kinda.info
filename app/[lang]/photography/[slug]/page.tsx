@@ -19,6 +19,7 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
+import { siteContainer } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -106,7 +107,7 @@ export default async function PhotoPage({ params }: Props) {
   return (
     <article className="photo-detail">
       {!seo.isFallback && <JsonLd data={photoJsonLd} />}
-      <div className="site-container">
+      <div className={siteContainer}>
         <Link href={localizeHref(lang, '/photography')} className="back-link">
           <ArrowLeft /> {dictionary.back}
         </Link>

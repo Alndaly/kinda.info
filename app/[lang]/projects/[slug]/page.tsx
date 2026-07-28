@@ -22,6 +22,7 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
+import { siteContainer } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 type ProjectStyle = CSSProperties & { '--project-accent': string };
@@ -108,7 +109,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <article className="project-detail" style={projectStyle}>
       {!seo.isFallback && <JsonLd data={projectJsonLd} />}
-      <header className="project-detail-header site-container">
+      <header className={`${siteContainer} project-detail-header`}>
         <Link href={localizeHref(lang, '/projects')} className="back-link">
           <ArrowLeft /> {dictionary.back}
         </Link>

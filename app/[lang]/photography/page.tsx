@@ -4,6 +4,7 @@ import { PhotoCard } from '@/components/photo-card';
 import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
+import { siteContainer } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -44,7 +45,7 @@ export default async function PhotographyPage({ params }: Props) {
     years.length > 1 ? `${years[0]}—${years[years.length - 1]}` : (years[0] ?? '—');
 
   return (
-    <div className="site-container page-top">
+    <div className={`${siteContainer} page-top`}>
       <header className="archive-header archive-header-split">
         <div>
           <span className="section-index">Index / 02</span>

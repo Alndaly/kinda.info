@@ -23,7 +23,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <GlobalAudioProvider>
-            <div className="page-noise" aria-hidden="true" />
+            <div
+              className="pointer-events-none fixed inset-0 z-[60] bg-[image:repeating-radial-gradient(circle_at_20%_30%,transparent_0,rgba(0,0,0,0.7)_0.65px,transparent_1.2px),repeating-radial-gradient(circle_at_80%_70%,transparent_0,rgba(0,0,0,0.6)_0.55px,transparent_1.1px)] bg-[length:5px_7px,7px_5px] opacity-[0.035] mix-blend-multiply dark:opacity-[0.045] dark:mix-blend-screen dark:invert"
+              aria-hidden="true"
+            />
             {children}
             <SpeedInsights />
             <Analytics />

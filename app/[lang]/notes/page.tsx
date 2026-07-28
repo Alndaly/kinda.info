@@ -4,6 +4,7 @@ import { NotesIndex } from '@/components/notes-index';
 import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
+import { siteContainer } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -49,7 +50,7 @@ export default async function NotesPage({ params }: Props) {
   }));
 
   return (
-    <div className="site-container page-top">
+    <div className={`${siteContainer} page-top`}>
       <header className="archive-header notes-header">
         <span className="section-index">Index / 01</span>
         <h1>{dictionary.title}</h1>

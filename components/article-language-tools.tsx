@@ -28,6 +28,7 @@ import {
 } from '@/lib/client-translation';
 import type { Locale } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
+import { siteContainer } from '@/lib/ui-classes';
 
 type ArticleLanguageContextValue = {
   automatic: boolean;
@@ -231,7 +232,7 @@ export function AutomaticTranslationNotice({
   const failed = language.status === 'error';
 
   return (
-    <aside className="translation-notice site-container" data-state={language.status}>
+    <aside className={`${siteContainer} translation-notice`} data-state={language.status}>
       {failed ? <CircleAlert aria-hidden="true" /> : <Languages aria-hidden="true" />}
       <div>
         <strong>{failed ? labels.error : labels.title}</strong>

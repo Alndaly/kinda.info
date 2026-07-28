@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowLeft, Asterisk } from 'lucide-react';
 import { getDictionary, localizeHref, type Locale } from '@/lib/i18n';
+import { siteContainer } from '@/lib/ui-classes';
 
 export default function NotFound() {
   const pathname = usePathname();
@@ -11,7 +12,7 @@ export default function NotFound() {
   const dictionary = getDictionary(locale).notFound;
 
   return (
-    <div className="site-container grid min-h-[65svh] place-items-center py-20 text-center">
+    <div className={`${siteContainer} grid min-h-[65svh] place-items-center py-20 text-center`}>
       <div>
         <Asterisk className="mx-auto mb-7 h-8 w-8 text-accent" />
         <p className="section-index">Error / 404</p>

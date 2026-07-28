@@ -113,11 +113,16 @@ export default async function RootLayout({ children, params }: Props) {
   };
 
   return (
-    <div className="site-shell" lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+    <div
+      className="group/shell has-[[data-audio-app]]:h-[100dvh] has-[[data-audio-app]]:overflow-hidden"
+      lang={lang === 'zh' ? 'zh-CN' : 'en'}
+    >
       <DocumentLanguage locale={lang} />
       <JsonLd data={globalJsonLd} />
       <SiteHeader locale={lang} />
-      <main>{children}</main>
+      <main className="group-has-[[data-audio-app]]/shell:h-[100dvh] group-has-[[data-audio-app]]/shell:overflow-hidden">
+        {children}
+      </main>
       <SiteFooter locale={lang} />
       <GlobalMiniPlayer locale={lang} labels={dictionary.player} />
     </div>

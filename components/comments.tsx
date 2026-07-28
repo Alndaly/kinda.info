@@ -4,6 +4,7 @@ import { ExternalLink, MessageCircle } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Locale } from '@/lib/i18n';
+import { siteContainer } from '@/lib/ui-classes';
 
 type CommentLabels = {
   eyebrow: string;
@@ -86,7 +87,7 @@ export function Comments({
   }, [resolvedTheme, state]);
 
   return (
-    <section className="comments-section site-container" aria-labelledby="comments-title">
+    <section className={`${siteContainer} comments-section`} aria-labelledby="comments-title">
       <header className="comments-heading">
         <span><MessageCircle aria-hidden="true" /> {labels.eyebrow}</span>
         <h2 id="comments-title">{labels.title}</h2>

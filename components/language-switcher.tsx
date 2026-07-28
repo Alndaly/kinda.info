@@ -3,8 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
+import { headerControlSquare } from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
-export function LanguageSwitcher({ locale }: { locale: Locale }) {
+export function LanguageSwitcher({
+  locale,
+  className,
+}: {
+  locale: Locale;
+  className?: string;
+}) {
   const pathname = usePathname();
   const isEnglish = locale === 'en';
   const visiblePath = pathname.replace(/^\/zh(?=\/|$)/, '') || '/';
@@ -15,7 +23,7 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
   return (
     <Link
       href={href}
-      className="header-control language-switch"
+      className={cn(headerControlSquare, className)}
       aria-label={isEnglish ? 'Switch to Chinese' : '切换到英文'}
       title={isEnglish ? 'Switch to Chinese' : '切换到英文'}
     >

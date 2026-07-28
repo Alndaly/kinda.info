@@ -25,6 +25,8 @@ import {
 } from '@/lib/client-translation';
 import type { Locale } from '@/lib/i18n';
 import type { SearchRecord } from '@/lib/search';
+import { headerControl } from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type SearchLabels = {
   button: string;
@@ -357,7 +359,7 @@ export function SiteSearch({
     <>
       <button
         type="button"
-        className="header-control site-search-trigger"
+        className={cn(headerControl, 'site-search-trigger')}
         onClick={openSearch}
         aria-label={labels.button}
         title={labels.button}

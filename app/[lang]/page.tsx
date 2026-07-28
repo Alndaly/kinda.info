@@ -9,6 +9,7 @@ import { ProjectCard } from '@/components/project-card';
 import { getEntries } from '@/lib/content';
 import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
 import { notFound } from 'next/navigation';
+import { siteContainer } from '@/lib/ui-classes';
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
@@ -21,7 +22,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <>
-      <section className="site-container hero-section">
+      <section className={`${siteContainer} hero-section`}>
         <div className="hero-grid">
           <div className="relative z-[1] flex flex-col justify-between py-4 lg:py-10">
             <div>
@@ -95,7 +96,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </a>
       </section>
 
-      <section id="latest" className="site-container section-space">
+      <section id="latest" className={`${siteContainer} section-space`}>
         <div className="section-heading">
           <div>
             <span className="section-index">01 / Notes</span>
@@ -112,7 +113,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       </section>
 
       <section className="inverse-section section-space overflow-hidden border-y py-20">
-        <div className="site-container">
+        <div className={siteContainer}>
           <div className="section-heading">
             <div>
               <span className="section-index">02 / Frames</span>
@@ -138,7 +139,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
       </section>
 
-      <section className="site-container section-space">
+      <section className={`${siteContainer} section-space`}>
         <div className="section-heading">
           <div>
             <span className="section-index">03 / Things</span>
@@ -155,7 +156,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
       </section>
 
-      <section className="site-container pb-8 pt-12">
+      <section className={`${siteContainer} pb-8 pt-12`}>
         <div className="manifesto">
           <span className="manifesto-mark">“</span>
           <p>

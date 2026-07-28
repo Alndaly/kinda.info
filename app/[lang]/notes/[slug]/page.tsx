@@ -26,6 +26,7 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
+import { siteContainer } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -132,7 +133,7 @@ export default async function NotePage({ params }: Props) {
     >
       <article>
         {!seo.isFallback && <JsonLd data={articleJsonLd} />}
-        <header className="article-header site-container">
+        <header className={`${siteContainer} article-header`}>
           <Link href={localizeHref(lang, '/notes')} className="back-link">
             <ArrowLeft /> {dictionary.back}
           </Link>

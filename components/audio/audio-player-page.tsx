@@ -214,6 +214,7 @@ export function AudioPlayerPage({
 
   return (
     <div
+      data-audio-app=""
       className="audio-app"
       style={{ '--audio-accent': visibleTrack?.accent ?? '#e25943' } as CSSProperties}
     >
@@ -260,8 +261,14 @@ export function AudioPlayerPage({
           >
             <ListMusic />
           </button>
-          <LanguageSwitcher locale={locale} />
-          <ModeToggle locale={locale} />
+          <LanguageSwitcher
+            locale={locale}
+            className="h-9 w-9 min-w-9 [@media(max-width:720px)]:hidden"
+          />
+          <ModeToggle
+            locale={locale}
+            className="h-9 w-9 min-w-9 [@media(max-width:480px)]:hidden"
+          />
           <Link
             className="audio-app-exit"
             href={previousPath ?? localizeHref(locale, '/')}

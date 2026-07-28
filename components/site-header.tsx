@@ -6,6 +6,8 @@ import { SiteSearch } from '@/components/site-search';
 import { AudioLauncher } from '@/components/audio/audio-launcher';
 import { getDictionary, localizeHref, type Locale } from '@/lib/i18n';
 import { createSearchIndex } from '@/lib/search';
+import { headerControl, navPill, siteContainer } from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 const navigation = [
   { href: '/notes', key: 'notes', index: '01' },
@@ -20,8 +22,8 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const searchIndex = createSearchIndex(locale);
 
   return (
-    <header className="site-header">
-      <div className="site-container flex h-[74px] items-center justify-between gap-5">
+    <header className="group-has-[[data-audio-app]]/shell:hidden [@media(max-width:768px)]:relative sticky top-0 z-50 border-b border-line/70 bg-paper/[0.82] backdrop-blur-[18px] backdrop-saturate-[1.4]">
+      <div className={`${siteContainer} flex h-[74px] items-center justify-between gap-5`}>
         <Link
           href={localizeHref(locale, '/')}
           className="group flex items-center gap-2"
@@ -43,7 +45,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             <Link
               key={item.href}
               href={localizeHref(locale, item.href)}
-              className="nav-pill group"
+              className={`${navPill} group`}
             >
               <span className="mr-1.5 text-[9px] opacity-45">{item.index}</span>
               {dictionary.items[item.key]}
@@ -51,7 +53,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           ))}
         </nav>
 
-        <div className="header-actions">
+        <div className="flex items-center gap-[0.45rem]">
           <AudioLauncher locale={locale} label={dictionary.audio} />
           <SiteSearch
             locale={locale}
@@ -60,7 +62,10 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           />
           <Link
             href="mailto:1142704468@qq.com"
-            className="header-control header-contact"
+            className={cn(
+              headerControl,
+              'hidden whitespace-nowrap px-[0.9rem] uppercase sm:inline-flex',
+            )}
           >
             {dictionary.hello}
           </Link>
@@ -71,13 +76,13 @@ export function SiteHeader({ locale }: { locale: Locale }) {
 
       <nav
         aria-label={dictionary.mobileNavigationLabel}
-        className="site-container flex gap-1 overflow-x-auto border-t border-line/70 py-2 md:hidden"
+        className={`${siteContainer} flex gap-1 overflow-x-auto border-t border-line/70 py-2 md:hidden`}
       >
         {navigation.map((item) => (
           <Link
             key={item.href}
             href={localizeHref(locale, item.href)}
-            className="nav-pill shrink-0"
+            className={`${navPill} shrink-0`}
           >
             {dictionary.items[item.key]}
           </Link>
