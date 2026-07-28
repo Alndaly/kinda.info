@@ -75,6 +75,7 @@ export function TiptapContent({
       editorProps: {
         attributes: {
           class: 'tiptap-prosemirror',
+          'data-reader': '',
           'aria-label': contentLabel,
         },
       },
@@ -211,6 +212,7 @@ export function TiptapContent({
     return (
       <div
         className="tiptap-reader tiptap-fallback"
+        data-reader=""
         aria-label={contentLabel}
         dangerouslySetInnerHTML={{ __html: fallbackHtml }}
       />

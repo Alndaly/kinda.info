@@ -28,7 +28,15 @@ import {
 } from '@/lib/client-translation';
 import type { Locale } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
-import { siteContainer } from '@/lib/ui-classes';
+import {
+  articleAudio,
+  articleAudioIcon,
+  articleDeck,
+  detailTitle,
+  siteContainer,
+  translationNotice,
+} from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type ArticleLanguageContextValue = {
   automatic: boolean;
@@ -211,8 +219,12 @@ export function ArticleTranslatedHeading() {
 
   return (
     <>
-      <h1 data-document-title>{language.title}</h1>
-      <p className="article-deck" data-document-summary>{language.summary}</p>
+      <h1 data-document-title className={detailTitle}>
+        {language.title}
+      </h1>
+      <p className={articleDeck} data-document-summary>
+        {language.summary}
+      </p>
     </>
   );
 }
@@ -232,7 +244,7 @@ export function AutomaticTranslationNotice({
   const failed = language.status === 'error';
 
   return (
-    <aside className={`${siteContainer} translation-notice`} data-state={language.status}>
+    <aside className={cn(siteContainer, translationNotice)} data-state={language.status}>
       {failed ? <CircleAlert aria-hidden="true" /> : <Languages aria-hidden="true" />}
       <div>
         <strong>{failed ? labels.error : labels.title}</strong>
@@ -245,12 +257,12 @@ export function AutomaticTranslationNotice({
 
 function getSpeechText() {
   const title = document.querySelector(
-    '[data-document-title], .article-header h1, .photo-detail h1, .project-detail h1',
+    '[data-document-title], [data-detail-title]',
   )?.textContent ?? '';
   const summary = document.querySelector(
-    '[data-document-summary], .article-deck',
+    '[data-document-summary], [data-detail-summary]',
   )?.textContent ?? '';
-  const reader = document.querySelector('.mdx-prose .tiptap-prosemirror, .mdx-prose .tiptap-fallback');
+  const reader = document.querySelector('[data-prose] [data-reader]');
   if (!reader) return [title, summary].filter(Boolean).join('. ');
 
   const clone = reader.cloneNode(true) as HTMLElement;
@@ -260,12 +272,12 @@ function getSpeechText() {
     'iframe',
     'audio',
     'video',
-    '.tiptap-mermaid',
-    '.tiptap-embed',
-    '.tiptap-map',
-    '.tiptap-file',
-    '.tiptap-audio',
-    '.tiptap-code-header',
+    '[data-node="mermaid"]',
+    '[data-node="embed"]',
+    '[data-node="map"]',
+    '[data-node="file"]',
+    '[data-node="audio"]',
+    '[data-node="code-header"]',
   ].join(',')).forEach((element) => element.remove());
 
   return [title, summary, clone.textContent ?? '']
@@ -277,7 +289,7 @@ function getSpeechText() {
 function getArticleArtwork() {
   const articleImages = Array.from(
     document.querySelectorAll<HTMLImageElement>(
-      '[data-document-cover] img, .article-header img, .article-cover img, .mdx-prose img',
+      '[data-document-cover] img, [data-detail-header] img, [data-prose] img',
     ),
     (image) => image.currentSrc || image.src,
   );
@@ -368,9 +380,9 @@ export function ArticleAudioPlayer({
   const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
 
   return (
-    <div className="article-audio" data-state={audioState}>
+    <div className={cn(articleAudio, 'group/audio')} data-state={audioState}>
       <button type="button" onClick={play} disabled={disabled || audioState === 'loading'}>
-        <span className="article-audio-icon">
+        <span className={articleAudioIcon}>
           {audioState === 'loading'
             ? <LoaderCircle aria-hidden="true" />
             : audioState === 'playing'
@@ -382,7 +394,10 @@ export function ArticleAudioPlayer({
           <small><AudioLines aria-hidden="true" /> {labels.provider}</small>
         </span>
       </button>
-      <span className="article-audio-progress" aria-hidden="true">
+      <span
+        className="mt-[0.65rem] block h-px overflow-hidden bg-line [&>i]:block [&>i]:h-full [&>i]:w-full [&>i]:origin-left [&>i]:bg-accent [&>i]:transition-transform [&>i]:duration-[180ms] [&>i]:ease-linear"
+        aria-hidden="true"
+      >
         <i style={{ transform: `scaleX(${progress})` }} />
       </span>
       {audioState === 'playing' || audioState === 'paused' ? (

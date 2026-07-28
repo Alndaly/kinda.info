@@ -4,7 +4,14 @@ import { ExternalLink, MessageCircle } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Locale } from '@/lib/i18n';
-import { siteContainer } from '@/lib/ui-classes';
+import {
+  commentsError,
+  commentsHeading,
+  commentsNotice,
+  commentsSection,
+  siteContainer,
+} from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type CommentLabels = {
   eyebrow: string;
@@ -87,21 +94,24 @@ export function Comments({
   }, [resolvedTheme, state]);
 
   return (
-    <section className={`${siteContainer} comments-section`} aria-labelledby="comments-title">
-      <header className="comments-heading">
+    <section
+      className={cn(siteContainer, commentsSection)}
+      aria-labelledby="comments-title"
+    >
+      <header className={commentsHeading}>
         <span><MessageCircle aria-hidden="true" /> {labels.eyebrow}</span>
         <h2 id="comments-title">{labels.title}</h2>
         <p>{labels.description}</p>
       </header>
-      <div className="comments-frame" data-state={state}>
+      <div className="relative mt-8 min-h-44" data-state={state}>
         {state === 'loading' ? (
-          <div className="comments-loading" role="status">
-            <span />
+          <div className={commentsNotice} role="status">
+            <span className="h-[0.65rem] w-[0.65rem] animate-[slow-spin_900ms_linear_infinite] rounded-full border border-accent border-t-transparent" />
             {labels.loading}
           </div>
         ) : null}
         {state === 'error' ? (
-          <div className="comments-error" role="alert">
+          <div className={cn(commentsNotice, commentsError)} role="alert">
             <p>{labels.error}</p>
             <a href={discussionUrl} target="_blank" rel="noreferrer">
               <ExternalLink aria-hidden="true" /> {labels.direct}
@@ -110,7 +120,7 @@ export function Comments({
         ) : null}
         <div
           ref={containerRef}
-          className="comments-provider"
+          className="min-h-36 [&_.utterances]:max-w-none"
           data-issue-term={issueTerm}
         />
       </div>

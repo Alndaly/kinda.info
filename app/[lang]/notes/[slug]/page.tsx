@@ -26,7 +26,16 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer } from '@/lib/ui-classes';
+import {
+  articleEndMessage,
+  articleMeta,
+  articlePagination,
+  articleRule,
+  backLink,
+  mdxProse,
+  siteContainer,
+} from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
@@ -133,8 +142,11 @@ export default async function NotePage({ params }: Props) {
     >
       <article>
         {!seo.isFallback && <JsonLd data={articleJsonLd} />}
-        <header className={`${siteContainer} article-header`}>
-          <Link href={localizeHref(lang, '/notes')} className="back-link">
+        <header
+          data-detail-header
+          className={cn(siteContainer, 'pb-[clamp(3rem,7vw,6rem)] pt-[clamp(3rem,8vw,7rem)]')}
+        >
+          <Link href={localizeHref(lang, '/notes')} className={backLink}>
             <ArrowLeft /> {dictionary.back}
           </Link>
           <div className="mx-auto max-w-4xl text-center">
@@ -142,7 +154,7 @@ export default async function NotePage({ params }: Props) {
               <ArticleTranslatedTags />
             </div>
             <ArticleTranslatedHeading />
-            <div className="article-meta">
+            <div className={articleMeta}>
               <span><CalendarDays /> {formatDate(note.date, lang)}</span>
               <span><Clock3 /> {note.metadata.readingTime} {dictionary.minRead}</span>
             </div>
@@ -158,7 +170,7 @@ export default async function NotePage({ params }: Props) {
             />
           </div>
         </header>
-        <div className="article-rule" />
+        <div className={articleRule} />
         <AutomaticTranslationNotice
           labels={{
             title: dictionary.machineTranslationTitle,
@@ -171,16 +183,16 @@ export default async function NotePage({ params }: Props) {
           contentsLabel={dictionary.contents}
           progressLabel={dictionary.readingProgress}
         />
-        <div className="mdx-prose">
+        <div data-prose className={mdxProse}>
           <TiptapContent content={note.content} fallbackHtml={note.html} />
         </div>
-        <footer className="article-end">
-          <div className="article-end-message">
+        <footer className="mx-auto mt-24 w-[min(100%-2rem,70rem)] border-t border-line py-12">
+          <div className={articleEndMessage}>
             <span>EOF</span>
             <p>{dictionary.thanks}</p>
             <Link href={localizeHref(lang, '/notes')}>{dictionary.continue}</Link>
           </div>
-          <nav className="article-pagination" aria-label={dictionary.continue}>
+          <nav className={articlePagination} aria-label={dictionary.continue}>
             {previousNote ? (
               <Link href={previousNote.href}>
                 <small>{dictionary.previous}</small>

@@ -39,7 +39,7 @@ function VideoView({ node }: NodeViewProps) {
     : `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`;
 
   return (
-    <NodeViewWrapper className="tiptap-embed" contentEditable={false}>
+    <NodeViewWrapper className="tiptap-embed" data-node="embed" contentEditable={false}>
       <div className="tiptap-embed-label">{provider === 'bilibili' ? 'Bilibili' : 'YouTube'} / Video</div>
       <div className="tiptap-video-frame">
         <iframe
@@ -100,7 +100,7 @@ function MapView({ node }: NodeViewProps) {
   const embed = `https://www.google.com/maps?q=${encodeURIComponent(target)}&output=embed`;
 
   return (
-    <NodeViewWrapper className="tiptap-map" contentEditable={false}>
+    <NodeViewWrapper className="tiptap-map" data-node="map" contentEditable={false}>
       <iframe
         src={embed}
         title={isEnglish ? `Map: ${target}` : `地图：${target}`}
@@ -158,7 +158,7 @@ function FileView({ node }: NodeViewProps) {
   const size = String(node.attrs.size ?? '');
   return (
     <NodeViewWrapper contentEditable={false}>
-      <a className="tiptap-file" href={src} download>
+      <a className="tiptap-file" data-node="file" href={src} download>
         <span><FileText /></span>
         <span>
           <strong>{name}</strong>

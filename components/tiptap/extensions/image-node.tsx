@@ -27,7 +27,7 @@ function ImageView({ node }: NodeViewProps) {
 
   return (
     <NodeViewWrapper>
-      <figure className="tiptap-figure">
+      <figure className="tiptap-figure" data-node="figure">
         <button
           type="button"
           className="tiptap-image-button"

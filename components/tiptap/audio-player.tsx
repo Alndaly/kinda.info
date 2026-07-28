@@ -87,6 +87,7 @@ export function AudioPlayer({
   return (
     <div
       className="tiptap-audio"
+      data-node="audio"
       data-state={status}
       aria-label={isEnglish ? `Audio player: ${name}` : `音频播放器：${name}`}
     >

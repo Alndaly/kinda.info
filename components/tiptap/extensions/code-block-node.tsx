@@ -86,8 +86,8 @@ function CodeBlockView({ node }: NodeViewProps) {
 
   if (language === 'mermaid') {
     return (
-      <NodeViewWrapper className="tiptap-mermaid">
-        <div className="tiptap-code-header" contentEditable={false}>
+      <NodeViewWrapper className="tiptap-mermaid" data-node="mermaid">
+        <div className="tiptap-code-header" data-node="code-header" contentEditable={false}>
           <span><Workflow /> {labels.diagram}</span>
           <button type="button" onClick={copy}>
             {copied ? <Check /> : <Copy />}
@@ -102,7 +102,7 @@ function CodeBlockView({ node }: NodeViewProps) {
 
   return (
     <NodeViewWrapper className="tiptap-code-block">
-      <div className="tiptap-code-header" contentEditable={false}>
+      <div className="tiptap-code-header" data-node="code-header" contentEditable={false}>
         <span>{language || 'plaintext'}</span>
         <button type="button" onClick={copy}>
           {copied ? <Check /> : <Copy />}
