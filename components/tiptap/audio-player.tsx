@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useGlobalAudio } from '@/components/audio/global-audio-provider';
 import { formatAudioTime, type AudioTrack } from '@/lib/audio';
+import { cn } from '@/lib/utils';
 
 const WAVEFORM = [
   34, 58, 42, 76, 52, 88, 63, 45,
@@ -23,6 +24,105 @@ const WAVEFORM = [
   91, 61, 46, 79, 54, 86, 66, 43,
   70, 94, 59, 83, 50, 73, 41, 64,
 ];
+
+
+const audioShell = [
+  'group/audio relative ml-[50%] my-14 w-[min(100vw-2rem,58rem)] -translate-x-1/2',
+  'overflow-hidden rounded-[0.8rem] border border-line',
+  'bg-[radial-gradient(circle_at_86%_-20%,hsl(var(--accent)/0.11),transparent_34%)] bg-card',
+  'shadow-[0_1.5rem_4rem_hsl(var(--ink)/0.07)]',
+  "before:absolute before:inset-y-0 before:left-0 before:w-[3px] before:bg-accent before:content-['']",
+  '[&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-[3px]',
+  '[&_button:focus-visible]:outline-accent',
+  '[&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-[3px] [&_a:focus-visible]:outline-accent',
+  '[@media(max-width:520px)]:my-11 [@media(max-width:520px)]:w-[min(100vw-1.25rem,58rem)]',
+].join(' ');
+
+const audioHeader = [
+  'flex min-h-[2.75rem] items-center justify-between gap-4 border-b border-line',
+  'py-[0.65rem] pl-[1.15rem] pr-4 font-sans',
+  '[@media(max-width:520px)]:px-[0.85rem]',
+].join(' ');
+
+const audioKicker = [
+  'flex min-w-0 items-center gap-[0.55rem] text-[0.56rem] font-[750] uppercase',
+  'tracking-[0.14em] text-muted-foreground',
+  '[&>svg]:h-[0.85rem] [&>svg]:w-[0.85rem] [&>svg]:flex-none [&>svg]:text-accent',
+  '[@media(max-width:520px)]:text-[0.5rem] [@media(max-width:520px)]:tracking-[0.1em]',
+].join(' ');
+
+const audioFormat = [
+  'flex-none rounded-full border border-line px-2 py-[0.28rem] font-mono',
+  'text-[0.5rem] font-bold leading-none tracking-[0.1em] text-muted-foreground',
+].join(' ');
+
+const audioBody = [
+  'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[0.8rem_1.35rem]',
+  'pb-[1.6rem] pl-[1.75rem] pr-[1.6rem] pt-6',
+  "[grid-template-areas:'play_copy_actions'_'play_timeline_timeline'_'._error_error']",
+  "[@media(max-width:768px)]:[grid-template-areas:'play_copy_actions'_'timeline_timeline_timeline'_'error_error_error']",
+  '[@media(max-width:768px)]:gap-[1rem_0.9rem] [@media(max-width:768px)]:p-5',
+  '[@media(max-width:520px)]:px-[0.9rem] [@media(max-width:520px)]:pb-[1.2rem] [@media(max-width:520px)]:pt-[1.1rem]',
+].join(' ');
+
+const audioPlay = [
+  'grid h-17 w-17 place-items-center rounded-full bg-ink text-paper [grid-area:play]',
+  'shadow-[0_0.7rem_1.8rem_hsl(var(--ink)/0.16)]',
+  'transition-[color,background-color,transform] duration-[180ms] ease-[ease]',
+  'hover:scale-[1.04] hover:bg-accent hover:text-white',
+  'group-data-[state=playing]/audio:bg-accent group-data-[state=playing]/audio:text-white',
+  'group-data-[state=loading]/audio:bg-accent group-data-[state=loading]/audio:text-white',
+  'disabled:cursor-wait disabled:opacity-55 disabled:transform-none',
+  '[&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem] [&>svg.lucide-play]:ml-[0.12rem]',
+  'group-data-[state=loading]/audio:[&>svg]:animate-spinner',
+  '[@media(max-width:768px)]:h-14 [@media(max-width:768px)]:w-14',
+  '[@media(max-width:520px)]:h-[3.15rem] [@media(max-width:520px)]:w-[3.15rem]',
+].join(' ');
+
+const audioActions = [
+  'flex gap-[0.4rem] [grid-area:actions]',
+  '[&>*]:grid [&>*]:h-[2.2rem] [&>*]:w-[2.2rem] [&>*]:place-items-center',
+  '[&>*]:rounded-full [&>*]:border [&>*]:border-line [&>*]:text-muted-foreground',
+  '[&>*]:transition-[color,border-color,background-color] [&>*]:duration-[160ms] [&>*]:ease-[ease]',
+  'hover:[&>*]:border-ink hover:[&>*]:bg-ink hover:[&>*]:text-paper',
+  '[&>button:disabled]:cursor-not-allowed [&>button:disabled]:opacity-[0.42]',
+  '[&_svg]:h-[0.9rem] [&_svg]:w-[0.9rem]',
+  '[@media(max-width:520px)]:gap-1 [@media(max-width:520px)]:[&>*]:h-8 [@media(max-width:520px)]:[&>*]:w-8',
+].join(' ');
+
+const audioWave = [
+  'relative h-10 rounded-[0.25rem]',
+  'has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-4',
+  'has-[input:focus-visible]:outline-accent',
+  '[&_input]:absolute [&_input]:inset-0 [&_input]:z-[2] [&_input]:h-full [&_input]:w-full',
+  '[&_input]:cursor-pointer [&_input]:opacity-0 [&_input:disabled]:cursor-not-allowed',
+].join(' ');
+
+const audioWaveLayer = [
+  'absolute inset-0 grid grid-cols-[repeat(32,minmax(1px,1fr))] items-center gap-[3px]',
+  '[&>i]:min-w-px [&>i]:max-h-full [&>i]:rounded-full [&>i]:bg-ink/[0.16]',
+  '[@media(max-width:520px)]:gap-[2px]',
+].join(' ');
+
+const audioTime = [
+  'mt-[0.35rem] grid grid-cols-[3.25rem_1fr_3.25rem] items-center gap-[0.6rem]',
+  'font-mono text-[0.52rem] tabular-nums text-muted-foreground',
+  '[&>span]:overflow-hidden [&>span]:text-ellipsis [&>span]:whitespace-nowrap',
+  '[&>span]:text-center [&>span]:uppercase [&>span]:tracking-[0.1em]',
+  '[&>time:last-child]:text-right',
+].join(' ');
+
+const audioError = [
+  'flex min-w-0 items-center justify-between gap-3 border-t border-accent/[0.28]',
+  'pt-3 font-sans text-[0.65rem] text-accent [grid-area:error]',
+  '[&>span]:flex [&>span]:items-center [&>span]:gap-[0.4rem]',
+  '[&>button]:flex [&>button]:flex-none [&>button]:items-center [&>button]:gap-[0.4rem]',
+  '[&>button]:rounded-full [&>button]:border [&>button]:border-accent/45',
+  '[&>button]:px-2 [&>button]:py-[0.35rem] [&>button]:text-[0.56rem] [&>button]:font-bold',
+  '[&>button]:uppercase [&>button]:tracking-[0.08em]',
+  'hover:[&>button]:bg-accent hover:[&>button]:text-white',
+  '[&_svg]:h-[0.8rem] [&_svg]:w-[0.8rem]',
+].join(' ');
 
 export function AudioPlayer({
   src,
@@ -86,23 +186,23 @@ export function AudioPlayer({
 
   return (
     <div
-      className="tiptap-audio"
+      className={audioShell}
       data-node="audio"
       data-state={status}
       aria-label={isEnglish ? `Audio player: ${name}` : `音频播放器：${name}`}
     >
-      <div className="tiptap-audio-header">
-        <div className="tiptap-audio-kicker">
+      <div className={audioHeader}>
+        <div className={audioKicker}>
           <AudioLines aria-hidden="true" />
           <span>{isEnglish ? 'Sound object / Field note' : '声音切片 / 现场记录'}</span>
         </div>
-        <span className="tiptap-audio-format">{format}</span>
+        <span className={audioFormat}>{format}</span>
       </div>
 
-      <div className="tiptap-audio-player">
+      <div className={audioBody}>
         <button
           type="button"
-          className="tiptap-audio-play"
+          className={audioPlay}
           onClick={playAudio}
           disabled={!src || status === 'loading'}
           aria-label={
@@ -118,14 +218,16 @@ export function AudioPlayer({
               : <Play aria-hidden="true" />}
         </button>
 
-        <div className="tiptap-audio-copy">
+        <div className="col-[copy] min-w-0 [grid-area:copy]">
           <strong className="block min-w-0 overflow-x-clip overflow-y-visible whitespace-nowrap text-ellipsis font-[family-name:var(--font-display)] text-[1.15rem] font-semibold leading-[1.3] min-[769px]:text-[1.35rem]">
             {name}
           </strong>
-          <span>{isEnglish ? 'Audio note' : '音频笔记'}</span>
+          <span className="mt-[0.3rem] block font-sans text-[0.62rem] tracking-[0.04em] text-muted-foreground">
+            {isEnglish ? 'Audio note' : '音频笔记'}
+          </span>
         </div>
 
-        <div className="tiptap-audio-actions">
+        <div className={audioActions}>
           <button
             type="button"
             onClick={toggleMuted}
@@ -155,15 +257,15 @@ export function AudioPlayer({
           ) : null}
         </div>
 
-        <div className="tiptap-audio-timeline">
-          <div className="tiptap-audio-wave">
-            <div className="tiptap-audio-wave-layer" aria-hidden="true">
+        <div className="min-w-0 [grid-area:timeline]">
+          <div className={audioWave}>
+            <div className={audioWaveLayer} aria-hidden="true">
               {WAVEFORM.map((height, index) => (
                 <i key={`base-${index}`} style={{ height: `${height}%` }} />
               ))}
             </div>
             <div
-              className="tiptap-audio-wave-layer tiptap-audio-wave-active"
+              className={cn(audioWaveLayer, 'overflow-hidden [&>i]:bg-accent')}
               style={{ clipPath: `inset(0 ${100 - progress}% 0 0)` }}
               aria-hidden="true"
             >
@@ -182,7 +284,7 @@ export function AudioPlayer({
               aria-label={isEnglish ? `Seek ${name}` : `调整 ${name} 的播放进度`}
             />
           </div>
-          <div className="tiptap-audio-time">
+          <div className={audioTime}>
             <time>{formatAudioTime(currentTime)}</time>
             <span>{status === 'error'
               ? (isEnglish ? 'Unavailable' : '暂不可用')
@@ -194,7 +296,7 @@ export function AudioPlayer({
         </div>
 
         {status === 'error' ? (
-          <div className="tiptap-audio-error" role="alert">
+          <div className={audioError} role="alert">
             <span>
               <CircleAlert aria-hidden="true" />
               {isEnglish ? 'This recording could not be loaded.' : '这段录音暂时无法加载。'}
