@@ -4,7 +4,15 @@ import { ProjectCard } from '@/components/project-card';
 import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
-import { siteContainer, sectionIndex } from '@/lib/ui-classes';
+import {
+  archiveHeaderSplit,
+  archiveHeaderSplitText,
+  archiveHeaderTitle,
+  pageTop,
+  sectionIndex,
+  siteContainer,
+} from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -41,13 +49,13 @@ export default async function ProjectsPage({ params }: Props) {
   const projects = getEntries(lang, 'project');
 
   return (
-    <div className={`${siteContainer} page-top`}>
-      <header className="archive-header archive-header-split">
+    <div className={cn(siteContainer, pageTop)}>
+      <header className={archiveHeaderSplit}>
         <div>
           <span className={sectionIndex}>Index / 03</span>
-          <h1>{dictionary.title}</h1>
+          <h1 className={archiveHeaderTitle}>{dictionary.title}</h1>
         </div>
-        <p>{dictionary.intro}</p>
+        <p className={archiveHeaderSplitText}>{dictionary.intro}</p>
       </header>
       <div className="grid gap-x-10 gap-y-20 md:grid-cols-2">
         {projects.map((project, index) => (

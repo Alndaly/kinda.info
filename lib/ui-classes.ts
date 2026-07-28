@@ -51,3 +51,20 @@ export const projectStatus = [
   'bg-[color-mix(in_srgb,var(--project-accent)_10%,transparent)]',
   'text-[color-mix(in_srgb,var(--project-accent)_82%,hsl(var(--ink)))]',
 ].join(' ');
+
+export const pageTop = 'pb-12 pt-[clamp(4rem,10vw,8.5rem)]';
+
+export const archiveHeader = 'mb-[clamp(4rem,9vw,8rem)] max-w-[62rem]';
+
+export const archiveHeaderTitle =
+  'mt-6 font-display text-[clamp(5.5rem,15vw,12rem)] leading-[0.72] tracking-[-0.085em] [@media(max-width:520px)]:text-[5.2rem]';
+
+export const archiveHeaderText =
+  'mt-12 max-w-[40rem] text-[1.05rem] leading-loose text-muted-foreground';
+
+/** Two-column archive header: title on the left, standfirst on the right. */
+export const archiveHeaderSplit =
+  'mb-[clamp(4rem,9vw,8rem)] grid grid-cols-[1fr_0.72fr] items-end gap-20 [@media(max-width:768px)]:grid-cols-[1fr] [@media(max-width:768px)]:gap-8';
+
+export const archiveHeaderSplitText =
+  'max-w-[40rem] text-[1.05rem] leading-loose text-muted-foreground [@media(max-width:768px)]:mt-4';

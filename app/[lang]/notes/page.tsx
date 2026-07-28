@@ -4,7 +4,15 @@ import { NotesIndex } from '@/components/notes-index';
 import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
-import { siteContainer, sectionIndex } from '@/lib/ui-classes';
+import {
+  archiveHeader,
+  archiveHeaderText,
+  archiveHeaderTitle,
+  pageTop,
+  sectionIndex,
+  siteContainer,
+} from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -50,11 +58,11 @@ export default async function NotesPage({ params }: Props) {
   }));
 
   return (
-    <div className={`${siteContainer} page-top`}>
-      <header className="archive-header notes-header">
+    <div className={cn(siteContainer, pageTop)}>
+      <header className={cn(archiveHeader, 'mb-[clamp(3rem,6vw,5rem)]')}>
         <span className={sectionIndex}>Index / 01</span>
-        <h1>{dictionary.title}</h1>
-        <p>{dictionary.intro}</p>
+        <h1 className={archiveHeaderTitle}>{dictionary.title}</h1>
+        <p className={archiveHeaderText}>{dictionary.intro}</p>
       </header>
       <NotesIndex
         entries={previews}

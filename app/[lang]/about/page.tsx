@@ -14,7 +14,8 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer, sectionIndex, textLink } from '@/lib/ui-classes';
+import { siteContainer, sectionIndex, textLink, pageTop } from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -74,7 +75,7 @@ export default async function AboutPage({ params }: Props) {
   );
 
   return (
-    <div className={`${siteContainer} page-top`}>
+    <div className={cn(siteContainer, pageTop)}>
       <JsonLd data={profileJsonLd} />
       <header className="about-hero">
         <div>

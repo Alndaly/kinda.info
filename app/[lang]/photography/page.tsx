@@ -4,7 +4,15 @@ import { PhotoCard } from '@/components/photo-card';
 import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
-import { siteContainer, sectionIndex } from '@/lib/ui-classes';
+import {
+  archiveHeaderSplit,
+  archiveHeaderSplitText,
+  archiveHeaderTitle,
+  pageTop,
+  sectionIndex,
+  siteContainer,
+} from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -45,14 +53,14 @@ export default async function PhotographyPage({ params }: Props) {
     years.length > 1 ? `${years[0]}—${years[years.length - 1]}` : (years[0] ?? '—');
 
   return (
-    <div className={`${siteContainer} page-top`}>
-      <header className="archive-header archive-header-split">
+    <div className={cn(siteContainer, pageTop)}>
+      <header className={archiveHeaderSplit}>
         <div>
           <span className={sectionIndex}>Index / 02</span>
-          <h1>{dictionary.title}</h1>
+          <h1 className={archiveHeaderTitle}>{dictionary.title}</h1>
         </div>
         <div>
-          <p>{dictionary.intro}</p>
+          <p className={archiveHeaderSplitText}>{dictionary.intro}</p>
           <span className="mt-6 block text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
             {dictionary.diary}
           </span>
