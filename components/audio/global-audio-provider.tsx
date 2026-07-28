@@ -437,6 +437,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
           playbackIntentRef.current = true;
           setStatus('playing');
         }}
+        onPlaying={() => {
+          playbackIntentRef.current = true;
+          setStatus('playing');
+        }}
         onPause={(event) => {
           if (!event.currentTarget.ended) setStatus((state) => state === 'error' ? state : 'paused');
         }}

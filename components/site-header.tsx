@@ -51,7 +51,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="header-actions">
           <AudioLauncher locale={locale} label={dictionary.audio} />
           <SiteSearch
             locale={locale}
@@ -60,7 +60,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           />
           <Link
             href="mailto:1142704468@qq.com"
-            className="hidden text-xs font-semibold uppercase tracking-[0.16em] transition-opacity hover:opacity-55 sm:block"
+            className="header-control header-contact"
           >
             {dictionary.hello}
           </Link>

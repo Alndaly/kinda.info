@@ -357,7 +357,7 @@ export function SiteSearch({
     <>
       <button
         type="button"
-        className="site-search-trigger"
+        className="header-control site-search-trigger"
         onClick={openSearch}
         aria-label={labels.button}
         title={labels.button}
