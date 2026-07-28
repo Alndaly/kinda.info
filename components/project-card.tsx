@@ -5,6 +5,7 @@ import { ArrowUpRight } from 'lucide-react';
 import type { Entry } from '@/.velite';
 import { Badge } from '@/components/ui/badge';
 import { getDictionary, type Locale } from '@/lib/i18n';
+import { projectStatus } from '@/lib/ui-classes';
 
 type ProjectStyle = CSSProperties & {
   '--project-accent': string;
@@ -26,14 +27,17 @@ export function ProjectCard({
   };
 
   return (
-    <article className="project-card group" style={style}>
+    <article className="group relative" style={style}>
       <Link href={entry.href} className="block">
-        <div className="project-identity">
-          <span className="project-mark">{entry.mark ?? String(index + 1).padStart(2, '0')}</span>
+        <div className="mb-[0.8rem] grid grid-cols-[auto_auto_minmax(2rem,1fr)] items-center gap-[0.7rem] text-[0.56rem] uppercase tracking-[0.15em] text-muted-foreground">
+          <span className="grid h-8 min-w-8 place-items-center rounded-full bg-[var(--project-accent)] font-display text-[0.8rem] font-bold tracking-[-0.02em] text-white">{entry.mark ?? String(index + 1).padStart(2, '0')}</span>
           <span>{entry.discipline ?? entry.tags.join(' · ')}</span>
-          <i aria-hidden="true" />
+          <i
+            aria-hidden="true"
+            className="h-px bg-[linear-gradient(to_right,var(--project-accent),hsl(var(--line)))] opacity-70"
+          />
         </div>
-        <div className="project-visual">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-[0.25rem] border border-[color-mix(in_srgb,var(--project-accent)_38%,hsl(var(--line)))] bg-muted after:absolute after:inset-0 after:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.14)] after:content-['']">
           {entry.cover ? (
             <Image
               src={entry.cover}
@@ -46,13 +50,16 @@ export function ProjectCard({
           ) : (
             <div className="h-full w-full bg-accent/15" />
           )}
-          <span className="project-color-wash" aria-hidden="true" />
-          <span className="project-watermark">{String(index + 1).padStart(2, '0')}</span>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,color-mix(in_srgb,var(--project-accent)_22%,transparent),transparent_45%),linear-gradient(to_top,rgba(0,0,0,0.15),transparent_35%)] mix-blend-screen transition-opacity duration-[400ms] ease-[ease] group-hover:opacity-[0.72]"
+          />
+          <span className="absolute -bottom-[0.2rem] right-[0.8rem] z-[2] font-display text-[clamp(4rem,10vw,7rem)] leading-none tracking-[-0.08em] text-white/[0.72]">{String(index + 1).padStart(2, '0')}</span>
         </div>
         <div className="flex items-start justify-between gap-5 pt-5">
           <div>
             <div className="mb-3 flex items-center gap-2">
-              <Badge className="project-status">{dictionary.status[status]}</Badge>
+              <Badge className={projectStatus}>{dictionary.status[status]}</Badge>
               <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
                 {new Date(entry.date).getFullYear()}
               </span>

@@ -33,3 +33,21 @@ export const textLink = [
   '[&>svg]:w-[0.9rem] [&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
   'hover:[&>svg]:translate-x-[2px] hover:[&>svg]:-translate-y-[2px]',
 ].join(' ');
+
+export const sectionSpace = 'py-[clamp(5.5rem,10vw,9rem)]';
+
+export const sectionHeading =
+  'mb-[clamp(2.5rem,5vw,4.5rem)] flex items-end justify-between gap-8 [@media(max-width:768px)]:items-start';
+
+export const sectionHeadingTitle =
+  'mt-[0.6rem] font-display text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.055em] [@media(max-width:768px)]:text-[3.2rem]';
+
+export const sectionIndex =
+  'text-[0.62rem] font-bold uppercase tracking-[0.22em] text-muted-foreground';
+
+/** Status pill tinted by the project's own accent. */
+export const projectStatus = [
+  'border-[color-mix(in_srgb,var(--project-accent)_55%,hsl(var(--line)))]',
+  'bg-[color-mix(in_srgb,var(--project-accent)_10%,transparent)]',
+  'text-[color-mix(in_srgb,var(--project-accent)_82%,hsl(var(--ink)))]',
+].join(' ');

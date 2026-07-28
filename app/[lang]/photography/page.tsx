@@ -4,7 +4,7 @@ import { PhotoCard } from '@/components/photo-card';
 import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
-import { siteContainer } from '@/lib/ui-classes';
+import { siteContainer, sectionIndex } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -48,7 +48,7 @@ export default async function PhotographyPage({ params }: Props) {
     <div className={`${siteContainer} page-top`}>
       <header className="archive-header archive-header-split">
         <div>
-          <span className="section-index">Index / 02</span>
+          <span className={sectionIndex}>Index / 02</span>
           <h1>{dictionary.title}</h1>
         </div>
         <div>
@@ -78,7 +78,7 @@ export default async function PhotographyPage({ params }: Props) {
           </div>
         </dl>
       </aside>
-      <div className="photo-archive-grid">
+      <div className="grid grid-cols-2 items-start gap-[clamp(3rem,7vw,7rem)_clamp(1.2rem,4vw,3.5rem)] [&>*:nth-child(3n+2)]:mt-28 [@media(max-width:768px)]:grid-cols-[1fr] [@media(max-width:768px)]:[&>*:nth-child(3n+2)]:mt-0">
         {photos.map((photo, index) => (
           <PhotoCard
             key={photo.slug}
@@ -86,7 +86,12 @@ export default async function PhotographyPage({ params }: Props) {
             priority={index < 2}
             frameIndex={index}
             viewLabel={dictionary.viewFrame}
-            className={index === 0 ? 'photo-archive-lead' : ''}
+            className={index === 0 ? 'col-span-full' : ''}
+            frameClassName={
+              index === 0
+                ? 'aspect-video min-h-0 [@media(max-width:768px)]:aspect-[4/3]'
+                : 'aspect-[4/5] [@media(max-width:768px)]:aspect-[4/3] [@media(max-width:768px)]:min-h-0'
+            }
           />
         ))}
       </div>

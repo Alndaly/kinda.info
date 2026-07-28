@@ -24,8 +24,8 @@ export function EntryCard({
   const readLabel = getDictionary(locale).notes.readAria;
 
   return (
-    <article className="entry-row group">
-      <div className="entry-index">{String(index + 1).padStart(2, '0')}</div>
+    <article className="group grid grid-cols-[3.5rem_minmax(0,1fr)_3rem] items-start gap-[clamp(1rem,4vw,3rem)] border-t border-line py-[clamp(2.25rem,4.5vw,3.5rem)] last:border-b [@media(max-width:768px)]:grid-cols-[2rem_minmax(0,1fr)] [@media(max-width:520px)]:gap-[0.7rem]">
+      <div className="pt-[0.35rem] font-display text-base italic text-muted-foreground">{String(index + 1).padStart(2, '0')}</div>
       <div className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -36,7 +36,7 @@ export function EntryCard({
               {tag}
             </Badge>
           ))}
-          {languageLabel ? <span className="entry-language">{languageLabel}</span> : null}
+          {languageLabel ? <span className="rounded-full bg-memo px-[0.55rem] py-[0.3rem] text-[0.52rem] font-extrabold uppercase tracking-[0.08em] text-memo-ink">{languageLabel}</span> : null}
         </div>
         <Link href={entry.href} className="block">
           <h2 className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.02] tracking-[-0.04em] transition-colors group-hover:text-accent">
@@ -47,7 +47,9 @@ export function EntryCard({
           </p>
         </Link>
       </div>
-      <Link className="entry-arrow" href={entry.href} aria-label={`${readLabel} ${entry.title}`}>
+      <Link
+        className="grid h-11 w-11 place-items-center rounded-full border border-line transition-[transform,background,color] duration-[240ms] ease-[ease] group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:border-accent group-hover:bg-accent group-hover:text-white [&>svg]:w-4 [@media(max-width:768px)]:hidden"
+        href={entry.href} aria-label={`${readLabel} ${entry.title}`}>
         <ArrowUpRight />
       </Link>
     </article>

@@ -22,7 +22,7 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer } from '@/lib/ui-classes';
+import { siteContainer, projectStatus } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 type ProjectStyle = CSSProperties & { '--project-accent': string };
@@ -120,7 +120,7 @@ export default async function ProjectPage({ params }: Props) {
               <p>{project.discipline ?? project.tags.join(' · ')}</p>
             </div>
             <div className="mb-6 flex gap-2">
-              <Badge className="project-status">{dictionary.status[status]}</Badge>
+              <Badge className={projectStatus}>{dictionary.status[status]}</Badge>
               {project.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
             </div>
             <h1 data-document-title>{project.title}</h1>

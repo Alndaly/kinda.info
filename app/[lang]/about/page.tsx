@@ -14,7 +14,7 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer } from '@/lib/ui-classes';
+import { siteContainer, sectionIndex, textLink } from '@/lib/ui-classes';
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -78,7 +78,7 @@ export default async function AboutPage({ params }: Props) {
       <JsonLd data={profileJsonLd} />
       <header className="about-hero">
         <div>
-          <span className="section-index">Index / 04</span>
+          <span className={sectionIndex}>Index / 04</span>
           <h1>{dictionary.title[0]}<br />{dictionary.title[1]}</h1>
         </div>
         <div className="about-portrait">
@@ -103,15 +103,15 @@ export default async function AboutPage({ params }: Props) {
             <p>{dictionary.columns[1]}</p>
           </div>
           <div className="mt-10 flex flex-wrap gap-5">
-            <Link className="text-link" href="https://github.com/Alndaly" target="_blank">GitHub <ArrowUpRight /></Link>
-            <Link className="text-link" href="mailto:1142704468@qq.com">Email <ArrowUpRight /></Link>
+            <Link className={textLink} href="https://github.com/Alndaly" target="_blank">GitHub <ArrowUpRight /></Link>
+            <Link className={textLink} href="mailto:1142704468@qq.com">Email <ArrowUpRight /></Link>
           </div>
         </div>
       </section>
 
       <section id="contact" className="about-contact">
         <header className="about-contact-heading">
-          <span className="section-index">Elsewhere / 05</span>
+          <span className={sectionIndex}>Elsewhere / 05</span>
           <div>
             <h2>{dictionary.elsewhere}</h2>
             <p>{dictionary.elsewhereDescription}</p>
