@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { EntryCard } from '@/components/entry-card';
+import { NotesIndex } from '@/components/notes-index';
 import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
@@ -38,23 +38,36 @@ export default async function NotesPage({ params }: Props) {
   if (!hasLocale(lang)) notFound();
   const dictionary = getDictionary(lang).notes;
   const notes = getEntries(lang, 'note');
-  const tags = Array.from(new Set(notes.flatMap((note) => note.tags)));
+  const previews = notes.map(({ date, href, locale, slug, summary, tags, title }) => ({
+    date,
+    href,
+    locale,
+    slug,
+    summary,
+    tags,
+    title,
+  }));
 
   return (
     <div className="site-container page-top">
-      <header className="archive-header">
+      <header className="archive-header notes-header">
         <span className="section-index">Index / 01</span>
         <h1>{dictionary.title}</h1>
         <p>{dictionary.intro}</p>
-        <div className="mt-8 flex flex-wrap gap-2">
-          {tags.map((tag) => <span key={tag} className="tag-chip">#{tag}</span>)}
-        </div>
       </header>
-      <div className="border-t border-line">
-        {notes.map((note, index) => (
-          <EntryCard key={note.slug} entry={note} index={index} locale={lang} />
-        ))}
-      </div>
+      <NotesIndex
+        entries={previews}
+        locale={lang}
+        labels={{
+          all: dictionary.all,
+          clear: dictionary.clearFilter,
+          filter: dictionary.filterByTag,
+          tagIndex: dictionary.tagIndex,
+          originalLanguage: dictionary.originalLanguage,
+          result: dictionary.result,
+          results: dictionary.results,
+        }}
+      />
     </div>
   );
 }

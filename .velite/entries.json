@@ -142,6 +142,9 @@
     "featured": true,
     "link": "https://github.com/Alndaly/kinda-utils",
     "status": "active",
+    "accent": "#F05A3C",
+    "mark": "KU",
+    "discipline": "开源 TypeScript 工具",
     "metadata": {
       "readingTime": 1,
       "wordCount": 80.16000000000001
@@ -166,6 +169,9 @@
     "featured": true,
     "link": "https://github.com/Alndaly/OpenStudio",
     "status": "active",
+    "accent": "#9B6BFF",
+    "mark": "OS",
+    "discipline": "AI 原生视频工作室",
     "metadata": {
       "readingTime": 1,
       "wordCount": 131.76
@@ -190,6 +196,9 @@
     "featured": true,
     "link": "https://revornix.com",
     "status": "active",
+    "accent": "#5B8CFF",
+    "mark": "RX",
+    "discipline": "本地优先知识工作台",
     "metadata": {
       "readingTime": 1,
       "wordCount": 137.16000000000003
@@ -214,6 +223,9 @@
     "featured": false,
     "link": "https://uniapi.top",
     "status": "active",
+    "accent": "#20A37A",
+    "mark": "UA",
+    "discipline": "公共 API 基础设施",
     "metadata": {
       "readingTime": 1,
       "wordCount": 121.36000000000001
@@ -237,6 +249,9 @@
     "featured": false,
     "link": "https://docs.unit-one.top",
     "status": "archive",
+    "accent": "#D3A33C",
+    "mark": "U1",
+    "discipline": "社区产品实验",
     "metadata": {
       "readingTime": 1,
       "wordCount": 66.96000000000001
@@ -388,6 +403,9 @@
     "featured": true,
     "link": "https://github.com/Alndaly/kinda-utils",
     "status": "active",
+    "accent": "#F05A3C",
+    "mark": "KU",
+    "discipline": "Open-source TypeScript Toolkit",
     "metadata": {
       "readingTime": 1,
       "wordCount": 88
@@ -412,6 +430,9 @@
     "featured": true,
     "link": "https://github.com/Alndaly/OpenStudio",
     "status": "active",
+    "accent": "#9B6BFF",
+    "mark": "OS",
+    "discipline": "AI-native Video Studio",
     "metadata": {
       "readingTime": 1,
       "wordCount": 135
@@ -436,6 +457,9 @@
     "featured": true,
     "link": "https://revornix.com",
     "status": "active",
+    "accent": "#5B8CFF",
+    "mark": "RX",
+    "discipline": "Local-first Knowledge Workspace",
     "metadata": {
       "readingTime": 1,
       "wordCount": 137
@@ -460,6 +484,9 @@
     "featured": false,
     "link": "https://uniapi.top",
     "status": "active",
+    "accent": "#20A37A",
+    "mark": "UA",
+    "discipline": "Public API Infrastructure",
     "metadata": {
       "readingTime": 1,
       "wordCount": 114
@@ -483,6 +510,9 @@
     "featured": false,
     "link": "https://docs.unit-one.top",
     "status": "archive",
+    "accent": "#D3A33C",
+    "mark": "U1",
+    "discipline": "Community Product Experiment",
     "metadata": {
       "readingTime": 1,
       "wordCount": 75

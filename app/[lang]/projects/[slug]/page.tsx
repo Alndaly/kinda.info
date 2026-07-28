@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,7 @@ import {
 import { siteConfig } from '@/site.config';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
+type ProjectStyle = CSSProperties & { '--project-accent': string };
 
 export function generateStaticParams() {
   return Array.from(
@@ -70,6 +72,10 @@ export default async function ProjectPage({ params }: Props) {
   const project = getEntry('project', slug, lang);
   if (!project) notFound();
   const seo = getEntrySeo('project', slug, lang);
+  const status = project.status ?? 'active';
+  const projectStyle: ProjectStyle = {
+    '--project-accent': project.accent ?? '#e25943',
+  };
   const canonicalUrl = absoluteUrl(seo.alternates.canonical);
   const projectJsonLd = jsonLdGraph(
     {
@@ -95,7 +101,7 @@ export default async function ProjectPage({ params }: Props) {
   );
 
   return (
-    <article>
+    <article className="project-detail" style={projectStyle}>
       {!seo.isFallback && <JsonLd data={projectJsonLd} />}
       <header className="project-detail-header site-container">
         <Link href={localizeHref(lang, '/projects')} className="back-link">
@@ -103,14 +109,18 @@ export default async function ProjectPage({ params }: Props) {
         </Link>
         <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-end">
           <div>
+            <div className="project-detail-identity">
+              <span>{project.mark ?? 'K'}</span>
+              <p>{project.discipline ?? project.tags.join(' · ')}</p>
+            </div>
             <div className="mb-6 flex gap-2">
-              <Badge>{project.status ?? 'active'}</Badge>
+              <Badge className="project-status">{dictionary.status[status]}</Badge>
               {project.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
             </div>
             <h1>{project.title}</h1>
             <p>{project.summary}</p>
             {project.link && (
-              <Button asChild className="mt-8 rounded-full">
+              <Button asChild className="project-visit mt-8 rounded-full">
                 <Link href={project.link} target="_blank">
                   {dictionary.visit} <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -118,7 +128,7 @@ export default async function ProjectPage({ params }: Props) {
             )}
           </div>
           {project.cover && (
-            <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-muted">
+            <div className="project-detail-visual">
               <Image
                 src={project.cover}
                 alt={project.title}

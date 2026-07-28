@@ -5,14 +5,21 @@ import { Badge } from '@/components/ui/badge';
 import { formatShortDate } from '@/lib/content';
 import { getDictionary, type Locale } from '@/lib/i18n';
 
+export type EntryCardEntry = Pick<
+  Entry,
+  'date' | 'href' | 'locale' | 'slug' | 'summary' | 'tags' | 'title'
+>;
+
 export function EntryCard({
   entry,
   index,
   locale = 'zh',
+  languageLabel,
 }: {
-  entry: Entry;
+  entry: EntryCardEntry;
   index: number;
   locale?: Locale;
+  languageLabel?: string;
 }) {
   const readLabel = getDictionary(locale).notes.readAria;
 
@@ -29,9 +36,10 @@ export function EntryCard({
               {tag}
             </Badge>
           ))}
+          {languageLabel ? <span className="entry-language">{languageLabel}</span> : null}
         </div>
         <Link href={entry.href} className="block">
-          <h2 className="font-display text-[clamp(1.75rem,4vw,3.5rem)] leading-[1.02] tracking-[-0.04em] transition-colors group-hover:text-accent">
+          <h2 className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.02] tracking-[-0.04em] transition-colors group-hover:text-accent">
             {entry.title}
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">

@@ -135,7 +135,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
         <div className="grid gap-12 md:grid-cols-2">
           {projects.slice(0, 2).map((project, index) => (
-            <ProjectCard key={project.slug} entry={project} index={index} />
+            <ProjectCard key={project.slug} entry={project} index={index} locale={lang} />
           ))}
         </div>
       </section>

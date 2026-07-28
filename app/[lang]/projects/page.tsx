@@ -50,7 +50,7 @@ export default async function ProjectsPage({ params }: Props) {
       </header>
       <div className="grid gap-x-10 gap-y-20 md:grid-cols-2">
         {projects.map((project, index) => (
-          <ProjectCard key={project.slug} entry={project} index={index} />
+          <ProjectCard key={project.slug} entry={project} index={index} locale={lang} />
         ))}
       </div>
     </div>

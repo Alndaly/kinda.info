@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, CalendarDays, Clock3 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarDays, Clock3, Languages } from 'lucide-react';
+import { ArticleReadingTools } from '@/components/article-reading-tools';
 import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
-import { allEntries, formatDate, getEntry, getEntrySeo } from '@/lib/content';
+import { allEntries, formatDate, getEntries, getEntry, getEntrySeo } from '@/lib/content';
 import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
 import {
   absoluteUrl,
@@ -73,6 +74,10 @@ export default async function NotePage({ params }: Props) {
   const note = getEntry('note', slug, lang);
   if (!note) notFound();
   const seo = getEntrySeo('note', slug, lang);
+  const noteIndex = getEntries(lang, 'note');
+  const currentIndex = noteIndex.findIndex((entry) => entry.slug === slug);
+  const previousNote = currentIndex >= 0 ? noteIndex[currentIndex + 1] : undefined;
+  const nextNote = currentIndex > 0 ? noteIndex[currentIndex - 1] : undefined;
   const canonicalUrl = absoluteUrl(seo.alternates.canonical);
   const articleJsonLd = jsonLdGraph(
     {
@@ -120,13 +125,45 @@ export default async function NotePage({ params }: Props) {
         </div>
       </header>
       <div className="article-rule" />
+      {seo.isFallback ? (
+        <aside className="translation-notice site-container">
+          <Languages aria-hidden="true" />
+          <div>
+            <strong>{dictionary.fallbackTitle}</strong>
+            <p>{dictionary.fallbackDescription}</p>
+          </div>
+          <Link href={`/notes/${slug}`}>{dictionary.viewOriginal}</Link>
+        </aside>
+      ) : null}
+      <ArticleReadingTools
+        contentsLabel={dictionary.contents}
+        progressLabel={dictionary.readingProgress}
+      />
       <div className="mdx-prose">
         <TiptapContent content={note.content} fallbackHtml={note.html} />
       </div>
       <footer className="article-end">
-        <span>EOF</span>
-        <p>{dictionary.thanks}</p>
-        <Link href={localizeHref(lang, '/notes')}>{dictionary.continue}</Link>
+        <div className="article-end-message">
+          <span>EOF</span>
+          <p>{dictionary.thanks}</p>
+          <Link href={localizeHref(lang, '/notes')}>{dictionary.continue}</Link>
+        </div>
+        <nav className="article-pagination" aria-label={dictionary.continue}>
+          {previousNote ? (
+            <Link href={previousNote.href}>
+              <small>{dictionary.previous}</small>
+              <strong>{previousNote.title}</strong>
+              <ArrowLeft aria-hidden="true" />
+            </Link>
+          ) : <span />}
+          {nextNote ? (
+            <Link href={nextNote.href}>
+              <small>{dictionary.next}</small>
+              <strong>{nextNote.title}</strong>
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          ) : <span />}
+        </nav>
       </footer>
     </article>
   );

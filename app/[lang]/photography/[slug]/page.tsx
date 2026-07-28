@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
-import { allEntries, formatDate, getEntry, getEntrySeo } from '@/lib/content';
+import { allEntries, formatDate, getEntries, getEntry, getEntrySeo } from '@/lib/content';
 import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
 import {
   absoluteUrl,
@@ -68,6 +68,8 @@ export default async function PhotoPage({ params }: Props) {
   const photo = getEntry('photo', slug, lang);
   if (!photo) notFound();
   const seo = getEntrySeo('photo', slug, lang);
+  const photoIndex = getEntries(lang, 'photo');
+  const frameIndex = photoIndex.findIndex((entry) => entry.slug === slug);
   const canonicalUrl = absoluteUrl(seo.alternates.canonical);
   const photoJsonLd = jsonLdGraph(
     {
@@ -104,21 +106,32 @@ export default async function PhotoPage({ params }: Props) {
           <ArrowLeft /> {dictionary.back}
         </Link>
         <header>
-          <span>{photo.location} · {formatDate(photo.date, lang)}</span>
+          <span>
+            FRAME {String(frameIndex + 1).padStart(2, '0')} /{' '}
+            {String(photoIndex.length).padStart(2, '0')}
+            <br />
+            {photo.location} · {formatDate(photo.date, lang)}
+          </span>
           <h1>{photo.title}</h1>
           <p>{photo.summary}</p>
         </header>
       </div>
       {photo.cover && (
-        <div className="photo-detail-hero">
-          <Image
-            src={photo.cover}
-            alt={photo.title}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+        <div className="photo-detail-stage">
+          <div className="photo-detail-hero">
+            <Image
+              src={photo.cover}
+              alt={photo.title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="photo-detail-caption">
+            <span>© {siteConfig.author}</span>
+            <span>{photo.location} / {photo.date.replaceAll('-', '.')}</span>
+          </div>
         </div>
       )}
       <div className="mdx-prose mdx-prose-photo">

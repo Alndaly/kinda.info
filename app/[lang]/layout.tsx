@@ -9,6 +9,9 @@ import { getDictionary, getLocaleAlternates, hasLocale, locales } from '@/lib/i1
 import { absoluteUrl, personId, websiteId } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
 import { notFound } from 'next/navigation';
+import '@fontsource-variable/newsreader';
+import '@fontsource-variable/newsreader/wght-italic.css';
+import '@fontsource-variable/noto-serif-sc';
 import 'katex/dist/katex.min.css';
 import 'highlight.js/styles/github-dark.css';
 import '../globals.css';
