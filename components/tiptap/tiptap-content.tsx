@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import type { Mark } from '@tiptap/pm/model';
 import StarterKit from '@tiptap/starter-kit';
@@ -22,6 +22,15 @@ import {
   translateTexts,
   writeTranslationCache,
 } from '@/lib/client-translation';
+import { GalleryContext } from '@/components/tiptap/gallery-context';
+import { PhotoSlider } from 'react-photo-view';
+import 'react-photo-view/dist/react-photo-view.css';
+
+const photoLoading =
+  'block h-6 w-6 animate-spinner rounded-full border border-white/70 border-t-transparent';
+
+const photoCounter =
+  'mr-4 self-center font-mono text-[0.62rem] tracking-[0.14em] text-white/70 tabular-nums';
 
 const TRANSLATABLE_CJK = /[\p{Script=Han}\u3000-\u303f\uff01-\uff65]/u;
 
@@ -208,6 +217,41 @@ export function TiptapContent({
     translationCacheKey,
   ]);
 
+  const images = useMemo(() => {
+    if (!editor) return [] as string[];
+    const found: string[] = [];
+    editor.state.doc.descendants((node) => {
+      if (node.type.name !== 'image') return;
+      const src = typeof node.attrs.src === 'string' ? node.attrs.src : '';
+      if (src) found.push(src);
+    });
+    return found;
+  }, [editor]);
+  // A fresh array on every render restarts the slider's own effects.
+  const photoImages = useMemo(
+    () => images.map((src) => ({ src, key: src })),
+    [images],
+  );
+  // visible and index are separate: deriving one from the other lets the
+  // slider's onIndexChange during close flip it straight back open.
+  const [viewer, setViewer] = useState({ visible: false, index: 0 });
+  // The slider unmounts itself when its closing animation ends, which a
+  // background tab never runs — so it is also unmounted on a timer, or a
+  // full-screen layer could be left covering the page.
+  const [viewerMounted, setViewerMounted] = useState(false);
+  const gallery = useMemo(() => ({
+    open: (src: string) => {
+      setViewerMounted(true);
+      setViewer({ visible: true, index: Math.max(images.indexOf(src), 0) });
+    },
+  }), [images]);
+
+  useEffect(() => {
+    if (viewer.visible) return;
+    const timer = window.setTimeout(() => setViewerMounted(false), 500);
+    return () => window.clearTimeout(timer);
+  }, [viewer.visible]);
+
   if (!editor) {
     return (
       <div
@@ -218,5 +262,25 @@ export function TiptapContent({
     );
   }
 
-  return <EditorContent editor={editor} />;
+  return (
+    <GalleryContext.Provider value={gallery}>
+      <EditorContent editor={editor} />
+      {viewerMounted ? (
+        <PhotoSlider
+          images={photoImages}
+          visible={viewer.visible}
+          index={viewer.index}
+          onIndexChange={(index) => setViewer((state) => ({ ...state, index }))}
+          onClose={() => setViewer((state) => ({ ...state, visible: false }))}
+          maskOpacity={0.94}
+          loadingElement={<span className={photoLoading} />}
+          toolbarRender={({ index }) => (
+            <span className={photoCounter}>
+              {String(index + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+            </span>
+          )}
+        />
+      ) : null}
+    </GalleryContext.Provider>
+  );
 }

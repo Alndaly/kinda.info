@@ -6,74 +6,65 @@ import {
   ReactNodeViewRenderer,
   type NodeViewProps,
 } from '@tiptap/react';
-import { Expand, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Expand } from 'lucide-react';
+import { useDocumentGallery } from '@/components/tiptap/gallery-context';
 
 function ImageView({ node }: NodeViewProps) {
   const isEnglish = typeof document !== 'undefined' &&
     document.documentElement.lang === 'en';
-  const [open, setOpen] = useState(false);
+  const gallery = useDocumentGallery();
   const src = typeof node.attrs.src === 'string' ? node.attrs.src : '';
   const alt = typeof node.attrs.alt === 'string' ? node.attrs.alt : '';
-
-  useEffect(() => {
-    if (!open) return;
-    const close = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
-    window.addEventListener('keydown', close);
-    return () => window.removeEventListener('keydown', close);
-  }, [open]);
 
   return (
     <NodeViewWrapper>
       <figure
-        className="ml-[50%] w-[min(100vw-2rem,68rem)] -translate-x-1/2"
+        className="group/figure ml-[50%] w-[min(100vw-2rem,68rem)] -translate-x-1/2"
         data-node="figure"
       >
-        <button
-          type="button"
-          className="relative block w-full cursor-zoom-in overflow-hidden rounded-[0.2rem] border-0 bg-muted [&>img]:block [&>img]:h-auto [&>img]:w-full [&>img]:transition-[transform,filter] [&>img]:duration-500 [&>img]:ease-[ease] hover:[&>img]:scale-[1.012] hover:[&>img]:saturate-[1.04]"
-          onClick={() => setOpen(true)}
-          contentEditable={false}
-          aria-label={isEnglish
-            ? `Enlarge image${alt ? `: ${alt}` : ''}`
-            : `放大图片${alt ? `：${alt}` : ''}`}
-        >
-          {src ? <img src={src} alt={alt} /> : <span>Image unavailable</span>}
-          <span className="absolute bottom-[0.8rem] right-[0.8rem] grid h-9 w-9 place-items-center rounded-full bg-black/50 text-white backdrop-blur-[10px] [&>svg]:w-[0.85rem]">
-            <Expand />
-          </span>
-        </button>
+        {src ? (
+          <button
+            type="button"
+            className={imageButton}
+            contentEditable={false}
+            onClick={() => gallery?.open(src)}
+            aria-label={isEnglish
+              ? `Enlarge image${alt ? `: ${alt}` : ''}`
+              : `放大图片${alt ? `：${alt}` : ''}`}
+          >
+            <img src={src} alt={alt} />
+            <span className={imageExpandBadge}>
+              <Expand />
+            </span>
+          </button>
+        ) : (
+          <div className={imageButton} contentEditable={false}>
+            <span>Image unavailable</span>
+          </div>
+        )}
         {alt && (
           <figcaption className="mt-3 text-center font-sans text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground">
             {alt}
           </figcaption>
         )}
       </figure>
-
-      {open && src && (
-        <div
-          className="fixed inset-0 z-[100] grid cursor-zoom-out place-items-center bg-[rgba(8,8,7,0.94)] px-4 py-16 text-white backdrop-blur-2xl [&>img]:max-h-[82vh] [&>img]:max-w-[min(94vw,1500px)] [&>img]:object-contain"
-          role="dialog"
-          aria-modal="true"
-          aria-label={alt || (isEnglish ? 'Image preview' : '图片预览')}
-          onClick={() => setOpen(false)}
-          contentEditable={false}
-        >
-          <button
-            type="button"
-            aria-label={isEnglish ? 'Close preview' : '关闭预览'}
-          >
-            <X />
-          </button>
-          <img src={src} alt={alt} onClick={(event) => event.stopPropagation()} />
-          {alt && <p>{alt}</p>}
-        </div>
-      )}
     </NodeViewWrapper>
   );
 }
+
+const imageButton = [
+  'relative block w-full cursor-zoom-in overflow-hidden rounded-[0.2rem] border-0 bg-muted',
+  '[&>img]:block [&>img]:h-auto [&>img]:w-full',
+  '[&>img]:transition-[transform,filter] [&>img]:duration-500 [&>img]:ease-[ease]',
+  'hover:[&>img]:scale-[1.012] hover:[&>img]:saturate-[1.04]',
+].join(' ');
+
+const imageExpandBadge = [
+  'absolute bottom-[0.8rem] right-[0.8rem] grid h-9 w-9 place-items-center rounded-full',
+  // visible on touch too, where there is no hover to reveal it
+  'bg-black/50 text-white opacity-70 backdrop-blur-[10px] transition-opacity duration-300',
+  'group-hover/figure:opacity-100 [&>svg]:w-[0.85rem]',
+].join(' ');
 
 const ImageNode = Node.create({
   name: 'image',

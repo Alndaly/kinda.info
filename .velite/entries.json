@@ -1,5 +1,51 @@
 [
   {
+    "slug": "japan-travel-notes",
+    "locale": "zh",
+    "type": "photo",
+    "title": "京都与大阪旅行手记",
+    "summary": "在金阁寺的红叶、雨中的二年坂与清水寺之间，留住第一次走进京都和大阪时遇见的光、颜色与片段。",
+    "date": "2024-12-04T00:00:00.000Z",
+    "tags": [
+      "旅行",
+      "京都",
+      "大阪"
+    ],
+    "cover": "https://oss.kinda.info/image/202412041635512.JPG",
+    "featured": true,
+    "location": "Kyoto / Osaka",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 302.12
+    },
+    "html": "<p>第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。</p>\n<h2>金阁寺</h2>\n<p>金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"金阁寺园林\"></p>\n<h2>雨中的二年坂与清水寺</h2>\n<p>去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。</p>\n<p>途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。</p>\n<p>二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。</p>\n<h2>大阪环球影城</h2>\n<p>好莱坞美梦乘车游是当天最直接的快乐。<code>Osaka Lover</code> 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。</p>\n<h2>地铁与 Suica</h2>\n<p>第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。</p>\n<ul>\n<li>导航优先使用 Google Maps。</li>\n<li>找不到线路简称时，直接核对线路全称和终点方向。</li>\n<li>不要只看颜色，不同系统之间可能重复。</li>\n<li>iPhone 里的 Suica 很方便，靠近闸机即可通过。</li>\n</ul>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"车站与线路\"></p>\n<h2>购物</h2>\n<p>心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。</p>\n<p>这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。</p>",
+    "content": "第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。\n\n## 金阁寺\n\n金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。\n\n![金阁寺园林](https://oss.kinda.info/image/202412041635218.JPG)\n\n## 雨中的二年坂与清水寺\n\n去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。\n\n途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。\n\n二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。\n\n## 大阪环球影城\n\n好莱坞美梦乘车游是当天最直接的快乐。`Osaka Lover` 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。\n\n## 地铁与 Suica\n\n第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。\n\n- 导航优先使用 Google Maps。\n- 找不到线路简称时，直接核对线路全称和终点方向。\n- 不要只看颜色，不同系统之间可能重复。\n- iPhone 里的 Suica 很方便，靠近闸机即可通过。\n\n![车站与线路](https://oss.kinda.info/image/202412041635465.JPG)\n\n## 购物\n\n心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。\n\n这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。",
+    "href": "/photography/japan-travel-notes"
+  },
+  {
+    "slug": "yunnan-travel-notes",
+    "locale": "zh",
+    "type": "photo",
+    "title": "成都&云南游记",
+    "summary": "成都的大熊猫和云南的日照金山，以及朋友们的哈哈大笑，都弥足珍贵。",
+    "date": "2025-01-01T00:00:00.000Z",
+    "tags": [
+      "旅行",
+      "云南",
+      "成都"
+    ],
+    "cover": "https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005045.jpeg",
+    "featured": true,
+    "location": "Yunnan & Chengdu / China",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 13.440000000000001
+    },
+    "html": "<p>这是一趟说走就走的旅行，从说起到出发差不多才一个月？</p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005039.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005040.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005041.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005042.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005043.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005044.jpeg\" alt=\"\"></p>",
+    "content": "这是一趟说走就走的旅行，从说起到出发差不多才一个月？\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005039.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005040.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005041.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005042.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005043.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005044.jpeg)",
+    "href": "/photography/yunnan-travel-notes"
+  },
+  {
     "slug": "kinda-utils",
     "locale": "zh",
     "type": "project",
@@ -814,52 +860,6 @@
     "html": "<p><code>whisper.cpp</code> 把 Whisper 推理带到本地 C/C++ 环境，适合离线转写、字幕生成和端侧集成。项目命令与模型格式持续演进，下面保留稳定的工作流，不把某个历史二进制名称当作永久接口。</p>\n<h2>1. 获取并构建</h2>\n<pre><code class=\"language-bash\">git clone https://github.com/ggml-org/whisper.cpp.git\ncd whisper.cpp\n\ncmake -B build\ncmake --build build -j --config Release\n</code></pre>\n<p>构建完成后，先查看生成的 CLI 帮助，确认当前参数：</p>\n<pre><code class=\"language-bash\">./build/bin/whisper-cli --help\n</code></pre>\n<h2>2. 下载模型</h2>\n<p>仓库提供模型下载脚本：</p>\n<pre><code class=\"language-bash\">./models/download-ggml-model.sh base\n</code></pre>\n<p>模型越大，通常识别质量越高，同时需要更多内存和计算。中文转写不要选择带 <code>.en</code> 的纯英文模型。</p>\n<p>如果使用自行微调的 Hugging Face 模型，需要通过仓库当前提供的转换脚本生成兼容格式。转换前保留 tokenizer、配置和原始权重。</p>\n<h2>3. 统一音频格式</h2>\n<p>排错时先把输入转换为 16 kHz、单声道、16-bit PCM WAV：</p>\n<pre><code class=\"language-bash\">ffmpeg -i input.mp4 \\\n  -ar 16000 \\\n  -ac 1 \\\n  -c:a pcm_s16le \\\n  output.wav\n</code></pre>\n<p>再执行转写：</p>\n<pre><code class=\"language-bash\">./build/bin/whisper-cli \\\n  -m models/ggml-base.bin \\\n  -f output.wav \\\n  -l zh\n</code></pre>\n<p>若当前版本的可执行文件或参数不同，以 <code>--help</code> 为准。</p>\n<h2>4. 生成字幕</h2>\n<p>使用 CLI 的 SRT 输出选项生成字幕文件，再用 ffmpeg 烧录：</p>\n<pre><code class=\"language-bash\">ffmpeg -i input.mp4 \\\n  -vf \"subtitles=input.srt\" \\\n  -c:a copy \\\n  output-with-subtitles.mp4\n</code></pre>\n<p>字幕生成后应人工检查：</p>\n<ul>\n<li>专有名词和中英文混排；</li>\n<li>断句与阅读速度；</li>\n<li>时间轴是否重叠；</li>\n<li>长静音后的漂移；</li>\n<li>背景音乐或多人对话造成的误识别。</li>\n</ul>\n<p>如果平台支持外挂字幕，优先保留独立 SRT；硬字幕不可关闭，也不利于后续修改。</p>\n<h2>5. 量化与加速</h2>\n<p>量化可以降低模型体积和内存占用，但可能损失少量识别质量。先用原始模型建立准确率基线，再对比量化版本。</p>\n<p>Apple 平台可以使用 Metal 或 Core ML 路径，NVIDIA 环境可以使用 CUDA。具体构建开关会随项目版本变化，应该从当前仓库的构建文档确认，而不是复制旧 Makefile 命令。</p>\n<p>判断加速是否生效时，记录同一段音频的：</p>\n<ul>\n<li>总耗时与实时倍率；</li>\n<li>峰值内存；</li>\n<li>关键句错误率；</li>\n<li>首次运行与后续运行差异。</li>\n</ul>\n<h2>6. 实时转写</h2>\n<p>实时流式转写还要处理音频窗口、重叠区间和断句。窗口太短会缺少上下文，太长则增加延迟。先确定能接受的延迟，再调整 step、length 和 keep 等参数。</p>\n<blockquote>\n<p>[!TIP]\n本地转写的完整质量来自“模型 + 音频预处理 + 语言设置 + 后处理”。只更换更大的模型，不一定能解决音量过低、声道混乱或专有名词的问题。</p>\n</blockquote>\n<h2>一条可复现的字幕流程</h2>\n<ol>\n<li>用 ffmpeg 提取并标准化音轨；</li>\n<li>固定模型、语言和推理参数；</li>\n<li>输出 SRT；</li>\n<li>人工校正术语、断句和时间轴；</li>\n<li>保留原始 SRT；</li>\n<li>按发布平台需要选择外挂或烧录字幕。</li>\n</ol>\n<p>这样既能享受自动转写的效率，也不会把未经检查的模型输出直接变成最终内容。</p>",
     "content": "`whisper.cpp` 把 Whisper 推理带到本地 C/C++ 环境，适合离线转写、字幕生成和端侧集成。项目命令与模型格式持续演进，下面保留稳定的工作流，不把某个历史二进制名称当作永久接口。\n\n## 1. 获取并构建\n\n```bash\ngit clone https://github.com/ggml-org/whisper.cpp.git\ncd whisper.cpp\n\ncmake -B build\ncmake --build build -j --config Release\n```\n\n构建完成后，先查看生成的 CLI 帮助，确认当前参数：\n\n```bash\n./build/bin/whisper-cli --help\n```\n\n## 2. 下载模型\n\n仓库提供模型下载脚本：\n\n```bash\n./models/download-ggml-model.sh base\n```\n\n模型越大，通常识别质量越高，同时需要更多内存和计算。中文转写不要选择带 `.en` 的纯英文模型。\n\n如果使用自行微调的 Hugging Face 模型，需要通过仓库当前提供的转换脚本生成兼容格式。转换前保留 tokenizer、配置和原始权重。\n\n## 3. 统一音频格式\n\n排错时先把输入转换为 16 kHz、单声道、16-bit PCM WAV：\n\n```bash\nffmpeg -i input.mp4 \\\n  -ar 16000 \\\n  -ac 1 \\\n  -c:a pcm_s16le \\\n  output.wav\n```\n\n再执行转写：\n\n```bash\n./build/bin/whisper-cli \\\n  -m models/ggml-base.bin \\\n  -f output.wav \\\n  -l zh\n```\n\n若当前版本的可执行文件或参数不同，以 `--help` 为准。\n\n## 4. 生成字幕\n\n使用 CLI 的 SRT 输出选项生成字幕文件，再用 ffmpeg 烧录：\n\n```bash\nffmpeg -i input.mp4 \\\n  -vf \"subtitles=input.srt\" \\\n  -c:a copy \\\n  output-with-subtitles.mp4\n```\n\n字幕生成后应人工检查：\n\n- 专有名词和中英文混排；\n- 断句与阅读速度；\n- 时间轴是否重叠；\n- 长静音后的漂移；\n- 背景音乐或多人对话造成的误识别。\n\n如果平台支持外挂字幕，优先保留独立 SRT；硬字幕不可关闭，也不利于后续修改。\n\n## 5. 量化与加速\n\n量化可以降低模型体积和内存占用，但可能损失少量识别质量。先用原始模型建立准确率基线，再对比量化版本。\n\nApple 平台可以使用 Metal 或 Core ML 路径，NVIDIA 环境可以使用 CUDA。具体构建开关会随项目版本变化，应该从当前仓库的构建文档确认，而不是复制旧 Makefile 命令。\n\n判断加速是否生效时，记录同一段音频的：\n\n- 总耗时与实时倍率；\n- 峰值内存；\n- 关键句错误率；\n- 首次运行与后续运行差异。\n\n## 6. 实时转写\n\n实时流式转写还要处理音频窗口、重叠区间和断句。窗口太短会缺少上下文，太长则增加延迟。先确定能接受的延迟，再调整 step、length 和 keep 等参数。\n\n> [!TIP]\n> 本地转写的完整质量来自“模型 + 音频预处理 + 语言设置 + 后处理”。只更换更大的模型，不一定能解决音量过低、声道混乱或专有名词的问题。\n\n## 一条可复现的字幕流程\n\n1. 用 ffmpeg 提取并标准化音轨；\n2. 固定模型、语言和推理参数；\n3. 输出 SRT；\n4. 人工校正术语、断句和时间轴；\n5. 保留原始 SRT；\n6. 按发布平台需要选择外挂或烧录字幕。\n\n这样既能享受自动转写的效率，也不会把未经检查的模型输出直接变成最终内容。",
     "href": "/notes/whisper-cpp-guide"
-  },
-  {
-    "slug": "japan-travel-notes",
-    "locale": "zh",
-    "type": "photo",
-    "title": "京都与大阪旅行手记",
-    "summary": "在金阁寺的红叶、雨中的二年坂与清水寺之间，留住第一次走进京都和大阪时遇见的光、颜色与片段。",
-    "date": "2024-12-04T00:00:00.000Z",
-    "tags": [
-      "旅行",
-      "京都",
-      "大阪"
-    ],
-    "cover": "https://oss.kinda.info/image/202412041635512.JPG",
-    "featured": true,
-    "location": "Kyoto / Osaka",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 302.12
-    },
-    "html": "<p>第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。</p>\n<h2>金阁寺</h2>\n<p>金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"金阁寺园林\"></p>\n<h2>雨中的二年坂与清水寺</h2>\n<p>去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。</p>\n<p>途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。</p>\n<p>二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。</p>\n<h2>大阪环球影城</h2>\n<p>好莱坞美梦乘车游是当天最直接的快乐。<code>Osaka Lover</code> 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。</p>\n<h2>地铁与 Suica</h2>\n<p>第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。</p>\n<ul>\n<li>导航优先使用 Google Maps。</li>\n<li>找不到线路简称时，直接核对线路全称和终点方向。</li>\n<li>不要只看颜色，不同系统之间可能重复。</li>\n<li>iPhone 里的 Suica 很方便，靠近闸机即可通过。</li>\n</ul>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"车站与线路\"></p>\n<h2>购物</h2>\n<p>心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。</p>\n<p>这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。</p>",
-    "content": "第一次去京都和大阪，真正留下来的不是完整攻略，而是一些非常具体的画面：金阁寺门前的红叶、雨里的坡道、过山车迎面而来的风，以及在地铁站里反复确认线路的狼狈。\n\n## 金阁寺\n\n金阁寺是这趟旅行最超出预期的地方。还没走进去，入口旁的一排红枫就已经足够惊艳。金色建筑被不同层次的树木围在中央，屋顶的凤凰在光线里格外清楚。\n\n![金阁寺园林](https://oss.kinda.info/image/202412041635218.JPG)\n\n## 雨中的二年坂与清水寺\n\n去二年坂时雨不小，石板路和传统建筑因此有了另一种颜色。坡度比照片里明显，加上一整天都在步行，走到后半程确实很累。\n\n途中一家店的抹茶巧克力很好吃。只买了两盒，回去以后才开始后悔没有多带一点。\n\n二年坂继续向上就是清水寺。到达时天色已经很晚，没能看到想象中的满山红叶，但雨夜里的寺院也足够安静。\n\n## 大阪环球影城\n\n好莱坞美梦乘车游是当天最直接的快乐。`Osaka Lover` 的背景音乐、失重感和迎面而来的风叠在一起，比我预想的持续得更久，也更让人上瘾。\n\n## 地铁与 Suica\n\n第一次使用日本的轨道交通，最容易困惑的是同一条线路可能同时出现简称、全称和不同运营公司的标识。\n\n- 导航优先使用 Google Maps。\n- 找不到线路简称时，直接核对线路全称和终点方向。\n- 不要只看颜色，不同系统之间可能重复。\n- iPhone 里的 Suica 很方便，靠近闸机即可通过。\n\n![车站与线路](https://oss.kinda.info/image/202412041635465.JPG)\n\n## 购物\n\n心斋桥不少商店晚上八点左右关门，购物最好提前安排。办理免税需要护照，别把它留在酒店。餐饮店通常关得更晚，但旺季排队会很长。\n\n这不是一份完整攻略，只是我希望下一次出发前还能重新看到的几条记录。",
-    "href": "/photography/japan-travel-notes"
-  },
-  {
-    "slug": "yunnan-travel-notes",
-    "locale": "zh",
-    "type": "photo",
-    "title": "成都&云南游记",
-    "summary": "成都的大熊猫和云南的日照金山，以及朋友们的哈哈大笑，都弥足珍贵。",
-    "date": "2025-01-01T00:00:00.000Z",
-    "tags": [
-      "旅行",
-      "云南",
-      "成都"
-    ],
-    "cover": "https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005045.jpeg",
-    "featured": true,
-    "location": "Yunnan & Chengdu / China",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 13.440000000000001
-    },
-    "html": "<p>这是一趟说走就走的旅行，从说起到出发差不多才一个月？</p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005039.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005040.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005041.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005042.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005043.jpeg\" alt=\"\"></p>\n<p><img src=\"https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005044.jpeg\" alt=\"\"></p>",
-    "content": "这是一趟说走就走的旅行，从说起到出发差不多才一个月？\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005039.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005040.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005041.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005042.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005043.jpeg)\n\n![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260728170005044.jpeg)",
-    "href": "/photography/yunnan-travel-notes"
   },
   {
     "slug": "neo4j-python-guide",
