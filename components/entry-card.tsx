@@ -39,7 +39,7 @@ export function EntryCard({
           {languageLabel ? <span className="entry-language">{languageLabel}</span> : null}
         </div>
         <Link href={entry.href} className="block">
-          <h2 className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.12] tracking-[-0.04em] group-hover:text-accent">
+          <h2 className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.02] tracking-[-0.04em] transition-colors group-hover:text-accent">
             {entry.title}
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
