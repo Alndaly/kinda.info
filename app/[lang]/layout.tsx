@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
-import { ThemeProvider } from '@/components/theme-provider';
+import { GlobalMiniPlayer } from '@/components/audio/global-mini-player';
+import { DocumentLanguage } from '@/components/document-language';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { JsonLd } from '@/components/json-ld';
@@ -9,12 +8,6 @@ import { getDictionary, getLocaleAlternates, hasLocale, locales } from '@/lib/i1
 import { absoluteUrl, personId, websiteId } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
 import { notFound } from 'next/navigation';
-import '@fontsource-variable/newsreader';
-import '@fontsource-variable/newsreader/wght-italic.css';
-import '@fontsource-variable/noto-serif-sc';
-import 'katex/dist/katex.min.css';
-import 'highlight.js/styles/github-dark.css';
-import '../globals.css';
 
 type Props = {
   children: React.ReactNode;
@@ -120,30 +113,13 @@ export default async function RootLayout({ children, params }: Props) {
   };
 
   return (
-    <html
-      lang={lang === 'zh' ? 'zh-CN' : 'en'}
-      suppressHydrationWarning
-      data-scroll-behavior="smooth"
-    >
-      <head>
-        <link
-          rel="alternate"
-          type="application/rss+xml"
-          title={`${siteConfig.siteName} RSS`}
-          href="/feed.xml"
-        />
-      </head>
-      <body>
-        <JsonLd data={globalJsonLd} />
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="page-noise" aria-hidden="true" />
-          <SiteHeader locale={lang} />
-          <main>{children}</main>
-          <SiteFooter locale={lang} />
-          <SpeedInsights />
-          <Analytics />
-        </ThemeProvider>
-      </body>
-    </html>
+    <div className="site-shell" lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+      <DocumentLanguage locale={lang} />
+      <JsonLd data={globalJsonLd} />
+      <SiteHeader locale={lang} />
+      <main>{children}</main>
+      <SiteFooter locale={lang} />
+      <GlobalMiniPlayer locale={lang} labels={dictionary.player.mini} />
+    </div>
   );
 }

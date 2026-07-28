@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { href: '/notes', changeFrequency: 'weekly', priority: 0.9 },
     { href: '/photography', changeFrequency: 'monthly', priority: 0.8 },
     { href: '/projects', changeFrequency: 'monthly', priority: 0.8 },
+    { href: '/player', changeFrequency: 'monthly', priority: 0.7 },
     { href: '/about', changeFrequency: 'yearly', priority: 0.7 },
   ] as const;
   const staticEntries = staticRoutes.flatMap(({ href, changeFrequency, priority }) => {

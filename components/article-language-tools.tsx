@@ -7,7 +7,6 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import {
@@ -19,6 +18,8 @@ import {
   Play,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useGlobalAudio } from '@/components/audio/global-audio-provider';
+import { formatAudioTime } from '@/lib/audio';
 import {
   readTranslationCache,
   translateTexts,
@@ -268,13 +269,6 @@ function getSpeechText() {
     .trim();
 }
 
-function formatTime(seconds: number) {
-  if (!Number.isFinite(seconds) || seconds <= 0) return '00:00';
-  const minutes = Math.floor(seconds / 60);
-  const remainder = Math.floor(seconds % 60);
-  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`;
-}
-
 export function ArticleAudioPlayer({
   labels,
 }: {
@@ -288,60 +282,46 @@ export function ArticleAudioPlayer({
   };
 }) {
   const language = useArticleLanguage();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const objectUrlRef = useRef('');
-  const [audioState, setAudioState] = useState<'idle' | 'loading' | 'playing' | 'paused' | 'error'>('idle');
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-
-  useEffect(() => () => {
-    audioRef.current?.pause();
-    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
-  }, []);
+  const {
+    currentTrack,
+    status,
+    currentTime,
+    duration,
+    prepareTrack,
+    togglePlayback,
+  } = useGlobalAudio();
+  const speechLocale = language?.automatic && language.status === 'error'
+    ? language.sourceLanguage
+    : language?.targetLanguage ?? 'zh';
+  const trackId = `narration:${language?.cacheKey ?? 'article'}:${speechLocale}`;
+  const active = currentTrack?.id === trackId;
+  const audioState = active ? status : 'idle';
 
   const play = async () => {
-    const existing = audioRef.current;
-    if (existing) {
-      if (existing.paused) {
-        await existing.play();
-        setAudioState('playing');
-      } else {
-        existing.pause();
-        setAudioState('paused');
-      }
+    if (active && currentTrack.src) {
+      await togglePlayback();
       return;
     }
 
-    setAudioState('loading');
-    try {
+    await prepareTrack({
+      id: trackId,
+      title: language?.title ?? labels.listen,
+      artist: labels.provider,
+      subtitle: language?.summary,
+      kind: 'narration',
+      href: window.location.pathname,
+      accent: '#e25943',
+      ephemeral: true,
+    }, async () => {
       const text = getSpeechText();
-      const speechLocale = language?.automatic && language.status === 'error'
-        ? language.sourceLanguage
-        : language?.targetLanguage ?? 'zh';
       const response = await fetch('/api/speech', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, locale: speechLocale }),
       });
       if (!response.ok) throw new Error(`Speech request failed with ${response.status}`);
-
-      const blob = await response.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      const audio = new Audio(objectUrl);
-      objectUrlRef.current = objectUrl;
-      audioRef.current = audio;
-      audio.addEventListener('timeupdate', () => setCurrentTime(audio.currentTime));
-      audio.addEventListener('durationchange', () => setDuration(audio.duration));
-      audio.addEventListener('ended', () => {
-        setAudioState('paused');
-        setCurrentTime(0);
-      });
-      audio.addEventListener('error', () => setAudioState('error'));
-      await audio.play();
-      setAudioState('playing');
-    } catch {
-      setAudioState('error');
-    }
+      return response.blob();
+    });
   };
 
   const disabled = language?.automatic && language.status === 'loading';
@@ -373,7 +353,7 @@ export function ArticleAudioPlayer({
         <i style={{ transform: `scaleX(${progress})` }} />
       </span>
       {audioState === 'playing' || audioState === 'paused' ? (
-        <time>{formatTime(currentTime)} / {formatTime(duration)}</time>
+        <time>{formatAudioTime(currentTime)} / {formatAudioTime(duration)}</time>
       ) : null}
       {audioState === 'error' ? <p role="alert">{labels.error}</p> : null}
     </div>

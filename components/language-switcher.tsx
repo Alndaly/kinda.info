@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
 
@@ -12,13 +13,13 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
     : `/en${visiblePath === '/' ? '' : visiblePath}`;
 
   return (
-    <a
+    <Link
       href={href}
       className="language-switch"
       aria-label={isEnglish ? 'Switch to Chinese' : '切换到英文'}
       title={isEnglish ? 'Switch to Chinese' : '切换到英文'}
     >
       {isEnglish ? '中' : 'EN'}
-    </a>
+    </Link>
   );
 }

@@ -1,17 +1,21 @@
 'use client';
 
-import { useRef, useState, type ChangeEvent } from 'react';
+import { useMemo, type ChangeEvent } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   AudioLines,
   CircleAlert,
   Download,
   LoaderCircle,
+  ListPlus,
   Pause,
   Play,
   RotateCcw,
   Volume2,
   VolumeX,
 } from 'lucide-react';
+import { useGlobalAudio } from '@/components/audio/global-audio-provider';
+import { formatAudioTime, type AudioTrack } from '@/lib/audio';
 
 const WAVEFORM = [
   34, 58, 42, 76, 52, 88, 63, 45,
@@ -19,15 +23,6 @@ const WAVEFORM = [
   91, 61, 46, 79, 54, 86, 66, 43,
   70, 94, 59, 83, 50, 73, 41, 64,
 ];
-
-type AudioState = 'idle' | 'loading' | 'playing' | 'paused' | 'error';
-
-function formatTime(seconds: number) {
-  if (!Number.isFinite(seconds) || seconds <= 0) return '00:00';
-  const minutes = Math.floor(seconds / 60);
-  const remainder = Math.floor(seconds % 60);
-  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`;
-}
 
 export function AudioPlayer({
   src,
@@ -40,54 +35,53 @@ export function AudioPlayer({
   mime?: string;
   isEnglish?: boolean;
 }) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [status, setStatus] = useState<AudioState>('idle');
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [muted, setMuted] = useState(false);
+  const pathname = usePathname();
+  const {
+    currentTrack,
+    status: globalStatus,
+    currentTime: globalCurrentTime,
+    duration: globalDuration,
+    muted,
+    playTrack,
+    togglePlayback,
+    seek: seekGlobal,
+    toggleMuted,
+    enqueue,
+  } = useGlobalAudio();
+  const track = useMemo<AudioTrack>(() => ({
+    id: `recording:${src}`,
+    title: name,
+    artist: isEnglish ? 'Field recording · July' : '现场录音 · 七月',
+    subtitle: isEnglish ? 'Audio note from the archive' : '来自个人档案的声音切片',
+    src,
+    kind: 'recording',
+    href: pathname,
+    accent: '#e25943',
+  }), [isEnglish, name, pathname, src]);
+  const active = currentTrack?.id === track.id;
+  const status = active ? globalStatus : 'idle';
+  const currentTime = active ? globalCurrentTime : 0;
+  const duration = active ? globalDuration : 0;
   const progress = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
   const format = mime.split('/').at(-1)?.toUpperCase() || 'AUDIO';
   const isPlaying = status === 'playing';
 
   const playAudio = async () => {
-    const audio = audioRef.current;
-    if (!audio || !src) return;
-
-    if (!audio.paused) {
-      audio.pause();
-      return;
-    }
-
-    setStatus('loading');
-    try {
-      await audio.play();
-      setStatus('playing');
-    } catch {
-      setStatus('error');
+    if (!src) return;
+    if (active) {
+      await togglePlayback();
+    } else {
+      playTrack(track);
     }
   };
 
   const seek = (event: ChangeEvent<HTMLInputElement>) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const nextTime = Number(event.currentTarget.value);
-    audio.currentTime = nextTime;
-    setCurrentTime(nextTime);
-  };
-
-  const toggleMuted = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.muted = !audio.muted;
-    setMuted(audio.muted);
+    if (!active) return;
+    seekGlobal(Number(event.currentTarget.value));
   };
 
   const retry = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    setStatus('idle');
-    audio.load();
-    void playAudio();
+    playTrack(track);
   };
 
   return (
@@ -132,12 +126,20 @@ export function AudioPlayer({
           <button
             type="button"
             onClick={toggleMuted}
-            disabled={!src}
+            disabled={!src || !active}
             aria-label={muted
               ? (isEnglish ? 'Unmute' : '取消静音')
               : (isEnglish ? 'Mute' : '静音')}
           >
             {muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => enqueue(track)}
+            disabled={!src || active}
+            aria-label={isEnglish ? `Add ${name} to queue` : `将 ${name} 加入播放队列`}
+          >
+            <ListPlus aria-hidden="true" />
           </button>
           {src ? (
             <a
@@ -178,13 +180,13 @@ export function AudioPlayer({
             />
           </div>
           <div className="tiptap-audio-time">
-            <time>{formatTime(currentTime)}</time>
+            <time>{formatAudioTime(currentTime)}</time>
             <span>{status === 'error'
               ? (isEnglish ? 'Unavailable' : '暂不可用')
               : isPlaying
                 ? (isEnglish ? 'Playing' : '播放中')
                 : (isEnglish ? 'Ready to play' : '等待播放')}</span>
-            <time>{duration > 0 ? formatTime(duration) : '--:--'}</time>
+            <time>{duration > 0 ? formatAudioTime(duration) : '--:--'}</time>
           </div>
         </div>
 
@@ -202,31 +204,6 @@ export function AudioPlayer({
         ) : null}
       </div>
 
-      <audio
-        ref={audioRef}
-        className="tiptap-audio-native"
-        preload="metadata"
-        src={src}
-        onLoadedMetadata={(event) => {
-          const nextDuration = event.currentTarget.duration;
-          setDuration(Number.isFinite(nextDuration) ? nextDuration : 0);
-          setStatus((current) => current === 'error' ? current : 'idle');
-        }}
-        onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-        onPlay={() => setStatus('playing')}
-        onPause={(event) => {
-          if (!event.currentTarget.ended) {
-            setStatus((current) => current === 'error' ? current : 'paused');
-          }
-        }}
-        onWaiting={() => setStatus('loading')}
-        onEnded={(event) => {
-          setCurrentTime(event.currentTarget.duration || 0);
-          setStatus('paused');
-        }}
-        onVolumeChange={(event) => setMuted(event.currentTarget.muted)}
-        onError={() => setStatus('error')}
-      />
     </div>
   );
 }

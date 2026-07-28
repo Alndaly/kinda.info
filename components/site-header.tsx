@@ -3,6 +3,7 @@ import { Asterisk } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ModeToggle } from '@/components/mode-toggle';
 import { SiteSearch } from '@/components/site-search';
+import { AudioLauncher } from '@/components/audio/audio-launcher';
 import { getDictionary, localizeHref, type Locale } from '@/lib/i18n';
 import { createSearchIndex } from '@/lib/search';
 
@@ -51,6 +52,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="flex items-center gap-2">
+          <AudioLauncher locale={locale} label={dictionary.audio} />
           <SiteSearch
             locale={locale}
             records={searchIndex}
