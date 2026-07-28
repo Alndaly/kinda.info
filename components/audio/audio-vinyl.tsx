@@ -11,7 +11,7 @@ const vinylShell = [
   'overflow-hidden rounded-full text-[#f3eee2]',
   'bg-[radial-gradient(circle,transparent_0_4%,#151512_4.2%_7%,transparent_7.2%_100%),repeating-radial-gradient(circle,transparent_0_4px,rgba(255,255,255,.045)_5px,transparent_6px),conic-gradient(from_45deg,#080808,#292824,#0b0b0a,#25241f,#090909,#302e28,#080808)]',
   'shadow-[0_2.5rem_5rem_rgba(20,18,13,0.24),inset_0_0_0_1px_rgba(255,255,255,0.08)]',
-  'data-[playing=true]:animate-[audio-spin_9s_linear_infinite] motion-reduce:animate-none!',
+  'data-[playing=true]:animate-[slow-spin_9s_linear_infinite] motion-reduce:animate-none!',
   "after:absolute after:inset-[5%] after:rounded-full after:border after:border-white/[0.07] after:content-['']",
 ].join(' ');
 
