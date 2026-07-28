@@ -9,12 +9,15 @@ import {
   Asterisk,
   Clock3,
   Disc3,
+  Gauge,
   Library,
   ListMusic,
   LoaderCircle,
   Pause,
   Play,
   Plus,
+  RotateCcw,
+  RotateCw,
   SkipBack,
   SkipForward,
   Trash2,
@@ -216,6 +219,8 @@ const appOrbit = [
 
 const appDisc = [
   'absolute left-1/2 top-1/2 z-[3] grid min-h-0 -translate-x-1/2 -translate-y-1/2 place-items-center',
+  'cursor-pointer rounded-full',
+  'focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-[var(--audio-accent)]',
 ].join(' ');
 
 /** Vinyl sizing lives here because the stage decides how much room it gets. */
@@ -331,14 +336,18 @@ const appTimeline = [
 
 const appUtilities = [
   appRange,
-  'grid min-w-0 grid-cols-[auto_minmax(4rem,9rem)_auto] items-center justify-end gap-[0.7rem]',
+  'grid min-w-0 grid-cols-[auto_minmax(4rem,9rem)_auto_auto] items-center justify-end gap-[0.7rem]',
   '[&_input]:[--audio-progress:var(--audio-volume)]',
   '[&>button]:relative [&>button]:grid [&>button]:h-8 [&>button]:w-8 [&>button]:place-items-center',
   '[&>button]:rounded-full [&>button]:text-muted-foreground',
   'hover:[&>button]:bg-secondary hover:[&>button]:text-ink',
   '[&_svg]:h-[0.82rem] [&_svg]:w-[0.82rem]',
-  '[@media(max-width:980px)]:grid-cols-[auto_auto] [@media(max-width:980px)]:[&_input]:hidden',
+  '[@media(max-width:980px)]:grid-cols-[auto_auto_auto] [@media(max-width:980px)]:[&_input]:hidden',
   '[@media(max-width:720px)]:flex [@media(max-width:720px)]:[&>button:first-child]:hidden',
+].join(' ');
+
+const appSpeedButton = [
+  'flex! w-auto! items-center gap-[0.3rem] px-[0.55rem]! font-mono text-[0.5rem] tabular-nums',
 ].join(' ');
 
 const appQueueButton = [
@@ -346,6 +355,9 @@ const appQueueButton = [
   '[&>span]:h-[0.85rem] [&>span]:min-w-[0.85rem] [&>span]:place-items-center [&>span]:rounded-full',
   '[&>span]:bg-accent [&>span]:text-[0.42rem] [&>span]:font-extrabold [&>span]:text-white',
 ].join(' ');
+
+const SEEK_STEP = 15;
+const SPEEDS = [0.75, 1, 1.25, 1.5, 2] as const;
 
 function trackKindLabel(track: AudioTrack, labels: PlayerLabels) {
   if (track.kind === 'narration') return labels.generatedNarration;
@@ -384,6 +396,9 @@ export function AudioPlayerPage({
     skipPrevious,
     clearRecent,
     previousPath,
+    seekBy,
+    playbackRate,
+    setPlaybackRate,
   } = useGlobalAudio();
   const router = useRouter();
   const [panel, setPanel] = useState<'queue' | 'recent'>('queue');
@@ -405,6 +420,10 @@ export function AudioPlayerPage({
         workspace: '播放器',
         trackCount: '首开放版权曲目',
         libraryDescription: '为阅读、影像与专注时刻挑选。',
+        back15: '后退 15 秒',
+        forward15: '快进 15 秒',
+        speed: '播放速度',
+        toggleHint: '空格键播放 / 暂停',
       }
     : {
         back: 'Back to site',
@@ -412,6 +431,10 @@ export function AudioPlayerPage({
         workspace: 'Player',
         trackCount: 'openly licensed tracks',
         libraryDescription: 'Selected for reading, photographs, and focused time.',
+        back15: 'Back 15 seconds',
+        forward15: 'Forward 15 seconds',
+        speed: 'Playback speed',
+        toggleHint: 'Space to play or pause',
       };
 
   useEffect(() => {
@@ -441,6 +464,35 @@ export function AudioPlayerPage({
     }
     void togglePlayback();
   };
+
+  // Space toggles playback, arrows nudge by 15s — unless the reader is typing
+  // or has a control focused, where those keys already mean something.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (typeof target?.closest === 'function'
+        && target.closest('input, textarea, select, button, a, [contenteditable]')) return;
+
+      if (event.code === 'Space') {
+        event.preventDefault();
+        toggleMainPlayback();
+        return;
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        seekBy(-SEEK_STEP);
+        return;
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        seekBy(SEEK_STEP);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [seekBy, toggleMainPlayback]);
 
   const libraryRows = (inSheet = false) => (
     tracks.length ? (
@@ -612,7 +664,13 @@ export function AudioPlayerPage({
             </div>
           ) : null}
           <div className={appOrbit} aria-hidden="true" />
-          <div className={appDisc}>
+          <button
+            type="button"
+            className={appDisc}
+            onClick={toggleMainPlayback}
+            aria-label={`${playing ? labels.pause : labels.play} · ${ui.toggleHint}`}
+            title={ui.toggleHint}
+          >
             <AudioVinyl
               track={visibleTrack}
               playing={Boolean(currentTrack && playing)}
@@ -622,7 +680,7 @@ export function AudioPlayerPage({
               <i />
               <span />
             </div>
-          </div>
+          </button>
 
           <div className={appStageCopy}>
             <small>
@@ -723,6 +781,15 @@ export function AudioPlayerPage({
             </button>
             <button
               type="button"
+              onClick={() => seekBy(-SEEK_STEP)}
+              disabled={!duration}
+              aria-label={ui.back15}
+              title={ui.back15}
+            >
+              <RotateCcw />
+            </button>
+            <button
+              type="button"
               className={appPrimary}
               onClick={toggleMainPlayback}
               disabled={loading && !currentTrack?.src}
@@ -733,6 +800,15 @@ export function AudioPlayerPage({
                 : playing
                   ? <Pause />
                   : <Play />}
+            </button>
+            <button
+              type="button"
+              onClick={() => seekBy(SEEK_STEP)}
+              disabled={!duration}
+              aria-label={ui.forward15}
+              title={ui.forward15}
+            >
+              <RotateCw />
             </button>
             <button type="button" onClick={skipNext} aria-label={labels.next}>
               <SkipForward />
@@ -771,6 +847,19 @@ export function AudioPlayerPage({
             aria-label={labels.volume}
             style={{ '--audio-volume': `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
           />
+          <button
+            type="button"
+            className={appSpeedButton}
+            onClick={() => {
+              const next = SPEEDS[(SPEEDS.indexOf(playbackRate as typeof SPEEDS[number]) + 1) % SPEEDS.length];
+              setPlaybackRate(next ?? 1);
+            }}
+            aria-label={`${ui.speed}: ${playbackRate}×`}
+            title={ui.speed}
+          >
+            <Gauge />
+            <span>{playbackRate}×</span>
+          </button>
           <button
             type="button"
             className={appQueueButton}

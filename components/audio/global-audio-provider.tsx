@@ -31,6 +31,10 @@ type GlobalAudioContextValue = {
   togglePlayback: () => Promise<void>;
   seek: (time: number) => void;
   setVolume: (volume: number) => void;
+  /** Jump relative to where the track is now, in seconds. */
+  seekBy: (seconds: number) => void;
+  playbackRate: number;
+  setPlaybackRate: (rate: number) => void;
   toggleMuted: () => void;
   enqueue: (track: AudioTrack) => void;
   playFromQueue: (index: number) => void;
@@ -52,6 +56,7 @@ type PersistedAudioState = {
   queue: AudioTrack[];
   recent: AudioTrack[];
   volume: number;
+  playbackRate: number;
 };
 
 function dedupeTracks(tracks: AudioTrack[]) {
@@ -79,6 +84,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(0.72);
   const [muted, setMuted] = useState(false);
+  const [playbackRate, setPlaybackRateState] = useState(1);
   const [previousPath, setPreviousPath] = useState<string | null>(null);
 
   useEffect(() => {
@@ -117,11 +123,15 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
         const storedVolume = typeof parsed.volume === 'number'
           ? Math.min(1, Math.max(0, parsed.volume))
           : 0.72;
+        const storedRate = typeof parsed.playbackRate === 'number'
+          ? Math.min(3, Math.max(0.5, parsed.playbackRate))
+          : 1;
 
         setQueue(dedupeTracks(storedQueue));
         setRecent(dedupeTracks(storedRecent).slice(0, 12));
         setCurrentTrack(storedCurrent);
         setVolumeState(storedVolume);
+        setPlaybackRateState(storedRate);
         setStatus(storedCurrent ? 'paused' : 'idle');
       }
     } catch {
@@ -138,15 +148,22 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       queue: queue.filter(canPersistTrack),
       recent: recent.filter(canPersistTrack),
       volume,
+      playbackRate,
     };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
-  }, [currentTrack, queue, recent, volume]);
+  }, [currentTrack, playbackRate, queue, recent, volume]);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = volume;
   }, [volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.playbackRate = playbackRate;
+  }, [playbackRate, currentTrack?.src]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -245,6 +262,21 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     if (!audio || !Number.isFinite(time)) return;
     audio.currentTime = Math.min(Math.max(time, 0), audio.duration || time);
     setCurrentTime(audio.currentTime);
+  }, []);
+
+  const seekBy = useCallback((seconds: number) => {
+    const audio = audioRef.current;
+    if (!audio || !Number.isFinite(seconds)) return;
+    const limit = Number.isFinite(audio.duration) ? audio.duration : audio.currentTime;
+    audio.currentTime = Math.min(Math.max(audio.currentTime + seconds, 0), limit);
+    setCurrentTime(audio.currentTime);
+  }, []);
+
+  const setPlaybackRate = useCallback((rate: number) => {
+    const normalized = Math.min(3, Math.max(0.5, rate));
+    setPlaybackRateState(normalized);
+    const audio = audioRef.current;
+    if (audio) audio.playbackRate = normalized;
   }, []);
 
   const setVolume = useCallback((nextVolume: number) => {
@@ -381,7 +413,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     prepareTrack,
     togglePlayback,
     seek,
+    seekBy,
     setVolume,
+    playbackRate,
+    setPlaybackRate,
     toggleMuted,
     enqueue,
     playFromQueue,
@@ -401,6 +436,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     enqueue,
     muted,
     playFromQueue,
+    playbackRate,
     playTrack,
     prepareTrack,
     previousPath,
@@ -408,6 +444,8 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     recent,
     removeFromQueue,
     seek,
+    seekBy,
+    setPlaybackRate,
     setVolume,
     skipNext,
     skipPrevious,
