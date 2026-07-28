@@ -1,0 +1,332 @@
+'use client';
+
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  AudioLines,
+  CircleAlert,
+  Languages,
+  LoaderCircle,
+  Pause,
+  Play,
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  readTranslationCache,
+  translateTexts,
+  type TranslationState,
+  writeTranslationCache,
+} from '@/lib/client-translation';
+import type { Locale } from '@/lib/i18n';
+
+type ArticleLanguageContextValue = {
+  automatic: boolean;
+  cacheKey: string;
+  sourceLanguage: Locale;
+  targetLanguage: Locale;
+  title: string;
+  summary: string;
+  tags: string[];
+  status: TranslationState;
+  setBodyStatus: (state: TranslationState) => void;
+};
+
+const ArticleLanguageContext = createContext<ArticleLanguageContextValue | null>(null);
+
+export function useArticleLanguage() {
+  return useContext(ArticleLanguageContext);
+}
+
+export function ArticleLanguageProvider({
+  automatic,
+  cacheKey,
+  sourceLanguage,
+  targetLanguage,
+  title,
+  summary,
+  tags,
+  children,
+}: {
+  automatic: boolean;
+  cacheKey: string;
+  sourceLanguage: Locale;
+  targetLanguage: Locale;
+  title: string;
+  summary: string;
+  tags: string[];
+  children: ReactNode;
+}) {
+  const [translatedHeader, setTranslatedHeader] = useState([title, summary, ...tags]);
+  const [headerStatus, setHeaderStatus] = useState<TranslationState>(
+    automatic ? 'idle' : 'ready',
+  );
+  const [bodyStatus, setBodyStatusValue] = useState<TranslationState>(
+    automatic ? 'idle' : 'ready',
+  );
+  const setBodyStatus = useCallback((state: TranslationState) => {
+    setBodyStatusValue(state);
+  }, []);
+
+  useEffect(() => {
+    if (!automatic) {
+      setTranslatedHeader([title, summary, ...tags]);
+      setHeaderStatus('ready');
+      return;
+    }
+
+    let active = true;
+    const source = [title, summary, ...tags];
+    const cached = readTranslationCache(`${cacheKey}:header`, source);
+    if (cached) {
+      setTranslatedHeader(cached);
+      setHeaderStatus('ready');
+      return;
+    }
+
+    setHeaderStatus('loading');
+    void translateTexts(source, sourceLanguage, targetLanguage)
+      .then((translated) => {
+        if (!active) return;
+        setTranslatedHeader(translated);
+        writeTranslationCache(`${cacheKey}:header`, source, translated);
+        setHeaderStatus('ready');
+      })
+      .catch(() => {
+        if (!active) return;
+        setTranslatedHeader(source);
+        setHeaderStatus('error');
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [automatic, cacheKey, sourceLanguage, summary, tags, targetLanguage, title]);
+
+  const status = !automatic
+    ? 'ready'
+    : headerStatus === 'error' || bodyStatus === 'error'
+      ? 'error'
+      : headerStatus === 'ready' && bodyStatus === 'ready'
+        ? 'ready'
+        : 'loading';
+  const value = useMemo<ArticleLanguageContextValue>(() => ({
+    automatic,
+    cacheKey,
+    sourceLanguage,
+    targetLanguage,
+    title: translatedHeader[0] ?? title,
+    summary: translatedHeader[1] ?? summary,
+    tags: translatedHeader.slice(2),
+    status,
+    setBodyStatus,
+  }), [
+    automatic,
+    cacheKey,
+    setBodyStatus,
+    sourceLanguage,
+    status,
+    summary,
+    targetLanguage,
+    tags,
+    title,
+    translatedHeader,
+  ]);
+
+  return (
+    <ArticleLanguageContext.Provider value={value}>
+      {children}
+    </ArticleLanguageContext.Provider>
+  );
+}
+
+export function ArticleTranslatedTags() {
+  const language = useArticleLanguage();
+  if (!language) return null;
+
+  return language.tags.map((tag) => <Badge key={tag}>{tag}</Badge>);
+}
+
+export function ArticleTranslatedHeading() {
+  const language = useArticleLanguage();
+  if (!language) return null;
+
+  return (
+    <>
+      <h1>{language.title}</h1>
+      <p className="article-deck">{language.summary}</p>
+    </>
+  );
+}
+
+export function AutomaticTranslationNotice({
+  labels,
+}: {
+  labels: {
+    title: string;
+    description: string;
+    translating: string;
+    error: string;
+  };
+}) {
+  const language = useArticleLanguage();
+  if (!language?.automatic) return null;
+  const failed = language.status === 'error';
+
+  return (
+    <aside className="translation-notice site-container" data-state={language.status}>
+      {failed ? <CircleAlert aria-hidden="true" /> : <Languages aria-hidden="true" />}
+      <div>
+        <strong>{failed ? labels.error : labels.title}</strong>
+        <p>{language.status === 'loading' ? labels.translating : labels.description}</p>
+      </div>
+      <span>Google Translate</span>
+    </aside>
+  );
+}
+
+function getSpeechText() {
+  const title = document.querySelector('.article-header h1')?.textContent ?? '';
+  const summary = document.querySelector('.article-deck')?.textContent ?? '';
+  const reader = document.querySelector('.mdx-prose .tiptap-prosemirror, .mdx-prose .tiptap-fallback');
+  if (!reader) return [title, summary].filter(Boolean).join('. ');
+
+  const clone = reader.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll([
+    'pre',
+    'button',
+    'iframe',
+    'audio',
+    'video',
+    '.tiptap-mermaid',
+    '.tiptap-embed',
+    '.tiptap-map',
+    '.tiptap-file',
+    '.tiptap-audio',
+    '.tiptap-code-header',
+  ].join(',')).forEach((element) => element.remove());
+
+  return [title, summary, clone.textContent ?? '']
+    .join('. ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function formatTime(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds <= 0) return '00:00';
+  const minutes = Math.floor(seconds / 60);
+  const remainder = Math.floor(seconds % 60);
+  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`;
+}
+
+export function ArticleAudioPlayer({
+  labels,
+}: {
+  labels: {
+    listen: string;
+    preparing: string;
+    pause: string;
+    resume: string;
+    error: string;
+    provider: string;
+  };
+}) {
+  const language = useArticleLanguage();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const objectUrlRef = useRef('');
+  const [audioState, setAudioState] = useState<'idle' | 'loading' | 'playing' | 'paused' | 'error'>('idle');
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => () => {
+    audioRef.current?.pause();
+    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+  }, []);
+
+  const play = async () => {
+    const existing = audioRef.current;
+    if (existing) {
+      if (existing.paused) {
+        await existing.play();
+        setAudioState('playing');
+      } else {
+        existing.pause();
+        setAudioState('paused');
+      }
+      return;
+    }
+
+    setAudioState('loading');
+    try {
+      const text = getSpeechText();
+      const speechLocale = language?.automatic && language.status === 'error'
+        ? language.sourceLanguage
+        : language?.targetLanguage ?? 'zh';
+      const response = await fetch('/api/speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, locale: speechLocale }),
+      });
+      if (!response.ok) throw new Error(`Speech request failed with ${response.status}`);
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const audio = new Audio(objectUrl);
+      objectUrlRef.current = objectUrl;
+      audioRef.current = audio;
+      audio.addEventListener('timeupdate', () => setCurrentTime(audio.currentTime));
+      audio.addEventListener('durationchange', () => setDuration(audio.duration));
+      audio.addEventListener('ended', () => {
+        setAudioState('paused');
+        setCurrentTime(0);
+      });
+      audio.addEventListener('error', () => setAudioState('error'));
+      await audio.play();
+      setAudioState('playing');
+    } catch {
+      setAudioState('error');
+    }
+  };
+
+  const disabled = language?.automatic && language.status === 'loading';
+  const label = audioState === 'loading'
+    ? labels.preparing
+    : audioState === 'playing'
+      ? labels.pause
+      : audioState === 'paused'
+        ? labels.resume
+        : labels.listen;
+  const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
+
+  return (
+    <div className="article-audio" data-state={audioState}>
+      <button type="button" onClick={play} disabled={disabled || audioState === 'loading'}>
+        <span className="article-audio-icon">
+          {audioState === 'loading'
+            ? <LoaderCircle aria-hidden="true" />
+            : audioState === 'playing'
+              ? <Pause aria-hidden="true" />
+              : <Play aria-hidden="true" />}
+        </span>
+        <span>
+          <strong>{label}</strong>
+          <small><AudioLines aria-hidden="true" /> {labels.provider}</small>
+        </span>
+      </button>
+      <span className="article-audio-progress" aria-hidden="true">
+        <i style={{ transform: `scaleX(${progress})` }} />
+      </span>
+      {audioState === 'playing' || audioState === 'paused' ? (
+        <time>{formatTime(currentTime)} / {formatTime(duration)}</time>
+      ) : null}
+      {audioState === 'error' ? <p role="alert">{labels.error}</p> : null}
+    </div>
+  );
+}

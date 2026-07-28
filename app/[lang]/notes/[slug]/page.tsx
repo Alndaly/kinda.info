@@ -1,9 +1,15 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, ArrowRight, CalendarDays, Clock3, Languages } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarDays, Clock3 } from 'lucide-react';
+import {
+  ArticleAudioPlayer,
+  ArticleLanguageProvider,
+  ArticleTranslatedHeading,
+  ArticleTranslatedTags,
+  AutomaticTranslationNotice,
+} from '@/components/article-language-tools';
 import { ArticleReadingTools } from '@/components/article-reading-tools';
-import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, formatDate, getEntries, getEntry, getEntrySeo } from '@/lib/content';
@@ -106,65 +112,82 @@ export default async function NotePage({ params }: Props) {
   );
 
   return (
-    <article>
-      {!seo.isFallback && <JsonLd data={articleJsonLd} />}
-      <header className="article-header site-container">
-        <Link href={localizeHref(lang, '/notes')} className="back-link">
-          <ArrowLeft /> {dictionary.back}
-        </Link>
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-7 flex flex-wrap justify-center gap-2">
-            {note.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
+    <ArticleLanguageProvider
+      automatic={seo.isFallback}
+      cacheKey={`${note.slug}:${note.updated ?? note.date}`}
+      sourceLanguage={note.locale}
+      targetLanguage={lang}
+      title={note.title}
+      summary={note.summary}
+      tags={note.tags}
+    >
+      <article>
+        {!seo.isFallback && <JsonLd data={articleJsonLd} />}
+        <header className="article-header site-container">
+          <Link href={localizeHref(lang, '/notes')} className="back-link">
+            <ArrowLeft /> {dictionary.back}
+          </Link>
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-7 flex flex-wrap justify-center gap-2">
+              <ArticleTranslatedTags />
+            </div>
+            <ArticleTranslatedHeading />
+            <div className="article-meta">
+              <span><CalendarDays /> {formatDate(note.date, lang)}</span>
+              <span><Clock3 /> {note.metadata.readingTime} {dictionary.minRead}</span>
+            </div>
+            <ArticleAudioPlayer
+              labels={{
+                listen: dictionary.listen,
+                preparing: dictionary.preparingSpeech,
+                pause: dictionary.pauseSpeech,
+                resume: dictionary.resumeSpeech,
+                error: dictionary.speechError,
+                provider: dictionary.speechProvider,
+              }}
+            />
           </div>
-          <h1>{note.title}</h1>
-          <p className="article-deck">{note.summary}</p>
-          <div className="article-meta">
-            <span><CalendarDays /> {formatDate(note.date, lang)}</span>
-            <span><Clock3 /> {note.metadata.readingTime} {dictionary.minRead}</span>
-          </div>
+        </header>
+        <div className="article-rule" />
+        <AutomaticTranslationNotice
+          labels={{
+            title: dictionary.machineTranslationTitle,
+            description: dictionary.machineTranslationDescription,
+            translating: dictionary.translating,
+            error: dictionary.translationError,
+          }}
+        />
+        <ArticleReadingTools
+          contentsLabel={dictionary.contents}
+          progressLabel={dictionary.readingProgress}
+        />
+        <div className="mdx-prose">
+          <TiptapContent content={note.content} fallbackHtml={note.html} />
         </div>
-      </header>
-      <div className="article-rule" />
-      {seo.isFallback ? (
-        <aside className="translation-notice site-container">
-          <Languages aria-hidden="true" />
-          <div>
-            <strong>{dictionary.fallbackTitle}</strong>
-            <p>{dictionary.fallbackDescription}</p>
+        <footer className="article-end">
+          <div className="article-end-message">
+            <span>EOF</span>
+            <p>{dictionary.thanks}</p>
+            <Link href={localizeHref(lang, '/notes')}>{dictionary.continue}</Link>
           </div>
-          <Link href={`/notes/${slug}`}>{dictionary.viewOriginal}</Link>
-        </aside>
-      ) : null}
-      <ArticleReadingTools
-        contentsLabel={dictionary.contents}
-        progressLabel={dictionary.readingProgress}
-      />
-      <div className="mdx-prose">
-        <TiptapContent content={note.content} fallbackHtml={note.html} />
-      </div>
-      <footer className="article-end">
-        <div className="article-end-message">
-          <span>EOF</span>
-          <p>{dictionary.thanks}</p>
-          <Link href={localizeHref(lang, '/notes')}>{dictionary.continue}</Link>
-        </div>
-        <nav className="article-pagination" aria-label={dictionary.continue}>
-          {previousNote ? (
-            <Link href={previousNote.href}>
-              <small>{dictionary.previous}</small>
-              <strong>{previousNote.title}</strong>
-              <ArrowLeft aria-hidden="true" />
-            </Link>
-          ) : <span />}
-          {nextNote ? (
-            <Link href={nextNote.href}>
-              <small>{dictionary.next}</small>
-              <strong>{nextNote.title}</strong>
-              <ArrowRight aria-hidden="true" />
-            </Link>
-          ) : <span />}
-        </nav>
-      </footer>
-    </article>
+          <nav className="article-pagination" aria-label={dictionary.continue}>
+            {previousNote ? (
+              <Link href={previousNote.href}>
+                <small>{dictionary.previous}</small>
+                <strong>{previousNote.title}</strong>
+                <ArrowLeft aria-hidden="true" />
+              </Link>
+            ) : <span />}
+            {nextNote ? (
+              <Link href={nextNote.href}>
+                <small>{dictionary.next}</small>
+                <strong>{nextNote.title}</strong>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ) : <span />}
+          </nav>
+        </footer>
+      </article>
+    </ArticleLanguageProvider>
   );
 }

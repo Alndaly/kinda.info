@@ -63,7 +63,8 @@ export default async function NotesPage({ params }: Props) {
           clear: dictionary.clearFilter,
           filter: dictionary.filterByTag,
           tagIndex: dictionary.tagIndex,
-          originalLanguage: dictionary.originalLanguage,
+          machineTranslated: dictionary.machineTranslated,
+          translatingEntries: dictionary.translatingEntries,
           result: dictionary.result,
           results: dictionary.results,
         }}

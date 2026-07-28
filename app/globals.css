@@ -1118,10 +1118,127 @@
   font-size: 0.72rem;
 }
 
-.translation-notice a {
-  border-bottom: 1px solid currentColor;
+.translation-notice > span {
+  color: hsl(var(--muted-foreground));
   font-size: 0.62rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.translation-notice[data-state="loading"] > svg {
+  animation: slow-spin 1.4s linear infinite;
+}
+
+.translation-notice[data-state="error"] {
+  border-color: hsl(var(--accent) / 0.5);
+  background: hsl(var(--accent) / 0.08);
+}
+
+.article-audio {
+  width: min(100%, 21rem);
+  margin: 1.75rem auto 0;
+  padding: 0.65rem 0;
+  border-block: 1px solid hsl(var(--line));
+}
+
+.article-audio button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.article-audio button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.article-audio-icon {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid hsl(var(--line));
+  border-radius: 999px;
+  transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.article-audio button:hover .article-audio-icon,
+.article-audio[data-state="playing"] .article-audio-icon {
+  border-color: hsl(var(--accent));
+  background: hsl(var(--accent));
+  color: white;
+}
+
+.article-audio-icon svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.article-audio[data-state="loading"] .article-audio-icon svg {
+  animation: slow-spin 1s linear infinite;
+}
+
+.article-audio button > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.article-audio button strong {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.article-audio button small {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.52rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.article-audio button small svg {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.article-audio-progress {
+  display: block;
+  height: 1px;
+  margin-top: 0.65rem;
+  overflow: hidden;
+  background: hsl(var(--line));
+}
+
+.article-audio-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: hsl(var(--accent));
+  transform-origin: left center;
+  transition: transform 180ms linear;
+}
+
+.article-audio time {
+  display: block;
+  margin-top: 0.45rem;
+  color: hsl(var(--muted-foreground));
+  font-family: ui-monospace, monospace;
+  font-size: 0.52rem;
+  text-align: right;
+}
+
+.article-audio > p {
+  margin-top: 0.5rem;
+  color: hsl(var(--accent));
+  font-size: 0.62rem;
+  text-align: left;
 }
 
 .reading-progress {
@@ -2570,7 +2687,7 @@
     grid-template-columns: auto 1fr;
   }
 
-  .translation-notice a {
+  .translation-notice > span {
     grid-column: 2;
     width: max-content;
   }
