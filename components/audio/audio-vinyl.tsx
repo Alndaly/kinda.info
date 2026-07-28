@@ -31,10 +31,9 @@ export function AudioVinyl({
               ? 'BGM'
               : track.kind === 'narration'
                 ? 'READ'
-                : 'FIELD'}
+              : 'FIELD'}
         </small>
       </div>
-      <i />
     </div>
   );
 }

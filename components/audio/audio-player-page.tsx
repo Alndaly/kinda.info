@@ -1,18 +1,19 @@
 'use client';
 
-import type { CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import {
-  ArrowDownToLine,
+  ArrowLeft,
   ArrowUpRight,
+  Asterisk,
   Clock3,
   Disc3,
+  Library,
   ListMusic,
   LoaderCircle,
   Pause,
   Play,
   Plus,
-  RotateCcw,
   SkipBack,
   SkipForward,
   Trash2,
@@ -20,9 +21,21 @@ import {
   VolumeX,
   X,
 } from 'lucide-react';
+import { AudioQueueSheet } from '@/components/audio/audio-queue-sheet';
 import { AudioVinyl } from '@/components/audio/audio-vinyl';
 import { useGlobalAudio } from '@/components/audio/global-audio-provider';
+import { LanguageSwitcher } from '@/components/language-switcher';
+import { ModeToggle } from '@/components/mode-toggle';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { formatAudioTime, type AudioTrack } from '@/lib/audio';
+import { localizeHref, type Locale } from '@/lib/i18n';
 
 type PlayerLabels = {
   eyebrow: string;
@@ -51,6 +64,9 @@ type PlayerLabels = {
   fieldRecording: string;
   backgroundMusic: string;
   returnToSource: string;
+  mini: {
+    close: string;
+  };
 };
 
 function trackKindLabel(track: AudioTrack, labels: PlayerLabels) {
@@ -60,9 +76,11 @@ function trackKindLabel(track: AudioTrack, labels: PlayerLabels) {
 }
 
 export function AudioPlayerPage({
+  locale,
   tracks,
   labels,
 }: {
+  locale: Locale;
   tracks: AudioTrack[];
   labels: PlayerLabels;
 }) {
@@ -88,9 +106,45 @@ export function AudioPlayerPage({
     skipPrevious,
     clearRecent,
   } = useGlobalAudio();
+  const [panel, setPanel] = useState<'queue' | 'recent'>('queue');
+  const [queueOpen, setQueueOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [artworkIndex, setArtworkIndex] = useState(0);
   const playing = status === 'playing';
   const loading = status === 'loading';
+  const visibleTrack = currentTrack ?? tracks[0] ?? null;
+  const artwork = visibleTrack?.artwork ?? [];
+  const activeArtwork = artwork[artworkIndex % Math.max(artwork.length, 1)];
   const queuedIds = new Set(queue.map((track) => track.id));
+  const panelTracks = panel === 'queue' ? queue : recent;
+  const panelEmpty = panel === 'queue' ? labels.queueEmpty : labels.recentEmpty;
+  const ui = locale === 'zh'
+    ? {
+        back: '返回网站',
+        collection: '声音资料库',
+        workspace: '播放器',
+        trackCount: '首开放版权曲目',
+        libraryDescription: '为阅读、影像与专注时刻挑选。',
+      }
+    : {
+        back: 'Back to site',
+        collection: 'Sound library',
+        workspace: 'Player',
+        trackCount: 'openly licensed tracks',
+        libraryDescription: 'Selected for reading, photographs, and focused time.',
+      };
+
+  useEffect(() => {
+    setArtworkIndex(0);
+  }, [visibleTrack?.id]);
+
+  useEffect(() => {
+    if (artwork.length < 2) return;
+    const interval = window.setInterval(() => {
+      setArtworkIndex((index) => (index + 1) % artwork.length);
+    }, 9_000);
+    return () => window.clearInterval(interval);
+  }, [artwork.length, visibleTrack?.id]);
 
   const playAll = () => {
     const [first, ...rest] = tracks;
@@ -100,41 +154,259 @@ export function AudioPlayerPage({
     rest.forEach(enqueue);
   };
 
+  const toggleMainPlayback = () => {
+    if (!currentTrack) {
+      playAll();
+      return;
+    }
+    void togglePlayback();
+  };
+
+  const libraryRows = (inSheet = false) => (
+    tracks.length ? (
+      <div className={inSheet ? 'audio-app-library-list in-sheet' : 'audio-app-library-list'}>
+        {tracks.map((track, index) => {
+          const active = currentTrack?.id === track.id;
+          const queued = queuedIds.has(track.id);
+          return (
+            <article key={track.id} data-active={active}>
+              <button
+                type="button"
+                className="audio-app-library-track"
+                onClick={() => {
+                  playTrack(track);
+                  if (inSheet) setLibraryOpen(false);
+                }}
+                aria-label={`${labels.playNow}: ${track.title}`}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <strong>{track.title}</strong>
+                  <small>{track.artist}</small>
+                </div>
+                {active && playing ? <Pause /> : <Play />}
+              </button>
+              <button
+                type="button"
+                className="audio-app-library-add"
+                onClick={() => enqueue(track)}
+                disabled={active || queued}
+                aria-label={`${labels.addQueue}: ${track.title}`}
+              >
+                {queued ? <ListMusic /> : <Plus />}
+              </button>
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <div className="audio-app-library-empty">
+        <Disc3 />
+        <p>{labels.idleDescription}</p>
+      </div>
+    )
+  );
+
   return (
-    <div className="audio-page">
-      <header className="audio-page-intro site-container">
-        <div>
-          <span>{labels.eyebrow}</span>
-          <h1>{labels.title}</h1>
+    <div
+      className="audio-app"
+      style={{ '--audio-accent': visibleTrack?.accent ?? '#e25943' } as CSSProperties}
+    >
+      <header className="audio-app-topbar">
+        <Link className="audio-app-brand" href={localizeHref(locale, '/')}>
+          <span><Asterisk /></span>
+          <div>
+            <strong>Kinda Audio</strong>
+            <small>{ui.workspace} / No. 07</small>
+          </div>
+        </Link>
+
+        <nav className="audio-app-tabs" aria-label={labels.queue}>
+          <button
+            type="button"
+            data-active={panel === 'queue'}
+            onClick={() => setPanel('queue')}
+          >
+            <ListMusic /> {labels.queue} <span>{queue.length}</span>
+          </button>
+          <button
+            type="button"
+            data-active={panel === 'recent'}
+            onClick={() => setPanel('recent')}
+          >
+            <Clock3 /> {labels.recent} <span>{recent.length}</span>
+          </button>
+        </nav>
+
+        <div className="audio-app-top-actions">
+          <button
+            type="button"
+            className="audio-app-mobile-action"
+            onClick={() => setLibraryOpen(true)}
+            aria-label={labels.soundLibrary}
+          >
+            <Library />
+          </button>
+          <button
+            type="button"
+            className="audio-app-mobile-action"
+            onClick={() => setQueueOpen(true)}
+            aria-label={labels.queue}
+          >
+            <ListMusic />
+          </button>
+          <LanguageSwitcher locale={locale} />
+          <ModeToggle locale={locale} />
+          <Link className="audio-app-exit" href={localizeHref(locale, '/')}>
+            <ArrowLeft /> <span>{ui.back}</span>
+          </Link>
         </div>
-        <p>{labels.description}</p>
       </header>
 
-      <section
-        className="audio-deck site-container"
-        style={{ '--audio-accent': currentTrack?.accent ?? '#e25943' } as CSSProperties}
-      >
-        <div className="audio-deck-art">
-          <span className="audio-deck-index">A / 07</span>
-          <AudioVinyl track={currentTrack} playing={playing} />
-          <div className="audio-tonearm" data-playing={playing}>
-            <i />
-            <span />
+      <div className="audio-app-workspace">
+        <aside className="audio-app-library">
+          <div className="audio-app-panel-heading">
+            <div>
+              <span>01 / LIBRARY</span>
+              <h2>{ui.collection}</h2>
+            </div>
+            <Button type="button" size="icon" variant="outline" onClick={playAll}>
+              <Play />
+              <span className="sr-only">{labels.play}</span>
+            </Button>
+          </div>
+          <p>{tracks.length} {ui.trackCount} · {ui.libraryDescription}</p>
+          {libraryRows()}
+          <small className="audio-app-license">CC BY 4.0 · SOURCE CREDITED</small>
+        </aside>
+
+        <section className="audio-app-stage">
+          {activeArtwork ? (
+            <div className="audio-app-backdrop" aria-hidden="true">
+              <img key={activeArtwork} src={activeArtwork} alt="" />
+            </div>
+          ) : null}
+          <div className="audio-app-stage-orbit" aria-hidden="true" />
+          <div className="audio-app-stage-disc">
+            <AudioVinyl
+              track={visibleTrack}
+              playing={Boolean(currentTrack && playing)}
+            />
+            <div className="audio-app-tonearm" data-playing={playing}>
+              <i />
+              <span />
+            </div>
+          </div>
+
+          <div className="audio-app-stage-copy">
+            <small>
+              {visibleTrack ? trackKindLabel(visibleTrack, labels) : labels.nowPlaying}
+            </small>
+            <h1>{visibleTrack?.title ?? labels.idleTitle}</h1>
+            <p>{visibleTrack?.subtitle ?? labels.idleDescription}</p>
+            {visibleTrack?.href ? (
+              <Link href={visibleTrack.href} target="_blank" rel="noreferrer">
+                {visibleTrack.artist} <ArrowUpRight />
+              </Link>
+            ) : null}
+          </div>
+        </section>
+
+        <aside className="audio-app-sidepanel">
+          <div className="audio-app-panel-heading">
+            <div>
+              <span>{panel === 'queue' ? '02 / UP NEXT' : '03 / HISTORY'}</span>
+              <h2>{panel === 'queue' ? labels.queue : labels.recent}</h2>
+            </div>
+            {panelTracks.length ? (
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                onClick={panel === 'queue' ? clearQueue : clearRecent}
+              >
+                <Trash2 />
+                <span className="sr-only">{labels.clear}</span>
+              </Button>
+            ) : null}
+          </div>
+
+          <div className="audio-app-panel-list">
+            {panelTracks.length ? (
+              <ol>
+                {panelTracks.map((track, index) => (
+                  <li key={`${panel}-${track.id}-${index}`}>
+                    <button
+                      type="button"
+                      className="audio-app-panel-track"
+                      onClick={() => {
+                        if (panel === 'queue') playFromQueue(index);
+                        else playTrack(track);
+                      }}
+                    >
+                      <span>{String(index + 1).padStart(2, '0')}</span>
+                      <div>
+                        <strong>{track.title}</strong>
+                        <small>{track.artist}</small>
+                      </div>
+                      <Play />
+                    </button>
+                    {panel === 'queue' ? (
+                      <button
+                        type="button"
+                        className="audio-app-panel-remove"
+                        onClick={() => removeFromQueue(track.id)}
+                        aria-label={`${labels.remove}: ${track.title}`}
+                      >
+                        <X />
+                      </button>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <div className="audio-app-panel-empty">
+                {panel === 'queue' ? <ListMusic /> : <Clock3 />}
+                <p>{panelEmpty}</p>
+              </div>
+            )}
+          </div>
+        </aside>
+      </div>
+
+      <footer className="audio-app-playerbar">
+        <div className="audio-app-current">
+          <AudioVinyl track={visibleTrack} playing={playing} compact />
+          <div>
+            <strong>{visibleTrack?.title ?? labels.idleTitle}</strong>
+            <span>{visibleTrack?.artist ?? labels.idleDescription}</span>
           </div>
         </div>
 
-        <div className="audio-deck-controls">
-          <div className="audio-now-label">
-            <span>{labels.nowPlaying}</span>
-            <i data-playing={playing} />
+        <div className="audio-app-playback">
+          <div className="audio-app-transport">
+            <button type="button" onClick={skipPrevious} aria-label={labels.previous}>
+              <SkipBack />
+            </button>
+            <button
+              type="button"
+              className="audio-app-primary"
+              onClick={toggleMainPlayback}
+              disabled={loading && !currentTrack?.src}
+              aria-label={playing ? labels.pause : labels.play}
+            >
+              {loading
+                ? <LoaderCircle className="global-audio-loading" />
+                : playing
+                  ? <Pause />
+                  : <Play />}
+            </button>
+            <button type="button" onClick={skipNext} aria-label={labels.next}>
+              <SkipForward />
+            </button>
           </div>
-          <div className="audio-now-copy">
-            <small>{currentTrack ? trackKindLabel(currentTrack, labels) : 'KINDA AUDIO ARCHIVE'}</small>
-            <h2>{currentTrack?.title ?? labels.idleTitle}</h2>
-            <p>{currentTrack?.subtitle ?? currentTrack?.artist ?? labels.idleDescription}</p>
-          </div>
-
-          <div className="audio-main-timeline">
+          <div className="audio-app-timeline">
+            <time>{formatAudioTime(currentTime)}</time>
             <input
               type="range"
               min="0"
@@ -143,210 +415,71 @@ export function AudioPlayerPage({
               value={Math.min(currentTime, duration || 0)}
               onChange={(event) => seek(Number(event.currentTarget.value))}
               disabled={!duration}
-              aria-label={currentTrack?.title ?? labels.nowPlaying}
-              style={{ '--audio-progress': `${duration ? (currentTime / duration) * 100 : 0}%` } as CSSProperties}
+              aria-label={visibleTrack?.title ?? labels.nowPlaying}
+              style={{
+                '--audio-progress': `${duration ? (currentTime / duration) * 100 : 0}%`,
+              } as CSSProperties}
             />
-            <div>
-              <time>{formatAudioTime(currentTime)}</time>
-              <span>{status === 'error' ? 'ERROR' : playing ? 'PLAYING' : loading ? 'BUFFERING' : 'PAUSED'}</span>
-              <time>{duration ? formatAudioTime(duration) : '--:--'}</time>
-            </div>
+            <time>{duration ? formatAudioTime(duration) : '--:--'}</time>
           </div>
-
-          <div className="audio-transport">
-            <button type="button" onClick={skipPrevious} aria-label={labels.previous}>
-              <SkipBack />
-            </button>
-            <button
-              type="button"
-              className="audio-transport-primary"
-              onClick={() => {
-                if (!currentTrack) {
-                  playAll();
-                } else {
-                  void togglePlayback();
-                }
-              }}
-              disabled={loading && !currentTrack?.src}
-              aria-label={playing ? labels.pause : labels.play}
-            >
-              {loading ? <LoaderCircle className="global-audio-loading" /> : playing ? <Pause /> : <Play />}
-            </button>
-            <button type="button" onClick={skipNext} aria-label={labels.next}>
-              <SkipForward />
-            </button>
-          </div>
-
-          <div className="audio-volume">
-            <button type="button" onClick={toggleMuted} aria-label={labels.volume}>
-              {muted || volume === 0 ? <VolumeX /> : <Volume2 />}
-            </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={muted ? 0 : volume}
-              onChange={(event) => setVolume(Number(event.currentTarget.value))}
-              aria-label={labels.volume}
-              style={{ '--audio-volume': `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
-            />
-            <span>{String(Math.round((muted ? 0 : volume) * 100)).padStart(2, '0')}</span>
-          </div>
-
-          {currentTrack?.href ? (
-            <Link
-              className="audio-source-link"
-              href={currentTrack.href}
-              target={currentTrack.href.startsWith('http') ? '_blank' : undefined}
-              rel={currentTrack.href.startsWith('http') ? 'noreferrer' : undefined}
-            >
-              {labels.returnToSource} <ArrowUpRight />
-            </Link>
-          ) : null}
         </div>
-      </section>
 
-      <section className="audio-library site-container">
-        <div className="audio-section-heading">
-          <div>
-            <span>01 / BGM</span>
-            <h2>{labels.soundLibrary}</h2>
-          </div>
-          <p>{labels.soundLibraryDescription}</p>
-          <button type="button" onClick={playAll}>
-            <Play /> {labels.play}
+        <div className="audio-app-utilities">
+          <button type="button" onClick={toggleMuted} aria-label={labels.volume}>
+            {muted || volume === 0 ? <VolumeX /> : <Volume2 />}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={muted ? 0 : volume}
+            onChange={(event) => setVolume(Number(event.currentTarget.value))}
+            aria-label={labels.volume}
+            style={{ '--audio-volume': `${(muted ? 0 : volume) * 100}%` } as CSSProperties}
+          />
+          <button
+            type="button"
+            className="audio-app-queue-button"
+            onClick={() => setQueueOpen(true)}
+            aria-label={`${labels.queue}: ${queue.length}`}
+          >
+            <ListMusic />
+            {queue.length ? <span>{queue.length}</span> : null}
           </button>
         </div>
-        <div className="audio-library-grid">
-          {tracks.map((track, index) => {
-            const active = currentTrack?.id === track.id;
-            const queued = queuedIds.has(track.id);
-            return (
-              <article
-                key={track.id}
-                className="audio-library-card"
-                data-active={active}
-                style={{ '--audio-accent': track.accent } as CSSProperties}
-              >
-                <button
-                  type="button"
-                  className="audio-library-play"
-                  onClick={() => playTrack(track)}
-                  aria-label={`${labels.playNow}: ${track.title}`}
-                >
-                  <span>
-                    <Disc3 />
-                    <i>{String(index + 1).padStart(2, '0')}</i>
-                  </span>
-                  {active && playing ? <Pause /> : <Play />}
-                </button>
-                <div>
-                  <small>
-                    {track.href ? (
-                      <Link href={track.href} target="_blank" rel="noreferrer">
-                        {track.artist} <ArrowUpRight />
-                      </Link>
-                    ) : track.artist}
-                  </small>
-                  <h3>{track.title}</h3>
-                  <p>{track.subtitle}</p>
-                </div>
-                <button
-                  type="button"
-                  className="audio-queue-add"
-                  onClick={() => enqueue(track)}
-                  disabled={queued || active}
-                >
-                  {queued ? <ListMusic /> : <Plus />}
-                  {queued ? labels.inQueue : labels.addQueue}
-                </button>
-              </article>
-            );
-          })}
-        </div>
-      </section>
+      </footer>
 
-      <div className="audio-lists site-container">
-        <section className="audio-list-panel">
-          <div className="audio-list-heading">
-            <div>
-              <ListMusic />
-              <span>02</span>
-              <h2>{labels.queue}</h2>
-            </div>
-            {queue.length ? (
-              <button type="button" onClick={clearQueue}>
-                <Trash2 /> {labels.clear}
-              </button>
-            ) : null}
-          </div>
-          {queue.length ? (
-            <ol className="audio-track-list">
-              {queue.map((track, index) => (
-                <li key={track.id}>
-                  <button type="button" onClick={() => playFromQueue(index)}>
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    <div>
-                      <strong>{track.title}</strong>
-                      <small>{track.artist}</small>
-                    </div>
-                    <Play />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => removeFromQueue(track.id)}
-                    aria-label={`${labels.remove}: ${track.title}`}
-                  >
-                    <X />
-                  </button>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <div className="audio-list-empty">
-              <ArrowDownToLine />
-              <p>{labels.queueEmpty}</p>
-            </div>
-          )}
-        </section>
+      <AudioQueueSheet
+        open={queueOpen}
+        onOpenChange={setQueueOpen}
+        labels={{
+          queue: labels.queue,
+          queueEmpty: labels.queueEmpty,
+          clear: labels.clear,
+          remove: labels.remove,
+          playNow: labels.playNow,
+          recent: labels.recent,
+          recentEmpty: labels.recentEmpty,
+          nowPlaying: labels.nowPlaying,
+          close: labels.mini.close,
+        }}
+      />
 
-        <section className="audio-list-panel">
-          <div className="audio-list-heading">
-            <div>
-              <Clock3 />
-              <span>03</span>
-              <h2>{labels.recent}</h2>
-            </div>
-            {recent.length ? (
-              <button type="button" onClick={clearRecent}>
-                <RotateCcw /> {labels.clear}
-              </button>
-            ) : null}
-          </div>
-          {recent.length ? (
-            <ol className="audio-track-list audio-recent-list">
-              {recent.map((track, index) => (
-                <li key={`${track.id}-${index}`}>
-                  <button type="button" onClick={() => playTrack(track)}>
-                    <span>{String(index + 1).padStart(2, '0')}</span>
-                    <div>
-                      <strong>{track.title}</strong>
-                      <small>{trackKindLabel(track, labels)} · {track.artist}</small>
-                    </div>
-                    <Play />
-                  </button>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <div className="audio-list-empty">
-              <Clock3 />
-              <p>{labels.recentEmpty}</p>
-            </div>
-          )}
-        </section>
-      </div>
+      <Sheet open={libraryOpen} onOpenChange={setLibraryOpen}>
+        <SheetContent
+          side="left"
+          className="audio-library-sheet"
+          closeLabel={labels.mini.close}
+        >
+          <SheetHeader>
+            <span>01 / LIBRARY</span>
+            <SheetTitle>{labels.soundLibrary}</SheetTitle>
+            <SheetDescription>{labels.soundLibraryDescription}</SheetDescription>
+          </SheetHeader>
+          {libraryRows(true)}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

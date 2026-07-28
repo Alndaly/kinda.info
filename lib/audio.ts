@@ -11,6 +11,7 @@ export type AudioTrack = {
   subtitle?: string;
   href?: string;
   accent?: string;
+  artwork?: string[];
   ephemeral?: boolean;
 };
 

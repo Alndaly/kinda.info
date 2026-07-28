@@ -331,6 +331,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
       title: currentTrack.title,
       artist: currentTrack.artist,
       album: currentTrack.subtitle ?? 'Kinda Audio',
+      artwork: currentTrack.artwork?.map((src) => ({ src })),
     });
     navigator.mediaSession.setActionHandler('play', () => {
       playbackIntentRef.current = true;

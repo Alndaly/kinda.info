@@ -1,16 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  ChevronRight,
   ListMusic,
   LoaderCircle,
+  Maximize2,
   Pause,
   Play,
   SkipForward,
   X,
 } from 'lucide-react';
+import { AudioQueueSheet } from '@/components/audio/audio-queue-sheet';
 import { AudioVinyl } from '@/components/audio/audio-vinyl';
 import { useGlobalAudio } from '@/components/audio/global-audio-provider';
 import { formatAudioTime } from '@/lib/audio';
@@ -22,16 +24,27 @@ export function GlobalMiniPlayer({
 }: {
   locale: Locale;
   labels: {
-    nowPlaying: string;
-    openPlayer: string;
-    play: string;
-    pause: string;
-    next: string;
-    close: string;
     queue: string;
+    queueEmpty: string;
+    clear: string;
+    remove: string;
+    playNow: string;
+    recent: string;
+    recentEmpty: string;
+    nowPlaying: string;
+    mini: {
+      nowPlaying: string;
+      openPlayer: string;
+      play: string;
+      pause: string;
+      next: string;
+      close: string;
+      queue: string;
+    };
   };
 }) {
   const pathname = usePathname();
+  const [queueOpen, setQueueOpen] = useState(false);
   const {
     currentTrack,
     queue,
@@ -69,9 +82,9 @@ export function GlobalMiniPlayer({
       <Link
         className="global-mini-copy"
         href={localizeHref(locale, '/player')}
-        aria-label={labels.openPlayer}
+        aria-label={labels.mini.openPlayer}
       >
-        <small>{labels.nowPlaying}</small>
+        <small>{labels.mini.nowPlaying}</small>
         <strong>{currentTrack.title}</strong>
         <span>{currentTrack.artist}</span>
       </Link>
@@ -81,32 +94,50 @@ export function GlobalMiniPlayer({
       </div>
 
       <div className="global-mini-actions">
-        <Link
-          href={localizeHref(locale, '/player')}
+        <button
+          type="button"
           className="global-mini-queue"
-          aria-label={`${labels.queue}: ${queue.length}`}
+          onClick={() => setQueueOpen(true)}
+          aria-label={`${labels.mini.queue}: ${queue.length}`}
         >
           <ListMusic />
           {queue.length > 0 ? <span>{queue.length}</span> : null}
-        </Link>
+        </button>
         <button
           type="button"
+          className="global-mini-play"
           onClick={() => void togglePlayback()}
           disabled={loading || !currentTrack.src}
-          aria-label={playing ? labels.pause : labels.play}
+          aria-label={playing ? labels.mini.pause : labels.mini.play}
         >
           {loading ? <LoaderCircle className="global-audio-loading" /> : playing ? <Pause /> : <Play />}
         </button>
-        <button type="button" onClick={skipNext} aria-label={labels.next}>
+        <button type="button" onClick={skipNext} aria-label={labels.mini.next}>
           <SkipForward />
         </button>
-        <Link href={localizeHref(locale, '/player')} aria-label={labels.openPlayer}>
-          <ChevronRight />
+        <Link href={localizeHref(locale, '/player')} aria-label={labels.mini.openPlayer}>
+          <Maximize2 />
         </Link>
-        <button type="button" onClick={dismiss} aria-label={labels.close}>
+        <button type="button" onClick={dismiss} aria-label={labels.mini.close}>
           <X />
         </button>
       </div>
+
+      <AudioQueueSheet
+        open={queueOpen}
+        onOpenChange={setQueueOpen}
+        labels={{
+          queue: labels.queue,
+          queueEmpty: labels.queueEmpty,
+          clear: labels.clear,
+          remove: labels.remove,
+          playNow: labels.playNow,
+          recent: labels.recent,
+          recentEmpty: labels.recentEmpty,
+          nowPlaying: labels.nowPlaying,
+          close: labels.mini.close,
+        }}
+      />
     </aside>
   );
 }

@@ -119,7 +119,7 @@ export default async function RootLayout({ children, params }: Props) {
       <SiteHeader locale={lang} />
       <main>{children}</main>
       <SiteFooter locale={lang} />
-      <GlobalMiniPlayer locale={lang} labels={dictionary.player.mini} />
+      <GlobalMiniPlayer locale={lang} labels={dictionary.player} />
     </div>
   );
 }

@@ -269,6 +269,24 @@ function getSpeechText() {
     .trim();
 }
 
+function getArticleArtwork() {
+  const articleImages = Array.from(
+    document.querySelectorAll<HTMLImageElement>(
+      '.article-header img, .article-cover img, .mdx-prose img',
+    ),
+    (image) => image.currentSrc || image.src,
+  );
+  const fallbackCover = document.querySelector<HTMLMetaElement>(
+    'meta[property="og:image"]',
+  )?.content;
+  const sources = [
+    ...articleImages,
+    ...(fallbackCover ? [fallbackCover] : []),
+  ];
+
+  return [...new Set(sources)].slice(0, 8);
+}
+
 export function ArticleAudioPlayer({
   labels,
 }: {
@@ -311,6 +329,7 @@ export function ArticleAudioPlayer({
       kind: 'narration',
       href: window.location.pathname,
       accent: '#e25943',
+      artwork: getArticleArtwork(),
       ephemeral: true,
     }, async () => {
       const text = getSpeechText();

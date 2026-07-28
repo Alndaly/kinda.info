@@ -27,6 +27,7 @@ export default async function PlayerPage({ params }: Props) {
 
   return (
     <AudioPlayerPage
+      locale={lang}
       tracks={getBackgroundTracks(lang)}
       labels={dictionary}
     />
