@@ -77,6 +77,91 @@ function ResultIcon({ type }: { type: SearchRecord['type'] }) {
   return <FileText aria-hidden="true" />;
 }
 
+
+const searchTrigger = [
+  'gap-2 whitespace-nowrap px-3 tracking-[0.06em]',
+  '[&>svg]:h-[0.85rem] [&>svg]:w-[0.85rem]',
+  '[&>kbd]:rounded-[0.28rem] [&>kbd]:border [&>kbd]:border-current [&>kbd]:px-[0.32rem]',
+  '[&>kbd]:py-[0.15rem] [&>kbd]:font-mono [&>kbd]:text-[0.48rem] [&>kbd]:opacity-55',
+  '[@media(max-width:768px)]:w-10 [@media(max-width:768px)]:justify-center [@media(max-width:768px)]:px-0',
+  '[@media(max-width:768px)]:[&>span]:hidden [@media(max-width:768px)]:[&>kbd]:hidden',
+].join(' ');
+
+const searchBackdrop = [
+  'fixed inset-0 z-[100] grid place-items-start justify-items-center',
+  'px-4 pb-4 pt-[clamp(4.5rem,11vh,8rem)]',
+  'bg-ink/[0.34] backdrop-blur-[14px] backdrop-saturate-90 animate-fade-in',
+  '[@media(max-width:768px)]:px-[0.65rem] [@media(max-width:768px)]:py-4',
+].join(' ');
+
+const searchDialog = [
+  'max-h-[min(76vh,46rem)] w-[min(100%,46rem)] overflow-hidden rounded-[1.2rem]',
+  'border border-line bg-paper/[0.98] shadow-[0_2rem_6rem_hsl(var(--ink)/0.22)] animate-dialog-in',
+  '[@media(max-width:768px)]:max-h-[calc(100svh-2rem)]',
+].join(' ');
+
+const searchInput = [
+  'grid min-h-[4.4rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[0.8rem]',
+  'border-b border-line px-5',
+  '[&>svg]:w-[1.15rem] [&>svg]:text-accent',
+  '[&_input]:w-full [&_input]:min-w-0 [&_input]:border-0 [&_input]:bg-transparent',
+  '[&_input]:font-display [&_input]:text-[clamp(1.2rem,3vw,1.75rem)]',
+  '[&_input]:tracking-[-0.02em] [&_input]:outline-0',
+  '[&_input::placeholder]:text-muted-foreground/[0.72]',
+  '[&>button]:grid [&>button]:h-8 [&>button]:w-8 [&>button]:place-items-center',
+  '[&>button]:rounded-full [&>button]:border [&>button]:border-line [&>button]:text-muted-foreground',
+  'hover:[&>button]:border-ink hover:[&>button]:bg-ink hover:[&>button]:text-paper',
+  '[&>button>svg]:w-[0.85rem]',
+].join(' ');
+
+/** Shared look of the count row and the shortcut footer. */
+const searchBar = [
+  'flex items-center justify-between text-[0.56rem] font-bold uppercase',
+  'tracking-[0.12em] text-muted-foreground',
+].join(' ');
+
+const searchFooter = [
+  'border-t border-line px-5 py-[0.7rem]',
+  '[&_kbd]:grid [&_kbd]:h-[1.35rem] [&_kbd]:min-w-[1.35rem] [&_kbd]:place-items-center',
+  '[&_kbd]:rounded-[0.3rem] [&_kbd]:border [&_kbd]:border-line [&_kbd]:font-mono',
+].join(' ');
+
+const searchResults =
+  'max-h-[min(55vh,32rem)] overflow-y-auto overscroll-contain px-[0.65rem] pb-[0.65rem]';
+
+const searchResultRow = [
+  'group/result grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[0.9rem]',
+  'rounded-xl px-[0.8rem] py-[0.9rem]',
+  'transition-[color,background-color] duration-[140ms] ease-[ease]',
+  'data-[active=true]:bg-ink data-[active=true]:text-paper',
+  '[&>svg]:h-[0.9rem] [&>svg]:w-[0.9rem]',
+].join(' ');
+
+const searchResultIcon = [
+  'grid h-[2.35rem] w-[2.35rem] place-items-center rounded-full border border-line text-accent',
+  'group-data-[active=true]/result:border-paper/[0.26]',
+  '[&>svg]:h-[0.9rem] [&>svg]:w-[0.9rem]',
+].join(' ');
+
+const searchResultCopy = [
+  'grid min-w-0',
+  '[&>span]:text-[0.52rem] [&>span]:font-bold [&>span]:uppercase [&>span]:tracking-[0.12em]',
+  '[&>span]:text-muted-foreground',
+  '[&>strong]:mt-[0.15rem] [&>strong]:overflow-hidden [&>strong]:text-ellipsis',
+  '[&>strong]:whitespace-nowrap [&>strong]:font-display [&>strong]:text-[1.1rem] [&>strong]:font-[560]',
+  '[&>small]:mt-[0.2rem] [&>small]:overflow-hidden [&>small]:text-ellipsis',
+  '[&>small]:whitespace-nowrap [&>small]:text-[0.65rem] [&>small]:text-muted-foreground',
+  'group-data-[active=true]/result:[&>span]:text-paper/[0.64]',
+  'group-data-[active=true]/result:[&>small]:text-paper/[0.64]',
+  '[@media(max-width:520px)]:[&>small]:hidden',
+].join(' ');
+
+const searchEmpty = [
+  'grid min-h-48 place-items-center content-center gap-3 text-center text-muted-foreground',
+  '[&>svg]:w-6 [&>svg]:text-accent',
+  '[&>p]:font-display [&>p]:text-[1.05rem]',
+].join(' ');
+
 export function SiteSearch({
   locale,
   records,
@@ -274,15 +359,15 @@ export function SiteSearch({
   };
 
   const dialog = open ? (
-    <div className="site-search-backdrop" onMouseDown={() => setOpen(false)}>
+    <div className={searchBackdrop} onMouseDown={() => setOpen(false)}>
       <section
-        className="site-search-dialog"
+        className={searchDialog}
         role="dialog"
         aria-modal="true"
         aria-label={labels.dialog}
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <header className="site-search-input">
+        <header className={searchInput}>
           <Search aria-hidden="true" />
           <input
             ref={inputRef}
@@ -305,7 +390,7 @@ export function SiteSearch({
           </button>
         </header>
 
-        <div className="site-search-meta">
+        <div className={cn(searchBar, 'px-5 pb-[0.55rem] pt-[0.85rem]')}>
           <span>
             {isPreparing
               ? labels.preparing
@@ -316,9 +401,10 @@ export function SiteSearch({
           <span>{String(results.length).padStart(2, '0')}</span>
         </div>
 
-        <div className="site-search-results" id="site-search-results">
+        <div className={searchResults} id="site-search-results">
           {results.length ? results.map((record, index) => (
             <Link
+              className={searchResultRow}
               id={`site-search-${record.id.replace(':', '-')}`}
               key={record.id}
               href={record.href}
@@ -326,10 +412,10 @@ export function SiteSearch({
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => setOpen(false)}
             >
-              <span className="site-search-result-icon">
+              <span className={searchResultIcon}>
                 <ResultIcon type={record.type} />
               </span>
-              <span className="site-search-result-copy">
+              <span className={searchResultCopy}>
                 <span>
                   {labels.types[record.type]}
                   {record.tags[0] ? ` / ${record.tags[0]}` : ''}
@@ -340,16 +426,20 @@ export function SiteSearch({
               <ArrowUpRight aria-hidden="true" />
             </Link>
           )) : (
-            <div className="site-search-empty">
+            <div className={searchEmpty}>
               <Search aria-hidden="true" />
               <p>{labels.empty}</p>
             </div>
           )}
         </div>
 
-        <footer className="site-search-footer">
-          <span>{labels.hint}</span>
-          <span><kbd>↑</kbd><kbd>↓</kbd><kbd>↵</kbd></span>
+        <footer className={cn(searchBar, searchFooter)}>
+          <span className="[@media(max-width:520px)]:max-w-48 [@media(max-width:520px)]:overflow-hidden [@media(max-width:520px)]:text-ellipsis [@media(max-width:520px)]:whitespace-nowrap">
+            {labels.hint}
+          </span>
+          <span className="flex gap-1">
+            <kbd>↑</kbd><kbd>↓</kbd><kbd>↵</kbd>
+          </span>
         </footer>
       </section>
     </div>
@@ -359,7 +449,7 @@ export function SiteSearch({
     <>
       <button
         type="button"
-        className={cn(headerControl, 'site-search-trigger')}
+        className={cn(headerControl, searchTrigger)}
         onClick={openSearch}
         aria-label={labels.button}
         title={labels.button}
