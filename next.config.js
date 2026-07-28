@@ -15,6 +15,11 @@ const nextConfig = {
         hostname: 'alnda-public.oss-cn-hangzhou.aliyuncs.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'qingyon-revornix-public.oss-cn-beijing.aliyuncs.com',
+        pathname: '/**',
+      },
     ],
   },
 };
