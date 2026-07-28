@@ -14,6 +14,8 @@ import { useEffect, useId, useState } from 'react';
 const lowlight = createLowlight(common);
 
 function MermaidPreview({ source }: { source: string }) {
+  const isEnglish = typeof document !== 'undefined' &&
+    document.documentElement.lang === 'en';
   const reactId = useId();
   const id = `mermaid-${reactId.replace(/:/g, '')}`;
   const [svg, setSvg] = useState('');
@@ -50,19 +52,28 @@ function MermaidPreview({ source }: { source: string }) {
   }, [id, source]);
 
   if (error) {
-    return <div className="tiptap-mermaid-error">Mermaid 无法渲染：{error}</div>;
+    return (
+      <div className="tiptap-mermaid-error">
+        {isEnglish ? 'Mermaid could not render: ' : 'Mermaid 无法渲染：'}{error}
+      </div>
+    );
   }
 
   return (
     <div
       className="tiptap-mermaid-canvas"
-      aria-label="Mermaid 图表"
+      aria-label={isEnglish ? 'Mermaid diagram' : 'Mermaid 图表'}
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
 }
 
 function CodeBlockView({ node }: NodeViewProps) {
+  const isEnglish = typeof document !== 'undefined' &&
+    document.documentElement.lang === 'en';
+  const labels = isEnglish
+    ? { copied: 'Copied', copy: 'Copy', copySource: 'Copy source', diagram: 'Mermaid diagram' }
+    : { copied: '已复制', copy: '复制', copySource: '复制源码', diagram: 'Mermaid 图表' };
   const language = String(node.attrs.language ?? 'plaintext').toLowerCase();
   const source = node.textContent ?? '';
   const [copied, setCopied] = useState(false);
@@ -77,8 +88,11 @@ function CodeBlockView({ node }: NodeViewProps) {
     return (
       <NodeViewWrapper className="tiptap-mermaid">
         <div className="tiptap-code-header" contentEditable={false}>
-          <span><Workflow /> Mermaid diagram</span>
-          <button type="button" onClick={copy}>{copied ? <Check /> : <Copy />}{copied ? 'Copied' : 'Copy source'}</button>
+          <span><Workflow /> {labels.diagram}</span>
+          <button type="button" onClick={copy}>
+            {copied ? <Check /> : <Copy />}
+            {copied ? labels.copied : labels.copySource}
+          </button>
         </div>
         <MermaidPreview source={source} />
         <NodeViewContent className="sr-only" />
@@ -90,7 +104,10 @@ function CodeBlockView({ node }: NodeViewProps) {
     <NodeViewWrapper className="tiptap-code-block">
       <div className="tiptap-code-header" contentEditable={false}>
         <span>{language || 'plaintext'}</span>
-        <button type="button" onClick={copy}>{copied ? <Check /> : <Copy />}{copied ? 'Copied' : 'Copy'}</button>
+        <button type="button" onClick={copy}>
+          {copied ? <Check /> : <Copy />}
+          {copied ? labels.copied : labels.copy}
+        </button>
       </div>
       <pre><NodeViewContent className="tiptap-code-content" /></pre>
     </NodeViewWrapper>

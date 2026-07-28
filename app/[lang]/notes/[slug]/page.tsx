@@ -7,6 +7,7 @@ import {
   ArticleLanguageProvider,
   ArticleTranslatedHeading,
   ArticleTranslatedTags,
+  ArticleTranslatedText,
   AutomaticTranslationNotice,
 } from '@/components/article-language-tools';
 import { ArticleReadingTools } from '@/components/article-reading-tools';
@@ -120,6 +121,10 @@ export default async function NotePage({ params }: Props) {
       title={note.title}
       summary={note.summary}
       tags={note.tags}
+      additionalTexts={[
+        previousNote?.title ?? '',
+        nextNote?.title ?? '',
+      ]}
     >
       <article>
         {!seo.isFallback && <JsonLd data={articleJsonLd} />}
@@ -174,14 +179,18 @@ export default async function NotePage({ params }: Props) {
             {previousNote ? (
               <Link href={previousNote.href}>
                 <small>{dictionary.previous}</small>
-                <strong>{previousNote.title}</strong>
+                <strong>
+                  <ArticleTranslatedText index={0} fallback={previousNote.title} />
+                </strong>
                 <ArrowLeft aria-hidden="true" />
               </Link>
             ) : <span />}
             {nextNote ? (
               <Link href={nextNote.href}>
                 <small>{dictionary.next}</small>
-                <strong>{nextNote.title}</strong>
+                <strong>
+                  <ArticleTranslatedText index={1} fallback={nextNote.title} />
+                </strong>
                 <ArrowRight aria-hidden="true" />
               </Link>
             ) : <span />}

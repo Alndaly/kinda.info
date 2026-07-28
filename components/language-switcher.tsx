@@ -15,8 +15,8 @@ export function LanguageSwitcher({ locale }: { locale: Locale }) {
     <a
       href={href}
       className="language-switch"
-      aria-label={isEnglish ? '切换到中文' : 'Switch to English'}
-      title={isEnglish ? '切换到中文' : 'Switch to English'}
+      aria-label={isEnglish ? 'Switch to Chinese' : '切换到英文'}
+      title={isEnglish ? 'Switch to Chinese' : '切换到英文'}
     >
       {isEnglish ? '中' : 'EN'}
     </a>

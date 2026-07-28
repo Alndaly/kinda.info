@@ -10,6 +10,8 @@ import { Expand, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 function ImageView({ node }: NodeViewProps) {
+  const isEnglish = typeof document !== 'undefined' &&
+    document.documentElement.lang === 'en';
   const [open, setOpen] = useState(false);
   const src = typeof node.attrs.src === 'string' ? node.attrs.src : '';
   const alt = typeof node.attrs.alt === 'string' ? node.attrs.alt : '';
@@ -31,7 +33,9 @@ function ImageView({ node }: NodeViewProps) {
           className="tiptap-image-button"
           onClick={() => setOpen(true)}
           contentEditable={false}
-          aria-label={`放大图片${alt ? `：${alt}` : ''}`}
+          aria-label={isEnglish
+            ? `Enlarge image${alt ? `: ${alt}` : ''}`
+            : `放大图片${alt ? `：${alt}` : ''}`}
         >
           {src ? <img src={src} alt={alt} /> : <span>Image unavailable</span>}
           <span className="tiptap-image-expand"><Expand /></span>
@@ -44,11 +48,16 @@ function ImageView({ node }: NodeViewProps) {
           className="tiptap-lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label={alt || '图片预览'}
+          aria-label={alt || (isEnglish ? 'Image preview' : '图片预览')}
           onClick={() => setOpen(false)}
           contentEditable={false}
         >
-          <button type="button" aria-label="关闭预览"><X /></button>
+          <button
+            type="button"
+            aria-label={isEnglish ? 'Close preview' : '关闭预览'}
+          >
+            <X />
+          </button>
           <img src={src} alt={alt} onClick={(event) => event.stopPropagation()} />
           {alt && <p>{alt}</p>}
         </div>

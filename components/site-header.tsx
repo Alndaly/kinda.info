@@ -54,7 +54,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             {dictionary.hello}
           </Link>
           <LanguageSwitcher locale={locale} />
-          <ModeToggle />
+          <ModeToggle locale={locale} />
         </div>
       </div>
 

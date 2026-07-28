@@ -13,6 +13,10 @@ import {
   findCustomBlockTagStart,
 } from '@/lib/tiptap-markdown';
 
+function isEnglishDocument() {
+  return typeof document !== 'undefined' && document.documentElement.lang === 'en';
+}
+
 const createTokenizer = (name: string, tag: string) => ({
   name,
   level: 'block' as const,
@@ -26,6 +30,7 @@ const createTokenizer = (name: string, tag: string) => ({
 });
 
 function VideoView({ node }: NodeViewProps) {
+  const isEnglish = isEnglishDocument();
   const provider = String(node.attrs.provider ?? 'youtube');
   const videoId = String(node.attrs.videoId ?? '');
   const embedUrl = provider === 'bilibili'
@@ -38,7 +43,7 @@ function VideoView({ node }: NodeViewProps) {
       <div className="tiptap-video-frame">
         <iframe
           src={embedUrl}
-          title="嵌入视频"
+          title={isEnglish ? 'Embedded video' : '嵌入视频'}
           loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -85,6 +90,7 @@ export const VideoEmbedNode = Node.create({
 });
 
 function MapView({ node }: NodeViewProps) {
+  const isEnglish = isEnglishDocument();
   const query = String(node.attrs.query ?? '');
   const lat = String(node.attrs.lat ?? '');
   const lng = String(node.attrs.lng ?? '');
@@ -94,8 +100,15 @@ function MapView({ node }: NodeViewProps) {
 
   return (
     <NodeViewWrapper className="tiptap-map" contentEditable={false}>
-      <iframe src={embed} title={`地图：${target}`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-      <a href={href} target="_blank" rel="noreferrer"><MapPin /> {target || '在地图中查看'}</a>
+      <iframe
+        src={embed}
+        title={isEnglish ? `Map: ${target}` : `地图：${target}`}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
+      <a href={href} target="_blank" rel="noreferrer">
+        <MapPin /> {target || (isEnglish ? 'View on map' : '在地图中查看')}
+      </a>
     </NodeViewWrapper>
   );
 }
@@ -138,6 +151,7 @@ export const MapEmbedNode = Node.create({
 });
 
 function FileView({ node }: NodeViewProps) {
+  const isEnglish = isEnglishDocument();
   const src = String(node.attrs.src ?? '');
   const name = String(node.attrs.name ?? '') || src.split('/').at(-1) || 'Attachment';
   const size = String(node.attrs.size ?? '');
@@ -145,7 +159,12 @@ function FileView({ node }: NodeViewProps) {
     <NodeViewWrapper contentEditable={false}>
       <a className="tiptap-file" href={src} download>
         <span><FileText /></span>
-        <span><strong>{name}</strong><small>{size ? `${size} bytes` : 'File attachment'}</small></span>
+        <span>
+          <strong>{name}</strong>
+          <small>
+            {size ? `${size} bytes` : isEnglish ? 'File attachment' : '文件附件'}
+          </small>
+        </span>
         <Download />
       </a>
     </NodeViewWrapper>
@@ -185,11 +204,15 @@ export const FileAttachmentNode = Node.create({
 });
 
 function AudioView({ node }: NodeViewProps) {
+  const isEnglish = isEnglishDocument();
   const src = String(node.attrs.src ?? '');
   const name = String(node.attrs.name ?? '') || src.split('/').at(-1) || 'Audio';
   return (
     <NodeViewWrapper className="tiptap-audio" contentEditable={false}>
-      <div><strong>{name}</strong><span>Audio note</span></div>
+      <div>
+        <strong>{name}</strong>
+        <span>{isEnglish ? 'Audio note' : '音频笔记'}</span>
+      </div>
       <audio controls preload="metadata" src={src} />
     </NodeViewWrapper>
   );

@@ -23,6 +23,8 @@ import {
   writeTranslationCache,
 } from '@/lib/client-translation';
 
+const TRANSLATABLE_CJK = /[\p{Script=Han}\u3000-\u303f\uff01-\uff65]/u;
+
 function normalizeMarkdown(content: string) {
   return content
     .replace(/\r\n/g, '\n')
@@ -44,6 +46,7 @@ export function TiptapContent({
   const targetLanguage = language?.targetLanguage ?? 'en';
   const setBodyStatus = language?.setBodyStatus;
   const translationApplied = useRef('');
+  const contentLabel = targetLanguage === 'en' ? 'Article body' : '文章正文';
   const normalized = useMemo(() => normalizeMarkdown(content), [content]);
   const editor = useEditor(
     {
@@ -72,11 +75,11 @@ export function TiptapContent({
       editorProps: {
         attributes: {
           class: 'tiptap-prosemirror',
-          'aria-label': '文章正文',
+          'aria-label': contentLabel,
         },
       },
     },
-    [normalized],
+    [contentLabel, normalized],
   );
 
   useEffect(() => {
@@ -84,28 +87,52 @@ export function TiptapContent({
     const translationKey = `${translationCacheKey}:body`;
     if (translationApplied.current === translationKey) return;
 
-    const segments: Array<{
-      from: number;
-      to: number;
-      text: string;
-      marks: readonly Mark[];
-    }> = [];
+    type TranslationSegment =
+      | {
+        kind: 'text';
+        from: number;
+        to: number;
+        text: string;
+        marks: readonly Mark[];
+      }
+      | {
+        kind: 'attribute';
+        position: number;
+        attribute: 'alt' | 'title';
+        text: string;
+      };
+    const segments: TranslationSegment[] = [];
     editor.state.doc.descendants((node, position, parent) => {
       if (
-        !node.isText ||
-        !node.text ||
-        !/[\p{Script=Han}]/u.test(node.text) ||
-        parent?.type.name === 'codeBlock' ||
-        node.marks.some((mark) => mark.type.name === 'code')
+        node.isText &&
+        node.text &&
+        TRANSLATABLE_CJK.test(node.text) &&
+        parent?.type.name !== 'codeBlock' &&
+        !node.marks.some((mark) => mark.type.name === 'code')
       ) {
-        return;
+        segments.push({
+          kind: 'text',
+          from: position,
+          to: position + node.nodeSize,
+          text: node.text,
+          marks: node.marks,
+        });
       }
-      segments.push({
-        from: position,
-        to: position + node.nodeSize,
-        text: node.text,
-        marks: node.marks,
-      });
+      if (node.type.name === 'image') {
+        (['alt', 'title'] as const).forEach((attribute) => {
+          const text = typeof node.attrs[attribute] === 'string'
+            ? node.attrs[attribute]
+            : '';
+          if (text && TRANSLATABLE_CJK.test(text)) {
+            segments.push({
+              kind: 'attribute',
+              position,
+              attribute,
+              text,
+            });
+          }
+        });
+      }
     });
 
     if (!segments.length) {
@@ -119,10 +146,28 @@ export function TiptapContent({
     const applyTranslations = (translated: string[]) => {
       if (!active || translated.length !== segments.length) return;
       let transaction = editor.state.tr;
-      [...segments].reverse().forEach((segment, reverseIndex) => {
-        const translatedIndex = segments.length - reverseIndex - 1;
+      const attributeUpdates = new Map<number, Record<string, unknown>>();
+      segments.forEach((segment, index) => {
+        if (segment.kind !== 'attribute') return;
+        const node = editor.state.doc.nodeAt(segment.position);
+        if (!node) return;
+        const attributes = attributeUpdates.get(segment.position) ?? { ...node.attrs };
+        attributes[segment.attribute] = translated[index] || segment.text;
+        attributeUpdates.set(segment.position, attributes);
+      });
+      attributeUpdates.forEach((attributes, position) => {
+        transaction = transaction.setNodeMarkup(position, undefined, attributes);
+      });
+      const textSegments = segments
+        .map((segment, index) => ({ segment, index }))
+        .filter((item): item is {
+          segment: Extract<TranslationSegment, { kind: 'text' }>;
+          index: number;
+        } => item.segment.kind === 'text')
+        .reverse();
+      textSegments.forEach(({ segment, index }) => {
         const replacement = editor.schema.text(
-          translated[translatedIndex] || segment.text,
+          translated[index] || segment.text,
           segment.marks,
         );
         transaction = transaction.replaceWith(segment.from, segment.to, replacement);
@@ -166,7 +211,7 @@ export function TiptapContent({
     return (
       <div
         className="tiptap-reader tiptap-fallback"
-        aria-label="文章正文"
+        aria-label={contentLabel}
         dangerouslySetInnerHTML={{ __html: fallbackHtml }}
       />
     );

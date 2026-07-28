@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ListTree } from 'lucide-react';
+import { useArticleLanguage } from '@/components/article-language-tools';
 
 type OutlineItem = {
   id: string;
@@ -25,6 +26,8 @@ export function ArticleReadingTools({
   contentsLabel: string;
   progressLabel: string;
 }) {
+  const language = useArticleLanguage();
+  const translationStatus = language?.status ?? 'ready';
   const [outline, setOutline] = useState<OutlineItem[]>([]);
   const [activeId, setActiveId] = useState('');
   const [progress, setProgress] = useState(0);
@@ -41,11 +44,15 @@ export function ArticleReadingTools({
       const headings = [...prose.querySelectorAll<HTMLHeadingElement>('h2, h3')];
       const items = headings.map((heading, index) => {
         const title = heading.textContent?.trim() || `Section ${index + 1}`;
-        const baseId = heading.id || createHeadingId(title, index);
+        const generatedId = heading.dataset.readingGeneratedId === 'true';
+        const baseId = !heading.id || generatedId
+          ? createHeadingId(title, index)
+          : heading.id;
         let id = baseId;
         let duplicate = 2;
         while (usedIds.has(id)) id = `${baseId}-${duplicate++}`;
         usedIds.add(id);
+        if (!heading.id || generatedId) heading.dataset.readingGeneratedId = 'true';
         heading.id = id;
         return {
           id,
@@ -83,7 +90,11 @@ export function ArticleReadingTools({
     collectOutline();
     updateProgress();
     const mutationObserver = new MutationObserver(collectOutline);
-    mutationObserver.observe(prose, { childList: true, subtree: true });
+    mutationObserver.observe(prose, {
+      characterData: true,
+      childList: true,
+      subtree: true,
+    });
     window.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('resize', updateProgress);
 
@@ -93,7 +104,7 @@ export function ArticleReadingTools({
       window.removeEventListener('scroll', updateProgress);
       window.removeEventListener('resize', updateProgress);
     };
-  }, []);
+  }, [translationStatus]);
 
   return (
     <>

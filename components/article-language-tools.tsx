@@ -26,6 +26,7 @@ import {
   writeTranslationCache,
 } from '@/lib/client-translation';
 import type { Locale } from '@/lib/i18n';
+import { siteConfig } from '@/site.config';
 
 type ArticleLanguageContextValue = {
   automatic: boolean;
@@ -35,6 +36,7 @@ type ArticleLanguageContextValue = {
   title: string;
   summary: string;
   tags: string[];
+  additionalTexts: string[];
   status: TranslationState;
   setBodyStatus: (state: TranslationState) => void;
 };
@@ -53,6 +55,7 @@ export function ArticleLanguageProvider({
   title,
   summary,
   tags,
+  additionalTexts,
   children,
 }: {
   automatic: boolean;
@@ -62,9 +65,15 @@ export function ArticleLanguageProvider({
   title: string;
   summary: string;
   tags: string[];
+  additionalTexts: string[];
   children: ReactNode;
 }) {
-  const [translatedHeader, setTranslatedHeader] = useState([title, summary, ...tags]);
+  const [translatedFields, setTranslatedFields] = useState([
+    title,
+    summary,
+    ...tags,
+    ...additionalTexts,
+  ]);
   const [headerStatus, setHeaderStatus] = useState<TranslationState>(
     automatic ? 'idle' : 'ready',
   );
@@ -77,16 +86,16 @@ export function ArticleLanguageProvider({
 
   useEffect(() => {
     if (!automatic) {
-      setTranslatedHeader([title, summary, ...tags]);
+      setTranslatedFields([title, summary, ...tags, ...additionalTexts]);
       setHeaderStatus('ready');
       return;
     }
 
     let active = true;
-    const source = [title, summary, ...tags];
+    const source = [title, summary, ...tags, ...additionalTexts];
     const cached = readTranslationCache(`${cacheKey}:header`, source);
     if (cached) {
-      setTranslatedHeader(cached);
+      setTranslatedFields(cached);
       setHeaderStatus('ready');
       return;
     }
@@ -95,20 +104,29 @@ export function ArticleLanguageProvider({
     void translateTexts(source, sourceLanguage, targetLanguage)
       .then((translated) => {
         if (!active) return;
-        setTranslatedHeader(translated);
+        setTranslatedFields(translated);
         writeTranslationCache(`${cacheKey}:header`, source, translated);
         setHeaderStatus('ready');
       })
       .catch(() => {
         if (!active) return;
-        setTranslatedHeader(source);
+        setTranslatedFields(source);
         setHeaderStatus('error');
       });
 
     return () => {
       active = false;
     };
-  }, [automatic, cacheKey, sourceLanguage, summary, tags, targetLanguage, title]);
+  }, [
+    additionalTexts,
+    automatic,
+    cacheKey,
+    sourceLanguage,
+    summary,
+    tags,
+    targetLanguage,
+    title,
+  ]);
 
   const status = !automatic
     ? 'ready'
@@ -117,18 +135,38 @@ export function ArticleLanguageProvider({
       : headerStatus === 'ready' && bodyStatus === 'ready'
         ? 'ready'
         : 'loading';
+  useEffect(() => {
+    if (!automatic || headerStatus !== 'ready') return;
+    const updateMetadata = () => {
+      document.title = `${translatedFields[0] ?? title} — ${siteConfig.shortTitle}`;
+      document
+        .querySelector<HTMLMetaElement>('meta[name="description"]')
+        ?.setAttribute('content', translatedFields[1] ?? summary);
+    };
+    updateMetadata();
+    const timeout = window.setTimeout(updateMetadata, 1_000);
+    return () => window.clearTimeout(timeout);
+  }, [
+    automatic,
+    headerStatus,
+    summary,
+    title,
+    translatedFields,
+  ]);
   const value = useMemo<ArticleLanguageContextValue>(() => ({
     automatic,
     cacheKey,
     sourceLanguage,
     targetLanguage,
-    title: translatedHeader[0] ?? title,
-    summary: translatedHeader[1] ?? summary,
-    tags: translatedHeader.slice(2),
+    title: translatedFields[0] ?? title,
+    summary: translatedFields[1] ?? summary,
+    tags: translatedFields.slice(2, 2 + tags.length),
+    additionalTexts: translatedFields.slice(2 + tags.length),
     status,
     setBodyStatus,
   }), [
     automatic,
+    additionalTexts,
     cacheKey,
     setBodyStatus,
     sourceLanguage,
@@ -137,7 +175,7 @@ export function ArticleLanguageProvider({
     targetLanguage,
     tags,
     title,
-    translatedHeader,
+    translatedFields,
   ]);
 
   return (
@@ -145,6 +183,17 @@ export function ArticleLanguageProvider({
       {children}
     </ArticleLanguageContext.Provider>
   );
+}
+
+export function ArticleTranslatedText({
+  index,
+  fallback,
+}: {
+  index: number;
+  fallback: string;
+}) {
+  const language = useArticleLanguage();
+  return language?.additionalTexts[index] || fallback;
 }
 
 export function ArticleTranslatedTags() {

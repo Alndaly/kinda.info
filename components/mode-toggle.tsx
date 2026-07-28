@@ -11,9 +11,13 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import type { Locale } from '@/lib/i18n';
 
-export function ModeToggle() {
+export function ModeToggle({ locale }: { locale: Locale }) {
 	const { setTheme } = useTheme();
+	const labels = locale === 'zh'
+		? { toggle: '切换主题', light: '浅色', dark: '深色', system: '跟随系统' }
+		: { toggle: 'Change theme', light: 'Light', dark: 'Dark', system: 'System' };
 
 	return (
 		<DropdownMenu>
@@ -25,18 +29,18 @@ export function ModeToggle() {
 				>
 					<Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
 					<Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
-					<span className='sr-only'>切换主题</span>
+					<span className='sr-only'>{labels.toggle}</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuItem onClick={() => setTheme('light')}>
-					浅色
+					{labels.light}
 				</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => setTheme('dark')}>
-					深色
+					{labels.dark}
 				</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => setTheme('system')}>
-					跟随系统
+					{labels.system}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

@@ -32,12 +32,19 @@ function decodeHtml(value: string) {
     .replaceAll('&amp;', '&');
 }
 
+function preserveBoundaryWhitespace(source: string, translated: string) {
+  const leading = source.match(/^\s+/u)?.[0] ?? '';
+  const trailing = source.match(/\s+$/u)?.[0] ?? '';
+  return `${leading}${translated.trim()}${trailing}`;
+}
+
 function createBatches(texts: string[]) {
   const batches: Array<Array<{ index: number; text: string }>> = [];
   let current: Array<{ index: number; text: string }> = [];
   let currentLength = 0;
 
   texts.forEach((text, index) => {
+    if (!text.trim()) return;
     const itemLength = text.length + 48;
     if (current.length && currentLength + itemLength > MAX_BATCH_CHARACTERS) {
       batches.push(current);
@@ -80,13 +87,18 @@ async function translateBatch(
   const payload = response.data as [Array<[string]>];
   const translatedHtml = payload[0]?.map((segment) => segment[0] ?? '').join('') ?? '';
   const translations = new Map<number, string>();
+  const sourceByIndex = new Map(batch.map((item) => [item.index, item.text]));
   const pattern = /<span data-kinda-id="(\d+)">([\s\S]*?)<\/span>/g;
   let match: RegExpExecArray | null;
 
   while ((match = pattern.exec(translatedHtml))) {
-    translations.set(Number(match[1]), decodeHtml(match[2]).trim());
+    const index = Number(match[1]);
+    const source = sourceByIndex.get(index) ?? '';
+    translations.set(
+      index,
+      preserveBoundaryWhitespace(source, decodeHtml(match[2])),
+    );
   }
-
   return translations;
 }
 
@@ -122,7 +134,17 @@ export async function POST(request: NextRequest) {
     const batches = createBatches(texts);
     const results = [];
     for (const batch of batches) {
-      results.push(await translateBatch(batch, sourceLanguage, targetLanguage));
+      const result = await translateBatch(batch, sourceLanguage, targetLanguage);
+      const missing = batch.filter((item) => !result.has(item.index));
+      for (const item of missing) {
+        const retry = await translateBatch([item], sourceLanguage, targetLanguage);
+        const value = retry.get(item.index);
+        if (value !== undefined) result.set(item.index, value);
+        if (!result.has(item.index)) {
+          throw new Error(`Translation provider omitted segment ${item.index}`);
+        }
+      }
+      results.push(result);
     }
     for (const result of results) {
       for (const [index, value] of result) translated[index] = value;

@@ -2,6 +2,8 @@
 
 export type TranslationState = 'idle' | 'loading' | 'ready' | 'error';
 
+const TRANSLATION_CACHE_VERSION = 'v2';
+
 type TranslationCache = {
   source: string[];
   translated: string[];
@@ -38,7 +40,9 @@ export async function translateTexts(
 
 export function readTranslationCache(cacheKey: string, source: string[]) {
   try {
-    const raw = window.sessionStorage.getItem(`kinda:translation:${cacheKey}`);
+    const raw = window.sessionStorage.getItem(
+      `kinda:translation:${TRANSLATION_CACHE_VERSION}:${cacheKey}`,
+    );
     if (!raw) return null;
     const cached = JSON.parse(raw) as TranslationCache;
     if (
@@ -63,7 +67,7 @@ export function writeTranslationCache(
 ) {
   try {
     window.sessionStorage.setItem(
-      `kinda:translation:${cacheKey}`,
+      `kinda:translation:${TRANSLATION_CACHE_VERSION}:${cacheKey}`,
       JSON.stringify({ source, translated } satisfies TranslationCache),
     );
   } catch {
