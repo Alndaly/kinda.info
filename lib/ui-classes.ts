@@ -246,3 +246,58 @@ export const commentsError = [
   '[&>a]:inline-flex [&>a]:items-center [&>a]:gap-[0.45rem] [&>a]:border-b [&>a]:border-current',
   '[&>a]:font-bold [&>a]:text-ink [&_svg]:w-[0.9rem]',
 ].join(' ');
+
+const contactCard = 'relative overflow-hidden border border-line bg-paper';
+
+export const contactWechat = [
+  contactCard,
+  'row-span-2 p-[clamp(1.25rem,3vw,2.5rem)] [@media(max-width:768px)]:row-auto',
+  '[&_h3]:mt-[0.55rem] [&_h3]:font-display [&_h3]:text-[clamp(2rem,4vw,3.7rem)]',
+  '[&_h3]:leading-none [&_h3]:tracking-[-0.055em]',
+  '[&_p]:mt-4 [&_p]:max-w-[24rem] [&_p]:text-[0.85rem] [&_p]:leading-[1.8] [&_p]:text-muted-foreground',
+].join(' ');
+
+export const contactChannel = [
+  contactCard,
+  '[--channel-color:var(--accent)]',
+  'flex min-h-[17rem] flex-col justify-between p-[clamp(1.25rem,3vw,2.25rem)]',
+  'transition-[background-color,color,transform] duration-[250ms] ease-[ease]',
+  'hover:translate-x-1 hover:bg-[hsl(var(--channel-color)/0.08)]',
+  "before:absolute before:inset-y-0 before:left-0 before:w-[0.28rem] before:origin-bottom",
+  'before:scale-y-0 before:bg-[hsl(var(--channel-color))] before:transition-transform',
+  "before:duration-[280ms] before:ease-[ease] before:content-[''] hover:before:scale-y-100",
+  '[&_h3]:mt-[0.55rem] [&_h3]:font-display [&_h3]:text-[clamp(2rem,4vw,3.7rem)]',
+  '[&_h3]:leading-none [&_h3]:tracking-[-0.055em]',
+  'hover:[&_svg]:translate-x-[2px] hover:[&_svg]:-translate-y-[2px]',
+].join(' ');
+
+export const contactCardHeading = [
+  'mb-[clamp(2rem,5vw,4rem)] flex items-center justify-between',
+  '[&>svg]:h-[1.2rem] [&>svg]:w-[1.2rem] [&>svg]:[stroke-width:1.4]',
+].join(' ');
+
+export const contactKicker =
+  'text-[0.58rem] font-bold uppercase tracking-[0.2em] text-muted-foreground';
+
+export const contactDestination = [
+  'flex items-center justify-between border-t border-line pt-4',
+  'text-[0.72rem] tracking-[0.08em] text-muted-foreground',
+  '[&>svg]:h-4 [&>svg]:w-4 [&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
+].join(' ');
+
+export const photoLedger = [
+  'mb-[clamp(3rem,7vw,6rem)] grid grid-cols-[0.65fr_1.35fr] items-end gap-12',
+  'border-y border-line py-5 [@media(max-width:768px)]:grid-cols-[1fr] [@media(max-width:768px)]:gap-6',
+  '[&>div]:flex [&>div]:items-baseline [&>div]:justify-between [&>div]:gap-4',
+  '[&>div>span]:text-[0.56rem] [&>div>span]:uppercase [&>div>span]:tracking-[0.16em]',
+  '[&>div>span]:text-muted-foreground',
+  '[&>div>strong]:font-display [&>div>strong]:text-[3.5rem] [&>div>strong]:font-[350]',
+  '[&>div>strong]:leading-[0.8] [&>div>strong]:text-accent',
+  '[&_dl]:grid [&_dl]:grid-cols-3 [&_dl]:gap-4',
+  '[@media(max-width:768px)]:[&_dl]:gap-2 [@media(max-width:520px)]:[&_dl]:grid-cols-2',
+  '[&_dl>div]:border-l [&_dl>div]:border-line [&_dl>div]:pl-4',
+  '[@media(max-width:768px)]:[&_dl>div]:pl-[0.7rem]',
+  '[@media(max-width:520px)]:[&_dl>div:last-child]:hidden',
+  '[&_dt]:text-[0.56rem] [&_dt]:uppercase [&_dt]:tracking-[0.16em] [&_dt]:text-muted-foreground',
+  '[&_dd]:mt-[0.45rem] [&_dd]:font-display [&_dd]:text-[1.15rem]',
+].join(' ');

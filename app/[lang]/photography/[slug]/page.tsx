@@ -19,7 +19,7 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer, mdxProse, mdxProsePhoto } from '@/lib/ui-classes';
+import { siteContainer, mdxProse, mdxProsePhoto, backLink, detailTitle } from '@/lib/ui-classes';
 import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
@@ -106,23 +106,32 @@ export default async function PhotoPage({ params }: Props) {
   );
 
   return (
-    <article className="photo-detail">
+    <article className="pt-[clamp(3rem,8vw,7rem)]">
       {!seo.isFallback && <JsonLd data={photoJsonLd} />}
       <div className={siteContainer}>
-        <Link href={localizeHref(lang, '/photography')} className="back-link">
+        <Link href={localizeHref(lang, '/photography')} className={backLink}>
           <ArrowLeft /> {dictionary.back}
         </Link>
-        <header>
-          <span>
+        <header
+          data-detail-header
+          className="mb-12 grid grid-cols-[0.35fr_1.2fr_0.65fr] items-end gap-8 [@media(max-width:768px)]:grid-cols-[1fr]"
+        >
+          <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
             FRAME {String(frameIndex + 1).padStart(2, '0')} /{' '}
             {String(photoIndex.length).padStart(2, '0')}
             <br />
             {photo.location} · {formatDate(photo.date, lang)}
           </span>
-          <h1 data-document-title>{photo.title}</h1>
-          <div className="photo-detail-summary">
+          <h1
+            data-document-title
+            className={cn(detailTitle, '[@media(max-width:768px)]:order-first')}
+          >
+            {photo.title}
+          </h1>
+          <div className="[&_p]:text-[0.9rem] [&_p]:leading-[1.8] [&_p]:text-muted-foreground">
             <p data-document-summary>{photo.summary}</p>
             <ArticleAudioPlayer
+              className="mx-0 mt-[1.15rem]"
               source={{
                 id: `photo:${photo.slug}:${photo.updated ?? photo.date}`,
                 title: photo.title,
@@ -142,8 +151,8 @@ export default async function PhotoPage({ params }: Props) {
         </header>
       </div>
       {photo.cover && (
-        <div className="photo-detail-stage" data-document-cover>
-          <div className="photo-detail-hero">
+        <div className="mx-auto w-[min(100%-2rem,1440px)]" data-document-cover>
+          <div className="relative h-[min(75vw,820px)] w-full overflow-hidden bg-muted [@media(max-width:768px)]:h-[78svh]">
             <Image
               src={photo.cover}
               alt={photo.title}
@@ -153,7 +162,7 @@ export default async function PhotoPage({ params }: Props) {
               className="object-cover"
             />
           </div>
-          <div className="photo-detail-caption">
+          <div className="flex justify-between gap-4 pt-3 text-[0.56rem] uppercase tracking-[0.14em] text-muted-foreground">
             <span>© {translations.footer.author}</span>
             <span>{photo.location} / {photo.date.replaceAll('-', '.')}</span>
           </div>

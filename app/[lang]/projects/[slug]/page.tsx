@@ -22,7 +22,8 @@ import {
   websiteId,
 } from '@/lib/seo';
 import { siteConfig } from '@/site.config';
-import { siteContainer, projectStatus, mdxProse } from '@/lib/ui-classes';
+import { siteContainer, projectStatus, mdxProse, backLink, detailTitle } from '@/lib/ui-classes';
+import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
 type ProjectStyle = CSSProperties & { '--project-accent': string };
@@ -107,32 +108,48 @@ export default async function ProjectPage({ params }: Props) {
   );
 
   return (
-    <article className="project-detail" style={projectStyle}>
+    <article
+      className="bg-[radial-gradient(circle_at_88%_8%,color-mix(in_srgb,var(--project-accent)_14%,transparent),transparent_28rem)]"
+      style={projectStyle}
+    >
       {!seo.isFallback && <JsonLd data={projectJsonLd} />}
-      <header className={`${siteContainer} project-detail-header`}>
-        <Link href={localizeHref(lang, '/projects')} className="back-link">
+      <header
+        data-detail-header
+        className={cn(siteContainer, 'pt-[clamp(3rem,8vw,7rem)]')}
+      >
+        <Link href={localizeHref(lang, '/projects')} className={backLink}>
           <ArrowLeft /> {dictionary.back}
         </Link>
         <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-end">
           <div>
-            <div className="project-detail-identity">
-              <span>{project.mark ?? 'K'}</span>
+            <div className="mb-[1.4rem] flex items-center gap-[0.8rem] [&>p]:m-0 [&>p]:text-[0.62rem] [&>p]:font-bold [&>p]:uppercase [&>p]:tracking-[0.14em] [&>p]:text-muted-foreground">
+              <span className="grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full bg-[var(--project-accent)] font-display text-[1.1rem] font-bold text-white">
+                {project.mark ?? 'K'}
+              </span>
               <p>{project.discipline ?? project.tags.join(' · ')}</p>
             </div>
             <div className="mb-6 flex gap-2">
               <Badge className={projectStatus}>{dictionary.status[status]}</Badge>
               {project.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
             </div>
-            <h1 data-document-title>{project.title}</h1>
-            <p data-document-summary>{project.summary}</p>
+            <h1 data-document-title className={cn(detailTitle, 'text-[clamp(5rem,10vw,9rem)]')}>
+              {project.title}
+            </h1>
+            <p
+              data-document-summary
+              className="mt-6 max-w-[34rem] text-base leading-[1.9] text-muted-foreground"
+            >
+              {project.summary}
+            </p>
             {project.link && (
-              <Button asChild className="project-visit mt-8 rounded-full">
+              <Button asChild className="mt-8 rounded-full bg-[var(--project-accent)]! text-white! hover:bg-[color-mix(in_srgb,var(--project-accent)_84%,black)]!">
                 <Link href={project.link} target="_blank">
                   {dictionary.visit} <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             )}
             <ArticleAudioPlayer
+              className="mx-0 mt-7"
               source={{
                 id: `project:${project.slug}:${project.updated ?? project.date}`,
                 title: project.title,
@@ -151,7 +168,10 @@ export default async function ProjectPage({ params }: Props) {
             />
           </div>
           {project.cover && (
-            <div className="project-detail-visual" data-document-cover>
+            <div
+              className="relative aspect-[4/3] overflow-hidden rounded-[0.2rem] border border-[color-mix(in_srgb,var(--project-accent)_48%,hsl(var(--line)))] bg-muted shadow-[1.25rem_1.25rem_0_color-mix(in_srgb,var(--project-accent)_13%,transparent)]"
+              data-document-cover
+            >
               <Image
                 src={project.cover}
                 alt={project.title}

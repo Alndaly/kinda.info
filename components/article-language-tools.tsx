@@ -307,6 +307,7 @@ function getArticleArtwork() {
 export function ArticleAudioPlayer({
   labels,
   source,
+  className,
 }: {
   labels: {
     listen: string;
@@ -323,6 +324,7 @@ export function ArticleAudioPlayer({
     locale: Locale;
     accent?: string;
   };
+  className?: string;
 }) {
   const language = useArticleLanguage();
   const {
@@ -380,7 +382,7 @@ export function ArticleAudioPlayer({
   const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
 
   return (
-    <div className={cn(articleAudio, 'group/audio')} data-state={audioState}>
+    <div className={cn(articleAudio, 'group/audio', className)} data-state={audioState}>
       <button type="button" onClick={play} disabled={disabled || audioState === 'loading'}>
         <span className={articleAudioIcon}>
           {audioState === 'loading'

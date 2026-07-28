@@ -5,6 +5,7 @@ import { getEntries } from '@/lib/content';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
 import {
+  photoLedger,
   archiveHeaderSplit,
   archiveHeaderSplitText,
   archiveHeaderTitle,
@@ -66,7 +67,7 @@ export default async function PhotographyPage({ params }: Props) {
           </span>
         </div>
       </header>
-      <aside className="photo-ledger" aria-label={dictionary.archive}>
+      <aside className={photoLedger} aria-label={dictionary.archive}>
         <div>
           <span>{dictionary.archive}</span>
           <strong>{String(photos.length).padStart(2, '0')}</strong>
