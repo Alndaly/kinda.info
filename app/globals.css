@@ -3675,31 +3675,35 @@
 
 .audio-launcher-record {
   position: absolute;
-  inset: 0.34rem;
+  inset: 0.24rem;
   border-radius: 50%;
   background:
-    radial-gradient(circle at center, hsl(var(--accent)) 0 10%, transparent 11%),
+    radial-gradient(
+      circle at 36% 28%,
+      hsl(var(--inverse-foreground) / 0.09),
+      transparent 31%
+    ),
     repeating-radial-gradient(
       circle at center,
-      transparent 0 0.16rem,
-      hsl(var(--inverse-foreground) / 0.13) 0.18rem 0.2rem
+      transparent 0 0.18rem,
+      hsl(var(--inverse-foreground) / 0.055) 0.2rem 0.215rem
     ),
     conic-gradient(
-      from 34deg,
-      hsl(var(--inverse-background)) 0 24%,
-      hsl(var(--inverse-background) / 0.82) 25% 48%,
-      hsl(var(--inverse-background)) 49% 74%,
-      hsl(var(--inverse-background) / 0.84) 75% 100%
+      from 28deg,
+      hsl(var(--inverse-background)) 0 31%,
+      hsl(54 9% 16%) 33% 48%,
+      hsl(var(--inverse-background)) 50% 78%,
+      hsl(54 8% 14%) 80% 100%
     );
   box-shadow:
-    0 0 0 1px hsl(var(--ink) / 0.18),
-    0 0.18rem 0.45rem hsl(var(--ink) / 0.18);
-  transition: transform 220ms ease;
+    inset 0 0 0 1px hsl(var(--inverse-foreground) / 0.045),
+    0 0.15rem 0.42rem hsl(var(--inverse-background) / 0.28);
+  transition: filter 180ms ease;
   will-change: transform;
 }
 
 .audio-launcher:hover .audio-launcher-record {
-  transform: scale(1.04);
+  filter: brightness(1.16);
 }
 
 .audio-launcher[data-playing="true"] .audio-launcher-record,
@@ -3716,20 +3720,18 @@
   position: relative;
   z-index: 1;
   display: grid;
-  width: 1.05rem;
-  height: 1.05rem;
+  width: 0.9rem;
+  height: 0.9rem;
   place-items: center;
-  border-radius: 50%;
-  color: white;
-  background: hsl(var(--ink) / 0.66);
-  backdrop-filter: blur(3px);
+  color: hsl(var(--inverse-foreground));
+  filter: drop-shadow(0 1px 2px hsl(var(--inverse-background) / 0.72));
 }
 
 .audio-launcher-glyph svg {
-  width: 0.58rem;
-  height: 0.58rem;
+  width: 0.68rem;
+  height: 0.68rem;
   fill: currentColor;
-  stroke-width: 2.2;
+  stroke-width: 1.8;
 }
 
 .audio-launcher-glyph svg[data-lucide="play"] {
