@@ -116,6 +116,7 @@ export default async function RootLayout({ children, params }: Props) {
     <div
       className="group/shell has-[[data-audio-app]]:h-[100dvh] has-[[data-audio-app]]:overflow-hidden"
       lang={lang === 'zh' ? 'zh-CN' : 'en'}
+      data-locale={lang}
     >
       <DocumentLanguage locale={lang} />
       <JsonLd data={globalJsonLd} />

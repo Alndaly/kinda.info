@@ -74,12 +74,15 @@
   /* Letter-spacing on a label is a Latin device: small caps need the air, CJK
      blocks do not. One scale keeps the ratios between labels while pulling the
      Chinese ones back in. */
+  /* Keyed to data-locale, not lang: the root lang attribute is only corrected
+     after hydration, so anything styled off it flashes on first paint. Latin
+     spacing is the default; Chinese pulls it in. */
   :root {
-    --tracking-scale: 0.34;
+    --tracking-scale: 1;
   }
 
-  [lang="en"] {
-    --tracking-scale: 1;
+  [data-locale="zh"] {
+    --tracking-scale: 0.34;
   }
 
   * {
@@ -107,8 +110,8 @@
 
 /* CJK glyphs need more vertical room than the display face's tight leading, so
    this deliberately outranks the leading-* utilities on a heading — unlayered
-   rules beat every layer. Latin pages (lang="en") keep the tight leading. */
-[lang="zh-CN"] :where(h1, h2, h3) {
+   rules beat every layer. Keyed to data-locale for the reason above. */
+[data-locale="zh"] :where(h1, h2, h3) {
   padding-block: 0.07em;
   line-height: 1.14;
 }

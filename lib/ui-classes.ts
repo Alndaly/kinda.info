@@ -241,7 +241,7 @@ export const mdxProse = [
 ].join(' ');
 
 /** Photo essays centre their short captions. */
-export const mdxProsePhoto = 'text-center text-[1.2rem]';
+export const mdxProsePhoto = 'text-center text-[1.2rem] leading-loose';
 
 export const articleEndMessage = [
   'text-center',

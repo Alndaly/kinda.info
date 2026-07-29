@@ -59,8 +59,11 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </p>
               <h1
                 className={cn(
-                  'mt-[clamp(1.25rem,2.4vw,2.25rem)] flex items-end gap-[0.08em] font-display font-semibold leading-[0.72]',
+                  'mt-[clamp(1.25rem,2.4vw,2.25rem)] flex items-end gap-[0.08em] font-display font-semibold',
                   'text-[clamp(6.5rem,15vw,13rem)] to-768:text-[clamp(5rem,29vw,8.5rem)] to-520:text-[25vw]',
+                  // after the text-* classes on purpose: tailwind-merge treats
+                  // font-size as overriding leading, so leading has to come last
+                  'leading-[0.72]',
                   // the Latin wordmark is drawn tight; two Chinese glyphs would
                   // collide at that tracking
                   lang === 'zh' ? 'tracking-[-0.02em]' : 'tracking-[-0.095em]',

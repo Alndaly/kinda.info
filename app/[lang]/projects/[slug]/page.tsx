@@ -132,7 +132,7 @@ export default async function ProjectPage({ params }: Props) {
               <Badge className={projectStatus}>{dictionary.status[status]}</Badge>
               {project.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
             </div>
-            <h1 data-document-title className={cn(detailTitle, 'text-[clamp(5rem,10vw,9rem)]')}>
+            <h1 data-document-title className={cn(detailTitle, 'text-[clamp(5rem,10vw,9rem)] leading-[0.98]!')}>
               {project.title}
             </h1>
             <p
