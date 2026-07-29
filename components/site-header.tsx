@@ -32,7 +32,11 @@ export function SiteHeader({ locale }: { locale: Locale }) {
           <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-paper transition-transform duration-500 group-hover:rotate-90">
             <Asterisk className="h-5 w-5" strokeWidth={1.7} />
           </span>
-          <span className="font-display text-2xl font-semibold tracking-[-0.04em]">
+          {/* The display face sits its ink high in the line box — ~0.12em for the
+              Chinese glyphs, ~0.10em for the Latin — so centring the box leaves
+              the wordmark riding above the asterisk. Nudge it onto the optical
+              centre instead. */}
+          <span className="translate-y-[0.11em] font-display text-2xl font-semibold tracking-[-0.04em]">
             {dictionary.brand}
           </span>
         </Link>
