@@ -84,7 +84,7 @@ const audioActions = [
   '[&>*]:grid [&>*]:h-[2.2rem] [&>*]:w-[2.2rem] [&>*]:place-items-center',
   '[&>*]:rounded-full [&>*]:border [&>*]:border-line [&>*]:text-muted-foreground',
   '[&>*]:transition-[color,border-color,background-color] [&>*]:duration-[160ms] [&>*]:ease-[ease]',
-  'hover:[&>*]:border-ink hover:[&>*]:bg-ink hover:[&>*]:text-paper',
+  '[&>*:hover]:border-ink [&>*:hover]:bg-ink [&>*:hover]:text-paper',
   '[&>button:disabled]:cursor-not-allowed [&>button:disabled]:opacity-[0.42]',
   '[&_svg]:h-[0.9rem] [&_svg]:w-[0.9rem]',
   '[@media(max-width:520px)]:gap-1 [@media(max-width:520px)]:[&>*]:h-8 [@media(max-width:520px)]:[&>*]:w-8',
@@ -120,7 +120,7 @@ const audioError = [
   '[&>button]:rounded-full [&>button]:border [&>button]:border-accent/45',
   '[&>button]:px-2 [&>button]:py-[0.35rem] [&>button]:text-[0.56rem] [&>button]:font-bold',
   '[&>button]:uppercase [&>button]:tracking-[0.08em]',
-  'hover:[&>button]:bg-accent hover:[&>button]:text-white',
+  '[&>button:hover]:bg-accent [&>button:hover]:text-white',
   '[&_svg]:h-[0.8rem] [&_svg]:w-[0.8rem]',
 ].join(' ');
 

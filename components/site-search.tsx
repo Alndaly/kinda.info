@@ -110,7 +110,7 @@ const searchInput = [
   '[&_input::placeholder]:text-muted-foreground/[0.72]',
   '[&>button]:grid [&>button]:h-8 [&>button]:w-8 [&>button]:place-items-center',
   '[&>button]:rounded-full [&>button]:border [&>button]:border-line [&>button]:text-muted-foreground',
-  'hover:[&>button]:border-ink hover:[&>button]:bg-ink hover:[&>button]:text-paper',
+  '[&>button:hover]:border-ink [&>button:hover]:bg-ink [&>button:hover]:text-paper',
   '[&>button>svg]:w-[0.85rem]',
 ].join(' ');
 

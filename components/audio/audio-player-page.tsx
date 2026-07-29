@@ -264,7 +264,7 @@ const appStageCopy = [
   '[&>p]:mt-[0.55rem] [&>p]:text-[0.58rem] [&>p]:leading-[1.55] [&>p]:text-muted-foreground',
   '[&>a]:mt-[0.55rem] [&>a]:inline-flex [&>a]:items-center [&>a]:gap-[0.35rem]',
   '[&>a]:text-[0.48rem] [&>a]:text-muted-foreground',
-  '[&>a]:transition-colors [&>a]:duration-[150ms] [&>a]:ease-[ease] hover:[&>a]:text-ink',
+  '[&>a]:transition-colors [&>a]:duration-[150ms] [&>a]:ease-[ease] [&>a:hover]:text-ink',
   '[&>a>svg]:h-[0.62rem] [&>a>svg]:w-[0.62rem]',
   '[@media(max-width:720px)]:[&_h1]:text-[clamp(2rem,9vw,3.1rem)]',
   '[@media(max-width:720px)]:[&>p]:hidden',
@@ -303,7 +303,7 @@ const appTransport = [
   'flex items-center justify-center gap-[0.65rem]',
   '[&>button]:grid [&>button]:h-[1.9rem] [&>button]:w-[1.9rem] [&>button]:place-items-center',
   '[&>button]:rounded-full [&>button]:text-muted-foreground',
-  'hover:[&>button]:bg-secondary hover:[&>button]:text-ink',
+  '[&>button:hover]:bg-secondary [&>button:hover]:text-ink',
   '[&_svg]:h-[0.88rem] [&_svg]:w-[0.88rem]',
 ].join(' ');
 
@@ -340,7 +340,7 @@ const appUtilities = [
   '[&_input]:[--audio-progress:var(--audio-volume)]',
   '[&>button]:relative [&>button]:grid [&>button]:h-8 [&>button]:w-8 [&>button]:place-items-center',
   '[&>button]:rounded-full [&>button]:text-muted-foreground',
-  'hover:[&>button]:bg-secondary hover:[&>button]:text-ink',
+  '[&>button:hover]:bg-secondary [&>button:hover]:text-ink',
   '[&_svg]:h-[0.82rem] [&_svg]:w-[0.82rem]',
   '[@media(max-width:980px)]:grid-cols-[auto_auto_auto] [@media(max-width:980px)]:[&_input]:hidden',
   '[@media(max-width:720px)]:flex [@media(max-width:720px)]:[&>button:first-child]:hidden',

@@ -55,7 +55,7 @@ const miniActions = [
   'flex items-center gap-[0.2rem] [grid-area:actions]',
   '[&>*]:relative [&>*]:grid [&>*]:h-8 [&>*]:w-8 [&>*]:place-items-center [&>*]:rounded-full',
   '[&>*]:text-inverse-muted [&>*]:transition-[color,background-color] [&>*]:duration-[150ms] [&>*]:ease-[ease]',
-  'hover:[&>*]:bg-inverse-line hover:[&>*]:text-inverse-foreground',
+  '[&>*:hover]:bg-inverse-line [&>*:hover]:text-inverse-foreground',
   '[&>button:disabled]:opacity-45',
   '[&_svg]:h-[0.85rem] [&_svg]:w-[0.85rem]',
   '[@media(max-width:560px)]:[&>*]:h-[1.9rem] [@media(max-width:560px)]:[&>*]:w-[1.9rem]',

@@ -42,7 +42,7 @@ const codeHeader = [
   '[&_button]:inline-flex [&_button]:items-center [&_button]:gap-[0.4rem] [&_button]:rounded-full',
   '[&_button]:px-[0.5rem] [&_button]:py-[0.2rem]',
   '[&_button]:transition-[color,background-color] [&_button]:duration-[160ms] [&_button]:ease-[ease]',
-  'hover:[&_button]:bg-white/[0.06] hover:[&_button]:text-[#e8e5da]',
+  '[&_button:hover]:bg-white/[0.06] [&_button:hover]:text-[#e8e5da]',
   '[&_svg]:h-[0.78rem] [&_svg]:w-[0.78rem]',
   // the copy button confirms in the memo colour instead of only swapping icon
   '[&_button[data-copied=true]]:text-memo',

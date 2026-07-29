@@ -128,7 +128,7 @@ export const articleMeta = [
   'tracking-[0.12em] text-muted-foreground',
   '[&>span]:inline-flex [&>span]:items-center [&>span]:gap-[0.4rem]',
   '[&>a]:inline-flex [&>a]:items-center [&>a]:gap-[0.4rem] [&>a]:text-inherit [&>a]:no-underline',
-  '[&>a]:transition-colors [&>a]:duration-[180ms] [&>a]:ease-[ease] hover:[&>a]:text-accent',
+  '[&>a]:transition-colors [&>a]:duration-[180ms] [&>a]:ease-[ease] [&>a:hover]:text-accent',
   '[&_svg]:w-[0.85rem]',
 ].join(' ');
 
@@ -231,7 +231,7 @@ export const mdxProse = [
   '[&_th]:bg-muted/[0.72] [&_th]:text-[0.68rem] [&_th]:font-extrabold [&_th]:uppercase',
   '[&_th]:tracking-[0.08em] [&_th]:text-foreground',
   '[&_tbody_tr]:transition-colors [&_tbody_tr]:duration-[160ms] [&_tbody_tr]:ease-[ease]',
-  'hover:[&_tbody_tr]:bg-muted/[0.38]',
+  '[&_tbody_tr:hover]:bg-muted/[0.38]',
 ].join(' ');
 
 /** Photo essays centre their short captions. */
@@ -249,7 +249,7 @@ export const articlePagination = [
   '[&>a]:relative [&>a]:grid [&>a]:min-h-40 [&>a]:content-between [&>a]:border [&>a]:border-line',
   '[&>a]:bg-muted/20 [&>a]:p-5',
   '[&>a]:transition-[border-color,background-color,transform] [&>a]:duration-[180ms] [&>a]:ease-[ease]',
-  'hover:[&>a]:-translate-y-0.5 hover:[&>a]:border-accent/65 hover:[&>a]:bg-memo/15',
+  '[&>a:hover]:-translate-y-0.5 [&>a:hover]:border-accent/65 [&>a:hover]:bg-memo/15',
   '[&>a:last-child]:text-right',
   '[&_small]:text-[0.57rem] [&_small]:font-[750] [&_small]:uppercase [&_small]:tracking-[0.14em]',
   '[&_small]:text-muted-foreground',
