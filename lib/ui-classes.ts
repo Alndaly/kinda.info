@@ -207,7 +207,9 @@ export const mdxProse = [
 
   // quotes, rules, code
   '[&_blockquote]:my-12 [&_blockquote]:border-l-2 [&_blockquote]:border-accent',
-  '[&_blockquote]:pl-6 [&_blockquote]:text-[1.35rem] [&_blockquote]:italic [&_blockquote]:leading-[1.7]',
+  // same size and rhythm as body copy; the rule and the italics carry the quote
+  '[&_blockquote]:pl-6 [&_blockquote]:text-[length:var(--mdx-body-font-size)]',
+  '[&_blockquote]:italic [&_blockquote]:leading-loose',
   '[&_hr]:my-16 [&_hr]:border-0 [&_hr]:border-t [&_hr]:border-line',
   '[&_pre]:my-10 [&_pre]:overflow-x-auto [&_pre]:rounded-[0.5rem] [&_pre]:border [&_pre]:border-white/[0.08]',
   '[&_pre]:bg-[#141512] [&_pre]:p-5 [&_pre]:font-code [&_pre]:text-[0.8rem] [&_pre]:leading-[1.7]',
