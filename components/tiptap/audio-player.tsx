@@ -46,7 +46,7 @@ const audioHeader = [
 
 const audioKicker = [
   'flex min-w-0 items-center gap-[0.55rem] text-[0.56rem] font-[750] uppercase',
-  'tracking-[0.14em] text-muted-foreground',
+  'tracking-[calc(0.14em*var(--tracking-scale))] text-muted-foreground',
   '[&>svg]:h-[0.85rem] [&>svg]:w-[0.85rem] [&>svg]:flex-none [&>svg]:text-accent',
   'to-520:text-[0.5rem] to-520:tracking-[0.1em]',
 ].join(' ');

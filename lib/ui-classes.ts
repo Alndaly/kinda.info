@@ -29,7 +29,7 @@ export const navPill = [
 /** Underlined link with an arrow that lifts on hover. */
 export const textLink = [
   'inline-flex items-center gap-[0.45rem] border-b border-current pb-1',
-  'text-[0.72rem] font-bold uppercase tracking-[0.12em]',
+  'text-[0.72rem] font-bold uppercase tracking-[calc(0.12em*var(--tracking-scale))]',
   '[&>svg]:h-[0.9rem] [&>svg]:w-[0.9rem]',
   '[&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
   'hover:[&>svg]:translate-x-[2px] hover:[&>svg]:-translate-y-[2px]',
@@ -72,7 +72,7 @@ export const archiveHeaderSplitText =
 
 export const backLink = [
   'mb-[clamp(3rem,7vw,6rem)] inline-flex items-center gap-[0.45rem]',
-  'text-[0.7rem] font-bold uppercase tracking-[0.14em] text-muted-foreground',
+  'text-[0.7rem] font-bold uppercase tracking-[calc(0.14em*var(--tracking-scale))] text-muted-foreground',
   // width only, matching the original — the arrow keeps its own height
   '[&>svg]:w-[0.9rem]',
   '[&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
@@ -129,7 +129,7 @@ export const translationNotice = [
 
 export const articleMeta = [
   'mt-8 flex flex-wrap justify-center gap-6 text-[0.67rem] font-bold uppercase',
-  'tracking-[0.12em] text-muted-foreground',
+  'tracking-[calc(0.12em*var(--tracking-scale))] text-muted-foreground',
   '[&>span]:inline-flex [&>span]:items-center [&>span]:gap-[0.4rem]',
   '[&>a]:inline-flex [&>a]:items-center [&>a]:gap-[0.4rem] [&>a]:text-inherit [&>a]:no-underline',
   '[&>a]:transition-colors [&>a]:duration-[180ms] [&>a]:ease-[ease] [&>a:hover]:text-accent',
@@ -257,7 +257,7 @@ export const articlePagination = [
   '[&>a]:transition-[border-color,background-color,transform,translate,scale,rotate] [&>a]:duration-[180ms] [&>a]:ease-[ease]',
   '[&>a:hover]:-translate-y-0.5 [&>a:hover]:border-accent/65 [&>a:hover]:bg-memo/15',
   '[&>a:last-child]:text-right',
-  '[&_small]:text-[0.57rem] [&_small]:font-[750] [&_small]:uppercase [&_small]:tracking-[0.14em]',
+  '[&_small]:text-[0.57rem] [&_small]:font-[750] [&_small]:uppercase [&_small]:tracking-[calc(0.14em*var(--tracking-scale))]',
   '[&_small]:text-muted-foreground',
   '[&_strong]:my-[0.8rem] [&_strong]:max-w-[25rem] [&_strong]:font-display',
   '[&_strong]:text-[clamp(1.25rem,2.6vw,2rem)] [&_strong]:leading-[1.1]',

@@ -71,6 +71,17 @@
     --ring: var(--ink);
   }
 
+  /* Letter-spacing on a label is a Latin device: small caps need the air, CJK
+     blocks do not. One scale keeps the ratios between labels while pulling the
+     Chinese ones back in. */
+  :root {
+    --tracking-scale: 0.34;
+  }
+
+  [lang="en"] {
+    --tracking-scale: 1;
+  }
+
   * {
     @apply border-border;
   }

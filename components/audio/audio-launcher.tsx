@@ -67,7 +67,7 @@ const launcherReveal = [
 const launcherCopy = [
   'flex min-w-0 flex-col gap-[0.12rem] pl-[0.42rem]',
   '[&>small]:text-[0.46rem] [&>small]:font-extrabold [&>small]:uppercase',
-  '[&>small]:leading-none [&>small]:tracking-[0.14em] [&>small]:text-accent',
+  '[&>small]:leading-none [&>small]:tracking-[calc(0.14em*var(--tracking-scale))] [&>small]:text-accent',
 ].join(' ');
 
 const launcherLink = [

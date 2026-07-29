@@ -28,7 +28,7 @@ export function EntryCard({
       <div className="pt-[0.35rem] font-display text-base italic text-muted-foreground">{String(index + 1).padStart(2, '0')}</div>
       <div className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-2">
-          <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          <span className="text-[10px] uppercase tracking-[calc(0.18em*var(--tracking-scale))] text-muted-foreground">
             {formatShortDate(entry.date)}
           </span>
           {entry.tags.slice(0, 2).map((tag) => (

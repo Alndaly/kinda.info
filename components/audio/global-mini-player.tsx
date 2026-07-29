@@ -44,7 +44,7 @@ const miniProgress = [
 const miniCopy = [
   'grid min-w-0 [grid-area:copy]',
   '[&>small]:text-[0.45rem] [&>small]:font-extrabold [&>small]:uppercase',
-  '[&>small]:tracking-[0.17em] [&>small]:text-inverse-muted',
+  '[&>small]:tracking-[calc(0.17em*var(--tracking-scale))] [&>small]:text-inverse-muted',
 ].join(' ');
 
 const miniTime = [

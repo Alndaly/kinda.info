@@ -54,7 +54,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                 <Sparkles className="mr-1.5 h-3 w-3" />
                 {dictionary.archive}
               </Badge>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[calc(0.24em*var(--tracking-scale))] text-muted-foreground">
                 {dictionary.eyebrow}
               </p>
               <h1
@@ -71,11 +71,18 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                   {dictionary.displayName}
                 </span>
               </h1>
-              <p className="mt-8 max-w-xl text-base leading-8 text-muted-foreground sm:text-lg">
-                {dictionary.intro[0]}
-                <br className="hidden sm:block" />
-                {dictionary.intro[1]}
-              </p>
+              {/* The standfirst is set in the display face, one size up from
+                  body copy, with the second line dropped to a footnote behind a
+                  hairline — the same rule/serif pairing the rest of the site
+                  uses for editorial voice. */}
+              <div className="mt-8 max-w-xl">
+                <p className="text-balance font-display text-[clamp(1.15rem,1.7vw,1.4rem)] leading-[1.75] tracking-[-0.01em] text-foreground/90">
+                  {dictionary.intro[0]}
+                </p>
+                <p className="mt-4 flex items-start gap-3 text-[0.95rem] leading-[1.9] text-muted-foreground before:mt-[0.85em] before:h-px before:w-8 before:flex-none before:bg-accent/70 before:content-['']">
+                  {dictionary.intro[1]}
+                </p>
+              </div>
             </div>
 
             <div className="mt-10 flex flex-wrap gap-3">
@@ -100,7 +107,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                 sizes="(max-width: 1024px) 90vw, 42vw"
                 className="object-cover"
               />
-              <span className="absolute bottom-[1.2rem] left-[1.2rem] z-[1] text-[0.58rem] tracking-[0.2em] text-white">
+              <span className="absolute bottom-[1.2rem] left-[1.2rem] z-[1] text-[0.58rem] tracking-[calc(0.2em*var(--tracking-scale))] text-white">
                 ON THE ROAD / KINDA
               </span>
             </div>
@@ -123,7 +130,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </svg>
             </div>
             <div className="absolute bottom-[2%] right-[clamp(0.75rem,1.5vw,1rem)] z-[3] w-52 -rotate-[3.5deg] bg-memo p-[1.2rem] text-memo-ink shadow-[0_16px_35px_rgba(28,27,20,0.18)] to-768:right-4 to-768:w-[10.5rem] to-768:p-[0.9rem]">
-              <span className="text-[0.58rem] font-bold uppercase tracking-[0.18em]">
+              <span className="text-[0.58rem] font-bold uppercase tracking-[calc(0.18em*var(--tracking-scale))]">
                 {dictionary.noteLabel}
               </span>
               <p className="mt-4 font-display text-[1.25rem] leading-[1.55] to-768:text-[1rem]">
@@ -135,7 +142,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
         <a
           href="#latest"
-          className="absolute bottom-6 left-0 flex items-center gap-[0.55rem] text-[0.58rem] font-bold uppercase tracking-[0.2em] text-muted-foreground [&>svg]:animate-nudge-down to-1024:hidden"
+          className="absolute bottom-6 left-0 flex items-center gap-[0.55rem] text-[0.58rem] font-bold uppercase tracking-[calc(0.2em*var(--tracking-scale))] text-muted-foreground [&>svg]:animate-nudge-down to-1024:hidden"
         >
           <ArrowDown className="h-4 w-4" />
           {dictionary.scroll}
