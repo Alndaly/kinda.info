@@ -3,6 +3,17 @@ const nextConfig = {
   experimental: {
     useTypeScriptCli: true,
   },
+  // the portrait was renamed with the July → Kinda cleanup; the old path was in
+  // the Person JSON-LD, so keep it reachable
+  async redirects() {
+    return [
+      {
+        source: '/images/july-portrait.jpg',
+        destination: '/images/kinda-portrait.jpg',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

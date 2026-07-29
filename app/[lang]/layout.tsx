@@ -102,7 +102,7 @@ export default async function RootLayout({ children, params }: Props) {
         name: siteConfig.author,
         alternateName: siteConfig.authorAlternateNames,
         url: absoluteUrl('/about'),
-        image: absoluteUrl('/images/july-portrait.jpg'),
+        image: absoluteUrl('/images/kinda-portrait.jpg'),
         sameAs: [
           `https://github.com/${siteConfig.github}`,
           siteConfig.bilibili,

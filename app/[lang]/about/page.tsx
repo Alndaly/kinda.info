@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: lang === 'zh' ? 'zh_CN' : 'en_US',
       images: [
         {
-          url: '/images/july-portrait.jpg',
+          url: '/images/kinda-portrait.jpg',
           width: 1080,
           height: 1440,
           alt: dictionary.portraitAlt,
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: dictionary.metadataTitle,
       description: dictionary.metadataDescription,
-      images: ['/images/july-portrait.jpg'],
+      images: ['/images/kinda-portrait.jpg'],
     },
   };
 }
@@ -92,7 +92,7 @@ export default async function AboutPage({ params }: Props) {
         </div>
         <div className="relative aspect-[4/5] overflow-hidden bg-muted rotate-[1.5deg] after:pointer-events-none after:absolute after:inset-0 after:shadow-[inset_0_0_0_0.65rem_hsl(var(--paper))] after:content-[''] to-768:ml-auto to-768:w-[85%]">
           <Image
-            src="/images/july-portrait.jpg"
+            src="/images/kinda-portrait.jpg"
             alt={dictionary.portraitAlt}
             fill
             priority

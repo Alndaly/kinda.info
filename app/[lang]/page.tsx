@@ -85,7 +85,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <div className="relative min-h-[600px] to-1024:mx-auto to-1024:min-h-[590px] to-1024:w-[min(100%,680px)] to-768:min-h-[460px]">
             <div className="absolute inset-[2%_5%_8%_10%] overflow-hidden rounded-[50%_50%_3%_3%/38%_38%_3%_3%] bg-muted shadow-[0_30px_80px_rgba(41,37,25,0.16)] rotate-[1.5deg] after:pointer-events-none after:absolute after:inset-0 after:bg-[linear-gradient(to_top,rgba(15,14,11,0.42),transparent_45%)] after:content-[''] to-768:inset-[1.5rem_1rem_2.5rem_0]">
               <Image
-                src="/images/july-portrait.jpg"
+                src="/images/kinda-portrait.jpg"
                 alt={dictionary.photoAlt}
                 fill
                 priority
@@ -93,7 +93,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                 className="object-cover"
               />
               <span className="absolute bottom-[1.2rem] left-[1.2rem] z-[1] text-[0.58rem] tracking-[0.2em] text-white">
-                ON THE ROAD / JULY
+                ON THE ROAD / KINDA
               </span>
             </div>
             <div
@@ -121,7 +121,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               <p className="mt-4 font-display text-[1.25rem] leading-[1.55] to-768:text-[1rem]">
                 {dictionary.note[0]}<br />{dictionary.note[1]}
               </p>
-              <i className="mt-4 block text-right font-display">— J.</i>
+              <i className="mt-4 block text-right font-display">— K.</i>
             </div>
           </div>
         </div>
