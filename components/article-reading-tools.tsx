@@ -24,7 +24,7 @@ function createHeadingId(title: string, index: number) {
 const readingRail = [
   'fixed left-[max(1.25rem,calc((100vw-1240px)/2))] top-[clamp(8rem,21vh,12rem)] z-20',
   'max-h-[min(60vh,34rem)] w-[8.75rem] overflow-x-hidden overflow-y-auto',
-  'pointer-events-none translate-y-3 opacity-0 transition-[opacity,transform] duration-[220ms] ease-[ease]',
+  'pointer-events-none translate-y-3 opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-[220ms] ease-[ease]',
   'data-[visible=true]:pointer-events-auto data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100',
   'data-[collision=media]:-translate-x-3',
   '[@media(max-width:1180px)]:hidden',

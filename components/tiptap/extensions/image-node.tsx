@@ -55,7 +55,7 @@ function ImageView({ node }: NodeViewProps) {
 const imageButton = [
   'relative block w-full cursor-zoom-in overflow-hidden rounded-[0.2rem] border-0 bg-muted',
   '[&>img]:block [&>img]:h-auto [&>img]:w-full',
-  '[&>img]:transition-[transform,filter] [&>img]:duration-500 [&>img]:ease-[ease]',
+  '[&>img]:transition-[transform,translate,scale,rotate,filter] [&>img]:duration-500 [&>img]:ease-[ease]',
   'hover:[&>img]:scale-[1.012] hover:[&>img]:saturate-[1.04]',
 ].join(' ');
 

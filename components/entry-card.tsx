@@ -48,7 +48,7 @@ export function EntryCard({
         </Link>
       </div>
       <Link
-        className="grid h-11 w-11 place-items-center rounded-full border border-line transition-[transform,background,color] duration-[240ms] ease-[ease] group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:border-accent group-hover:bg-accent group-hover:text-white [&>svg]:w-4 [@media(max-width:768px)]:hidden"
+        className="grid h-11 w-11 place-items-center rounded-full border border-line transition-[transform,translate,scale,rotate,background,color] duration-[240ms] ease-[ease] group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:border-accent group-hover:bg-accent group-hover:text-white [&>svg]:w-4 [@media(max-width:768px)]:hidden"
         href={entry.href} aria-label={`${readLabel} ${entry.title}`}>
         <ArrowUpRight />
       </Link>

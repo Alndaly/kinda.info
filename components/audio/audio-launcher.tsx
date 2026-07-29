@@ -52,7 +52,7 @@ const launcherGlyph = [
 const launcherReveal = [
   'pointer-events-none order-1 grid w-0 min-w-0 flex-none grid-cols-[minmax(0,1fr)_auto]',
   'items-center gap-0 overflow-hidden pr-0 opacity-0 -translate-x-[0.45rem]',
-  'transition-[opacity,transform] duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
+  'transition-[opacity,transform,translate,scale,rotate] duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
   'group-hover/launcher:pointer-events-auto group-hover/launcher:w-auto group-hover/launcher:flex-1',
   'group-hover/launcher:gap-[0.55rem] group-hover/launcher:overflow-visible',
   'group-hover/launcher:pr-[0.35rem] group-hover/launcher:translate-x-0 group-hover/launcher:opacity-100',
@@ -72,7 +72,7 @@ const launcherCopy = [
 
 const launcherLink = [
   'grid h-7 w-7 flex-none place-items-center rounded-full border border-line text-muted-foreground',
-  'transition-[color,border-color,background-color,transform] duration-[180ms] ease-[ease]',
+  'transition-[color,border-color,background-color,transform,translate,scale,rotate] duration-[180ms] ease-[ease]',
   'hover:rotate-6 hover:border-ink hover:bg-ink hover:text-paper',
   'focus-visible:rotate-6 focus-visible:border-ink focus-visible:bg-ink focus-visible:text-paper',
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent/[0.72]',

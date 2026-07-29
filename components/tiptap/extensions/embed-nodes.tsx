@@ -51,7 +51,7 @@ const mapShell = [
 const fileShell = [
   'grid grid-cols-[auto_1fr_auto] items-center gap-[0.9rem] rounded-[0.35rem]',
   'border border-line bg-card p-4',
-  'transition-[border-color,transform] duration-[160ms] ease-[ease]',
+  'transition-[border-color,transform,translate,scale,rotate] duration-[160ms] ease-[ease]',
   'hover:-translate-y-0.5 hover:border-accent',
   '[&_svg]:w-4',
   '[&_strong]:block [&_strong]:font-sans [&_strong]:text-[0.78rem]',

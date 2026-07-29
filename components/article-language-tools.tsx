@@ -379,7 +379,11 @@ export function ArticleAudioPlayer({
       : audioState === 'paused'
         ? labels.resume
         : labels.listen;
-  const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
+  // time and duration are global; without the active check this article's bar
+  // would follow whatever else is playing
+  const trackTime = active ? currentTime : 0;
+  const trackDuration = active ? duration : 0;
+  const progress = trackDuration > 0 ? Math.min(trackTime / trackDuration, 1) : 0;
 
   return (
     <div className={cn(articleAudio, 'group/audio', className)} data-state={audioState}>
@@ -403,7 +407,7 @@ export function ArticleAudioPlayer({
         <i style={{ transform: `scaleX(${progress})` }} />
       </span>
       {audioState === 'playing' || audioState === 'paused' ? (
-        <time>{formatAudioTime(currentTime)} / {formatAudioTime(duration)}</time>
+        <time>{formatAudioTime(trackTime)} / {formatAudioTime(trackDuration)}</time>
       ) : null}
       {audioState === 'error' ? <p role="alert">{labels.error}</p> : null}
     </div>

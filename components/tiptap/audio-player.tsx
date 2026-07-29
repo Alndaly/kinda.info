@@ -68,7 +68,7 @@ const audioBody = [
 const audioPlay = [
   'grid h-17 w-17 place-items-center rounded-full bg-ink text-paper [grid-area:play]',
   'shadow-[0_0.7rem_1.8rem_hsl(var(--ink)/0.16)]',
-  'transition-[color,background-color,transform] duration-[180ms] ease-[ease]',
+  'transition-[color,background-color,transform,translate,scale,rotate] duration-[180ms] ease-[ease]',
   'hover:scale-[1.04] hover:bg-accent hover:text-white',
   'group-data-[state=playing]/audio:bg-accent group-data-[state=playing]/audio:text-white',
   'group-data-[state=loading]/audio:bg-accent group-data-[state=loading]/audio:text-white',
