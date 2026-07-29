@@ -92,12 +92,14 @@
     text-decoration: none;
   }
 
-  /* CJK glyphs need more vertical room than the Latin display face. A default,
-     so leading-* / py-* utilities on a heading still win. */
-  [lang="zh-CN"] :where(h1, h2, h3) {
-    padding-block: 0.07em;
-    line-height: 1.14;
-  }
+}
+
+/* CJK glyphs need more vertical room than the display face's tight leading, so
+   this deliberately outranks the leading-* utilities on a heading — unlayered
+   rules beat every layer. Latin pages (lang="en") keep the tight leading. */
+[lang="zh-CN"] :where(h1, h2, h3) {
+  padding-block: 0.07em;
+  line-height: 1.14;
 }
 
 /* The player backdrop runs both of these at once, so they are referenced from

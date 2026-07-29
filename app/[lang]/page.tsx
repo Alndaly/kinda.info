@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 /** Shrinks to just its arrow on the narrowest screens. */
 const sectionHeadingLink = cn(
   textLink,
-  'to-520:border-0 to-520:text-[0]',
+  'to-520:border-0 to-520:text-[0px]',
   'to-520:[&>svg]:h-[1.2rem] to-520:[&>svg]:w-[1.2rem]',
 );
 

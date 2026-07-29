@@ -86,7 +86,7 @@ export default async function AboutPage({ params }: Props) {
       <header className="grid grid-cols-[1fr_0.75fr] items-center gap-[clamp(2rem,8vw,8rem)] to-768:grid-cols-[1fr]">
         <div>
           <span className={sectionIndex}>Index / 04</span>
-          <h1 className="mt-8 font-display text-[clamp(4.5rem,10vw,9rem)] leading-[0.9] tracking-[-0.07em]">
+          <h1 className="mt-8 font-display text-[clamp(4.5rem,10vw,9rem)] leading-[0.9]! tracking-[-0.07em]">
             {dictionary.title[0]}<br />{dictionary.title[1]}
           </h1>
         </div>
@@ -127,7 +127,7 @@ export default async function AboutPage({ params }: Props) {
         <header className="mb-[clamp(3rem,7vw,6rem)] grid grid-cols-[0.45fr_1fr] items-end gap-[clamp(2rem,7vw,7rem)] to-768:grid-cols-[1fr]">
           <span className={sectionIndex}>Elsewhere / 05</span>
           <div>
-            <h2 className="font-display text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.95] tracking-[-0.065em]">
+            <h2 className="font-display text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.95]! tracking-[-0.065em]">
               {dictionary.elsewhere}
             </h2>
             <p className="mt-6 max-w-[32rem] text-[0.95rem] leading-[1.9] text-muted-foreground">

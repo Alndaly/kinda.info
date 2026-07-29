@@ -175,7 +175,7 @@ const appPanelHeading = [
   '[&_span]:text-[0.45rem] [&_span]:font-extrabold [&_span]:uppercase',
   '[&_span]:tracking-[0.16em] [&_span]:text-[var(--audio-accent)]',
   '[&_h2]:mt-[0.32rem] [&_h2]:py-[0.06em] [&_h2]:font-display [&_h2]:text-[1.35rem]',
-  '[&_h2]:font-semibold [&_h2]:leading-[1.16] [&_h2]:tracking-[-0.035em]',
+  '[&_h2]:font-semibold [&_h2]:leading-[1.16]! [&_h2]:tracking-[-0.035em]',
   '[&>button]:h-[2.1rem] [&>button]:w-[2.1rem] [&>button]:flex-none [&>button]:rounded-full',
   '[&>button]:shadow-none [&>button>svg]:h-[0.82rem] [&>button>svg]:w-[0.82rem]',
 ].join(' ');
@@ -260,7 +260,7 @@ const appStageCopy = [
   '[&>small]:text-[0.46rem] [&>small]:font-extrabold [&>small]:uppercase',
   '[&>small]:tracking-[0.16em] [&>small]:text-[var(--audio-accent)]',
   '[&_h1]:mt-[0.32rem] [&_h1]:font-display [&_h1]:text-[clamp(2rem,3.7vw,3.6rem)]',
-  '[&_h1]:font-[560] [&_h1]:leading-[0.95] [&_h1]:tracking-[-0.055em]',
+  '[&_h1]:font-[560] [&_h1]:leading-[0.95]! [&_h1]:tracking-[-0.055em]',
   '[&>p]:mt-[0.55rem] [&>p]:text-[0.58rem] [&>p]:leading-[1.55] [&>p]:text-muted-foreground',
   '[&>a]:mt-[0.55rem] [&>a]:inline-flex [&>a]:items-center [&>a]:gap-[0.35rem]',
   '[&>a]:text-[0.48rem] [&>a]:text-muted-foreground',

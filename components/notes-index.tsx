@@ -61,7 +61,7 @@ const notesFilterChip = [
 
 const notesFilterClear = [
   'inline-flex min-w-max items-center gap-[0.35rem] pr-[0.35rem] text-[0.58rem] text-muted-foreground',
-  'to-520:text-[0]',
+  'to-520:text-[0px]',
   '[&>svg]:w-[0.75rem] to-520:[&>svg]:w-[0.9rem]',
 ].join(' ');
 

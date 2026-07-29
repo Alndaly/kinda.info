@@ -30,7 +30,8 @@ export const navPill = [
 export const textLink = [
   'inline-flex items-center gap-[0.45rem] border-b border-current pb-1',
   'text-[0.72rem] font-bold uppercase tracking-[0.12em]',
-  '[&>svg]:w-[0.9rem] [&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
+  '[&>svg]:h-[0.9rem] [&>svg]:w-[0.9rem]',
+  '[&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
   'hover:[&>svg]:translate-x-[2px] hover:[&>svg]:-translate-y-[2px]',
 ].join(' ');
 
@@ -40,7 +41,7 @@ export const sectionHeading =
   'mb-[clamp(2.5rem,5vw,4.5rem)] flex items-end justify-between gap-8 to-768:items-start';
 
 export const sectionHeadingTitle =
-  'mt-[0.6rem] font-display text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.055em] to-768:text-[3.2rem]';
+  'mt-[0.6rem] font-display text-[clamp(3rem,7vw,6rem)] leading-[0.9]! tracking-[-0.055em] to-768:text-[3.2rem]';
 
 export const sectionIndex =
   'text-[0.62rem] font-bold uppercase tracking-[0.22em] text-muted-foreground';
@@ -57,7 +58,7 @@ export const pageTop = 'pb-12 pt-[clamp(4rem,10vw,8.5rem)]';
 export const archiveHeader = 'mb-[clamp(4rem,9vw,8rem)] max-w-[62rem]';
 
 export const archiveHeaderTitle =
-  'mt-6 font-display text-[clamp(5.5rem,15vw,12rem)] leading-[0.72] tracking-[-0.085em] to-520:text-[5.2rem]';
+  'mt-6 font-display text-[clamp(5.5rem,15vw,12rem)] leading-[0.72]! tracking-[-0.085em] to-520:text-[5.2rem]';
 
 export const archiveHeaderText =
   'mt-12 max-w-[40rem] text-[1.05rem] leading-loose text-muted-foreground';
@@ -72,13 +73,15 @@ export const archiveHeaderSplitText =
 export const backLink = [
   'mb-[clamp(3rem,7vw,6rem)] inline-flex items-center gap-[0.45rem]',
   'text-[0.7rem] font-bold uppercase tracking-[0.14em] text-muted-foreground',
-  '[&>svg]:w-[0.9rem] [&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
+  // width only, matching the original — the arrow keeps its own height
+  '[&>svg]:w-[0.9rem]',
+  '[&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease]',
   'hover:[&>svg]:-translate-x-[3px]',
 ].join(' ');
 
 /** Display title shared by the note, photo and project detail headers. */
 export const detailTitle =
-  'font-display text-[clamp(3.3rem,8vw,7rem)] leading-[0.98] tracking-[-0.06em] text-balance to-520:text-[3rem]';
+  'font-display text-[clamp(3.3rem,8vw,7rem)] leading-[0.98]! tracking-[-0.06em] text-balance to-520:text-[3rem]';
 
 export const articleDeck =
   'mx-auto mt-8 max-w-[44rem] text-[1.05rem] leading-[1.9] text-muted-foreground';
@@ -90,6 +93,7 @@ export const articleAudio = [
   'mx-auto mt-7 w-[min(100%,21rem)] border-y border-line py-[0.65rem]',
   '[&>button]:flex [&>button]:w-full [&>button]:items-center [&>button]:gap-3 [&>button]:text-left',
   '[&>button:disabled]:cursor-wait [&>button:disabled]:opacity-[0.58]',
+  '[&>button>span:last-child]:grid [&>button>span:last-child]:gap-[0.15rem]',
   '[&_strong]:font-display [&_strong]:text-[0.9rem] [&_strong]:font-semibold',
   '[&_small]:flex [&_small]:items-center [&_small]:gap-[0.35rem] [&_small]:text-[0.52rem]',
   '[&_small]:uppercase [&_small]:tracking-[0.1em] [&_small]:text-muted-foreground',
@@ -185,7 +189,7 @@ export const mdxProse = [
   '[&_.ProseMirror-selectednode]:outline-none',
 
   // headings
-  '[&_:is(h1,h2,h3)]:font-display [&_:is(h1,h2,h3)]:leading-[1.25]',
+  '[&_:is(h1,h2,h3)]:font-display [&_:is(h1,h2,h3)]:leading-[1.25]!',
   '[&_:is(h1,h2,h3)]:tracking-[-0.035em] [&_:is(h1,h2,h3)]:text-foreground',
   '[&_:is(h1,h2,h3)]:scroll-mt-28',
   '[&_h1]:mt-18 [&_h1]:text-[3rem]',
@@ -272,7 +276,7 @@ export const commentsHeading = [
   '[&>span]:font-[750] [&>span]:uppercase [&>span]:tracking-[0.16em] [&>span]:text-accent',
   '[&>span>svg]:w-[0.85rem]',
   '[&>h2]:font-display [&>h2]:text-[clamp(2.2rem,5vw,3.8rem)] [&>h2]:font-[430]',
-  '[&>h2]:leading-none [&>h2]:tracking-[-0.045em]',
+  '[&>h2]:leading-none! [&>h2]:tracking-[-0.045em]',
   '[&>p]:text-[0.78rem] [&>p]:leading-[1.8] [&>p]:text-muted-foreground',
 ].join(' ');
 
@@ -293,7 +297,7 @@ export const contactWechat = [
   contactCard,
   'row-span-2 p-[clamp(1.25rem,3vw,2.5rem)] to-768:row-auto',
   '[&_h3]:mt-[0.55rem] [&_h3]:font-display [&_h3]:text-[clamp(2rem,4vw,3.7rem)]',
-  '[&_h3]:leading-none [&_h3]:tracking-[-0.055em]',
+  '[&_h3]:leading-none! [&_h3]:tracking-[-0.055em]',
   '[&_p]:mt-4 [&_p]:max-w-[24rem] [&_p]:text-[0.85rem] [&_p]:leading-[1.8] [&_p]:text-muted-foreground',
 ].join(' ');
 
@@ -307,7 +311,7 @@ export const contactChannel = [
   'before:scale-y-0 before:bg-[hsl(var(--channel-color))] before:transition-transform',
   "before:duration-[280ms] before:ease-[ease] before:content-[''] hover:before:scale-y-100",
   '[&_h3]:mt-[0.55rem] [&_h3]:font-display [&_h3]:text-[clamp(2rem,4vw,3.7rem)]',
-  '[&_h3]:leading-none [&_h3]:tracking-[-0.055em]',
+  '[&_h3]:leading-none! [&_h3]:tracking-[-0.055em]',
   'hover:[&_svg]:translate-x-[2px] hover:[&_svg]:-translate-y-[2px]',
 ].join(' ');
 
@@ -387,6 +391,6 @@ export const audioPanelKicker = [
 
 export const audioPanelTitle = [
   'mt-[0.32rem] py-[0.06em] font-display text-[1.35rem] font-semibold',
-  'leading-[1.16] tracking-[-0.035em]',
+  'leading-[1.16]! tracking-[-0.035em]',
 ].join(' ');
 
