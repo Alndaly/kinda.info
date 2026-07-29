@@ -3,7 +3,7 @@ export const siteConfig = {
   title: '七月 / Kinda — 笔记、影像与作品',
   shortTitle: 'Kinda',
   author: '七月',
-  authorAlternateNames: ['July', 'Kinda'],
+  authorAlternateNames: ['Kinda'],
   siteName: 'Kinda',
   description: '七月的个人档案：写代码，拍照片，也记录那些值得慢慢想清楚的事。',
   language: 'zh-CN',

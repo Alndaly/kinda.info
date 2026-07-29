@@ -234,9 +234,9 @@ const zh = {
 
 const en = {
   metadata: {
-    title: 'July — Notes, Frames & Things',
-    description: 'July’s personal archive of code, photography, products, and thoughts worth keeping.',
-    keywords: ['Kinda', 'July', 'personal website', 'notes', 'photography', 'indie developer', 'MDX'],
+    title: 'Kinda — Notes, Frames & Things',
+    description: 'Kinda’s personal archive of code, photography, products, and thoughts worth keeping.',
+    keywords: ['Kinda', '七月', 'personal website', 'notes', 'photography', 'indie developer', 'MDX'],
   },
   header: {
     homeLabel: 'Kinda home',
@@ -265,17 +265,17 @@ const en = {
     frames: 'Frames',
     xiaohongshu: 'REDnote',
     wechat: 'WeChat',
-    author: 'July',
+    author: 'Kinda',
     made: 'Written and made slowly in Hangzhou',
   },
   home: {
     archive: 'Personal archive · No. 07',
     eyebrow: 'Notes, frames & things I make',
-    displayName: 'July',
+    displayName: '七月',
     intro: ['Code I have written, light I have caught, and thoughts life has left behind.', 'No race to publish and no noise to manufacture—only things worth keeping.'],
     read: 'Start reading',
     seeWorld: 'See the world through my eyes',
-    photoAlt: 'July on the road',
+    photoAlt: 'Kinda on the road',
     noteLabel: 'A note for today',
     note: ['Adjust life to', 'your own focal length.'],
     scroll: 'Scroll to wander',
@@ -290,7 +290,7 @@ const en = {
       'It is more like a desk: a half-read book, developed photographs,',
       'and a few small products still learning how to grow.',
     ],
-    meet: 'Meet July',
+    meet: 'Meet Kinda',
   },
   notes: {
     title: 'Notes',
@@ -345,9 +345,9 @@ const en = {
   },
   about: {
     metadataTitle: 'About',
-    metadataDescription: 'Hello, I am July. I write code, take photographs, and pay attention to life.',
-    title: ['Hello,', 'I am July.'],
-    portraitAlt: 'July on the road',
+    metadataDescription: 'Hello, I am Kinda. I write code, take photographs, and pay attention to life.',
+    title: ['Hello,', 'I am Kinda.'],
+    portraitAlt: 'Kinda on the road',
     lead: 'I write code, take photographs, and pay attention to life.',
     columns: [
       'I like taking vague problems apart and rebuilding them into things that feel clear, useful, and a little warm. Development is how I understand the world; photography reminds me that not everything important needs an explanation.',

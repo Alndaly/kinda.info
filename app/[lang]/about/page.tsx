@@ -100,7 +100,7 @@ export default async function AboutPage({ params }: Props) {
             className="object-cover"
           />
           <span className="absolute bottom-4 right-4 z-[2] bg-black/50 px-2 py-[0.4rem] text-[0.5rem] uppercase tracking-[0.15em] text-white">
-            Portrait / July
+            Portrait / Kinda
           </span>
         </div>
       </header>

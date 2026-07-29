@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { ArrowDown, ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { EntryCard } from '@/components/entry-card';
-import { PhotoCard } from '@/components/photo-card';
-import { ProjectCard } from '@/components/project-card';
+import { HomeNotes, HomePhotos, HomeProjects } from '@/components/home-collections';
 import { getEntries } from '@/lib/content';
 import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
 import { notFound } from 'next/navigation';
@@ -34,6 +32,11 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const photos = getEntries(lang, 'photo');
   const projects = getEntries(lang, 'project');
   const featuredNote = notes.find((entry) => entry.featured) ?? notes[0];
+  const homeNotes = [
+    ...(featuredNote ? [featuredNote] : []),
+    ...notes.slice(0, 3).filter((note) => note.slug !== featuredNote?.slug),
+  ];
+  const notesDictionary = getDictionary(lang).notes;
 
   return (
     <>
@@ -141,10 +144,14 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             {dictionary.allNotes} <ArrowUpRight />
           </Link>
         </div>
-        {featuredNote && <EntryCard entry={featuredNote} index={0} locale={lang} />}
-        {notes.slice(0, 3).filter((note) => note.slug !== featuredNote?.slug).map((note, index) => (
-          <EntryCard key={note.slug} entry={note} index={index + 1} locale={lang} />
-        ))}
+        <HomeNotes
+          entries={homeNotes}
+          locale={lang}
+          labels={{
+            machineTranslated: notesDictionary.machineTranslated,
+            translatingEntries: notesDictionary.translatingEntries,
+          }}
+        />
       </section>
 
       <section
@@ -166,24 +173,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               {dictionary.allFrames} <ArrowUpRight />
             </Link>
           </div>
-          <div
-            className="grid grid-cols-[1.2fr_0.8fr] gap-[1.1rem_2rem] data-[count=1]:grid-cols-[1fr] to-768:grid-cols-[1fr]"
-            data-count={Math.min(photos.length, 3)}
-          >
-            {photos.slice(0, 3).map((photo, index) => (
-              <PhotoCard
-                key={photo.slug}
-                entry={photo}
-                priority={index === 0}
-                tone="inverse"
-                className={index === 0 ? 'row-span-2 to-768:row-auto' : ''}
-                frameClassName={cn(
-                  index === 0 ? 'h-full min-h-[650px]' : 'aspect-video',
-                  'to-768:aspect-[4/3] to-768:min-h-0',
-                )}
-              />
-            ))}
-          </div>
+          <HomePhotos entries={photos.slice(0, 3)} locale={lang} />
         </div>
       </section>
 
@@ -197,11 +187,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             {dictionary.allProjects} <ArrowUpRight />
           </Link>
         </div>
-        <div className="grid gap-12 md:grid-cols-2">
-          {projects.slice(0, 2).map((project, index) => (
-            <ProjectCard key={project.slug} entry={project} index={index} locale={lang} />
-          ))}
-        </div>
+        <HomeProjects entries={projects.slice(0, 2)} locale={lang} />
       </section>
 
       <section className={cn(siteContainer, 'pb-8 pt-12')}>

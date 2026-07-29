@@ -151,7 +151,7 @@ export function AudioPlayer({
   const track = useMemo<AudioTrack>(() => ({
     id: `recording:${src}`,
     title: name,
-    artist: isEnglish ? 'Field recording · July' : '现场录音 · 七月',
+    artist: isEnglish ? 'Field recording · Kinda' : '现场录音 · 七月',
     subtitle: isEnglish ? 'Audio note from the archive' : '来自个人档案的声音切片',
     src,
     kind: 'recording',

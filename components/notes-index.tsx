@@ -3,11 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Hash, X } from 'lucide-react';
 import { EntryCard, type EntryCardEntry } from '@/components/entry-card';
-import {
-  readTranslationCache,
-  translateTexts,
-  writeTranslationCache,
-} from '@/lib/client-translation';
+import { useTranslatedEntries } from '@/components/use-translated-entries';
 import type { Locale } from '@/lib/i18n';
 
 type Labels = {
@@ -76,8 +72,11 @@ export function NotesIndex({
 }) {
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [isPinned, setIsPinned] = useState(false);
-  const [localizedEntries, setLocalizedEntries] = useState(entries);
-  const [isTranslating, setIsTranslating] = useState(false);
+  const { entries: localizedEntries, isTranslating } = useTranslatedEntries(
+    entries,
+    locale,
+    'notes-index',
+  );
   const stickySentinel = useRef<HTMLSpanElement>(null);
   const tags = useMemo(() => {
     const counts = new Map<string, number>();
@@ -92,64 +91,6 @@ export function NotesIndex({
   const filteredEntries = activeTag
     ? localizedEntries.filter((entry) => entry.tags.includes(activeTag))
     : localizedEntries;
-
-  useEffect(() => {
-    const fallbackEntries = entries.filter((entry) => entry.locale !== locale);
-    if (locale !== 'en' || !fallbackEntries.length) {
-      setLocalizedEntries(entries);
-      setIsTranslating(false);
-      return;
-    }
-
-    let active = true;
-    const source = fallbackEntries.flatMap((entry) => [
-      entry.title,
-      entry.summary,
-      ...entry.tags,
-    ]);
-    const cacheKey = `notes-index:${fallbackEntries.map((entry) => entry.slug).join(':')}`;
-    const applyTranslations = (translated: string[]) => {
-      if (!active) return;
-      let cursor = 0;
-      const translatedBySlug = new Map<string, EntryCardEntry>();
-      fallbackEntries.forEach((entry) => {
-        translatedBySlug.set(entry.slug, {
-          ...entry,
-          title: translated[cursor++] || entry.title,
-          summary: translated[cursor++] || entry.summary,
-          tags: entry.tags.map((tag) => translated[cursor++] || tag),
-        });
-      });
-      setLocalizedEntries(
-        entries.map((entry) => translatedBySlug.get(entry.slug) ?? entry),
-      );
-      setActiveTag(null);
-      setIsTranslating(false);
-    };
-    const cached = readTranslationCache(cacheKey, source);
-    if (cached) {
-      applyTranslations(cached);
-      return () => {
-        active = false;
-      };
-    }
-
-    setIsTranslating(true);
-    void translateTexts(source, 'zh', 'en')
-      .then((translated) => {
-        writeTranslationCache(cacheKey, source, translated);
-        applyTranslations(translated);
-      })
-      .catch(() => {
-        if (!active) return;
-        setLocalizedEntries(entries);
-        setIsTranslating(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [entries, locale]);
 
   useEffect(() => {
     const sentinel = stickySentinel.current;
