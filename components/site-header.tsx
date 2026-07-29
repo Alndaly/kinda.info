@@ -22,7 +22,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const searchIndex = createSearchIndex(locale);
 
   return (
-    <header className="group-has-[[data-audio-app]]/shell:hidden [@media(max-width:768px)]:relative sticky top-0 z-50 border-b border-line/70 bg-paper/[0.82] backdrop-blur-[18px] backdrop-saturate-[1.4]">
+    <header className="group-has-[[data-audio-app]]/shell:hidden to-768:relative sticky top-0 z-50 border-b border-line/70 bg-paper/[0.82] backdrop-blur-[18px] backdrop-saturate-[1.4]">
       <div className={`${siteContainer} flex h-[74px] items-center justify-between gap-5`}>
         <Link
           href={localizeHref(locale, '/')}

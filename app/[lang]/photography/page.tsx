@@ -87,7 +87,7 @@ export default async function PhotographyPage({ params }: Props) {
           </div>
         </dl>
       </aside>
-      <div className="grid grid-cols-2 items-start gap-[clamp(3rem,7vw,7rem)_clamp(1.2rem,4vw,3.5rem)] [&>*:nth-child(3n+2)]:mt-28 [@media(max-width:768px)]:grid-cols-[1fr] [@media(max-width:768px)]:[&>*:nth-child(3n+2)]:mt-0">
+      <div className="grid grid-cols-2 items-start gap-[clamp(3rem,7vw,7rem)_clamp(1.2rem,4vw,3.5rem)] [&>*:nth-child(3n+2)]:mt-28 to-768:grid-cols-[1fr] to-768:[&>*:nth-child(3n+2)]:mt-0">
         {photos.map((photo, index) => (
           <PhotoCard
             key={photo.slug}
@@ -98,8 +98,8 @@ export default async function PhotographyPage({ params }: Props) {
             className={index === 0 ? 'col-span-full' : ''}
             frameClassName={
               index === 0
-                ? 'aspect-video min-h-0 [@media(max-width:768px)]:aspect-[4/3]'
-                : 'aspect-[4/5] [@media(max-width:768px)]:aspect-[4/3] [@media(max-width:768px)]:min-h-0'
+                ? 'aspect-video min-h-0 to-768:aspect-[4/3]'
+                : 'aspect-[4/5] to-768:aspect-[4/3] to-768:min-h-0'
             }
           />
         ))}

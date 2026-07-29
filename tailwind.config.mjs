@@ -7,6 +7,22 @@ const config = {
   ],
   theme: {
     extend: {
+      // Named max-width breakpoints, mirroring the ones the design already
+      // used. Tailwind emits max-* variants in descending order, so a narrower
+      // breakpoint reliably overrides a wider one — arbitrary [@media(...)]
+      // variants have no such guarantee, which had the 980px layout winning
+      // over the 720px one on a phone.
+      screens: {
+        'to-1180': { max: '1180px' },
+        'to-1024': { max: '1024px' },
+        'to-980': { max: '980px' },
+        'to-820': { max: '820px' },
+        'to-768': { max: '768px' },
+        'to-720': { max: '720px' },
+        'to-560': { max: '560px' },
+        'to-520': { max: '520px' },
+        'to-480': { max: '480px' },
+      },
       fontFamily: {
         sans: [
           'Inter',

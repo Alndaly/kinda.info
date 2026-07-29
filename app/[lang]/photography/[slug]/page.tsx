@@ -114,7 +114,7 @@ export default async function PhotoPage({ params }: Props) {
         </Link>
         <header
           data-detail-header
-          className="mb-12 grid grid-cols-[0.35fr_1.2fr_0.65fr] items-end gap-8 [@media(max-width:768px)]:grid-cols-[1fr]"
+          className="mb-12 grid grid-cols-[0.35fr_1.2fr_0.65fr] items-end gap-8 to-768:grid-cols-[1fr]"
         >
           <span className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
             FRAME {String(frameIndex + 1).padStart(2, '0')} /{' '}
@@ -124,7 +124,7 @@ export default async function PhotoPage({ params }: Props) {
           </span>
           <h1
             data-document-title
-            className={cn(detailTitle, '[@media(max-width:768px)]:order-first')}
+            className={cn(detailTitle, 'to-768:order-first')}
           >
             {photo.title}
           </h1>
@@ -152,7 +152,7 @@ export default async function PhotoPage({ params }: Props) {
       </div>
       {photo.cover && (
         <div className="mx-auto w-[min(100%-2rem,1440px)]" data-document-cover>
-          <div className="relative h-[min(75vw,820px)] w-full overflow-hidden bg-muted [@media(max-width:768px)]:h-[78svh]">
+          <div className="relative h-[min(75vw,820px)] w-full overflow-hidden bg-muted to-768:h-[78svh]">
             <Image
               src={photo.cover}
               alt={photo.title}

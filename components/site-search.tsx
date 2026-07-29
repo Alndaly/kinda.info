@@ -83,21 +83,21 @@ const searchTrigger = [
   '[&>svg]:h-[0.85rem] [&>svg]:w-[0.85rem]',
   '[&>kbd]:rounded-[0.28rem] [&>kbd]:border [&>kbd]:border-current [&>kbd]:px-[0.32rem]',
   '[&>kbd]:py-[0.15rem] [&>kbd]:font-mono [&>kbd]:text-[0.48rem] [&>kbd]:opacity-55',
-  '[@media(max-width:768px)]:w-10 [@media(max-width:768px)]:justify-center [@media(max-width:768px)]:px-0',
-  '[@media(max-width:768px)]:[&>span]:hidden [@media(max-width:768px)]:[&>kbd]:hidden',
+  'to-768:w-10 to-768:justify-center to-768:px-0',
+  'to-768:[&>span]:hidden to-768:[&>kbd]:hidden',
 ].join(' ');
 
 const searchBackdrop = [
   'fixed inset-0 z-[100] grid place-items-start justify-items-center',
   'px-4 pb-4 pt-[clamp(4.5rem,11vh,8rem)]',
   'bg-ink/[0.34] backdrop-blur-[14px] backdrop-saturate-90 animate-fade-in',
-  '[@media(max-width:768px)]:px-[0.65rem] [@media(max-width:768px)]:py-4',
+  'to-768:px-[0.65rem] to-768:py-4',
 ].join(' ');
 
 const searchDialog = [
   'max-h-[min(76vh,46rem)] w-[min(100%,46rem)] overflow-hidden rounded-[1.2rem]',
   'border border-line bg-paper/[0.98] shadow-[0_2rem_6rem_hsl(var(--ink)/0.22)] animate-dialog-in',
-  '[@media(max-width:768px)]:max-h-[calc(100svh-2rem)]',
+  'to-768:max-h-[calc(100svh-2rem)]',
 ].join(' ');
 
 const searchInput = [
@@ -153,7 +153,7 @@ const searchResultCopy = [
   '[&>small]:whitespace-nowrap [&>small]:text-[0.65rem] [&>small]:text-muted-foreground',
   'group-data-[active=true]/result:[&>span]:text-paper/[0.64]',
   'group-data-[active=true]/result:[&>small]:text-paper/[0.64]',
-  '[@media(max-width:520px)]:[&>small]:hidden',
+  'to-520:[&>small]:hidden',
 ].join(' ');
 
 const searchEmpty = [
@@ -434,7 +434,7 @@ export function SiteSearch({
         </div>
 
         <footer className={cn(searchBar, searchFooter)}>
-          <span className="[@media(max-width:520px)]:max-w-48 [@media(max-width:520px)]:overflow-hidden [@media(max-width:520px)]:text-ellipsis [@media(max-width:520px)]:whitespace-nowrap">
+          <span className="to-520:max-w-48 to-520:overflow-hidden to-520:text-ellipsis to-520:whitespace-nowrap">
             {labels.hint}
           </span>
           <span className="flex gap-1">

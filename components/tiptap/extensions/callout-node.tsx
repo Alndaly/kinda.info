@@ -76,8 +76,8 @@ const calloutShell = [
   'dark:border-r-[color-mix(in_srgb,var(--callout-tone)_26%,transparent)]',
   'pl-[clamp(1.5rem,3.5vw,2rem)] pr-[clamp(1.25rem,3vw,1.8rem)]',
   'pt-[clamp(1.35rem,3vw,1.75rem)] pb-[clamp(1.45rem,3vw,1.9rem)]',
-  '[@media(max-width:768px)]:pl-[1.35rem] [@media(max-width:768px)]:pr-4',
-  '[@media(max-width:768px)]:pb-[1.35rem] [@media(max-width:768px)]:pt-5',
+  'to-768:pl-[1.35rem] to-768:pr-4',
+  'to-768:pb-[1.35rem] to-768:pt-5',
   'bg-[linear-gradient(100deg,color-mix(in_srgb,var(--callout-tone)_8%,transparent),color-mix(in_srgb,var(--callout-tone)_2%,transparent)_58%,transparent_90%)]',
   // 8% of a tone disappears on the dark paper, so the mix goes up in dark mode
   'dark:bg-[linear-gradient(100deg,color-mix(in_srgb,var(--callout-tone)_18%,transparent),color-mix(in_srgb,var(--callout-tone)_7%,transparent)_58%,transparent_94%)]',

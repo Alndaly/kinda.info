@@ -24,7 +24,7 @@ export function EntryCard({
   const readLabel = getDictionary(locale).notes.readAria;
 
   return (
-    <article className="group grid grid-cols-[3.5rem_minmax(0,1fr)_3rem] items-start gap-[clamp(1rem,4vw,3rem)] border-t border-line py-[clamp(2.25rem,4.5vw,3.5rem)] last:border-b [@media(max-width:768px)]:grid-cols-[2rem_minmax(0,1fr)] [@media(max-width:520px)]:gap-[0.7rem]">
+    <article className="group grid grid-cols-[3.5rem_minmax(0,1fr)_3rem] items-start gap-[clamp(1rem,4vw,3rem)] border-t border-line py-[clamp(2.25rem,4.5vw,3.5rem)] last:border-b to-768:grid-cols-[2rem_minmax(0,1fr)] to-520:gap-[0.7rem]">
       <div className="pt-[0.35rem] font-display text-base italic text-muted-foreground">{String(index + 1).padStart(2, '0')}</div>
       <div className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -48,7 +48,7 @@ export function EntryCard({
         </Link>
       </div>
       <Link
-        className="grid h-11 w-11 place-items-center rounded-full border border-line transition-[transform,translate,scale,rotate,background,color] duration-[240ms] ease-[ease] group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:border-accent group-hover:bg-accent group-hover:text-white [&>svg]:w-4 [@media(max-width:768px)]:hidden"
+        className="grid h-11 w-11 place-items-center rounded-full border border-line transition-[transform,translate,scale,rotate,background,color] duration-[240ms] ease-[ease] group-hover:translate-x-[3px] group-hover:-translate-y-[3px] group-hover:border-accent group-hover:bg-accent group-hover:text-white [&>svg]:w-4 to-768:hidden"
         href={entry.href} aria-label={`${readLabel} ${entry.title}`}>
         <ArrowUpRight />
       </Link>

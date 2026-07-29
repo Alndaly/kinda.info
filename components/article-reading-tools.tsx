@@ -27,7 +27,7 @@ const readingRail = [
   'pointer-events-none translate-y-3 opacity-0 transition-[opacity,transform,translate,scale,rotate] duration-[220ms] ease-[ease]',
   'data-[visible=true]:pointer-events-auto data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100',
   'data-[collision=media]:-translate-x-3',
-  '[@media(max-width:1180px)]:hidden',
+  'to-1180:hidden',
 ].join(' ');
 
 const readingRailLabel = [
@@ -49,7 +49,7 @@ const readingRailLink = [
 
 const mobileToc = [
   'mx-auto mt-8 hidden w-[min(100%-2rem,46rem)] border border-line',
-  '[@media(max-width:1180px)]:block',
+  'to-1180:block',
   '[&>summary]:flex [&>summary]:cursor-pointer [&>summary]:items-center [&>summary]:gap-[0.55rem]',
   '[&>summary]:px-4 [&>summary]:py-[0.9rem] [&>summary]:text-[0.68rem] [&>summary]:font-[750]',
   '[&>summary]:tracking-[0.08em]',

@@ -88,17 +88,17 @@ const appShell = [
   '[--audio-accent:#e25943] grid h-[100dvh] min-h-[36rem] grid-rows-[4.25rem_minmax(0,1fr)_6.15rem]',
   'overflow-hidden',
   'bg-[radial-gradient(circle_at_48%_28%,color-mix(in_srgb,var(--audio-accent),transparent_91%),transparent_30%)] bg-paper',
-  '[@media(max-width:720px)]:min-h-[32rem]',
-  '[@media(max-width:720px)]:grid-rows-[3.8rem_minmax(0,1fr)_7.4rem]',
+  'to-720:min-h-[32rem]',
+  'to-720:grid-rows-[3.8rem_minmax(0,1fr)_7.4rem]',
 ].join(' ');
 
 const appTopbar = [
   'relative z-[4] grid min-w-0 grid-cols-[minmax(13rem,1fr)_auto_minmax(13rem,1fr)] items-center gap-4',
   'border-b border-line bg-paper/[0.88] px-[clamp(1rem,2vw,1.75rem)]',
   'backdrop-blur-[22px] backdrop-saturate-[1.3]',
-  '[@media(max-width:1180px)]:grid-cols-[1fr_auto_1fr]',
-  '[@media(max-width:980px)]:grid-cols-[1fr_auto]',
-  '[@media(max-width:480px)]:px-[0.7rem]',
+  'to-1180:grid-cols-[1fr_auto_1fr]',
+  'to-980:grid-cols-[1fr_auto]',
+  'to-480:px-[0.7rem]',
 ].join(' ');
 
 const appBrand = [
@@ -111,9 +111,9 @@ const appBrand = [
   '[&_strong]:tracking-[-0.035em]',
   '[&_small]:mt-[0.22rem] [&_small]:text-[0.42rem] [&_small]:font-[750] [&_small]:uppercase',
   '[&_small]:tracking-[0.15em] [&_small]:text-muted-foreground',
-  '[@media(max-width:720px)]:[&_small]:hidden',
-  '[@media(max-width:480px)]:[&>span]:h-8 [@media(max-width:480px)]:[&>span]:w-8',
-  '[@media(max-width:480px)]:[&_strong]:text-[0.9rem]',
+  'to-720:[&_small]:hidden',
+  'to-480:[&>span]:h-8 to-480:[&>span]:w-8',
+  'to-480:[&_strong]:text-[0.9rem]',
 ].join(' ');
 
 const appTabs = [
@@ -126,12 +126,12 @@ const appTabs = [
   '[&_svg]:h-[0.72rem] [&_svg]:w-[0.72rem]',
   '[&_span]:grid [&_span]:h-4 [&_span]:min-w-4 [&_span]:place-items-center [&_span]:rounded-full',
   '[&_span]:bg-paper/[0.12] [&_span]:text-[0.42rem] [&_span]:text-inherit',
-  '[@media(max-width:980px)]:hidden',
+  'to-980:hidden',
 ].join(' ');
 
 const appTopActions = [
   'flex min-w-0 items-center justify-end gap-[0.4rem]',
-  '[@media(max-width:480px)]:gap-[0.24rem]',
+  'to-480:gap-[0.24rem]',
 ].join(' ');
 
 const appMobileAction = [
@@ -140,8 +140,8 @@ const appMobileAction = [
 ].join(' ');
 
 /** The library only collapses into a button on the narrowest layout. */
-const appMobileActionLibrary = '[@media(max-width:720px)]:grid';
-const appMobileActionQueue = '[@media(max-width:980px)]:grid';
+const appMobileActionLibrary = 'to-720:grid';
+const appMobileActionQueue = 'to-980:grid';
 
 const appExit = [
   'ml-[0.15rem] flex h-9 items-center gap-[0.45rem] rounded-full border border-line',
@@ -149,22 +149,22 @@ const appExit = [
   'transition-[color,border-color,background-color] duration-[180ms] ease-[ease]',
   'hover:border-ink hover:bg-ink hover:text-paper',
   '[&>svg]:h-[0.72rem] [&>svg]:w-[0.72rem]',
-  '[@media(max-width:720px)]:w-9 [@media(max-width:720px)]:justify-center [@media(max-width:720px)]:px-0',
-  '[@media(max-width:720px)]:[&>span]:hidden',
+  'to-720:w-9 to-720:justify-center to-720:px-0',
+  'to-720:[&>span]:hidden',
 ].join(' ');
 
 const appWorkspace = [
   'grid min-h-0 min-w-0 gap-px overflow-hidden bg-line',
   'grid-cols-[clamp(15.5rem,19vw,19rem)_minmax(22rem,1fr)_clamp(18rem,22vw,22rem)]',
-  '[@media(max-width:1180px)]:grid-cols-[16rem_minmax(22rem,1fr)_18rem]',
-  '[@media(max-width:980px)]:grid-cols-[16rem_minmax(0,1fr)]',
-  '[@media(max-width:720px)]:grid-cols-[minmax(0,1fr)]',
+  'to-1180:grid-cols-[16rem_minmax(22rem,1fr)_18rem]',
+  'to-980:grid-cols-[16rem_minmax(0,1fr)]',
+  'to-720:grid-cols-[minmax(0,1fr)]',
 ].join(' ');
 
 /** Library and side panel share their frame; the side panel is hidden sooner. */
 const appColumn = 'flex min-h-0 min-w-0 flex-col overflow-hidden bg-paper p-5';
 const appLibraryColumn = [
-  '[@media(max-width:720px)]:hidden',
+  'to-720:hidden',
   '[&>p]:mt-[0.85rem] [&>p]:flex-none [&>p]:text-[0.56rem] [&>p]:leading-[1.55]',
   '[&>p]:text-muted-foreground',
 ].join(' ');
@@ -195,7 +195,7 @@ const appStage = [
   "before:absolute before:inset-0 before:z-[1] before:content-['']",
   'before:bg-[repeating-linear-gradient(90deg,transparent_0_54px,hsl(var(--line)/0.12)_55px),repeating-linear-gradient(0deg,transparent_0_54px,hsl(var(--line)/0.08)_55px)]',
   'before:[mask-image:linear-gradient(to_bottom,black,transparent_78%)]',
-  '[@media(max-width:720px)]:px-4 [@media(max-width:720px)]:pb-[0.9rem] [@media(max-width:720px)]:pt-4',
+  'to-720:px-4 to-720:pb-[0.9rem] to-720:pt-4',
 ].join(' ');
 
 const appBackdrop = [
@@ -213,7 +213,7 @@ const appOrbit = [
   '-translate-x-1/2 -translate-y-1/2 rounded-full border border-line',
   "before:absolute before:inset-[8%] before:rounded-full before:border before:border-line/[0.58] before:content-['']",
   "after:absolute after:inset-[19%] after:rounded-full after:border after:border-line/[0.36] after:content-['']",
-  '[@media(max-width:720px)]:w-[min(24rem,75vw,54vh)]',
+  'to-720:w-[min(24rem,75vw,54vh)]',
   '[@media(max-height:800px)_and_(min-width:721px)]:w-[min(31rem,55vh,68%)]',
 ].join(' ');
 
@@ -227,9 +227,9 @@ const appDisc = [
 const appDiscVinyl = [
   'w-[min(25rem,54vh,36vw)]',
   'shadow-[0_2.8rem_5rem_hsl(var(--ink)/0.26),0_0_0_1px_hsl(var(--ink)/0.16)]',
-  '[@media(max-width:1180px)]:w-[min(21rem,51vh,32vw)]',
-  '[@media(max-width:720px)]:w-[min(19rem,67vw,45vh)]',
-  '[@media(max-width:480px)]:w-[min(16.5rem,65vw,41vh)]',
+  'to-1180:w-[min(21rem,51vh,32vw)]',
+  'to-720:w-[min(19rem,67vw,45vh)]',
+  'to-480:w-[min(16.5rem,65vw,41vh)]',
   '[@media(max-height:800px)_and_(min-width:721px)]:w-[min(25rem,43vh,36vw)]',
 ].join(' ');
 
@@ -252,7 +252,7 @@ const appTonearm = [
   '[&>span]:bg-[linear-gradient(155deg,hsl(var(--paper)/0.5),transparent_52%)] [&>span]:bg-ink',
   '[&>span]:shadow-[0_0.55rem_1rem_hsl(var(--ink)/0.16)]',
   '[&>span]:[clip-path:polygon(12%_0,92%_0,100%_72%,83%_100%,13%_91%,0_28%)]',
-  '[@media(max-width:720px)]:right-[-2.1rem] [@media(max-width:720px)]:scale-[0.76]',
+  'to-720:right-[-2.1rem] to-720:scale-[0.76]',
 ].join(' ');
 
 const appStageCopy = [
@@ -266,9 +266,9 @@ const appStageCopy = [
   '[&>a]:text-[0.48rem] [&>a]:text-muted-foreground',
   '[&>a]:transition-colors [&>a]:duration-[150ms] [&>a]:ease-[ease] [&>a:hover]:text-ink',
   '[&>a>svg]:h-[0.62rem] [&>a>svg]:w-[0.62rem]',
-  '[@media(max-width:720px)]:[&_h1]:text-[clamp(2rem,9vw,3.1rem)]',
-  '[@media(max-width:720px)]:[&>p]:hidden',
-  '[@media(max-width:480px)]:[&>a]:hidden',
+  'to-720:[&_h1]:text-[clamp(2rem,9vw,3.1rem)]',
+  'to-720:[&>p]:hidden',
+  'to-480:[&>a]:hidden',
 ].join(' ');
 
 /* ── Player bar ───────────────────────────────────────────────────────── */
@@ -278,10 +278,10 @@ const appPlayerbar = [
   'grid-cols-[minmax(12rem,0.8fr)_minmax(25rem,1.4fr)_minmax(12rem,0.8fr)]',
   'border-t border-line bg-paper/[0.96] px-[clamp(1rem,2vw,1.75rem)]',
   'shadow-[0_-1.5rem_3rem_hsl(var(--ink)/0.05)] backdrop-blur-[22px] backdrop-saturate-[1.3]',
-  '[@media(max-width:980px)]:grid-cols-[minmax(11rem,0.7fr)_minmax(22rem,1.3fr)_auto]',
-  '[@media(max-width:720px)]:grid-cols-[auto_minmax(0,1fr)_auto] [@media(max-width:720px)]:gap-3',
-  '[@media(max-width:720px)]:px-3',
-  '[@media(max-width:480px)]:grid-cols-[minmax(0,1fr)_auto]',
+  'to-980:grid-cols-[minmax(11rem,0.7fr)_minmax(22rem,1.3fr)_auto]',
+  'to-720:grid-cols-[auto_minmax(0,1fr)_auto] to-720:gap-3',
+  'to-720:px-3',
+  'to-480:grid-cols-[minmax(0,1fr)_auto]',
 ].join(' ');
 
 const appCurrent = [
@@ -291,12 +291,12 @@ const appCurrent = [
   '[&_strong]:font-display [&_strong]:text-[0.9rem] [&_strong]:font-[620]',
   '[&_span]:mt-[0.22rem] [&_span]:overflow-hidden [&_span]:whitespace-nowrap',
   '[&_span]:text-ellipsis [&_span]:text-[0.46rem] [&_span]:text-muted-foreground',
-  '[@media(max-width:720px)]:[&>div]:hidden',
-  '[@media(max-width:480px)]:hidden',
+  'to-720:[&>div]:hidden',
+  'to-480:hidden',
 ].join(' ');
 
 const appCurrentVinyl = [
-  'w-[3.45rem] flex-none [@media(max-width:720px)]:w-[2.85rem]',
+  'w-[3.45rem] flex-none to-720:w-[2.85rem]',
 ].join(' ');
 
 const appTransport = [
@@ -331,7 +331,7 @@ const appTimeline = [
   'grid min-w-0 grid-cols-[2.8rem_minmax(0,1fr)_2.8rem] items-center gap-[0.65rem]',
   '[&>time]:font-mono [&>time]:text-[0.44rem] [&>time]:tabular-nums [&>time]:text-muted-foreground',
   '[&>time:last-child]:text-right',
-  '[@media(max-width:480px)]:grid-cols-[2.25rem_minmax(0,1fr)_2.25rem] [@media(max-width:480px)]:gap-[0.4rem]',
+  'to-480:grid-cols-[2.25rem_minmax(0,1fr)_2.25rem] to-480:gap-[0.4rem]',
 ].join(' ');
 
 const appUtilities = [
@@ -342,8 +342,8 @@ const appUtilities = [
   '[&>button]:rounded-full [&>button]:text-muted-foreground',
   '[&>button:hover]:bg-secondary [&>button:hover]:text-ink',
   '[&_svg]:h-[0.82rem] [&_svg]:w-[0.82rem]',
-  '[@media(max-width:980px)]:grid-cols-[auto_auto_auto] [@media(max-width:980px)]:[&_input]:hidden',
-  '[@media(max-width:720px)]:flex [@media(max-width:720px)]:[&>button:first-child]:hidden',
+  'to-980:grid-cols-[auto_auto_auto] to-980:[&_input]:hidden',
+  'to-720:flex to-720:[&>button:first-child]:hidden',
 ].join(' ');
 
 const appSpeedButton = [
@@ -605,11 +605,11 @@ export function AudioPlayerPage({
           </button>
           <LanguageSwitcher
             locale={locale}
-            className="h-9 w-9 min-w-9 [@media(max-width:720px)]:hidden"
+            className="h-9 w-9 min-w-9 to-720:hidden"
           />
           <ModeToggle
             locale={locale}
-            className="h-9 w-9 min-w-9 [@media(max-width:480px)]:hidden"
+            className="h-9 w-9 min-w-9 to-480:hidden"
           />
           <Link
             className={appExit}
@@ -696,7 +696,7 @@ export function AudioPlayerPage({
           </div>
         </section>
 
-        <aside className={cn(appColumn, 'pb-0')}>
+        <aside className={cn(appColumn, 'pb-0 to-980:hidden')}>
           <div className={appPanelHeading}>
             <div>
               <span>{panel === 'queue' ? '02 / UP NEXT' : '03 / HISTORY'}</span>

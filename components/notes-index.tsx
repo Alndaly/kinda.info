@@ -28,16 +28,16 @@ const notesFilter = [
   'data-[pinned=true]:grid-cols-[minmax(0,1fr)_auto] data-[pinned=true]:gap-[0.65rem]',
   'data-[pinned=true]:rounded-none data-[pinned=true]:border-x-0 data-[pinned=true]:px-0 data-[pinned=true]:py-[0.55rem]',
   'data-[pinned=true]:bg-paper/[0.96] data-[pinned=true]:shadow-[0_16px_30px_-27px_hsl(var(--ink)/0.7)]',
-  '[@media(max-width:768px)]:top-0 [@media(max-width:768px)]:grid-cols-[minmax(0,1fr)_auto]',
-  '[@media(max-width:768px)]:gap-[0.65rem] [@media(max-width:768px)]:rounded-xl',
+  'to-768:top-0 to-768:grid-cols-[minmax(0,1fr)_auto]',
+  'to-768:gap-[0.65rem] to-768:rounded-xl',
 ].join(' ');
 
 const notesFilterSummary = [
   'flex min-w-max items-center gap-[0.45rem] pl-[0.35rem] text-[0.66rem] tracking-[0.06em]',
-  'group-data-[pinned=true]/filter:hidden [@media(max-width:768px)]:min-w-0',
+  'group-data-[pinned=true]/filter:hidden to-768:min-w-0',
   '[&>svg]:w-[0.85rem] [&>svg]:text-accent',
   '[&>strong]:text-[0.58rem] [&>strong]:font-semibold [&>strong]:text-muted-foreground',
-  '[@media(max-width:520px)]:[&>strong]:hidden',
+  'to-520:[&>strong]:hidden',
 ].join(' ');
 
 const notesFilterTrack = [
@@ -45,7 +45,7 @@ const notesFilterTrack = [
   '[mask-image:linear-gradient(to_right,transparent,black_0.8rem,black_calc(100%-0.8rem),transparent)]',
   '[&::-webkit-scrollbar]:hidden',
   'group-data-[pinned=true]/filter:px-0',
-  '[@media(max-width:768px)]:col-span-full [@media(max-width:768px)]:px-0',
+  'to-768:col-span-full to-768:px-0',
 ].join(' ');
 
 const notesFilterChip = [
@@ -61,8 +61,8 @@ const notesFilterChip = [
 
 const notesFilterClear = [
   'inline-flex min-w-max items-center gap-[0.35rem] pr-[0.35rem] text-[0.58rem] text-muted-foreground',
-  '[@media(max-width:520px)]:text-[0]',
-  '[&>svg]:w-[0.75rem] [@media(max-width:520px)]:[&>svg]:w-[0.9rem]',
+  'to-520:text-[0]',
+  '[&>svg]:w-[0.75rem] to-520:[&>svg]:w-[0.9rem]',
 ].join(' ');
 
 export function NotesIndex({

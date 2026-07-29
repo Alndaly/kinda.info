@@ -83,14 +83,14 @@ export default async function AboutPage({ params }: Props) {
   return (
     <div className={cn(siteContainer, pageTop)}>
       <JsonLd data={profileJsonLd} />
-      <header className="grid grid-cols-[1fr_0.75fr] items-center gap-[clamp(2rem,8vw,8rem)] [@media(max-width:768px)]:grid-cols-[1fr]">
+      <header className="grid grid-cols-[1fr_0.75fr] items-center gap-[clamp(2rem,8vw,8rem)] to-768:grid-cols-[1fr]">
         <div>
           <span className={sectionIndex}>Index / 04</span>
           <h1 className="mt-8 font-display text-[clamp(4.5rem,10vw,9rem)] leading-[0.9] tracking-[-0.07em]">
             {dictionary.title[0]}<br />{dictionary.title[1]}
           </h1>
         </div>
-        <div className="relative aspect-[4/5] overflow-hidden bg-muted rotate-[1.5deg] after:pointer-events-none after:absolute after:inset-0 after:shadow-[inset_0_0_0_0.65rem_hsl(var(--paper))] after:content-[''] [@media(max-width:768px)]:ml-auto [@media(max-width:768px)]:w-[85%]">
+        <div className="relative aspect-[4/5] overflow-hidden bg-muted rotate-[1.5deg] after:pointer-events-none after:absolute after:inset-0 after:shadow-[inset_0_0_0_0.65rem_hsl(var(--paper))] after:content-[''] to-768:ml-auto to-768:w-[85%]">
           <Image
             src="/images/july-portrait.jpg"
             alt={dictionary.portraitAlt}
@@ -105,11 +105,11 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </header>
 
-      <section className="mx-auto mt-[clamp(6rem,12vw,12rem)] grid max-w-[58rem] grid-cols-[0.22fr_1fr] gap-8 [@media(max-width:768px)]:grid-cols-[1fr]">
+      <section className="mx-auto mt-[clamp(6rem,12vw,12rem)] grid max-w-[58rem] grid-cols-[0.22fr_1fr] gap-8 to-768:grid-cols-[1fr]">
         <Asterisk className="h-7 w-7 text-accent" />
         <div>
           <p className="font-display text-[clamp(2.1rem,5vw,4.5rem)] leading-[1.15] tracking-[-0.045em]">{dictionary.lead}</p>
-          <div className="mt-12 grid grid-cols-2 gap-10 text-[0.95rem] leading-loose text-muted-foreground [@media(max-width:768px)]:grid-cols-1">
+          <div className="mt-12 grid grid-cols-2 gap-10 text-[0.95rem] leading-loose text-muted-foreground to-768:grid-cols-1">
             <p>{dictionary.columns[0]}</p>
             <p>{dictionary.columns[1]}</p>
           </div>
@@ -124,7 +124,7 @@ export default async function AboutPage({ params }: Props) {
         id="contact"
         className="mt-[clamp(7rem,14vw,13rem)] scroll-mt-28 border-t border-line pt-[clamp(2rem,5vw,4rem)]"
       >
-        <header className="mb-[clamp(3rem,7vw,6rem)] grid grid-cols-[0.45fr_1fr] items-end gap-[clamp(2rem,7vw,7rem)] [@media(max-width:768px)]:grid-cols-[1fr]">
+        <header className="mb-[clamp(3rem,7vw,6rem)] grid grid-cols-[0.45fr_1fr] items-end gap-[clamp(2rem,7vw,7rem)] to-768:grid-cols-[1fr]">
           <span className={sectionIndex}>Elsewhere / 05</span>
           <div>
             <h2 className="font-display text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.95] tracking-[-0.065em]">
@@ -136,7 +136,7 @@ export default async function AboutPage({ params }: Props) {
           </div>
         </header>
 
-        <div className="grid grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] gap-4 [@media(max-width:768px)]:grid-cols-[1fr]">
+        <div className="grid grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] gap-4 to-768:grid-cols-[1fr]">
           <article className={contactWechat}>
             <div className={contactCardHeading}>
               <span className={contactKicker}>01</span>

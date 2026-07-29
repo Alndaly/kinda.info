@@ -35,20 +35,20 @@ const audioShell = [
   '[&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-[3px]',
   '[&_button:focus-visible]:outline-accent',
   '[&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-[3px] [&_a:focus-visible]:outline-accent',
-  '[@media(max-width:520px)]:my-11 [@media(max-width:520px)]:w-[min(100vw-1.25rem,58rem)]',
+  'to-520:my-11 to-520:w-[min(100vw-1.25rem,58rem)]',
 ].join(' ');
 
 const audioHeader = [
   'flex min-h-[2.75rem] items-center justify-between gap-4 border-b border-line',
   'py-[0.65rem] pl-[1.15rem] pr-4 font-sans',
-  '[@media(max-width:520px)]:px-[0.85rem]',
+  'to-520:px-[0.85rem]',
 ].join(' ');
 
 const audioKicker = [
   'flex min-w-0 items-center gap-[0.55rem] text-[0.56rem] font-[750] uppercase',
   'tracking-[0.14em] text-muted-foreground',
   '[&>svg]:h-[0.85rem] [&>svg]:w-[0.85rem] [&>svg]:flex-none [&>svg]:text-accent',
-  '[@media(max-width:520px)]:text-[0.5rem] [@media(max-width:520px)]:tracking-[0.1em]',
+  'to-520:text-[0.5rem] to-520:tracking-[0.1em]',
 ].join(' ');
 
 const audioFormat = [
@@ -60,9 +60,9 @@ const audioBody = [
   'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[0.8rem_1.35rem]',
   'pb-[1.6rem] pl-[1.75rem] pr-[1.6rem] pt-6',
   "[grid-template-areas:'play_copy_actions'_'play_timeline_timeline'_'._error_error']",
-  "[@media(max-width:768px)]:[grid-template-areas:'play_copy_actions'_'timeline_timeline_timeline'_'error_error_error']",
-  '[@media(max-width:768px)]:gap-[1rem_0.9rem] [@media(max-width:768px)]:p-5',
-  '[@media(max-width:520px)]:px-[0.9rem] [@media(max-width:520px)]:pb-[1.2rem] [@media(max-width:520px)]:pt-[1.1rem]',
+  "to-768:[grid-template-areas:'play_copy_actions'_'timeline_timeline_timeline'_'error_error_error']",
+  'to-768:gap-[1rem_0.9rem] to-768:p-5',
+  'to-520:px-[0.9rem] to-520:pb-[1.2rem] to-520:pt-[1.1rem]',
 ].join(' ');
 
 const audioPlay = [
@@ -75,8 +75,8 @@ const audioPlay = [
   'disabled:cursor-wait disabled:opacity-55 disabled:transform-none',
   '[&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem] [&>svg.lucide-play]:ml-[0.12rem]',
   'group-data-[state=loading]/audio:[&>svg]:animate-spinner',
-  '[@media(max-width:768px)]:h-14 [@media(max-width:768px)]:w-14',
-  '[@media(max-width:520px)]:h-[3.15rem] [@media(max-width:520px)]:w-[3.15rem]',
+  'to-768:h-14 to-768:w-14',
+  'to-520:h-[3.15rem] to-520:w-[3.15rem]',
 ].join(' ');
 
 const audioActions = [
@@ -87,7 +87,7 @@ const audioActions = [
   '[&>*:hover]:border-ink [&>*:hover]:bg-ink [&>*:hover]:text-paper',
   '[&>button:disabled]:cursor-not-allowed [&>button:disabled]:opacity-[0.42]',
   '[&_svg]:h-[0.9rem] [&_svg]:w-[0.9rem]',
-  '[@media(max-width:520px)]:gap-1 [@media(max-width:520px)]:[&>*]:h-8 [@media(max-width:520px)]:[&>*]:w-8',
+  'to-520:gap-1 to-520:[&>*]:h-8 to-520:[&>*]:w-8',
 ].join(' ');
 
 const audioWave = [
@@ -101,7 +101,7 @@ const audioWave = [
 const audioWaveLayer = [
   'absolute inset-0 grid grid-cols-[repeat(32,minmax(1px,1fr))] items-center gap-[3px]',
   '[&>i]:min-w-px [&>i]:max-h-full [&>i]:rounded-full [&>i]:bg-ink/[0.16]',
-  '[@media(max-width:520px)]:gap-[2px]',
+  'to-520:gap-[2px]',
 ].join(' ');
 
 const audioTime = [

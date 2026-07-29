@@ -22,8 +22,8 @@ import { cn } from '@/lib/utils';
 /** Shrinks to just its arrow on the narrowest screens. */
 const sectionHeadingLink = cn(
   textLink,
-  '[@media(max-width:520px)]:border-0 [@media(max-width:520px)]:text-[0]',
-  '[@media(max-width:520px)]:[&>svg]:h-[1.2rem] [@media(max-width:520px)]:[&>svg]:w-[1.2rem]',
+  'to-520:border-0 to-520:text-[0]',
+  'to-520:[&>svg]:h-[1.2rem] to-520:[&>svg]:w-[1.2rem]',
 );
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
@@ -41,10 +41,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         className={cn(
           siteContainer,
           'relative flex min-h-[calc(100svh-74px)] flex-col justify-center py-[clamp(3rem,8vw,7rem)]',
-          '[@media(max-width:768px)]:min-h-[auto]',
+          'to-768:min-h-[auto]',
         )}
       >
-        <div className="grid grid-cols-[minmax(0,1.03fr)_minmax(360px,0.97fr)] gap-[clamp(2rem,6vw,7rem)] [@media(max-width:1024px)]:grid-cols-[1fr]">
+        <div className="grid grid-cols-[minmax(0,1.03fr)_minmax(360px,0.97fr)] gap-[clamp(2rem,6vw,7rem)] to-1024:grid-cols-[1fr]">
           <div className="relative z-[1] flex flex-col justify-between py-4 lg:py-10">
             <div>
               <Badge className="mb-8 border-accent/25 text-accent">
@@ -54,7 +54,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                 {dictionary.eyebrow}
               </p>
-              <h1 className="mt-[clamp(1.25rem,2.4vw,2.25rem)] flex items-end gap-[0.08em] font-display text-[clamp(6.5rem,15vw,13rem)] font-semibold leading-[0.72] tracking-[-0.095em] [@media(max-width:768px)]:text-[clamp(5rem,29vw,8.5rem)] [@media(max-width:520px)]:text-[25vw]">
+              <h1 className="mt-[clamp(1.25rem,2.4vw,2.25rem)] flex items-end gap-[0.08em] font-display text-[clamp(6.5rem,15vw,13rem)] font-semibold leading-[0.72] tracking-[-0.095em] to-768:text-[clamp(5rem,29vw,8.5rem)] to-520:text-[25vw]">
                 Kinda
                 <span className="-mb-[0.2rem] font-display text-[clamp(1rem,2vw,1.55rem)] leading-none tracking-[0.35em] text-accent [writing-mode:vertical-rl]">
                   {dictionary.displayName}
@@ -79,8 +79,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             </div>
           </div>
 
-          <div className="relative min-h-[600px] [@media(max-width:1024px)]:mx-auto [@media(max-width:1024px)]:min-h-[590px] [@media(max-width:1024px)]:w-[min(100%,680px)] [@media(max-width:768px)]:min-h-[460px]">
-            <div className="absolute inset-[2%_5%_8%_10%] overflow-hidden rounded-[50%_50%_3%_3%/38%_38%_3%_3%] bg-muted shadow-[0_30px_80px_rgba(41,37,25,0.16)] rotate-[1.5deg] after:pointer-events-none after:absolute after:inset-0 after:bg-[linear-gradient(to_top,rgba(15,14,11,0.42),transparent_45%)] after:content-[''] [@media(max-width:768px)]:inset-[1.5rem_1rem_2.5rem_0]">
+          <div className="relative min-h-[600px] to-1024:mx-auto to-1024:min-h-[590px] to-1024:w-[min(100%,680px)] to-768:min-h-[460px]">
+            <div className="absolute inset-[2%_5%_8%_10%] overflow-hidden rounded-[50%_50%_3%_3%/38%_38%_3%_3%] bg-muted shadow-[0_30px_80px_rgba(41,37,25,0.16)] rotate-[1.5deg] after:pointer-events-none after:absolute after:inset-0 after:bg-[linear-gradient(to_top,rgba(15,14,11,0.42),transparent_45%)] after:content-[''] to-768:inset-[1.5rem_1rem_2.5rem_0]">
               <Image
                 src="/images/july-portrait.jpg"
                 alt={dictionary.photoAlt}
@@ -94,7 +94,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </span>
             </div>
             <div
-              className="absolute right-[clamp(1.5rem,3vw,2.25rem)] top-0 z-[2] grid h-32 w-32 animate-slow-spin place-items-center rounded-full border border-accent/45 text-accent after:absolute after:text-[1.1rem] after:content-['✦'] [&>svg]:h-full [&>svg]:w-full [&>svg]:overflow-visible [@media(max-width:768px)]:right-6 [@media(max-width:768px)]:h-24 [@media(max-width:768px)]:w-24"
+              className="absolute right-[clamp(1.5rem,3vw,2.25rem)] top-0 z-[2] grid h-32 w-32 animate-slow-spin place-items-center rounded-full border border-accent/45 text-accent after:absolute after:text-[1.1rem] after:content-['✦'] [&>svg]:h-full [&>svg]:w-full [&>svg]:overflow-visible to-768:right-6 to-768:h-24 to-768:w-24"
               aria-hidden="true"
             >
               <svg viewBox="0 0 120 120" role="presentation">
@@ -111,11 +111,11 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                 </text>
               </svg>
             </div>
-            <div className="absolute bottom-[2%] right-[clamp(0.75rem,1.5vw,1rem)] z-[3] w-52 -rotate-[3.5deg] bg-memo p-[1.2rem] text-memo-ink shadow-[0_16px_35px_rgba(28,27,20,0.18)] [@media(max-width:768px)]:right-4 [@media(max-width:768px)]:w-[10.5rem] [@media(max-width:768px)]:p-[0.9rem]">
+            <div className="absolute bottom-[2%] right-[clamp(0.75rem,1.5vw,1rem)] z-[3] w-52 -rotate-[3.5deg] bg-memo p-[1.2rem] text-memo-ink shadow-[0_16px_35px_rgba(28,27,20,0.18)] to-768:right-4 to-768:w-[10.5rem] to-768:p-[0.9rem]">
               <span className="text-[0.58rem] font-bold uppercase tracking-[0.18em]">
                 {dictionary.noteLabel}
               </span>
-              <p className="mt-4 font-display text-[1.25rem] leading-[1.55] [@media(max-width:768px)]:text-[1rem]">
+              <p className="mt-4 font-display text-[1.25rem] leading-[1.55] to-768:text-[1rem]">
                 {dictionary.note[0]}<br />{dictionary.note[1]}
               </p>
               <i className="mt-4 block text-right font-display">— J.</i>
@@ -124,7 +124,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </div>
         <a
           href="#latest"
-          className="absolute bottom-6 left-0 flex items-center gap-[0.55rem] text-[0.58rem] font-bold uppercase tracking-[0.2em] text-muted-foreground [&>svg]:animate-nudge-down [@media(max-width:1024px)]:hidden"
+          className="absolute bottom-6 left-0 flex items-center gap-[0.55rem] text-[0.58rem] font-bold uppercase tracking-[0.2em] text-muted-foreground [&>svg]:animate-nudge-down to-1024:hidden"
         >
           <ArrowDown className="h-4 w-4" />
           {dictionary.scroll}
@@ -167,7 +167,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             </Link>
           </div>
           <div
-            className="grid grid-cols-[1.2fr_0.8fr] gap-[1.1rem_2rem] data-[count=1]:grid-cols-[1fr] [@media(max-width:768px)]:grid-cols-[1fr]"
+            className="grid grid-cols-[1.2fr_0.8fr] gap-[1.1rem_2rem] data-[count=1]:grid-cols-[1fr] to-768:grid-cols-[1fr]"
             data-count={Math.min(photos.length, 3)}
           >
             {photos.slice(0, 3).map((photo, index) => (
@@ -176,10 +176,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                 entry={photo}
                 priority={index === 0}
                 tone="inverse"
-                className={index === 0 ? 'row-span-2 [@media(max-width:768px)]:row-auto' : ''}
+                className={index === 0 ? 'row-span-2 to-768:row-auto' : ''}
                 frameClassName={cn(
                   index === 0 ? 'h-full min-h-[650px]' : 'aspect-video',
-                  '[@media(max-width:768px)]:aspect-[4/3] [@media(max-width:768px)]:min-h-0',
+                  'to-768:aspect-[4/3] to-768:min-h-0',
                 )}
               />
             ))}

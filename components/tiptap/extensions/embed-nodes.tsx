@@ -44,7 +44,7 @@ const embedLabel = [
 
 const mapShell = [
   embedShell,
-  'relative h-[380px] [@media(max-width:768px)]:h-[300px]',
+  'relative h-[380px] to-768:h-[300px]',
   '[&>iframe]:absolute [&>iframe]:inset-0 [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0',
 ].join(' ');
 

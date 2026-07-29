@@ -5,7 +5,7 @@
  */
 
 export const siteContainer =
-  'mx-auto w-[min(100%-2rem,1240px)] [@media(max-width:520px)]:w-[min(100%-1.25rem,1240px)]';
+  'mx-auto w-[min(100%-2rem,1240px)] to-520:w-[min(100%-1.25rem,1240px)]';
 
 export const headerControl = [
   'inline-flex h-10 items-center justify-center rounded-full border border-line',
@@ -37,10 +37,10 @@ export const textLink = [
 export const sectionSpace = 'py-[clamp(5.5rem,10vw,9rem)]';
 
 export const sectionHeading =
-  'mb-[clamp(2.5rem,5vw,4.5rem)] flex items-end justify-between gap-8 [@media(max-width:768px)]:items-start';
+  'mb-[clamp(2.5rem,5vw,4.5rem)] flex items-end justify-between gap-8 to-768:items-start';
 
 export const sectionHeadingTitle =
-  'mt-[0.6rem] font-display text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.055em] [@media(max-width:768px)]:text-[3.2rem]';
+  'mt-[0.6rem] font-display text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.055em] to-768:text-[3.2rem]';
 
 export const sectionIndex =
   'text-[0.62rem] font-bold uppercase tracking-[0.22em] text-muted-foreground';
@@ -57,17 +57,17 @@ export const pageTop = 'pb-12 pt-[clamp(4rem,10vw,8.5rem)]';
 export const archiveHeader = 'mb-[clamp(4rem,9vw,8rem)] max-w-[62rem]';
 
 export const archiveHeaderTitle =
-  'mt-6 font-display text-[clamp(5.5rem,15vw,12rem)] leading-[0.72] tracking-[-0.085em] [@media(max-width:520px)]:text-[5.2rem]';
+  'mt-6 font-display text-[clamp(5.5rem,15vw,12rem)] leading-[0.72] tracking-[-0.085em] to-520:text-[5.2rem]';
 
 export const archiveHeaderText =
   'mt-12 max-w-[40rem] text-[1.05rem] leading-loose text-muted-foreground';
 
 /** Two-column archive header: title on the left, standfirst on the right. */
 export const archiveHeaderSplit =
-  'mb-[clamp(4rem,9vw,8rem)] grid grid-cols-[1fr_0.72fr] items-end gap-20 [@media(max-width:768px)]:grid-cols-[1fr] [@media(max-width:768px)]:gap-8';
+  'mb-[clamp(4rem,9vw,8rem)] grid grid-cols-[1fr_0.72fr] items-end gap-20 to-768:grid-cols-[1fr] to-768:gap-8';
 
 export const archiveHeaderSplitText =
-  'max-w-[40rem] text-[1.05rem] leading-loose text-muted-foreground [@media(max-width:768px)]:mt-4';
+  'max-w-[40rem] text-[1.05rem] leading-loose text-muted-foreground to-768:mt-4';
 
 export const backLink = [
   'mb-[clamp(3rem,7vw,6rem)] inline-flex items-center gap-[0.45rem]',
@@ -78,7 +78,7 @@ export const backLink = [
 
 /** Display title shared by the note, photo and project detail headers. */
 export const detailTitle =
-  'font-display text-[clamp(3.3rem,8vw,7rem)] leading-[0.98] tracking-[-0.06em] text-balance [@media(max-width:520px)]:text-[3rem]';
+  'font-display text-[clamp(3.3rem,8vw,7rem)] leading-[0.98] tracking-[-0.06em] text-balance to-520:text-[3rem]';
 
 export const articleDeck =
   'mx-auto mt-8 max-w-[44rem] text-[1.05rem] leading-[1.9] text-muted-foreground';
@@ -119,8 +119,8 @@ export const translationNotice = [
   '[&_p]:mt-[0.15rem] [&_p]:text-[0.72rem] [&_p]:text-muted-foreground',
   '[&>span]:text-[0.62rem] [&>span]:font-bold [&>span]:uppercase [&>span]:tracking-[0.08em]',
   '[&>span]:text-muted-foreground',
-  '[@media(max-width:768px)]:grid-cols-[auto_1fr]',
-  '[@media(max-width:768px)]:[&>span]:col-start-2 [@media(max-width:768px)]:[&>span]:w-max',
+  'to-768:grid-cols-[auto_1fr]',
+  'to-768:[&>span]:col-start-2 to-768:[&>span]:w-max',
 ].join(' ');
 
 export const articleMeta = [
@@ -245,7 +245,7 @@ export const articleEndMessage = [
 ].join(' ');
 
 export const articlePagination = [
-  'mt-14 grid grid-cols-2 gap-4 text-left [@media(max-width:768px)]:grid-cols-1',
+  'mt-14 grid grid-cols-2 gap-4 text-left to-768:grid-cols-1',
   '[&>a]:relative [&>a]:grid [&>a]:min-h-40 [&>a]:content-between [&>a]:border [&>a]:border-line',
   '[&>a]:bg-muted/20 [&>a]:p-5',
   '[&>a]:transition-[border-color,background-color,transform,translate,scale,rotate] [&>a]:duration-[180ms] [&>a]:ease-[ease]',
@@ -289,7 +289,7 @@ const contactCard = 'relative overflow-hidden border border-line bg-paper';
 
 export const contactWechat = [
   contactCard,
-  'row-span-2 p-[clamp(1.25rem,3vw,2.5rem)] [@media(max-width:768px)]:row-auto',
+  'row-span-2 p-[clamp(1.25rem,3vw,2.5rem)] to-768:row-auto',
   '[&_h3]:mt-[0.55rem] [&_h3]:font-display [&_h3]:text-[clamp(2rem,4vw,3.7rem)]',
   '[&_h3]:leading-none [&_h3]:tracking-[-0.055em]',
   '[&_p]:mt-4 [&_p]:max-w-[24rem] [&_p]:text-[0.85rem] [&_p]:leading-[1.8] [&_p]:text-muted-foreground',
@@ -325,17 +325,17 @@ export const contactDestination = [
 
 export const photoLedger = [
   'mb-[clamp(3rem,7vw,6rem)] grid grid-cols-[0.65fr_1.35fr] items-end gap-12',
-  'border-y border-line py-5 [@media(max-width:768px)]:grid-cols-[1fr] [@media(max-width:768px)]:gap-6',
+  'border-y border-line py-5 to-768:grid-cols-[1fr] to-768:gap-6',
   '[&>div]:flex [&>div]:items-baseline [&>div]:justify-between [&>div]:gap-4',
   '[&>div>span]:text-[0.56rem] [&>div>span]:uppercase [&>div>span]:tracking-[0.16em]',
   '[&>div>span]:text-muted-foreground',
   '[&>div>strong]:font-display [&>div>strong]:text-[3.5rem] [&>div>strong]:font-[350]',
   '[&>div>strong]:leading-[0.8] [&>div>strong]:text-accent',
   '[&_dl]:grid [&_dl]:grid-cols-3 [&_dl]:gap-4',
-  '[@media(max-width:768px)]:[&_dl]:gap-2 [@media(max-width:520px)]:[&_dl]:grid-cols-2',
+  'to-768:[&_dl]:gap-2 to-520:[&_dl]:grid-cols-2',
   '[&_dl>div]:border-l [&_dl>div]:border-line [&_dl>div]:pl-4',
-  '[@media(max-width:768px)]:[&_dl>div]:pl-[0.7rem]',
-  '[@media(max-width:520px)]:[&_dl>div:last-child]:hidden',
+  'to-768:[&_dl>div]:pl-[0.7rem]',
+  'to-520:[&_dl>div:last-child]:hidden',
   '[&_dt]:text-[0.56rem] [&_dt]:uppercase [&_dt]:tracking-[0.16em] [&_dt]:text-muted-foreground',
   '[&_dd]:mt-[0.45rem] [&_dd]:font-display [&_dd]:text-[1.15rem]',
 ].join(' ');
