@@ -416,6 +416,7 @@ export function AudioPlayerPage({
   const ui = locale === 'zh'
     ? {
         back: '返回网站',
+        brand: '七月 · 声音',
         collection: '声音资料库',
         workspace: '播放器',
         trackCount: '首开放版权曲目',
@@ -427,6 +428,7 @@ export function AudioPlayerPage({
       }
     : {
         back: 'Back to site',
+        brand: 'Kinda Audio',
         collection: 'Sound library',
         workspace: 'Player',
         trackCount: 'openly licensed tracks',
@@ -564,7 +566,7 @@ export function AudioPlayerPage({
         <Link className={appBrand} href={localizeHref(locale, '/')}>
           <span><Asterisk /></span>
           <div>
-            <strong>Kinda Audio</strong>
+            <strong>{ui.brand}</strong>
             <small>{ui.workspace} / No. 07</small>
           </div>
         </Link>

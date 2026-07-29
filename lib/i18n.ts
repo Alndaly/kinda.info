@@ -40,7 +40,8 @@ const zh = {
     keywords: ['Kinda', '七月', '个人网站', '笔记', '摄影', '独立开发', 'MDX'],
   },
   header: {
-    homeLabel: 'Kinda 首页',
+    brand: '七月.',
+    homeLabel: '七月 首页',
     navigationLabel: '主导航',
     mobileNavigationLabel: '移动端导航',
     hello: '联系我',
@@ -72,7 +73,8 @@ const zh = {
   home: {
     archive: '七月的个人档案 · No. 07',
     eyebrow: '写下思考，留下光，把想法做成作品',
-    displayName: '七月',
+    wordmark: '七月',
+    displayName: 'Kinda',
     intro: ['这里收着我写过的代码、拍下的光，以及生活留下的思考。', '按照自己的节奏，认真保存那些值得留下的东西。'],
     read: '开始阅读',
     seeWorld: '看看我眼中的世界',
@@ -239,6 +241,7 @@ const en = {
     keywords: ['Kinda', '七月', 'personal website', 'notes', 'photography', 'indie developer', 'MDX'],
   },
   header: {
+    brand: 'Kinda.',
     homeLabel: 'Kinda home',
     navigationLabel: 'Primary navigation',
     mobileNavigationLabel: 'Mobile navigation',
@@ -271,6 +274,7 @@ const en = {
   home: {
     archive: 'Personal archive · No. 07',
     eyebrow: 'Notes, frames & things I make',
+    wordmark: 'Kinda',
     displayName: '七月',
     intro: ['Code I have written, light I have caught, and thoughts life has left behind.', 'No race to publish and no noise to manufacture—only things worth keeping.'],
     read: 'Start reading',

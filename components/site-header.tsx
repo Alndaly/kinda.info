@@ -33,7 +33,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             <Asterisk className="h-5 w-5" strokeWidth={1.7} />
           </span>
           <span className="font-display text-2xl font-semibold tracking-[-0.04em]">
-            Kinda.
+            {dictionary.brand}
           </span>
         </Link>
 

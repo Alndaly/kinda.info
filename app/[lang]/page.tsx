@@ -57,8 +57,16 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                 {dictionary.eyebrow}
               </p>
-              <h1 className="mt-[clamp(1.25rem,2.4vw,2.25rem)] flex items-end gap-[0.08em] font-display text-[clamp(6.5rem,15vw,13rem)] font-semibold leading-[0.72] tracking-[-0.095em] to-768:text-[clamp(5rem,29vw,8.5rem)] to-520:text-[25vw]">
-                Kinda
+              <h1
+                className={cn(
+                  'mt-[clamp(1.25rem,2.4vw,2.25rem)] flex items-end gap-[0.08em] font-display font-semibold leading-[0.72]',
+                  'text-[clamp(6.5rem,15vw,13rem)] to-768:text-[clamp(5rem,29vw,8.5rem)] to-520:text-[25vw]',
+                  // the Latin wordmark is drawn tight; two Chinese glyphs would
+                  // collide at that tracking
+                  lang === 'zh' ? 'tracking-[-0.02em]' : 'tracking-[-0.095em]',
+                )}
+              >
+                {dictionary.wordmark}
                 <span className="-mb-[0.2rem] font-display text-[clamp(1rem,2vw,1.55rem)] leading-none tracking-[0.35em] text-accent [writing-mode:vertical-rl]">
                   {dictionary.displayName}
                 </span>
