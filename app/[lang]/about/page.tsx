@@ -105,8 +105,15 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </header>
 
-      <section className="mx-auto mt-[clamp(6rem,12vw,12rem)] grid max-w-[58rem] grid-cols-[0.22fr_1fr] gap-8 to-768:grid-cols-[1fr]">
-        <Asterisk className="h-7 w-7 text-accent" />
+      {/* The asterisk used to sit in its own 0.22fr column, which left it
+          stranded 166px from the text and pushed this whole block out of
+          alignment with the sections below. It is a margin mark now, so the
+          copy starts at the same left edge as everything else. */}
+      <section className="relative mx-auto mt-[clamp(6rem,12vw,12rem)] max-w-[58rem]">
+        <Asterisk
+          className="absolute -left-12 top-[0.42em] h-6 w-6 text-accent to-1024:static to-1024:mb-6 to-1024:h-7 to-1024:w-7"
+          aria-hidden="true"
+        />
         <div>
           <p className="font-display text-[clamp(2.1rem,5vw,4.5rem)] leading-[1.15] tracking-[-0.045em]">{dictionary.lead}</p>
           <div className="mt-12 grid grid-cols-2 gap-10 text-[0.95rem] leading-loose text-muted-foreground to-768:grid-cols-1">
