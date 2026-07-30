@@ -260,7 +260,7 @@ const appStageCopy = [
   '[&>small]:text-[0.46rem] [&>small]:font-extrabold [&>small]:uppercase',
   '[&>small]:tracking-[0.16em] [&>small]:text-[var(--audio-accent)]',
   '[&_h1]:mt-[0.32rem] [&_h1]:font-display [&_h1]:text-[clamp(2rem,3.7vw,3.6rem)]',
-  '[&_h1]:font-[560] [&_h1]:leading-[0.95]! [&_h1]:tracking-[-0.055em]',
+  '[&_h1]:font-[560] [&_h1]:leading-[0.95] [&_h1]:tracking-[-0.055em]',
   '[&>p]:mt-[0.55rem] [&>p]:text-[0.58rem] [&>p]:leading-[1.55] [&>p]:text-muted-foreground',
   '[&>a]:mt-[0.55rem] [&>a]:inline-flex [&>a]:items-center [&>a]:gap-[0.35rem]',
   '[&>a]:text-[0.48rem] [&>a]:text-muted-foreground',

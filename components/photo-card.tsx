@@ -61,7 +61,7 @@ export function PhotoCard({
         </div>
         <figcaption className="flex items-end justify-between gap-6 pt-[0.9rem] to-520:items-start">
           <div>
-            <h2 className="font-display text-[clamp(1.35rem,2.5vw,2rem)] leading-none! tracking-[-0.025em]">
+            <h2 className="font-display text-[clamp(1.35rem,2.5vw,2rem)] leading-none tracking-[-0.025em]">
               {entry.title}
             </h2>
             <span
