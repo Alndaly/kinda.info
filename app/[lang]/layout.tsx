@@ -108,6 +108,23 @@ export default async function RootLayout({ children, params }: Props) {
           siteConfig.bilibili,
           siteConfig.xiaohongshu,
         ],
+        // mirrors the practice section on /about
+        knowsAbout: [
+          'AI agents',
+          'AI workflow automation',
+          'Retrieval-augmented generation',
+          'Image generation pipelines',
+          'Full-stack web development',
+          'Next.js',
+          'FastAPI',
+          'WeChat mini programs',
+          'SwiftUI',
+          'iOS and macOS development',
+          'Embedded software',
+          'Cross-border technology consulting',
+          'Product design',
+          'Photography',
+        ],
       },
     ],
   };

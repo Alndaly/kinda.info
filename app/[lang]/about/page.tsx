@@ -120,6 +120,79 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </section>
 
+      {/* Numbered ledger, matching the archive ledger's rule-and-index rhythm.
+          Each entry names the work it can be checked against. */}
+      <section className="mx-auto mt-[clamp(6rem,12vw,10rem)] max-w-[58rem]">
+        <header className="max-w-[38rem]">
+          <span className={sectionIndex}>{dictionary.craftIndex}</span>
+          <h2 className="mt-3 font-display text-[clamp(2.4rem,5vw,3.8rem)] leading-[1.05] tracking-[-0.05em]">
+            {dictionary.craft}
+          </h2>
+          <p className="mt-5 text-[0.95rem] leading-[1.9] text-muted-foreground">
+            {dictionary.craftDescription}
+          </p>
+        </header>
+
+        <ol className="mt-12 border-t border-line">
+          {dictionary.crafts.map((craft, index) => (
+            <li
+              key={craft.title}
+              className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-x-6 gap-y-3 border-b border-line py-8 to-768:grid-cols-[1fr]"
+            >
+              <span className="pt-[0.35rem] font-display text-[0.95rem] italic text-accent">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3 className="font-display text-[1.5rem] leading-[1.3] tracking-[-0.03em]">
+                  {craft.title}
+                </h3>
+                <p className="mt-3 max-w-[38rem] text-[0.95rem] leading-[1.9] text-muted-foreground">
+                  {craft.body}
+                </p>
+                <span className="mt-4 inline-flex items-center gap-2 text-[0.58rem] uppercase tracking-[calc(0.16em*var(--tracking-scale))] text-muted-foreground before:h-px before:w-5 before:bg-accent/70 before:content-['']">
+                  {craft.evidence}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mx-auto mt-[clamp(5rem,10vw,8rem)] max-w-[58rem]">
+        <header className="max-w-[38rem]">
+          <span className={sectionIndex}>{dictionary.collabIndex}</span>
+          <h2 className="mt-3 font-display text-[clamp(2.4rem,5vw,3.8rem)] leading-[1.05] tracking-[-0.05em]">
+            {dictionary.collab}
+          </h2>
+          <p className="mt-5 text-[0.95rem] leading-[1.9] text-muted-foreground">
+            {dictionary.collabDescription}
+          </p>
+        </header>
+
+        <div className="mt-10 grid grid-cols-2 gap-4 [&>article:last-child:nth-child(odd)]:col-span-2 to-768:grid-cols-1">
+          {dictionary.collabs.map((item) => (
+            <article
+              key={item.title}
+              className="relative border border-line bg-paper p-6 before:absolute before:inset-y-6 before:left-0 before:w-px before:bg-accent/60 before:content-['']"
+            >
+              <h3 className="font-display text-[1.15rem] leading-[1.4] tracking-[-0.02em]">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-[0.9rem] leading-[1.8] text-muted-foreground">
+                {item.body}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <p className="mt-8 flex items-start gap-3 text-[0.95rem] leading-[1.9] text-muted-foreground before:mt-[0.85em] before:h-px before:w-8 before:flex-none before:bg-accent/70 before:content-['']">
+          {dictionary.collabNote}
+          <Link className={cn(textLink, 'ml-1')} href={`mailto:${siteConfig.email}`}>
+            Email <ArrowUpRight />
+          </Link>
+        </p>
+      </section>
+
       <section
         id="contact"
         className="mt-[clamp(7rem,14vw,13rem)] scroll-mt-28 border-t border-line pt-[clamp(2rem,5vw,4rem)]"
