@@ -13,5 +13,6 @@ export const siteConfig = {
   bilibili: 'https://space.bilibili.com/391938956',
   xiaohongshu: 'https://xhslink.cn/m/2gpKCIOPcgc',
   wechatQr: '/images/wechat-official-qr.jpg',
-  wechatPersonalQr: '/images/wechat-personal-qr.jpg',
+  wechatPersonalQr:
+    'https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731212638809.JPG',
 } as const;

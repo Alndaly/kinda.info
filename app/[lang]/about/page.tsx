@@ -235,8 +235,8 @@ export default async function AboutPage({ params }: Props) {
               <Image
                 src={siteConfig.wechatPersonalQr}
                 alt={dictionary.wechatPersonalAlt}
-                width={860}
-                height={1120}
+                width={888}
+                height={1131}
                 sizes="(max-width: 768px) 82vw, 34vw"
               />
             </div>
