@@ -55,5 +55,47 @@ NEW-API的本地网站是 http://localhost:3000
 
 > 至于账号注册以及登陆就太过简单了，这里不再赘述。
 
-API地址一定要填写`http://host.docker.internal:8317`
+## CPA进行订阅绑定
 
+进入订阅绑定 http://localhost:8317/management.html#/oauth 页面
+
+![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731213026319.png)
+
+可以看到其中有各种厂商提供的OAUTH登陆方式，点击并且按照提示进行绑定即可。
+
+绑定完成后进入配合管理页面点击刷新凭证就可以看到自己的所有额度信息啦。
+
+![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731213548937.png)
+
+## CPA APIKEY设置
+
+![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731213748571.png)
+
+点击CPA左侧控制下的配置面板进入配置页面。可以看到其中能设置API密钥列表，点击添加API密钥，然后按照提示进行设置即可。**注意这个密钥就是后续你接入cpa的llm端口时所使用的apikey。**
+
+## NEW API创建供应商
+
+打开newapi网站，点击左侧管理员下的渠道按钮进入渠道管理页面。
+
+![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731214010143.png)
+
+点击右上角的创建渠道按钮，即可弹出创建页面。
+
+![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731214112419.png)
+
+![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731214305153.png)
+
+> [!TIP]
+> 注意API地址一定要填写`http://host.docker.internal:8317`
+
+点击模型与分组下的从上游获取，即可自动获取所有模型列表。
+
+最后点击更新渠道保存。
+
+## NEW API创建模型
+
+![](https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731214637696.png)
+
+点击左侧模型进入模型编辑页面，点击右上方的更多按钮后选择同步上游，即可自动同步所有cpa具有的模型。
+
+然后，你就可以自由使用newapi作为聚合服务了～
