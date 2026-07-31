@@ -1,0 +1,51 @@
+---
+slug: "cpa-newapi"
+locale: zh
+type: note
+title: "如何基于CPA和New-API来API化使用AI订阅"
+summary: ""
+date: 2026-07-31
+tags:
+  - "AI"
+  - "CPA"
+  - "newapi"
+featured: false
+---
+
+> 今天我们来讲讲，该怎么使用cpa和newapi来使用这些顶尖模型供应方官方的ai订阅，但是用api的方式。
+
+首先放上两个项目的开源地址
+
+- CPA（全称CLIProxyAPI） https://github.com/router-for-me/CLIProxyAPI
+- New-API https://github.com/QuantumNous/new-api
+
+## 安装
+
+cpa的安装参考官网 https://help.router-for.me/cn/introduction/quick-start.html
+newapi的安装参考官网 https://www.newapi.ai/zh/docs/installation
+
+以笔者的macos系统为例
+
+```shell
+# 安装cpa
+brew install cliproxyapi
+brew services start cliproxyapi
+brew enable cliproxyapi
+```
+
+```shell
+# 安装newapi
+# 下载项目源码
+git clone https://github.com/QuantumNous/new-api.git
+
+# 进入项目目录
+cd new-api
+
+# 根据需要编辑 docker-compose.yml 文件
+# vim docker-compose.yml
+
+# 启动
+docker compose up -d
+```
+
+API地址一定要填写`http://host.docker.internal:8317`

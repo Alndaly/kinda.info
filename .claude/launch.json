@@ -4,8 +4,11 @@
     {
       "name": "kinda-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "autoPort": true
     }
   ]
 }

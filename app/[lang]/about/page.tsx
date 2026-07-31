@@ -19,6 +19,7 @@ import { siteContainer, sectionIndex, textLink, pageTop,
   contactChannel,
   contactDestination,
   contactKicker,
+  contactQr,
   contactWechat,
 } from '@/lib/ui-classes';
 import { cn } from '@/lib/utils';
@@ -216,10 +217,34 @@ export default async function AboutPage({ params }: Props) {
           </div>
         </header>
 
-        <div className="grid grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] gap-4 to-768:grid-cols-[1fr]">
-          <article className={contactWechat}>
+        {/* Personal WeChat leads: it is the channel someone actually reaches me
+            on. The official account keeps its own card beside it, and the two
+            social channels sit underneath. */}
+        <div className="grid grid-cols-2 gap-4 to-768:grid-cols-[1fr]">
+          <article className={cn(contactWechat, 'row-span-1')}>
             <div className={contactCardHeading}>
               <span className={contactKicker}>01</span>
+              <MessageCircle aria-hidden="true" />
+            </div>
+            <div>
+              <span className={contactKicker}>{dictionary.wechatPersonalKicker}</span>
+              <h3>{dictionary.wechatPersonal}</h3>
+              <p>{dictionary.wechatPersonalDescription}</p>
+            </div>
+            <div className={contactQr}>
+              <Image
+                src={siteConfig.wechatPersonalQr}
+                alt={dictionary.wechatPersonalAlt}
+                width={860}
+                height={1120}
+                sizes="(max-width: 768px) 82vw, 34vw"
+              />
+            </div>
+          </article>
+
+          <article className={cn(contactWechat, 'row-span-1')}>
+            <div className={contactCardHeading}>
+              <span className={contactKicker}>02</span>
               <MessageCircle aria-hidden="true" />
             </div>
             <div>
@@ -227,7 +252,7 @@ export default async function AboutPage({ params }: Props) {
               <h3>{dictionary.wechat}</h3>
               <p>{dictionary.wechatDescription}</p>
             </div>
-            <div className="mx-auto mt-[clamp(2rem,5vw,4rem)] w-[min(100%,28rem)] -rotate-1 bg-white p-[0.65rem] shadow-[0_24px_70px_rgba(20,19,15,0.1)] [&_img]:block [&_img]:h-auto [&_img]:w-full">
+            <div className={contactQr}>
               <Image
                 src={siteConfig.wechatQr}
                 alt={dictionary.wechatAlt}
@@ -245,7 +270,7 @@ export default async function AboutPage({ params }: Props) {
             rel="noreferrer"
           >
             <div className={contactCardHeading}>
-              <span className={contactKicker}>02</span>
+              <span className={contactKicker}>03</span>
               <Play aria-hidden="true" />
             </div>
             <div>
@@ -264,7 +289,7 @@ export default async function AboutPage({ params }: Props) {
             rel="noreferrer"
           >
             <div className={contactCardHeading}>
-              <span className={contactKicker}>03</span>
+              <span className={contactKicker}>04</span>
               <BookOpenText aria-hidden="true" />
             </div>
             <div>

@@ -394,3 +394,10 @@ export const audioPanelTitle = [
   'leading-[1.16]! tracking-[-0.035em]',
 ].join(' ');
 
+
+/** White paper mount for a QR code, tilted like a pinned card. */
+export const contactQr = [
+  'mx-auto mt-[clamp(2rem,5vw,4rem)] w-[min(100%,22rem)] -rotate-1 bg-white p-[0.65rem]',
+  'shadow-[0_24px_70px_rgba(20,19,15,0.1)]',
+  '[&_img]:block [&_img]:h-auto [&_img]:w-full',
+].join(' ');
