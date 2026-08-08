@@ -1,0 +1,34 @@
+---
+slug: lolama
+type: project
+title: Lolama
+summary: 一个帮助自己自律的原生 App：习惯、环境与提醒都放在设备上，用 SwiftUI 一套代码覆盖 iPhone、iPad、Mac 与手表。
+date: 2026-05-05
+tags:
+  - Swift
+  - iOS
+  - Open Source
+cover: /images/projects/lolama-cover.svg
+featured: false
+link: https://github.com/Alndaly/lolama
+status: active
+accent: "#45B08C"
+mark: LO
+discipline: 多平台自律 App
+---
+
+市面上的习惯类 App 大多先要求你注册，再把记录同步到别人的服务器上。Lolama 想反过来：先把数据留在设备里，再考虑其它。
+
+它用 SwiftUI 写成，一套代码覆盖多个平台。iPhone、iPad 与 Mac 已经跑起来，visionOS 与 watchOS 的界面也写好了，只差在真机上验证。这种"一套代码多个形态"听起来省事，实际做下来大半时间都在处理平台差异：通知与后台定位只有 iOS 才有，HealthKit 与 CoreMotion 在 Mac 上要整段跳过，导航样式在 Mac 与 iPad 上得给不同的取值。这些差异藏在几十个编译条件后面，而不是靠一个"通用 UI"糊过去。
+
+## 端上的判断
+
+自律工具最难的不是记录，而是知道什么时候该开口提醒。Lolama 的做法是让设备自己判断：从 HealthKit 与 CoreMotion 读取活动状态，结合位置与时间给出一个环境快照，再决定这一刻是否值得打扰你。
+
+桌面版已经把端侧模型跑通了，用 LiteRT 加载 Gemma，推理完全发生在本机。跨平台版目前还是一个桩——LiteRT 的 C++ 依赖没法同时编译到 macOS 与 watchOS，所以这一步暂时留着接口、关掉实现。宁可先留一个诚实的空位，也不想为了"有 AI"把架构拧歪。
+
+## 现在的状态
+
+数据用 SwiftData 存,应用锁走 Keychain,文案已经做了多语言。隐私政策与支持页面都写好了,下一步是上架前的收尾。
+
+它还没有官网，源码在 GitHub 上。对我来说这个项目更像一块试验田：验证一套 SwiftUI 代码到底能覆盖多少形态，以及一个不联网的工具能不能真的帮上自己。

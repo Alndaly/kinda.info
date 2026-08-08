@@ -1,0 +1,35 @@
+---
+slug: lolama
+locale: en
+type: project
+title: Lolama
+summary: A native app for keeping my own habits — records, context and reminders all stay on the device, with one SwiftUI codebase across iPhone, iPad, Mac and watch.
+date: 2026-05-05
+tags:
+  - Swift
+  - iOS
+  - Open Source
+cover: /images/projects/lolama-cover.svg
+featured: false
+link: https://github.com/Alndaly/lolama
+status: active
+accent: "#45B08C"
+mark: LO
+discipline: Native discipline app
+---
+
+Most habit apps ask you to sign up first, then keep your records on someone else's server. Lolama starts from the other end: the data stays on the device, and everything else comes after.
+
+It is written in SwiftUI, one codebase across several platforms. iPhone, iPad and Mac build and run; the visionOS and watchOS interfaces are written but not yet verified on real hardware. "One codebase, many shapes" sounds like a shortcut, but most of the work turned out to be the differences: notifications and background location exist only on iOS, HealthKit and CoreMotion are skipped entirely on the Mac, and navigation style needs a different value on Mac than on iPad. Those differences live behind a few dozen compile conditions rather than under one pretend-universal UI.
+
+## Judgement on the device
+
+The hard part of a discipline tool is not recording — it is knowing when to speak up. Lolama leaves that to the device: it reads activity from HealthKit and CoreMotion, combines it with time and location into a snapshot of your context, and decides whether this particular moment is worth interrupting.
+
+The desktop build already runs a model locally, loading Gemma through LiteRT with inference entirely on-device. The cross-platform build still has a stub in its place — LiteRT's C++ dependency cannot compile for macOS and watchOS at once, so the interface stays and the implementation is off. An honest gap is better than bending the architecture to claim an AI feature.
+
+## Where it stands
+
+Data goes through SwiftData, the app lock through Keychain, and the copy is already localised. The privacy policy and support pages are written; what is left is the run-up to release.
+
+There is no website yet — the source is on GitHub. For me this one is a test bed: how many shapes a single SwiftUI codebase can really cover, and whether a tool that never phones home can actually keep me honest.

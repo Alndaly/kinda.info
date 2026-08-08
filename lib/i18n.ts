@@ -183,7 +183,7 @@ const zh = {
       {
         title: '端侧与嵌入式',
         body: 'SwiftUI 写 iOS 与 macOS，也做小型嵌入式软件：设备上的控制逻辑、与硬件通信、把数据接回自己的服务。资源受限的地方，取舍比技巧更重要。',
-        evidence: '站内 Swift 与 CoreML 笔记',
+        evidence: 'Lolama · 站内 Swift 与 CoreML 笔记',
       },
       {
         title: '从零把产品做出来',
