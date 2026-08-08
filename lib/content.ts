@@ -3,9 +3,17 @@ import { locales, localizeHref, type Locale } from '@/lib/i18n';
 
 export type EntryType = Entry['type'];
 
-export const allEntries = [...entries].sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-);
+/**
+ * Drafts stay visible while running the dev server so they can be previewed,
+ * and are dropped from production builds. Every listing, the sitemap, the feed
+ * and the search index derive from this one array, so filtering here is enough
+ * to keep unfinished work off the live site.
+ */
+const includeDrafts = process.env.NODE_ENV === 'development';
+
+export const allEntries = [...entries]
+  .filter((entry) => includeDrafts || !entry.draft)
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 function withLocalizedHref(entry: Entry, locale: Locale): Entry {
   if (entry.locale === locale) return entry;
