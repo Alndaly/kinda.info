@@ -21,13 +21,11 @@ const codeShell = [
   codeTokens,
   'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden font-code',
   'rounded-[0.5rem] border border-white/[0.08]',
-  'shadow-[0_1.25rem_2.5rem_hsl(var(--ink)/0.12),inset_0_1px_0_rgba(255,255,255,0.04)]',
 ].join(' ');
 
 const mermaidShell = [
   'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
   'rounded-[0.5rem] border border-line bg-card font-code text-foreground',
-  'shadow-[0_1.25rem_2.5rem_hsl(var(--ink)/0.07)]',
 ].join(' ');
 
 const codeHeader = [
@@ -144,7 +142,7 @@ function CodeBlockView({ node }: NodeViewProps) {
           {copied ? labels.copied : labels.copy}
         </button>
       </div>
-      <pre className="m-0! overflow-x-auto rounded-none border-0 bg-transparent! p-[1.35rem]! text-inherit!">
+      <pre className="m-0! overflow-x-auto rounded-none! border-0! bg-transparent! p-[1.35rem]! text-inherit!">
         <NodeViewContent className="block whitespace-pre! text-[0.78rem] leading-[1.7]" />
       </pre>
     </NodeViewWrapper>
