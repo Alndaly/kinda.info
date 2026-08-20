@@ -766,6 +766,95 @@
     "href": "/notes/whisper-cpp-guide"
   },
   {
+    "slug": "neo4j-python-guide",
+    "locale": "en",
+    "type": "note",
+    "title": "Taming a Graph Database with Python",
+    "summary": "A practical Neo4j and Python field guide covering connections, CRUD operations, relationships, constraints, indexes, and batch work.",
+    "date": "2025-02-04T00:00:00.000Z",
+    "updated": "2025-02-04T00:00:00.000Z",
+    "tags": [
+      "Python",
+      "Database"
+    ],
+    "featured": false,
+    "draft": false,
+    "metadata": {
+      "readingTime": 2,
+      "wordCount": 454
+    },
+    "html": "<h1>Neo4j with Python</h1>\n<p>Neo4j stores information as nodes, relationships, and properties. The official Python driver lets an application communicate with the database over Bolt while keeping Cypher queries explicit.</p>\n<pre><code class=\"language-mermaid\">flowchart LR\n    A[\"Python application\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"Nodes\"]\n    B --> D[\"Relationships\"]\n    C --> E[\"Properties\"]\n    D --> E\n</code></pre>\n<blockquote>\n<p>[!NOTE]\nThese examples focus on the driver layer. In production, keep credentials in environment variables and add complete session-level error handling.</p>\n</blockquote>\n<h2>Install and connect</h2>\n<pre><code class=\"language-shell\">pip install neo4j\n</code></pre>\n<pre><code class=\"language-python\">from neo4j import GraphDatabase\n\nuri = \"bolt://localhost:7687\"\nusername = \"neo4j\"\npassword = \"your_password\"\n\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n</code></pre>\n<h2>Create, read, update, and delete nodes</h2>\n<pre><code class=\"language-python\">def create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    return tx.run(query, node_id=node_id).single()\n\ndef update_node(tx, node_id, new_label):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    SET n.label = $new_label\n    \"\"\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\ndef delete_node(tx, node_id):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    DETACH DELETE n\n    \"\"\"\n    tx.run(query, node_id=node_id)\n</code></pre>\n<p>Use explicit read and write transactions so retry and routing behavior remain predictable:</p>\n<pre><code class=\"language-python\">with driver.session() as session:\n    session.execute_write(create_node, \"animal_1\", \"Dog\")\n    record = session.execute_read(get_node, \"animal_1\")\n</code></pre>\n<h2>Relationships</h2>\n<pre><code class=\"language-python\">def connect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n    MATCH (b:Animal {custom_id: $target_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n</code></pre>\n<p>To remove a relationship without deleting either node:</p>\n<pre><code class=\"language-python\">def disconnect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n          -[r:KNOWS]->\n          (b:Animal {custom_id: $target_id})\n    DELETE r\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n</code></pre>\n<h2>Constraints and indexes</h2>\n<p>Create schema rules before loading production data:</p>\n<pre><code class=\"language-cypher\">CREATE CONSTRAINT animal_custom_id IF NOT EXISTS\nFOR (n:Animal) REQUIRE n.custom_id IS UNIQUE;\n\nCREATE INDEX animal_label IF NOT EXISTS\nFOR (n:Animal) ON (n.label);\n</code></pre>\n<p>The unique constraint protects identity; the index accelerates common label lookups.</p>\n<h2>Batch creation</h2>\n<p><code>UNWIND</code> keeps bulk writes in one query:</p>\n<pre><code class=\"language-python\">def create_many(tx, nodes):\n    query = \"\"\"\n    UNWIND $nodes AS item\n    CREATE (n:Animal {\n        custom_id: item.custom_id,\n        label: item.label\n    })\n    \"\"\"\n    tx.run(query, nodes=nodes)\n\nnodes = [\n    {\"custom_id\": \"animal_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"animal_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"animal_3\", \"label\": \"Fox\"},\n]\n\nwith driver.session() as session:\n    session.execute_write(create_many, nodes)\n</code></pre>\n<p>Always close the driver when the application shuts down:</p>\n<pre><code class=\"language-python\">driver.close()\n</code></pre>",
+    "content": "# Neo4j with Python\n\nNeo4j stores information as nodes, relationships, and properties. The official Python driver lets an application communicate with the database over Bolt while keeping Cypher queries explicit.\n\n```mermaid\nflowchart LR\n    A[\"Python application\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"Nodes\"]\n    B --> D[\"Relationships\"]\n    C --> E[\"Properties\"]\n    D --> E\n```\n\n> [!NOTE]\n> These examples focus on the driver layer. In production, keep credentials in environment variables and add complete session-level error handling.\n\n## Install and connect\n\n```shell\npip install neo4j\n```\n\n```python\nfrom neo4j import GraphDatabase\n\nuri = \"bolt://localhost:7687\"\nusername = \"neo4j\"\npassword = \"your_password\"\n\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n```\n\n## Create, read, update, and delete nodes\n\n```python\ndef create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    return tx.run(query, node_id=node_id).single()\n\ndef update_node(tx, node_id, new_label):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    SET n.label = $new_label\n    \"\"\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\ndef delete_node(tx, node_id):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    DETACH DELETE n\n    \"\"\"\n    tx.run(query, node_id=node_id)\n```\n\nUse explicit read and write transactions so retry and routing behavior remain predictable:\n\n```python\nwith driver.session() as session:\n    session.execute_write(create_node, \"animal_1\", \"Dog\")\n    record = session.execute_read(get_node, \"animal_1\")\n```\n\n## Relationships\n\n```python\ndef connect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n    MATCH (b:Animal {custom_id: $target_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n```\n\nTo remove a relationship without deleting either node:\n\n```python\ndef disconnect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n          -[r:KNOWS]->\n          (b:Animal {custom_id: $target_id})\n    DELETE r\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n```\n\n## Constraints and indexes\n\nCreate schema rules before loading production data:\n\n```cypher\nCREATE CONSTRAINT animal_custom_id IF NOT EXISTS\nFOR (n:Animal) REQUIRE n.custom_id IS UNIQUE;\n\nCREATE INDEX animal_label IF NOT EXISTS\nFOR (n:Animal) ON (n.label);\n```\n\nThe unique constraint protects identity; the index accelerates common label lookups.\n\n## Batch creation\n\n`UNWIND` keeps bulk writes in one query:\n\n```python\ndef create_many(tx, nodes):\n    query = \"\"\"\n    UNWIND $nodes AS item\n    CREATE (n:Animal {\n        custom_id: item.custom_id,\n        label: item.label\n    })\n    \"\"\"\n    tx.run(query, nodes=nodes)\n\nnodes = [\n    {\"custom_id\": \"animal_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"animal_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"animal_3\", \"label\": \"Fox\"},\n]\n\nwith driver.session() as session:\n    session.execute_write(create_many, nodes)\n```\n\nAlways close the driver when the application shuts down:\n\n```python\ndriver.close()\n```",
+    "href": "/en/notes/neo4j-python-guide"
+  },
+  {
+    "slug": "personal-internet",
+    "locale": "en",
+    "type": "note",
+    "title": "Rebuilding a Small Piece of My Own Internet",
+    "summary": "When every expression is compressed into the same feed, a personal website can still be a room with a window, a desk, and a pace of its own.",
+    "date": "2026-06-18T00:00:00.000Z",
+    "tags": [
+      "Web",
+      "Life"
+    ],
+    "featured": false,
+    "draft": false,
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 228
+    },
+    "html": "<p>Social platforms feel like busy streets. They let us meet many people, but they also ask every sentence to prove within seconds that it deserves attention.</p>\n<p>A personal website is different. There is no recommendation engine urging me onward and no publishing rhythm that must be filled. It can be slow, opinionated, and willing to keep long notes useful to only a few people.</p>\n<h2>A room, not a display case</h2>\n<p>I do not want this site to exhibit only the “best” work. I would rather preserve the process: why a project began, why a piece of code was rewritten, and what the weather felt like behind a photograph.</p>\n<p>The site becomes more like a room. Visitors can see unfinished things on the desk and notice what its owner has been caring about lately.</p>\n<blockquote>\n<p>[!IMPORTANT]\n<strong>A principle</strong></p>\n<p>Choose a form for the expression first, then choose tools for that form. Never let a publishing system decide what you are allowed to say.</p>\n</blockquote>\n<h2>Local files are a kind of freedom</h2>\n<p>In the end, every note is simply an MDX file in a repository. There is no remote database, proprietary editor, or format that disappears with a service. The text can be versioned, moved, searched, and opened in the most ordinary way many years from now.</p>\n<p>It may not be the most efficient publishing workflow, but it feels honest—and durable.</p>",
+    "content": "Social platforms feel like busy streets. They let us meet many people, but they also ask every sentence to prove within seconds that it deserves attention.\n\nA personal website is different. There is no recommendation engine urging me onward and no publishing rhythm that must be filled. It can be slow, opinionated, and willing to keep long notes useful to only a few people.\n\n## A room, not a display case\n\nI do not want this site to exhibit only the “best” work. I would rather preserve the process: why a project began, why a piece of code was rewritten, and what the weather felt like behind a photograph.\n\nThe site becomes more like a room. Visitors can see unfinished things on the desk and notice what its owner has been caring about lately.\n\n> [!IMPORTANT]\n> **A principle**\n>\n> Choose a form for the expression first, then choose tools for that form. Never let a publishing system decide what you are allowed to say.\n\n## Local files are a kind of freedom\n\nIn the end, every note is simply an MDX file in a repository. There is no remote database, proprietary editor, or format that disappears with a service. The text can be versioned, moved, searched, and opened in the most ordinary way many years from now.\n\nIt may not be the most efficient publishing workflow, but it feels honest—and durable.",
+    "href": "/en/notes/personal-internet"
+  },
+  {
+    "slug": "soft-engineering",
+    "locale": "en",
+    "type": "note",
+    "title": "Soft Engineering",
+    "summary": "Good software is more than correct, fast, and scalable. It should understand hesitation, allow mistakes, and leave room to breathe.",
+    "date": "2026-07-20T00:00:00.000Z",
+    "updated": "2026-07-24T00:00:00.000Z",
+    "tags": [
+      "Thinking",
+      "Design"
+    ],
+    "featured": true,
+    "draft": false,
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 314
+    },
+    "html": "<p>We often discuss software using hard words: <strong>constraints, validation, permissions, failure, circuit breakers</strong>. They matter, of course, but people do not think of themselves as inputs waiting to be validated.</p>\n<p>People hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.</p>\n<h2>Beyond correctness, there is feeling</h2>\n<p>A form can correctly return <code>400</code> after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.</p>\n<blockquote>\n<p>[!TIP]\n<strong>A simple test</strong></p>\n<p>When an error is unavoidable, protect the person’s work first. Explain the system second.</p>\n</blockquote>\n<p>That means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.</p>\n<h2>Build room into the system</h2>\n<p>Softness is not the absence of boundaries. It requires more precise boundaries.</p>\n<ul>\n<li>Slow dangerous actions down so there is time to reconsider.</li>\n<li>Keep frequent actions fast so the interface does not stand between a person and their intent.</li>\n<li>Be honest about uncertain results instead of pretending confidence with a polished percentage.</li>\n<li>Treat an empty state as an invitation to the next action, not merely “no data.”</li>\n</ul>\n<p>A mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.</p>\n<h2>In the end</h2>\n<p>Every branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.</p>\n<p>If engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.</p>",
+    "content": "We often discuss software using hard words: **constraints, validation, permissions, failure, circuit breakers**. They matter, of course, but people do not think of themselves as inputs waiting to be validated.\n\nPeople hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.\n\n## Beyond correctness, there is feeling\n\nA form can correctly return `400` after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.\n\n> [!TIP]\n> **A simple test**\n>\n> When an error is unavoidable, protect the person’s work first. Explain the system second.\n\nThat means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.\n\n## Build room into the system\n\nSoftness is not the absence of boundaries. It requires more precise boundaries.\n\n- Slow dangerous actions down so there is time to reconsider.\n- Keep frequent actions fast so the interface does not stand between a person and their intent.\n- Be honest about uncertain results instead of pretending confidence with a polished percentage.\n- Treat an empty state as an invitation to the next action, not merely “no data.”\n\nA mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.\n\n## In the end\n\nEvery branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.\n\nIf engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.",
+    "href": "/en/notes/soft-engineering"
+  },
+  {
+    "slug": "japan-travel-notes",
+    "locale": "en",
+    "type": "photo",
+    "title": "Kyoto and Osaka, Along the Way",
+    "summary": "Autumn leaves at Kinkaku-ji, rain on the slopes of Ninenzaka, and fragments of light and color from a first journey through Kyoto and Osaka.",
+    "date": "2024-12-04T00:00:00.000Z",
+    "tags": [
+      "Travel",
+      "Kyoto",
+      "Osaka"
+    ],
+    "cover": "https://oss.kinda.info/image/202412041635512.JPG",
+    "featured": true,
+    "draft": false,
+    "location": "Kyoto / Osaka",
+    "metadata": {
+      "readingTime": 1,
+      "wordCount": 391
+    },
+    "html": "<p>What stayed with me from my first visit to Kyoto and Osaka was not a complete itinerary, but a collection of precise images: red maples outside Kinkaku-ji, rain on a stone-paved slope, wind rushing past on a roller coaster, and the awkwardness of checking the train map over and over again.</p>\n<h2>Kinkaku-ji</h2>\n<p>Kinkaku-ji exceeded my expectations more than anywhere else on the trip. Before I even entered, the row of red maples by the gate was already enough to stop me. The golden pavilion sat among layers of trees, with the phoenix on its roof sharply outlined by the light.</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"The garden at Kinkaku-ji\"></p>\n<h2>Ninenzaka and Kiyomizu-dera in the rain</h2>\n<p>The rain was heavy when I reached Ninenzaka. It gave the stone road and traditional buildings a different color. The slope felt steeper than it looked in photographs, especially after a full day of walking.</p>\n<p>A shop along the way sold excellent matcha chocolate. I bought only two boxes and began regretting it as soon as I returned home.</p>\n<p>Kiyomizu-dera waits farther up the hill. By the time I arrived it was already dark, too late for the hillside of autumn leaves I had imagined, but the temple in the rainy night had a quietness of its own.</p>\n<h2>Universal Studios Japan</h2>\n<p>Hollywood Dream was the most immediate joy of the day. <code>Osaka Lover</code>, the weightlessness, and the wind arriving all at once lasted longer—and became more addictive—than I expected.</p>\n<h2>Trains and Suica</h2>\n<p>On a first encounter with Japan’s rail system, the most confusing part is that one route may appear under an abbreviation, a full name, and the branding of several operators.</p>\n<ul>\n<li>Use Google Maps as the primary guide.</li>\n<li>When an abbreviation is unclear, check the full line name and terminal direction.</li>\n<li>Do not rely on color alone; different systems may reuse the same one.</li>\n<li>Suica on an iPhone is convenient and works by simply holding the phone near the gate.</li>\n</ul>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"Station and railway lines\"></p>\n<h2>Shopping</h2>\n<p>Many shops around Shinsaibashi close at about eight in the evening, so shopping is best planned earlier. Tax-free purchases require a passport, so do not leave it at the hotel. Restaurants usually stay open later, although queues can be long during busy seasons.</p>\n<p>This is not a complete guide—only a few scenes and notes I hope to find again before the next journey.</p>",
+    "content": "What stayed with me from my first visit to Kyoto and Osaka was not a complete itinerary, but a collection of precise images: red maples outside Kinkaku-ji, rain on a stone-paved slope, wind rushing past on a roller coaster, and the awkwardness of checking the train map over and over again.\n\n## Kinkaku-ji\n\nKinkaku-ji exceeded my expectations more than anywhere else on the trip. Before I even entered, the row of red maples by the gate was already enough to stop me. The golden pavilion sat among layers of trees, with the phoenix on its roof sharply outlined by the light.\n\n![The garden at Kinkaku-ji](https://oss.kinda.info/image/202412041635218.JPG)\n\n## Ninenzaka and Kiyomizu-dera in the rain\n\nThe rain was heavy when I reached Ninenzaka. It gave the stone road and traditional buildings a different color. The slope felt steeper than it looked in photographs, especially after a full day of walking.\n\nA shop along the way sold excellent matcha chocolate. I bought only two boxes and began regretting it as soon as I returned home.\n\nKiyomizu-dera waits farther up the hill. By the time I arrived it was already dark, too late for the hillside of autumn leaves I had imagined, but the temple in the rainy night had a quietness of its own.\n\n## Universal Studios Japan\n\nHollywood Dream was the most immediate joy of the day. `Osaka Lover`, the weightlessness, and the wind arriving all at once lasted longer—and became more addictive—than I expected.\n\n## Trains and Suica\n\nOn a first encounter with Japan’s rail system, the most confusing part is that one route may appear under an abbreviation, a full name, and the branding of several operators.\n\n- Use Google Maps as the primary guide.\n- When an abbreviation is unclear, check the full line name and terminal direction.\n- Do not rely on color alone; different systems may reuse the same one.\n- Suica on an iPhone is convenient and works by simply holding the phone near the gate.\n\n![Station and railway lines](https://oss.kinda.info/image/202412041635465.JPG)\n\n## Shopping\n\nMany shops around Shinsaibashi close at about eight in the evening, so shopping is best planned earlier. Tax-free purchases require a passport, so do not leave it at the hotel. Restaurants usually stay open later, although queues can be long during busy seasons.\n\nThis is not a complete guide—only a few scenes and notes I hope to find again before the next journey.",
+    "href": "/en/photography/japan-travel-notes"
+  },
+  {
     "slug": "kinda-utils",
     "locale": "zh",
     "type": "project",
@@ -881,11 +970,11 @@
     "locale": "zh",
     "type": "project",
     "title": "UniAPI",
-    "summary": "简单、稳定且无需注册即可开始使用的公共 API 服务，也是我为高校项目持续维护的一层基础设施。",
+    "summary": "一个自建的统一 AI 网关：把手上各家的官方订阅收敛成一套 OpenAI 兼容接口，配一个能发密钥、看用量、排问题的控制台。",
     "date": "2023-09-21T00:00:00.000Z",
     "tags": [
       "API",
-      "Go",
+      "AI",
       "Infrastructure"
     ],
     "cover": "/images/projects/uniapi-cover.svg",
@@ -895,130 +984,42 @@
     "status": "active",
     "accent": "#20A37A",
     "mark": "UA",
-    "discipline": "公共 API 基础设施",
+    "discipline": "统一 AI 模型网关",
     "metadata": {
       "readingTime": 1,
-      "wordCount": 121.36000000000001
+      "wordCount": 232.08
     },
-    "html": "<p>UniAPI 起源于一个很朴素的需求：让项目需要的常用能力拥有统一、清晰并且足够可靠的接口。</p>\n<p>基础 API 无需注册即可直接调用，文档尽量让每一个输入和返回值都不需要猜测。因为真实项目持续依赖它，稳定性、可扩展性与快速迭代从来不是宣传语，而是每天都要兑现的约束。</p>\n<h2>把基础工作做好</h2>\n<p>UniAPI 由文档站、管理控制台与后端服务共同组成。新的 Go 服务采用面向大型项目的分层结构，从配置、日志、领域模型到 HTTP transport 都保留了清楚的边界。</p>\n<p>它不追求用复杂性证明技术能力，只希望让“调用一个工具”重新变成一件足够简单的事。</p>",
-    "content": "UniAPI 起源于一个很朴素的需求：让项目需要的常用能力拥有统一、清晰并且足够可靠的接口。\n\n基础 API 无需注册即可直接调用，文档尽量让每一个输入和返回值都不需要猜测。因为真实项目持续依赖它，稳定性、可扩展性与快速迭代从来不是宣传语，而是每天都要兑现的约束。\n\n## 把基础工作做好\n\nUniAPI 由文档站、管理控制台与后端服务共同组成。新的 Go 服务采用面向大型项目的分层结构，从配置、日志、领域模型到 HTTP transport 都保留了清楚的边界。\n\n它不追求用复杂性证明技术能力，只希望让“调用一个工具”重新变成一件足够简单的事。",
+    "html": "<p>UniAPI 一开始是个很朴素的东西：给我自己的项目提供几个常用能力的公共接口，不用注册就能调。那一版跑了两年，后来我把它整个换掉了。</p>\n<p>换掉的原因很直接。这两年真正稀缺的不再是「有没有一个接口」，而是<strong>手上那些顶尖模型的官方订阅，没法用 API 的方式接进项目里</strong>。订阅是给人用的，项目要的是接口，中间隔着一层。</p>\n<h2>现在它是什么</h2>\n<p>现在的 UniAPI 是一层网关，把各家账号统一收敛成一套 OpenAI 兼容的接口：</p>\n<ul>\n<li>上游是我自己的官方订阅与各家 API，下游只暴露 <code>/v1/chat/completions</code> 这类标准路径。</li>\n<li>换模型、换供应方，业务侧只改一个模型名，不改调用代码。</li>\n<li>密钥、额度、调用日志与用量统计都在控制台里，出了问题能查到是哪一条请求。</li>\n<li>跑在自己的机器上，账号和数据都不经第三方中转。</li>\n</ul>\n<p>底层用的是开源的 New API，前面接 CLIProxyAPI 做订阅侧的桥接——这套怎么搭起来，我单独写过一篇<a href=\"/notes/cpa-newapi\">笔记</a>。</p>\n<h2>为什么还叫 UniAPI</h2>\n<p>域名没换，名字也没换，因为要解决的事其实没变：<strong>让「调用一个能力」重新变回一件简单的事</strong>。变的只是这句话在 2023 年和现在指的不是同一件东西。</p>\n<p>只不过这次我更清楚它的边界——它是我自己的基础设施，不是一个面向所有人的公共服务。</p>",
+    "content": "UniAPI 一开始是个很朴素的东西：给我自己的项目提供几个常用能力的公共接口，不用注册就能调。那一版跑了两年，后来我把它整个换掉了。\n\n换掉的原因很直接。这两年真正稀缺的不再是「有没有一个接口」，而是**手上那些顶尖模型的官方订阅，没法用 API 的方式接进项目里**。订阅是给人用的，项目要的是接口，中间隔着一层。\n\n## 现在它是什么\n\n现在的 UniAPI 是一层网关，把各家账号统一收敛成一套 OpenAI 兼容的接口：\n\n- 上游是我自己的官方订阅与各家 API，下游只暴露 `/v1/chat/completions` 这类标准路径。\n- 换模型、换供应方，业务侧只改一个模型名，不改调用代码。\n- 密钥、额度、调用日志与用量统计都在控制台里，出了问题能查到是哪一条请求。\n- 跑在自己的机器上，账号和数据都不经第三方中转。\n\n底层用的是开源的 New API，前面接 CLIProxyAPI 做订阅侧的桥接——这套怎么搭起来，我单独写过一篇[笔记](/notes/cpa-newapi)。\n\n## 为什么还叫 UniAPI\n\n域名没换，名字也没换，因为要解决的事其实没变：**让「调用一个能力」重新变回一件简单的事**。变的只是这句话在 2023 年和现在指的不是同一件东西。\n\n只不过这次我更清楚它的边界——它是我自己的基础设施，不是一个面向所有人的公共服务。",
     "href": "/projects/uniapi"
   },
   {
-    "slug": "unit-one",
+    "slug": "wesmile",
     "locale": "zh",
     "type": "project",
-    "title": "Unit One",
-    "summary": "一次关于私域社区的产品实验：让内容、关系与成员体验回到社区自身。",
-    "date": "2024-02-11T00:00:00.000Z",
+    "title": "微校 WeSmile",
+    "summary": "一套校园私域社区系统：学生认证、内容分发、匿名树洞、活动报名与运营后台，小程序、网页、管理台与服务端四端同源。",
+    "date": "2026-08-21T00:00:00.000Z",
     "tags": [
       "Product",
-      "Community"
+      "Community",
+      "Spring Boot"
     ],
-    "cover": "https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402121949063.png",
+    "cover": "/images/projects/wesmile-cover.svg",
     "featured": false,
     "draft": false,
-    "link": "https://docs.unit-one.top",
-    "status": "archive",
-    "accent": "#D3A33C",
-    "mark": "U1",
-    "discipline": "社区产品实验",
+    "link": "https://wesmile.chat",
+    "status": "active",
+    "accent": "#9E9EFF",
+    "mark": "WS",
+    "discipline": "校园私域社区系统",
     "metadata": {
       "readingTime": 1,
-      "wordCount": 66.96000000000001
+      "wordCount": 286.92
     },
-    "html": "<p>Unit One 是一次完整但暂时停下来的社区产品尝试。</p>\n<p>我在这个项目里思考内容归属、成员关系和社区治理，也第一次更具体地感受到：技术实现只是产品的一部分，真正决定社区走向的是持续的运营与共识。</p>\n<p>把它留在这里，不是因为它已经完成，而是因为认真做过的实验也值得拥有一个位置。</p>",
-    "content": "Unit One 是一次完整但暂时停下来的社区产品尝试。\n\n我在这个项目里思考内容归属、成员关系和社区治理，也第一次更具体地感受到：技术实现只是产品的一部分，真正决定社区走向的是持续的运营与共识。\n\n把它留在这里，不是因为它已经完成，而是因为认真做过的实验也值得拥有一个位置。",
-    "href": "/projects/unit-one"
-  },
-  {
-    "slug": "neo4j-python-guide",
-    "locale": "en",
-    "type": "note",
-    "title": "Taming a Graph Database with Python",
-    "summary": "A practical Neo4j and Python field guide covering connections, CRUD operations, relationships, constraints, indexes, and batch work.",
-    "date": "2025-02-04T00:00:00.000Z",
-    "updated": "2025-02-04T00:00:00.000Z",
-    "tags": [
-      "Python",
-      "Database"
-    ],
-    "featured": false,
-    "draft": false,
-    "metadata": {
-      "readingTime": 2,
-      "wordCount": 454
-    },
-    "html": "<h1>Neo4j with Python</h1>\n<p>Neo4j stores information as nodes, relationships, and properties. The official Python driver lets an application communicate with the database over Bolt while keeping Cypher queries explicit.</p>\n<pre><code class=\"language-mermaid\">flowchart LR\n    A[\"Python application\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"Nodes\"]\n    B --> D[\"Relationships\"]\n    C --> E[\"Properties\"]\n    D --> E\n</code></pre>\n<blockquote>\n<p>[!NOTE]\nThese examples focus on the driver layer. In production, keep credentials in environment variables and add complete session-level error handling.</p>\n</blockquote>\n<h2>Install and connect</h2>\n<pre><code class=\"language-shell\">pip install neo4j\n</code></pre>\n<pre><code class=\"language-python\">from neo4j import GraphDatabase\n\nuri = \"bolt://localhost:7687\"\nusername = \"neo4j\"\npassword = \"your_password\"\n\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n</code></pre>\n<h2>Create, read, update, and delete nodes</h2>\n<pre><code class=\"language-python\">def create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    return tx.run(query, node_id=node_id).single()\n\ndef update_node(tx, node_id, new_label):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    SET n.label = $new_label\n    \"\"\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\ndef delete_node(tx, node_id):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    DETACH DELETE n\n    \"\"\"\n    tx.run(query, node_id=node_id)\n</code></pre>\n<p>Use explicit read and write transactions so retry and routing behavior remain predictable:</p>\n<pre><code class=\"language-python\">with driver.session() as session:\n    session.execute_write(create_node, \"animal_1\", \"Dog\")\n    record = session.execute_read(get_node, \"animal_1\")\n</code></pre>\n<h2>Relationships</h2>\n<pre><code class=\"language-python\">def connect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n    MATCH (b:Animal {custom_id: $target_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n</code></pre>\n<p>To remove a relationship without deleting either node:</p>\n<pre><code class=\"language-python\">def disconnect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n          -[r:KNOWS]->\n          (b:Animal {custom_id: $target_id})\n    DELETE r\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n</code></pre>\n<h2>Constraints and indexes</h2>\n<p>Create schema rules before loading production data:</p>\n<pre><code class=\"language-cypher\">CREATE CONSTRAINT animal_custom_id IF NOT EXISTS\nFOR (n:Animal) REQUIRE n.custom_id IS UNIQUE;\n\nCREATE INDEX animal_label IF NOT EXISTS\nFOR (n:Animal) ON (n.label);\n</code></pre>\n<p>The unique constraint protects identity; the index accelerates common label lookups.</p>\n<h2>Batch creation</h2>\n<p><code>UNWIND</code> keeps bulk writes in one query:</p>\n<pre><code class=\"language-python\">def create_many(tx, nodes):\n    query = \"\"\"\n    UNWIND $nodes AS item\n    CREATE (n:Animal {\n        custom_id: item.custom_id,\n        label: item.label\n    })\n    \"\"\"\n    tx.run(query, nodes=nodes)\n\nnodes = [\n    {\"custom_id\": \"animal_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"animal_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"animal_3\", \"label\": \"Fox\"},\n]\n\nwith driver.session() as session:\n    session.execute_write(create_many, nodes)\n</code></pre>\n<p>Always close the driver when the application shuts down:</p>\n<pre><code class=\"language-python\">driver.close()\n</code></pre>",
-    "content": "# Neo4j with Python\n\nNeo4j stores information as nodes, relationships, and properties. The official Python driver lets an application communicate with the database over Bolt while keeping Cypher queries explicit.\n\n```mermaid\nflowchart LR\n    A[\"Python application\"] -->|Bolt| B[(\"Neo4j\")]\n    B --> C[\"Nodes\"]\n    B --> D[\"Relationships\"]\n    C --> E[\"Properties\"]\n    D --> E\n```\n\n> [!NOTE]\n> These examples focus on the driver layer. In production, keep credentials in environment variables and add complete session-level error handling.\n\n## Install and connect\n\n```shell\npip install neo4j\n```\n\n```python\nfrom neo4j import GraphDatabase\n\nuri = \"bolt://localhost:7687\"\nusername = \"neo4j\"\npassword = \"your_password\"\n\ndriver = GraphDatabase.driver(uri, auth=(username, password))\n```\n\n## Create, read, update, and delete nodes\n\n```python\ndef create_node(tx, node_id, label):\n    query = \"CREATE (n:Animal {custom_id: $node_id, label: $label})\"\n    tx.run(query, node_id=node_id, label=label)\n\ndef get_node(tx, node_id):\n    query = \"MATCH (n:Animal {custom_id: $node_id}) RETURN n\"\n    return tx.run(query, node_id=node_id).single()\n\ndef update_node(tx, node_id, new_label):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    SET n.label = $new_label\n    \"\"\"\n    tx.run(query, node_id=node_id, new_label=new_label)\n\ndef delete_node(tx, node_id):\n    query = \"\"\"\n    MATCH (n:Animal {custom_id: $node_id})\n    DETACH DELETE n\n    \"\"\"\n    tx.run(query, node_id=node_id)\n```\n\nUse explicit read and write transactions so retry and routing behavior remain predictable:\n\n```python\nwith driver.session() as session:\n    session.execute_write(create_node, \"animal_1\", \"Dog\")\n    record = session.execute_read(get_node, \"animal_1\")\n```\n\n## Relationships\n\n```python\ndef connect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n    MATCH (b:Animal {custom_id: $target_id})\n    CREATE (a)-[:KNOWS]->(b)\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n```\n\nTo remove a relationship without deleting either node:\n\n```python\ndef disconnect_animals(tx, source_id, target_id):\n    query = \"\"\"\n    MATCH (a:Animal {custom_id: $source_id})\n          -[r:KNOWS]->\n          (b:Animal {custom_id: $target_id})\n    DELETE r\n    \"\"\"\n    tx.run(query, source_id=source_id, target_id=target_id)\n```\n\n## Constraints and indexes\n\nCreate schema rules before loading production data:\n\n```cypher\nCREATE CONSTRAINT animal_custom_id IF NOT EXISTS\nFOR (n:Animal) REQUIRE n.custom_id IS UNIQUE;\n\nCREATE INDEX animal_label IF NOT EXISTS\nFOR (n:Animal) ON (n.label);\n```\n\nThe unique constraint protects identity; the index accelerates common label lookups.\n\n## Batch creation\n\n`UNWIND` keeps bulk writes in one query:\n\n```python\ndef create_many(tx, nodes):\n    query = \"\"\"\n    UNWIND $nodes AS item\n    CREATE (n:Animal {\n        custom_id: item.custom_id,\n        label: item.label\n    })\n    \"\"\"\n    tx.run(query, nodes=nodes)\n\nnodes = [\n    {\"custom_id\": \"animal_1\", \"label\": \"Dog\"},\n    {\"custom_id\": \"animal_2\", \"label\": \"Cat\"},\n    {\"custom_id\": \"animal_3\", \"label\": \"Fox\"},\n]\n\nwith driver.session() as session:\n    session.execute_write(create_many, nodes)\n```\n\nAlways close the driver when the application shuts down:\n\n```python\ndriver.close()\n```",
-    "href": "/en/notes/neo4j-python-guide"
-  },
-  {
-    "slug": "personal-internet",
-    "locale": "en",
-    "type": "note",
-    "title": "Rebuilding a Small Piece of My Own Internet",
-    "summary": "When every expression is compressed into the same feed, a personal website can still be a room with a window, a desk, and a pace of its own.",
-    "date": "2026-06-18T00:00:00.000Z",
-    "tags": [
-      "Web",
-      "Life"
-    ],
-    "featured": false,
-    "draft": false,
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 228
-    },
-    "html": "<p>Social platforms feel like busy streets. They let us meet many people, but they also ask every sentence to prove within seconds that it deserves attention.</p>\n<p>A personal website is different. There is no recommendation engine urging me onward and no publishing rhythm that must be filled. It can be slow, opinionated, and willing to keep long notes useful to only a few people.</p>\n<h2>A room, not a display case</h2>\n<p>I do not want this site to exhibit only the “best” work. I would rather preserve the process: why a project began, why a piece of code was rewritten, and what the weather felt like behind a photograph.</p>\n<p>The site becomes more like a room. Visitors can see unfinished things on the desk and notice what its owner has been caring about lately.</p>\n<blockquote>\n<p>[!IMPORTANT]\n<strong>A principle</strong></p>\n<p>Choose a form for the expression first, then choose tools for that form. Never let a publishing system decide what you are allowed to say.</p>\n</blockquote>\n<h2>Local files are a kind of freedom</h2>\n<p>In the end, every note is simply an MDX file in a repository. There is no remote database, proprietary editor, or format that disappears with a service. The text can be versioned, moved, searched, and opened in the most ordinary way many years from now.</p>\n<p>It may not be the most efficient publishing workflow, but it feels honest—and durable.</p>",
-    "content": "Social platforms feel like busy streets. They let us meet many people, but they also ask every sentence to prove within seconds that it deserves attention.\n\nA personal website is different. There is no recommendation engine urging me onward and no publishing rhythm that must be filled. It can be slow, opinionated, and willing to keep long notes useful to only a few people.\n\n## A room, not a display case\n\nI do not want this site to exhibit only the “best” work. I would rather preserve the process: why a project began, why a piece of code was rewritten, and what the weather felt like behind a photograph.\n\nThe site becomes more like a room. Visitors can see unfinished things on the desk and notice what its owner has been caring about lately.\n\n> [!IMPORTANT]\n> **A principle**\n>\n> Choose a form for the expression first, then choose tools for that form. Never let a publishing system decide what you are allowed to say.\n\n## Local files are a kind of freedom\n\nIn the end, every note is simply an MDX file in a repository. There is no remote database, proprietary editor, or format that disappears with a service. The text can be versioned, moved, searched, and opened in the most ordinary way many years from now.\n\nIt may not be the most efficient publishing workflow, but it feels honest—and durable.",
-    "href": "/en/notes/personal-internet"
-  },
-  {
-    "slug": "soft-engineering",
-    "locale": "en",
-    "type": "note",
-    "title": "Soft Engineering",
-    "summary": "Good software is more than correct, fast, and scalable. It should understand hesitation, allow mistakes, and leave room to breathe.",
-    "date": "2026-07-20T00:00:00.000Z",
-    "updated": "2026-07-24T00:00:00.000Z",
-    "tags": [
-      "Thinking",
-      "Design"
-    ],
-    "featured": true,
-    "draft": false,
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 314
-    },
-    "html": "<p>We often discuss software using hard words: <strong>constraints, validation, permissions, failure, circuit breakers</strong>. They matter, of course, but people do not think of themselves as inputs waiting to be validated.</p>\n<p>People hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.</p>\n<h2>Beyond correctness, there is feeling</h2>\n<p>A form can correctly return <code>400</code> after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.</p>\n<blockquote>\n<p>[!TIP]\n<strong>A simple test</strong></p>\n<p>When an error is unavoidable, protect the person’s work first. Explain the system second.</p>\n</blockquote>\n<p>That means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.</p>\n<h2>Build room into the system</h2>\n<p>Softness is not the absence of boundaries. It requires more precise boundaries.</p>\n<ul>\n<li>Slow dangerous actions down so there is time to reconsider.</li>\n<li>Keep frequent actions fast so the interface does not stand between a person and their intent.</li>\n<li>Be honest about uncertain results instead of pretending confidence with a polished percentage.</li>\n<li>Treat an empty state as an invitation to the next action, not merely “no data.”</li>\n</ul>\n<p>A mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.</p>\n<h2>In the end</h2>\n<p>Every branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.</p>\n<p>If engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.</p>",
-    "content": "We often discuss software using hard words: **constraints, validation, permissions, failure, circuit breakers**. They matter, of course, but people do not think of themselves as inputs waiting to be validated.\n\nPeople hesitate. They forget. At one in the morning, they tap the wrong button. I have become interested in another engineering ability: making a system strong while helping the person using it feel safe.\n\n## Beyond correctness, there is feeling\n\nA form can correctly return `400` after a failed submission. But if it also erases the two thousand words someone just wrote, it has failed completely from a human point of view.\n\n> [!TIP]\n> **A simple test**\n>\n> When an error is unavoidable, protect the person’s work first. Explain the system second.\n\nThat means autosave, undo, and preserved context. It also means an error message should contain more than an error code. Tell people what happened, whether they need to worry, and what they can do next.\n\n## Build room into the system\n\nSoftness is not the absence of boundaries. It requires more precise boundaries.\n\n- Slow dangerous actions down so there is time to reconsider.\n- Keep frequent actions fast so the interface does not stand between a person and their intent.\n- Be honest about uncertain results instead of pretending confidence with a polished percentage.\n- Treat an empty state as an invitation to the next action, not merely “no data.”\n\nA mature product does not demand that people remain alert, accurate, and efficient forever. It accepts that we are occasionally messy—and still catches us.\n\n## In the end\n\nEvery branch in code eventually becomes a few seconds in somebody’s day. We are not writing abstract flows; we are shaping small pieces of another person’s time.\n\nIf engineering ultimately serves people, “comfortable” cannot belong to visual design alone. It should begin with the data model, failure strategy, and permission boundaries, then extend all the way to the words on a button.",
-    "href": "/en/notes/soft-engineering"
-  },
-  {
-    "slug": "japan-travel-notes",
-    "locale": "en",
-    "type": "photo",
-    "title": "Kyoto and Osaka, Along the Way",
-    "summary": "Autumn leaves at Kinkaku-ji, rain on the slopes of Ninenzaka, and fragments of light and color from a first journey through Kyoto and Osaka.",
-    "date": "2024-12-04T00:00:00.000Z",
-    "tags": [
-      "Travel",
-      "Kyoto",
-      "Osaka"
-    ],
-    "cover": "https://oss.kinda.info/image/202412041635512.JPG",
-    "featured": true,
-    "draft": false,
-    "location": "Kyoto / Osaka",
-    "metadata": {
-      "readingTime": 1,
-      "wordCount": 391
-    },
-    "html": "<p>What stayed with me from my first visit to Kyoto and Osaka was not a complete itinerary, but a collection of precise images: red maples outside Kinkaku-ji, rain on a stone-paved slope, wind rushing past on a roller coaster, and the awkwardness of checking the train map over and over again.</p>\n<h2>Kinkaku-ji</h2>\n<p>Kinkaku-ji exceeded my expectations more than anywhere else on the trip. Before I even entered, the row of red maples by the gate was already enough to stop me. The golden pavilion sat among layers of trees, with the phoenix on its roof sharply outlined by the light.</p>\n<p><img src=\"https://oss.kinda.info/image/202412041635218.JPG\" alt=\"The garden at Kinkaku-ji\"></p>\n<h2>Ninenzaka and Kiyomizu-dera in the rain</h2>\n<p>The rain was heavy when I reached Ninenzaka. It gave the stone road and traditional buildings a different color. The slope felt steeper than it looked in photographs, especially after a full day of walking.</p>\n<p>A shop along the way sold excellent matcha chocolate. I bought only two boxes and began regretting it as soon as I returned home.</p>\n<p>Kiyomizu-dera waits farther up the hill. By the time I arrived it was already dark, too late for the hillside of autumn leaves I had imagined, but the temple in the rainy night had a quietness of its own.</p>\n<h2>Universal Studios Japan</h2>\n<p>Hollywood Dream was the most immediate joy of the day. <code>Osaka Lover</code>, the weightlessness, and the wind arriving all at once lasted longer—and became more addictive—than I expected.</p>\n<h2>Trains and Suica</h2>\n<p>On a first encounter with Japan’s rail system, the most confusing part is that one route may appear under an abbreviation, a full name, and the branding of several operators.</p>\n<ul>\n<li>Use Google Maps as the primary guide.</li>\n<li>When an abbreviation is unclear, check the full line name and terminal direction.</li>\n<li>Do not rely on color alone; different systems may reuse the same one.</li>\n<li>Suica on an iPhone is convenient and works by simply holding the phone near the gate.</li>\n</ul>\n<p><img src=\"https://oss.kinda.info/image/202412041635465.JPG\" alt=\"Station and railway lines\"></p>\n<h2>Shopping</h2>\n<p>Many shops around Shinsaibashi close at about eight in the evening, so shopping is best planned earlier. Tax-free purchases require a passport, so do not leave it at the hotel. Restaurants usually stay open later, although queues can be long during busy seasons.</p>\n<p>This is not a complete guide—only a few scenes and notes I hope to find again before the next journey.</p>",
-    "content": "What stayed with me from my first visit to Kyoto and Osaka was not a complete itinerary, but a collection of precise images: red maples outside Kinkaku-ji, rain on a stone-paved slope, wind rushing past on a roller coaster, and the awkwardness of checking the train map over and over again.\n\n## Kinkaku-ji\n\nKinkaku-ji exceeded my expectations more than anywhere else on the trip. Before I even entered, the row of red maples by the gate was already enough to stop me. The golden pavilion sat among layers of trees, with the phoenix on its roof sharply outlined by the light.\n\n![The garden at Kinkaku-ji](https://oss.kinda.info/image/202412041635218.JPG)\n\n## Ninenzaka and Kiyomizu-dera in the rain\n\nThe rain was heavy when I reached Ninenzaka. It gave the stone road and traditional buildings a different color. The slope felt steeper than it looked in photographs, especially after a full day of walking.\n\nA shop along the way sold excellent matcha chocolate. I bought only two boxes and began regretting it as soon as I returned home.\n\nKiyomizu-dera waits farther up the hill. By the time I arrived it was already dark, too late for the hillside of autumn leaves I had imagined, but the temple in the rainy night had a quietness of its own.\n\n## Universal Studios Japan\n\nHollywood Dream was the most immediate joy of the day. `Osaka Lover`, the weightlessness, and the wind arriving all at once lasted longer—and became more addictive—than I expected.\n\n## Trains and Suica\n\nOn a first encounter with Japan’s rail system, the most confusing part is that one route may appear under an abbreviation, a full name, and the branding of several operators.\n\n- Use Google Maps as the primary guide.\n- When an abbreviation is unclear, check the full line name and terminal direction.\n- Do not rely on color alone; different systems may reuse the same one.\n- Suica on an iPhone is convenient and works by simply holding the phone near the gate.\n\n![Station and railway lines](https://oss.kinda.info/image/202412041635465.JPG)\n\n## Shopping\n\nMany shops around Shinsaibashi close at about eight in the evening, so shopping is best planned earlier. Tax-free purchases require a passport, so do not leave it at the hotel. Restaurants usually stay open later, although queues can be long during busy seasons.\n\nThis is not a complete guide—only a few scenes and notes I hope to find again before the next journey.",
-    "href": "/en/photography/japan-travel-notes"
+    "html": "<p>校园墙的日常是这样的：投稿排在私信里，报名靠群接龙，名单靠截图，统计靠 Excel，出了事只能删消息。这些都不是运营不努力，是手上没有一件趁手的工具。</p>\n<p>微校 WeSmile 想把这件事补上——不是再做一个群，而是给校园社区一套真正能长期运营的系统。</p>\n<h2>十二个模块，四个端</h2>\n<p>新鲜事、匿名树洞、活动报名、闲置、评课、一周 CP、私信、学生认证、积分、社团、运营位、举报与审核。每一块都做到能交给真实学生用的程度，而不是把功能名字凑齐。</p>\n<ul>\n<li>小程序 89 个页面，主包放高频页面，八个分包按业务域切开。</li>\n<li>网页版把这 89 个页面收敛成 35 条路由，按能力组织而不是按页面。</li>\n<li>运营台按「角色 × 作用域」发权限，校级管理员自己就能用起来。</li>\n<li>服务端 148 个接口、16 个业务域纵向切分，改树洞只需要打开一个目录。</li>\n</ul>\n<h2>判据放在服务端</h2>\n<p>四个端要长期同源，只有一个办法：客户端不自己推导规则。它问一次「我现在能做什么」，拿回一份能力清单；「没认证所以不能发帖」这类判断一旦下放到客户端，就会在四个端上分叉成四个版本。</p>\n<p>跨作用域的资源一律返回「不存在」，和真的不存在长得一模一样——否则光靠报错就能试探出别的学校有什么。</p>\n<h2>社区能活多久，取决于出事那天</h2>\n<p>功能决定它能不能开张，治理决定它能不能开一年。所以举报、审核、分级处罚每一步都留痕，删除是软删、可恢复，驳回理由必填并原样回给当事人。</p>\n<p>后台那个输入框里写什么，就等于回给一个学生什么。这件事我想了很久，最后决定把它做成硬性要求。</p>",
+    "content": "校园墙的日常是这样的：投稿排在私信里，报名靠群接龙，名单靠截图，统计靠 Excel，出了事只能删消息。这些都不是运营不努力，是手上没有一件趁手的工具。\n\n微校 WeSmile 想把这件事补上——不是再做一个群，而是给校园社区一套真正能长期运营的系统。\n\n## 十二个模块，四个端\n\n新鲜事、匿名树洞、活动报名、闲置、评课、一周 CP、私信、学生认证、积分、社团、运营位、举报与审核。每一块都做到能交给真实学生用的程度，而不是把功能名字凑齐。\n\n- 小程序 89 个页面，主包放高频页面，八个分包按业务域切开。\n- 网页版把这 89 个页面收敛成 35 条路由，按能力组织而不是按页面。\n- 运营台按「角色 × 作用域」发权限，校级管理员自己就能用起来。\n- 服务端 148 个接口、16 个业务域纵向切分，改树洞只需要打开一个目录。\n\n## 判据放在服务端\n\n四个端要长期同源，只有一个办法：客户端不自己推导规则。它问一次「我现在能做什么」，拿回一份能力清单；「没认证所以不能发帖」这类判断一旦下放到客户端，就会在四个端上分叉成四个版本。\n\n跨作用域的资源一律返回「不存在」，和真的不存在长得一模一样——否则光靠报错就能试探出别的学校有什么。\n\n## 社区能活多久，取决于出事那天\n\n功能决定它能不能开张，治理决定它能不能开一年。所以举报、审核、分级处罚每一步都留痕，删除是软删、可恢复，驳回理由必填并原样回给当事人。\n\n后台那个输入框里写什么，就等于回给一个学生什么。这件事我想了很久，最后决定把它做成硬性要求。",
+    "href": "/projects/wesmile"
   },
   {
     "slug": "kinda-utils",
@@ -1136,11 +1137,11 @@
     "locale": "en",
     "type": "project",
     "title": "UniAPI",
-    "summary": "A simple and reliable public API service whose foundational endpoints can be used without registration, maintained as infrastructure for university projects.",
+    "summary": "A self-hosted unified AI gateway that folds a pile of official subscriptions into one OpenAI-compatible endpoint, with a console for keys, usage and debugging.",
     "date": "2023-09-21T00:00:00.000Z",
     "tags": [
       "API",
-      "Go",
+      "AI",
       "Infrastructure"
     ],
     "cover": "/images/projects/uniapi-cover.svg",
@@ -1150,40 +1151,41 @@
     "status": "active",
     "accent": "#20A37A",
     "mark": "UA",
-    "discipline": "Public API Infrastructure",
+    "discipline": "Unified AI model gateway",
     "metadata": {
       "readingTime": 1,
-      "wordCount": 114
+      "wordCount": 262
     },
-    "html": "<p>UniAPI began with a straightforward need: give projects a unified, clear, and dependable interface for common capabilities.</p>\n<p>Its foundational APIs can be called without registration, and the documentation tries to make every input and response unsurprising. Real projects depend on it, so stability, extensibility, and rapid iteration are daily obligations rather than marketing language.</p>\n<h2>Do the foundational work well</h2>\n<p>UniAPI combines a documentation site, management console, and backend services. The newer Go service uses a layered structure designed for larger systems, keeping clear boundaries around configuration, logging, domain models, use cases, and HTTP transport.</p>\n<p>It does not use complexity to demonstrate technical ability. It simply tries to make “calling a tool” feel easy again.</p>",
-    "content": "UniAPI began with a straightforward need: give projects a unified, clear, and dependable interface for common capabilities.\n\nIts foundational APIs can be called without registration, and the documentation tries to make every input and response unsurprising. Real projects depend on it, so stability, extensibility, and rapid iteration are daily obligations rather than marketing language.\n\n## Do the foundational work well\n\nUniAPI combines a documentation site, management console, and backend services. The newer Go service uses a layered structure designed for larger systems, keeping clear boundaries around configuration, logging, domain models, use cases, and HTTP transport.\n\nIt does not use complexity to demonstrate technical ability. It simply tries to make “calling a tool” feel easy again.",
+    "html": "<p>UniAPI started as something modest: a handful of common capabilities exposed as public endpoints for my own projects, callable without registration. That version ran for two years. Then I replaced it entirely.</p>\n<p>The reason was straightforward. What is scarce now is not <em>an endpoint</em> — it is that <strong>the official subscriptions to the best models cannot be reached from a project as an API</strong>. A subscription is built for a person to use; a project needs an interface. There is a layer missing in between.</p>\n<h2>What it is now</h2>\n<p>UniAPI is that layer: a gateway that collapses several accounts into one OpenAI-compatible surface.</p>\n<ul>\n<li>Upstream are my own official subscriptions and each vendor's API; downstream exposes only standard paths like <code>/v1/chat/completions</code>.</li>\n<li>Switching model or vendor means changing a model name, not the calling code.</li>\n<li>Keys, quota, request logs and usage all live in the console, so a failure can be traced to a specific call.</li>\n<li>It runs on my own machine — accounts and data never pass through a third party.</li>\n</ul>\n<p>Underneath it is the open-source New API, with CLIProxyAPI bridging the subscription side. I wrote up <a href=\"/en/notes/cpa-newapi\">how that goes together</a> separately.</p>\n<h2>Why it is still called UniAPI</h2>\n<p>The domain did not change and neither did the name, because the problem did not change: <strong>make \"calling a capability\" a simple thing again</strong>. What changed is that the sentence pointed at something else in 2023 than it does now.</p>\n<p>The difference is that I am clearer about its edges this time. It is my own infrastructure, not a public service for everyone else.</p>",
+    "content": "UniAPI started as something modest: a handful of common capabilities exposed as public endpoints for my own projects, callable without registration. That version ran for two years. Then I replaced it entirely.\n\nThe reason was straightforward. What is scarce now is not *an endpoint* — it is that **the official subscriptions to the best models cannot be reached from a project as an API**. A subscription is built for a person to use; a project needs an interface. There is a layer missing in between.\n\n## What it is now\n\nUniAPI is that layer: a gateway that collapses several accounts into one OpenAI-compatible surface.\n\n- Upstream are my own official subscriptions and each vendor's API; downstream exposes only standard paths like `/v1/chat/completions`.\n- Switching model or vendor means changing a model name, not the calling code.\n- Keys, quota, request logs and usage all live in the console, so a failure can be traced to a specific call.\n- It runs on my own machine — accounts and data never pass through a third party.\n\nUnderneath it is the open-source New API, with CLIProxyAPI bridging the subscription side. I wrote up [how that goes together](/en/notes/cpa-newapi) separately.\n\n## Why it is still called UniAPI\n\nThe domain did not change and neither did the name, because the problem did not change: **make \"calling a capability\" a simple thing again**. What changed is that the sentence pointed at something else in 2023 than it does now.\n\nThe difference is that I am clearer about its edges this time. It is my own infrastructure, not a public service for everyone else.",
     "href": "/en/projects/uniapi"
   },
   {
-    "slug": "unit-one",
+    "slug": "wesmile",
     "locale": "en",
     "type": "project",
-    "title": "Unit One",
-    "summary": "A product experiment in private communities, designed to return content, relationships, and the member experience to the community itself.",
-    "date": "2024-02-11T00:00:00.000Z",
+    "title": "WeSmile",
+    "summary": "A campus community system — student verification, content distribution, an anonymous tree hole, event sign-ups and an admin console, with the mini program, web app, console and server all sharing one backend.",
+    "date": "2026-08-21T00:00:00.000Z",
     "tags": [
       "Product",
-      "Community"
+      "Community",
+      "Spring Boot"
     ],
-    "cover": "https://alnda-public.oss-cn-hangzhou.aliyuncs.com/image/202402121949063.png",
+    "cover": "/images/projects/wesmile-cover.svg",
     "featured": false,
     "draft": false,
-    "link": "https://docs.unit-one.top",
-    "status": "archive",
-    "accent": "#D3A33C",
-    "mark": "U1",
-    "discipline": "Community Product Experiment",
+    "link": "https://wesmile.chat",
+    "status": "active",
+    "accent": "#9E9EFF",
+    "mark": "WS",
+    "discipline": "Campus community system",
     "metadata": {
       "readingTime": 1,
-      "wordCount": 75
+      "wordCount": 360
     },
-    "html": "<p>Unit One was a complete community-product experiment that has, for now, come to a stop.</p>\n<p>It gave me room to think about ownership of content, relationships between members, and community governance. It also made one lesson concrete: implementation is only part of a product; sustained care and shared understanding determine where a community goes.</p>\n<p>I keep it here not because it is finished, but because experiments pursued seriously deserve a place of their own.</p>",
-    "content": "Unit One was a complete community-product experiment that has, for now, come to a stop.\n\nIt gave me room to think about ownership of content, relationships between members, and community governance. It also made one lesson concrete: implementation is only part of a product; sustained care and shared understanding determine where a community goes.\n\nI keep it here not because it is finished, but because experiments pursued seriously deserve a place of their own.",
-    "href": "/en/projects/unit-one"
+    "html": "<p>Running a campus wall usually looks like this: submissions queue up in someone's DMs, sign-ups happen by group-chat roll call, attendee lists are screenshots, headcounts live in a spreadsheet, and when something goes wrong all you can do is delete a message. None of that is a lack of effort. It is the wrong tool.</p>\n<p>WeSmile is an attempt to supply the right one — not another group chat, but a system a campus community can actually run on for more than a semester.</p>\n<h2>Twelve modules, four surfaces</h2>\n<p>Feed, anonymous tree hole, events, marketplace, course reviews, weekly matchmaking, direct messages, student verification, points, clubs, homepage placements, reports and review. Each one is built far enough to hand to real students, rather than far enough to appear on a feature list.</p>\n<ul>\n<li>The mini program has 89 screens: hot ones in the main bundle, eight sub-bundles split by domain.</li>\n<li>The web app collapses those 89 screens into 35 routes, organised by capability rather than by page.</li>\n<li>The console grants permission as role × scope, so campus staff can run it without a developer.</li>\n<li>The server slices 16 business domains vertically across 148 endpoints — changing the tree hole means opening one directory.</li>\n</ul>\n<h2>The rules live on the server</h2>\n<p>There is only one way four surfaces stay in sync: the client never derives a rule for itself. It asks once — \"what can I do right now?\" — and gets back a list of capability names. The moment a judgement like \"unverified, therefore can't post\" moves into the client, it forks into four different versions.</p>\n<p>Anything outside your scope returns \"not found\", identical to genuinely not existing. Otherwise the error message alone would let you probe what another school has.</p>\n<h2>A community's lifespan is decided on its worst day</h2>\n<p>Features decide whether it opens; governance decides whether it is still open a year later. So reports, review and graded restrictions all leave a record, deletes are soft and reversible, and a rejection reason is required and handed back to the author verbatim.</p>\n<p>Whatever a moderator types into that box is what goes back to a person. That one took me a while to accept, and then I made it mandatory.</p>",
+    "content": "Running a campus wall usually looks like this: submissions queue up in someone's DMs, sign-ups happen by group-chat roll call, attendee lists are screenshots, headcounts live in a spreadsheet, and when something goes wrong all you can do is delete a message. None of that is a lack of effort. It is the wrong tool.\n\nWeSmile is an attempt to supply the right one — not another group chat, but a system a campus community can actually run on for more than a semester.\n\n## Twelve modules, four surfaces\n\nFeed, anonymous tree hole, events, marketplace, course reviews, weekly matchmaking, direct messages, student verification, points, clubs, homepage placements, reports and review. Each one is built far enough to hand to real students, rather than far enough to appear on a feature list.\n\n- The mini program has 89 screens: hot ones in the main bundle, eight sub-bundles split by domain.\n- The web app collapses those 89 screens into 35 routes, organised by capability rather than by page.\n- The console grants permission as role × scope, so campus staff can run it without a developer.\n- The server slices 16 business domains vertically across 148 endpoints — changing the tree hole means opening one directory.\n\n## The rules live on the server\n\nThere is only one way four surfaces stay in sync: the client never derives a rule for itself. It asks once — \"what can I do right now?\" — and gets back a list of capability names. The moment a judgement like \"unverified, therefore can't post\" moves into the client, it forks into four different versions.\n\nAnything outside your scope returns \"not found\", identical to genuinely not existing. Otherwise the error message alone would let you probe what another school has.\n\n## A community's lifespan is decided on its worst day\n\nFeatures decide whether it opens; governance decides whether it is still open a year later. So reports, review and graded restrictions all leave a record, deletes are soft and reversible, and a rejection reason is required and handed back to the author verbatim.\n\nWhatever a moderator types into that box is what goes back to a person. That one took me a while to accept, and then I made it mandatory.",
+    "href": "/en/projects/wesmile"
   }
 ]

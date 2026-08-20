@@ -1,0 +1,44 @@
+---
+slug: wesmile
+locale: en
+type: project
+title: WeSmile
+summary: A campus community system — student verification, content distribution, an anonymous tree hole, event sign-ups and an admin console, with the mini program, web app, console and server all sharing one backend.
+date: 2026-08-21
+tags:
+  - Product
+  - Community
+  - Spring Boot
+cover: /images/projects/wesmile-cover.svg
+featured: false
+link: https://wesmile.chat
+status: active
+accent: "#9E9EFF"
+mark: WS
+discipline: Campus community system
+---
+
+Running a campus wall usually looks like this: submissions queue up in someone's DMs, sign-ups happen by group-chat roll call, attendee lists are screenshots, headcounts live in a spreadsheet, and when something goes wrong all you can do is delete a message. None of that is a lack of effort. It is the wrong tool.
+
+WeSmile is an attempt to supply the right one — not another group chat, but a system a campus community can actually run on for more than a semester.
+
+## Twelve modules, four surfaces
+
+Feed, anonymous tree hole, events, marketplace, course reviews, weekly matchmaking, direct messages, student verification, points, clubs, homepage placements, reports and review. Each one is built far enough to hand to real students, rather than far enough to appear on a feature list.
+
+- The mini program has 89 screens: hot ones in the main bundle, eight sub-bundles split by domain.
+- The web app collapses those 89 screens into 35 routes, organised by capability rather than by page.
+- The console grants permission as role × scope, so campus staff can run it without a developer.
+- The server slices 16 business domains vertically across 148 endpoints — changing the tree hole means opening one directory.
+
+## The rules live on the server
+
+There is only one way four surfaces stay in sync: the client never derives a rule for itself. It asks once — "what can I do right now?" — and gets back a list of capability names. The moment a judgement like "unverified, therefore can't post" moves into the client, it forks into four different versions.
+
+Anything outside your scope returns "not found", identical to genuinely not existing. Otherwise the error message alone would let you probe what another school has.
+
+## A community's lifespan is decided on its worst day
+
+Features decide whether it opens; governance decides whether it is still open a year later. So reports, review and graded restrictions all leave a record, deletes are soft and reversible, and a rejection reason is required and handed back to the author verbatim.
+
+Whatever a moderator types into that box is what goes back to a person. That one took me a while to accept, and then I made it mandatory.

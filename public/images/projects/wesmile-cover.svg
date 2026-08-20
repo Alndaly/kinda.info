@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">WeSmile project cover</title>
+  <desc id="desc">A campus feed card fanning out across four surfaces — mini program, web, console and server.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12131f"/>
+      <stop offset="1" stop-color="#262a52"/>
+    </linearGradient>
+    <linearGradient id="peri" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9e9eff"/>
+      <stop offset="1" stop-color="#d3d0ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="750" fill="url(#bg)"/>
+  <circle cx="1064" cy="80" r="300" fill="#9e9eff" opacity=".12"/>
+
+  <!-- one post, fanned: the same record rendered on every surface -->
+  <g transform="translate(94 430)">
+    <g fill="none" stroke="url(#peri)" stroke-opacity=".34">
+      <rect x="34" y="-16" width="286" height="150" rx="16" transform="rotate(-6 177 59)"/>
+      <rect x="17" y="-8" width="286" height="150" rx="16" transform="rotate(-3 160 67)"/>
+    </g>
+    <rect width="286" height="150" rx="16" fill="#9e9eff" opacity=".13"/>
+    <g fill="url(#peri)">
+      <circle cx="30" cy="32" r="11" opacity=".8"/>
+      <rect x="52" y="25" width="86" height="11" rx="5.5" opacity=".75"/>
+      <rect x="24" y="62" width="238" height="11" rx="5.5" opacity=".55"/>
+      <rect x="24" y="86" width="176" height="11" rx="5.5" opacity=".35"/>
+      <rect x="24" y="118" width="46" height="9" rx="4.5" opacity=".6"/>
+      <rect x="84" y="118" width="46" height="9" rx="4.5" opacity=".3"/>
+      <rect x="144" y="118" width="46" height="9" rx="4.5" opacity=".3"/>
+    </g>
+  </g>
+
+  <!-- four surfaces: mini program, web, console, server -->
+  <g fill="none" stroke="#ffffff" stroke-opacity=".22">
+    <rect x="770" y="300" width="128" height="270" rx="26"/>
+    <rect x="926" y="330" width="212" height="150" rx="12"/>
+    <rect x="926" y="500" width="212" height="70" rx="12"/>
+  </g>
+  <g fill="url(#peri)" opacity=".9">
+    <rect x="792" y="336" width="84" height="10" rx="5"/>
+    <rect x="792" y="360" width="52" height="10" rx="5" opacity=".5"/>
+    <rect x="792" y="392" width="84" height="42" rx="10" opacity=".26"/>
+    <rect x="792" y="446" width="84" height="42" rx="10" opacity=".18"/>
+    <rect x="792" y="500" width="84" height="42" rx="10" opacity=".12"/>
+    <rect x="948" y="356" width="96" height="10" rx="5"/>
+    <rect x="948" y="378" width="60" height="10" rx="5" opacity=".5"/>
+    <rect x="948" y="408" width="168" height="44" rx="10" opacity=".22"/>
+    <rect x="948" y="524" width="120" height="10" rx="5" opacity=".65"/>
+    <rect x="948" y="544" width="72" height="10" rx="5" opacity=".33"/>
+  </g>
+  <g stroke="url(#peri)" stroke-opacity=".5" stroke-width="2" fill="none" stroke-dasharray="5 7">
+    <path d="M400 486 H744"/>
+    <path d="M898 420 H918"/>
+    <path d="M898 528 H918"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" fill="#f2f1ff">
+    <text x="94" y="94" font-size="18" font-weight="700" letter-spacing="7">CAMPUS COMMUNITY SYSTEM</text>
+    <text x="88" y="304" font-size="118" font-weight="800" letter-spacing="-5">WeSmile</text>
+    <text x="96" y="364" font-size="22" letter-spacing="5" opacity=".58">MINI PROGRAM · WEB · CONSOLE · SERVER</text>
+  </g>
+</svg>

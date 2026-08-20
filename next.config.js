@@ -12,6 +12,18 @@ const nextConfig = {
         destination: '/images/kinda-portrait.jpg',
         permanent: true,
       },
+      // Unit One was replaced by WeSmile; the old URLs are indexed, so send
+      // them to the project that took its place rather than to a 404.
+      {
+        source: '/projects/unit-one',
+        destination: '/projects/wesmile',
+        permanent: true,
+      },
+      {
+        source: '/en/projects/unit-one',
+        destination: '/en/projects/wesmile',
+        permanent: true,
+      },
     ];
   },
   images: {
