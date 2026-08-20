@@ -137,7 +137,7 @@ const zh = {
   projects: {
     title: '作品',
     description: '从想法走进真实世界的产品与开源项目。',
-    intro: '代码只是材料，产品才是我和世界对话的方式。这里收录正在生长的产品、开源工具，也保留那些曾经认真做过的实验。',
+    intro: '代码只是材料，产品才是我和世界对话的方式。这里收录正在生长的产品与开源工具。',
     back: '回到作品',
     visit: '查看项目',
     status: {
@@ -391,7 +391,7 @@ const en = {
   projects: {
     title: 'Work',
     description: 'Products and open-source projects made to solve real problems.',
-    intro: 'Code is only material; products are how I speak with the world. These are growing products, open tools, and experiments once pursued in earnest.',
+    intro: 'Code is only material; products are how I speak with the world. These are the products still growing, and the tools I keep open.',
     back: 'Back to work',
     visit: 'Visit project',
     status: {
