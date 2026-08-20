@@ -143,6 +143,14 @@
   line-height: 1.14;
 }
 
+/* utterances injects its own unlayered stylesheet with a 760px cap, which left
+   the comment thread sitting 84px inside the heading above it. An unlayered
+   rule is the only thing that outranks it — a Tailwind utility would lose to it
+   whatever its specificity, because every layer loses to no layer. */
+[data-comments] .utterances {
+  max-width: none;
+}
+
 /* The player backdrop runs both of these at once, so they are referenced from
    an arbitrary animation value rather than an animate-* utility. */
 @keyframes backdrop-enter {

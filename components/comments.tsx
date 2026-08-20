@@ -96,6 +96,7 @@ export function Comments({
   return (
     <section
       className={cn(siteContainer, commentsSection)}
+      data-comments
       aria-labelledby="comments-title"
     >
       <header className={commentsHeading}>
