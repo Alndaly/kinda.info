@@ -3,11 +3,11 @@ slug: uniapi
 locale: en
 type: project
 title: UniAPI
-summary: A simple and reliable public API service whose foundational endpoints can be used without registration, maintained as infrastructure for university projects.
+summary: A self-hosted unified AI gateway that folds a pile of official subscriptions into one OpenAI-compatible endpoint, with a console for keys, usage and debugging.
 date: 2023-09-21
 tags:
   - API
-  - Go
+  - AI
   - Infrastructure
 cover: /images/projects/uniapi-cover.svg
 featured: false
@@ -15,15 +15,26 @@ link: https://uniapi.top
 status: active
 accent: "#20A37A"
 mark: UA
-discipline: Public API Infrastructure
+discipline: Unified AI model gateway
 ---
 
-UniAPI began with a straightforward need: give projects a unified, clear, and dependable interface for common capabilities.
+UniAPI started as something modest: a handful of common capabilities exposed as public endpoints for my own projects, callable without registration. That version ran for two years. Then I replaced it entirely.
 
-Its foundational APIs can be called without registration, and the documentation tries to make every input and response unsurprising. Real projects depend on it, so stability, extensibility, and rapid iteration are daily obligations rather than marketing language.
+The reason was straightforward. What is scarce now is not *an endpoint* — it is that **the official subscriptions to the best models cannot be reached from a project as an API**. A subscription is built for a person to use; a project needs an interface. There is a layer missing in between.
 
-## Do the foundational work well
+## What it is now
 
-UniAPI combines a documentation site, management console, and backend services. The newer Go service uses a layered structure designed for larger systems, keeping clear boundaries around configuration, logging, domain models, use cases, and HTTP transport.
+UniAPI is that layer: a gateway that collapses several accounts into one OpenAI-compatible surface.
 
-It does not use complexity to demonstrate technical ability. It simply tries to make “calling a tool” feel easy again.
+- Upstream are my own official subscriptions and each vendor's API; downstream exposes only standard paths like `/v1/chat/completions`.
+- Switching model or vendor means changing a model name, not the calling code.
+- Keys, quota, request logs and usage all live in the console, so a failure can be traced to a specific call.
+- It runs on my own machine — accounts and data never pass through a third party.
+
+Underneath it is the open-source New API, with CLIProxyAPI bridging the subscription side. I wrote up [how that goes together](/en/notes/cpa-newapi) separately.
+
+## Why it is still called UniAPI
+
+The domain did not change and neither did the name, because the problem did not change: **make "calling a capability" a simple thing again**. What changed is that the sentence pointed at something else in 2023 than it does now.
+
+The difference is that I am clearer about its edges this time. It is my own infrastructure, not a public service for everyone else.

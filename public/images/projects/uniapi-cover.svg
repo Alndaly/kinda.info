@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
   <title id="title">UniAPI project cover</title>
-  <desc id="desc">A clear blue interface-inspired cover for the public API service.</desc>
+  <desc id="desc">A clear blue interface-inspired cover for the unified AI API gateway.</desc>
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#dceeff"/>
@@ -17,15 +17,15 @@
   <circle cx="80" cy="730" r="260" fill="#0058b9" opacity=".16"/>
   <rect x="76" y="84" width="1048" height="582" rx="36" fill="url(#glass)" stroke="#fff" stroke-opacity=".7"/>
   <g font-family="Arial, Helvetica, sans-serif">
-    <text x="124" y="146" font-size="15" font-weight="700" letter-spacing="5" fill="#174977">PUBLIC API INFRASTRUCTURE</text>
+    <text x="124" y="146" font-size="15" font-weight="700" letter-spacing="5" fill="#174977">UNIFIED AI API GATEWAY</text>
     <text x="116" y="342" font-size="142" font-weight="800" letter-spacing="-8" fill="#0c3c70">UNIAPI</text>
-    <text x="126" y="400" font-size="23" letter-spacing="5" fill="#174977" opacity=".72">TOOLS SHOULD BE SIMPLE</text>
+    <text x="126" y="400" font-size="23" letter-spacing="5" fill="#174977" opacity=".72">ONE KEY · MANY MODELS</text>
   </g>
   <g transform="translate(124 506)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">
     <rect width="804" height="74" rx="16" fill="#0c3c70"/>
-    <rect x="18" y="18" width="64" height="38" rx="9" fill="#91e6ad"/>
-    <text x="30" y="43" fill="#0c3c70" font-weight="700">GET</text>
-    <text x="106" y="44" fill="#eaf5ff">https://uniapi.top/v1/</text>
+    <rect x="18" y="18" width="76" height="38" rx="9" fill="#91e6ad"/>
+    <text x="28" y="43" fill="#0c3c70" font-weight="700">POST</text>
+    <text x="118" y="44" fill="#eaf5ff">https://uniapi.top/v1/chat/completions</text>
   </g>
   <circle cx="1029" cy="543" r="52" fill="#fff" opacity=".74"/>
   <path d="m1007 543 15 15 31-34" fill="none" stroke="#1973c9" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
