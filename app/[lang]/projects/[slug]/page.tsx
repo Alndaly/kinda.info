@@ -169,7 +169,7 @@ export default async function ProjectPage({ params }: Props) {
           </div>
           {project.cover && (
             <div
-              className="relative aspect-[4/3] overflow-hidden rounded-[0.2rem] border border-[color-mix(in_srgb,var(--project-accent)_48%,hsl(var(--line)))] bg-muted shadow-[1.25rem_1.25rem_0_color-mix(in_srgb,var(--project-accent)_13%,transparent)]"
+              className="relative aspect-[16/10] overflow-hidden rounded-[0.2rem] border border-[color-mix(in_srgb,var(--project-accent)_48%,hsl(var(--line)))] bg-muted shadow-[1.25rem_1.25rem_0_color-mix(in_srgb,var(--project-accent)_13%,transparent)]"
               data-document-cover
             >
               <Image
