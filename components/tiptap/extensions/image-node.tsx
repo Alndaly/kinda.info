@@ -8,6 +8,7 @@ import {
 } from '@tiptap/react';
 import { Expand } from 'lucide-react';
 import { useDocumentGallery } from '@/components/tiptap/gallery-context';
+import { bleedWide } from '@/lib/ui-classes';
 
 function ImageView({ node }: NodeViewProps) {
   const isEnglish = typeof document !== 'undefined' &&
@@ -19,7 +20,7 @@ function ImageView({ node }: NodeViewProps) {
   return (
     <NodeViewWrapper>
       <figure
-        className="group/figure ml-[50%] w-[min(100vw-2rem,68rem)] -translate-x-1/2"
+        className={`${bleedWide} group/figure`}
         data-node="figure"
       >
         {src ? (

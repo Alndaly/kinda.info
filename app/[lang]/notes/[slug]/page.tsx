@@ -186,7 +186,7 @@ export default async function NotePage({ params }: Props) {
         <div data-prose className={mdxProse}>
           <TiptapContent content={note.content} fallbackHtml={note.html} />
         </div>
-        <footer className="mx-auto mt-24 w-[min(100%-2rem,70rem)] border-t border-line py-12">
+        <footer className={cn(siteContainer, 'mt-[var(--space-lg)] border-t border-line py-[var(--space-md)]')}>
           <div className={articleEndMessage}>
             <span>EOF</span>
             <p>{dictionary.thanks}</p>

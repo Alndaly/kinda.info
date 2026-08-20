@@ -151,7 +151,7 @@ export default async function PhotoPage({ params }: Props) {
         </header>
       </div>
       {photo.cover && (
-        <div className="mx-auto w-[min(100%-2rem,1440px)]" data-document-cover>
+        <div className={siteContainer} data-document-cover>
           <div className="relative h-[min(75vw,820px)] w-full overflow-hidden bg-muted to-768:h-[78svh]">
             <Image
               src={photo.cover}

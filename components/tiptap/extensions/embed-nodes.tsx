@@ -13,6 +13,7 @@ import {
   extractCustomBlockTag,
   findCustomBlockTagStart,
 } from '@/lib/tiptap-markdown';
+import { bleed } from '@/lib/ui-classes';
 
 function isEnglishDocument() {
   return typeof document !== 'undefined' && document.documentElement.lang === 'en';
@@ -33,7 +34,8 @@ const createTokenizer = (name: string, tag: string) => ({
 
 /** Embeds and maps break out of the reading column. */
 const embedShell = [
-  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
+  bleed,
+  'overflow-hidden',
   'rounded-[0.35rem] border border-line bg-card',
 ].join(' ');
 

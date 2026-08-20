@@ -17,6 +17,7 @@ import {
 import { useGlobalAudio } from '@/components/audio/global-audio-provider';
 import { formatAudioTime, type AudioTrack } from '@/lib/audio';
 import { cn } from '@/lib/utils';
+import { bleed } from '@/lib/ui-classes';
 
 const WAVEFORM = [
   34, 58, 42, 76, 52, 88, 63, 45,
@@ -27,7 +28,8 @@ const WAVEFORM = [
 
 
 const audioShell = [
-  'group/audio relative ml-[50%] my-14 w-[min(100vw-2rem,58rem)] -translate-x-1/2',
+  bleed,
+  'group/audio relative my-14',
   'overflow-hidden rounded-[0.8rem] border border-line',
   'bg-[radial-gradient(circle_at_86%_-20%,hsl(var(--accent)/0.11),transparent_34%)] bg-card',
   'shadow-[0_1.5rem_4rem_hsl(var(--ink)/0.07)]',
@@ -35,7 +37,7 @@ const audioShell = [
   '[&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-[3px]',
   '[&_button:focus-visible]:outline-accent',
   '[&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-[3px] [&_a:focus-visible]:outline-accent',
-  'to-520:my-11 to-520:w-[min(100vw-1.25rem,58rem)]',
+  'to-520:my-11',
 ].join(' ');
 
 const audioHeader = [

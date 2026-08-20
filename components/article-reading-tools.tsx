@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ListTree } from 'lucide-react';
 import { useArticleLanguage } from '@/components/article-language-tools';
+import { readingColumn } from '@/lib/ui-classes';
 import { cn } from '@/lib/utils';
 
 type OutlineItem = {
@@ -48,7 +49,7 @@ const readingRailLink = [
 ].join(' ');
 
 const mobileToc = [
-  'mx-auto mt-8 hidden w-[min(100%-2rem,46rem)] border border-line',
+  `${readingColumn} mt-8 hidden border border-line`,
   'to-1180:block',
   '[&>summary]:flex [&>summary]:cursor-pointer [&>summary]:items-center [&>summary]:gap-[0.55rem]',
   '[&>summary]:px-4 [&>summary]:py-[0.9rem] [&>summary]:text-[0.68rem] [&>summary]:font-[750]',

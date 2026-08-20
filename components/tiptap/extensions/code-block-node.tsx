@@ -10,7 +10,7 @@ import {
 import { Check, Copy, Workflow } from 'lucide-react';
 import { common, createLowlight } from 'lowlight';
 import { useEffect, useId, useState } from 'react';
-import { codeSurface, codeTokens } from '@/lib/ui-classes';
+import { bleed, codeSurface, codeTokens } from '@/lib/ui-classes';
 
 const lowlight = createLowlight(common);
 
@@ -19,12 +19,14 @@ const lowlight = createLowlight(common);
 const codeShell = [
   codeSurface,
   codeTokens,
-  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden font-code',
+  bleed,
+  'overflow-hidden font-code',
   'rounded-[0.5rem] border border-white/[0.08]',
 ].join(' ');
 
 const mermaidShell = [
-  'ml-[50%] w-[min(100vw-2rem,58rem)] -translate-x-1/2 overflow-hidden',
+  bleed,
+  'overflow-hidden',
   'rounded-[0.5rem] border border-line bg-card font-code text-foreground',
 ].join(' ');
 

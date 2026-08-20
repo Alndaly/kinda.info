@@ -85,6 +85,33 @@
     --tracking-scale: 0.34;
   }
 
+  /* Layout tokens. Every page-level width and every vertical gap on the site is
+     one of these — written once here so a block cannot quietly acquire its own
+     margin. The gutter is the distance from the viewport edge to any content,
+     and it is the same number whether the block sits inside the reading column
+     or breaks out of it. */
+  :root {
+    --gutter: 1rem;
+    --shell: 1240px; /* header, footer, archives, everything page-level */
+    --reading: 46rem; /* the measure of running text */
+    --bleed: 58rem; /* code, tables, embeds — wider than the measure */
+    --bleed-wide: 68rem; /* figures only: a photograph earns the extra room */
+
+    /* Vertical rhythm, each step ~1.4x the last. */
+    --space-xs: clamp(1.5rem, 3vw, 2rem);
+    --space-sm: clamp(2.25rem, 4.5vw, 3rem);
+    --space-md: clamp(3rem, 6vw, 4.5rem);
+    --space-lg: clamp(4rem, 8vw, 6.5rem);
+    --space-xl: clamp(5rem, 10vw, 8rem);
+    --space-2xl: clamp(6rem, 12vw, 10rem);
+  }
+
+  @media (width <= 520px) {
+    :root {
+      --gutter: 0.625rem;
+    }
+  }
+
   * {
     @apply border-border;
   }

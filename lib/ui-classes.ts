@@ -4,8 +4,25 @@
  * stays the single source of truth for how something looks.
  */
 
-export const siteContainer =
-  'mx-auto w-[min(100%-2rem,1240px)] to-520:w-[min(100%-1.25rem,1240px)]';
+/**
+ * The page shell. Every top-level block on every page uses this and nothing
+ * else — the gutter and the max width are tokens, so a block cannot end up a
+ * few pixels off the edge everything else lines up on.
+ */
+export const siteContainer = 'mx-auto w-[min(100%-2*var(--gutter),var(--shell))]';
+
+/** The measure of running text, sharing the shell's gutter. */
+export const readingColumn = 'mx-auto w-[min(100%-2*var(--gutter),var(--reading))]';
+
+/**
+ * Breaks a block out of the reading column and back to the page gutter. Used by
+ * every wide element inside an article, so they all land on the same two edges.
+ */
+export const bleed = 'ml-[50%] w-[min(100vw-2*var(--gutter),var(--bleed))] -translate-x-1/2';
+
+/** {@link bleed} at figure width — the one step wider, for photographs. */
+export const bleedWide =
+  'ml-[50%] w-[min(100vw-2*var(--gutter),var(--bleed-wide))] -translate-x-1/2';
 
 export const headerControl = [
   'inline-flex h-10 items-center justify-center rounded-full border border-line',
@@ -86,7 +103,7 @@ export const detailTitle =
 export const articleDeck =
   'mx-auto mt-8 max-w-[44rem] text-[1.05rem] leading-[1.9] text-muted-foreground';
 
-export const articleRule = 'mx-auto h-px w-[min(100%-2rem,1240px)] bg-line';
+export const articleRule = 'mx-auto h-px w-[min(100%-2*var(--gutter),var(--shell))] bg-line';
 
 /** Narration player under a detail header. */
 export const articleAudio = [
@@ -177,7 +194,7 @@ export const codeSurface = [
  */
 export const mdxProse = [
   '[--mdx-body-font-size:clamp(1.05rem,1.5vw,1.18rem)]',
-  'mx-auto mt-[clamp(4rem,9vw,7rem)] w-[min(100%-2rem,46rem)]',
+  'mx-auto mt-[var(--space-lg)] w-[min(100%-2*var(--gutter),var(--reading))]',
   'font-display text-[length:var(--mdx-body-font-size)] leading-loose text-foreground',
 
   // the editor surface itself
@@ -226,7 +243,7 @@ export const mdxProse = [
 
   // tables
   '[&_.tableWrapper]:my-11 [&_.tableWrapper]:ml-[50%] [&_.tableWrapper]:-translate-x-1/2',
-  '[&_.tableWrapper]:w-[min(100vw-2rem,62rem)] [&_.tableWrapper]:overflow-x-auto',
+  '[&_.tableWrapper]:w-[min(100vw-2*var(--gutter),var(--bleed))] [&_.tableWrapper]:overflow-x-auto',
   '[&_.tableWrapper]:rounded-[0.35rem] [&_.tableWrapper]:border [&_.tableWrapper]:border-line',
   '[&_.tableWrapper]:bg-background',
   '[&_table]:w-full [&_table]:min-w-[34rem] [&_table]:border-collapse',
