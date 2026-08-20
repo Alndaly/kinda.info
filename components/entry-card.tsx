@@ -24,7 +24,7 @@ export function EntryCard({
   const readLabel = getDictionary(locale).notes.readAria;
 
   return (
-    <article className="group grid grid-cols-[3.5rem_minmax(0,1fr)_3rem] items-start gap-[clamp(1rem,4vw,3rem)] border-t border-line py-[clamp(2.25rem,4.5vw,3.5rem)] last:border-b to-768:grid-cols-[2rem_minmax(0,1fr)] to-520:gap-[0.7rem]">
+    <article className="group grid grid-cols-[3.5rem_minmax(0,1fr)_3rem] items-start gap-[clamp(1rem,4vw,3rem)] border-t border-line py-[var(--space-sm)] last:border-b to-768:grid-cols-[2rem_minmax(0,1fr)] to-520:gap-[0.7rem]">
       <div className="pt-[0.35rem] font-display text-base italic text-muted-foreground">{String(index + 1).padStart(2, '0')}</div>
       <div className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-2">

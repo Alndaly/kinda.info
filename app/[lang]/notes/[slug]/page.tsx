@@ -144,7 +144,7 @@ export default async function NotePage({ params }: Props) {
         {!seo.isFallback && <JsonLd data={articleJsonLd} />}
         <header
           data-detail-header
-          className={cn(siteContainer, 'pb-[clamp(3rem,7vw,6rem)] pt-[clamp(3rem,8vw,7rem)]')}
+          className={cn(siteContainer, 'pb-[var(--space-lg)] pt-[var(--space-xl)]')}
         >
           <Link href={localizeHref(lang, '/notes')} className={backLink}>
             <ArrowLeft /> {dictionary.back}

@@ -110,7 +110,7 @@ export default async function AboutPage({ params }: Props) {
           stranded 166px from the text and pushed this whole block out of
           alignment with the sections below. It is a margin mark now, so the
           copy starts at the same left edge as everything else. */}
-      <section className="relative mx-auto mt-[clamp(6rem,12vw,12rem)] max-w-[58rem]">
+      <section className="relative mx-auto mt-[var(--space-2xl)] max-w-[58rem]">
         <Asterisk
           className="absolute -left-12 top-[0.42em] h-6 w-6 text-accent to-1024:static to-1024:mb-6 to-1024:h-7 to-1024:w-7"
           aria-hidden="true"
@@ -130,7 +130,7 @@ export default async function AboutPage({ params }: Props) {
 
       {/* Numbered ledger, matching the archive ledger's rule-and-index rhythm.
           Each entry names the work it can be checked against. */}
-      <section className="mx-auto mt-[clamp(6rem,12vw,10rem)] max-w-[58rem]">
+      <section className="mx-auto mt-[var(--space-2xl)] max-w-[58rem]">
         <header className="max-w-[38rem]">
           <span className={sectionIndex}>{dictionary.craftIndex}</span>
           <h2 className="mt-3 font-display text-[clamp(2.4rem,5vw,3.8rem)] leading-[1.05] tracking-[-0.05em]">
@@ -166,7 +166,7 @@ export default async function AboutPage({ params }: Props) {
         </ol>
       </section>
 
-      <section className="mx-auto mt-[clamp(5rem,10vw,8rem)] max-w-[58rem]">
+      <section className="mx-auto mt-[var(--space-2xl)] max-w-[58rem]">
         <header className="max-w-[38rem]">
           <span className={sectionIndex}>{dictionary.collabIndex}</span>
           <h2 className="mt-3 font-display text-[clamp(2.4rem,5vw,3.8rem)] leading-[1.05] tracking-[-0.05em]">
@@ -203,9 +203,9 @@ export default async function AboutPage({ params }: Props) {
 
       <section
         id="contact"
-        className="mt-[clamp(7rem,14vw,13rem)] scroll-mt-28 border-t border-line pt-[clamp(2rem,5vw,4rem)]"
+        className="mt-[var(--space-2xl)] scroll-mt-28 border-t border-line pt-[var(--space-md)]"
       >
-        <header className="mb-[clamp(3rem,7vw,6rem)] grid grid-cols-[0.45fr_1fr] items-end gap-[clamp(2rem,7vw,7rem)] to-768:grid-cols-[1fr]">
+        <header className="mb-[var(--space-lg)] grid grid-cols-[0.45fr_1fr] items-end gap-[clamp(2rem,7vw,7rem)] to-768:grid-cols-[1fr]">
           <span className={sectionIndex}>Elsewhere / 05</span>
           <div>
             <h2 className="font-display text-[clamp(3.5rem,8vw,7.5rem)] leading-[0.95] tracking-[-0.065em]">

@@ -43,7 +43,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <section
         className={cn(
           siteContainer,
-          'relative flex min-h-[calc(100svh-74px)] flex-col justify-center py-[clamp(3rem,8vw,7rem)]',
+          'relative flex min-h-[calc(100svh-74px)] flex-col justify-center py-[var(--space-lg)]',
           'to-768:min-h-[auto]',
         )}
       >
@@ -59,7 +59,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </p>
               <h1
                 className={cn(
-                  'mt-[clamp(1.25rem,2.4vw,2.25rem)] flex items-end gap-[0.08em] font-display font-semibold',
+                  'mt-[var(--space-xs)] flex items-end gap-[0.08em] font-display font-semibold',
                   'text-[clamp(6.5rem,15vw,13rem)] to-768:text-[clamp(5rem,29vw,8.5rem)] to-520:text-[25vw]',
                   // after the text-* classes on purpose: tailwind-merge treats
                   // font-size as overriding leading, so leading has to come last
@@ -208,7 +208,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         <HomeProjects entries={projects.slice(0, 2)} locale={lang} />
       </section>
 
-      <section className={cn(siteContainer, 'pb-8 pt-12')}>
+      <section className={cn(siteContainer, 'py-[var(--space-sm)]')}>
         <div className="relative flex min-h-[430px] flex-col items-center justify-center overflow-hidden bg-accent px-6 py-16 text-center text-paper before:absolute before:-left-12 before:-top-20 before:h-48 before:w-48 before:rounded-full before:border before:border-current before:opacity-20 before:content-[''] after:absolute after:-bottom-24 after:-right-8 after:h-48 after:w-48 after:rounded-full after:border after:border-current after:opacity-20 after:content-['']">
           <span className="font-display text-[5rem] leading-[0.5] opacity-65">“</span>
           <p className="max-w-[52rem] font-display text-[clamp(1.65rem,4vw,3.4rem)] leading-[1.35] tracking-[-0.035em]">

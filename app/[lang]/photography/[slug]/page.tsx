@@ -106,7 +106,7 @@ export default async function PhotoPage({ params }: Props) {
   );
 
   return (
-    <article className="pt-[clamp(3rem,8vw,7rem)]">
+    <article className="pt-[var(--space-xl)]">
       {!seo.isFallback && <JsonLd data={photoJsonLd} />}
       <div className={siteContainer}>
         <Link href={localizeHref(lang, '/photography')} className={backLink}>

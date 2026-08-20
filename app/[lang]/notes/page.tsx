@@ -59,7 +59,7 @@ export default async function NotesPage({ params }: Props) {
 
   return (
     <div className={cn(siteContainer, pageTop)}>
-      <header className={cn(archiveHeader, 'mb-[clamp(3rem,6vw,5rem)]')}>
+      <header className={archiveHeader}>
         <span className={sectionIndex}>Index / 01</span>
         <h1 className={archiveHeaderTitle}>{dictionary.title}</h1>
         <p className={archiveHeaderText}>{dictionary.intro}</p>

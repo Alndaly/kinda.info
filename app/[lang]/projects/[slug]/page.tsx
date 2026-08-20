@@ -115,7 +115,7 @@ export default async function ProjectPage({ params }: Props) {
       {!seo.isFallback && <JsonLd data={projectJsonLd} />}
       <header
         data-detail-header
-        className={cn(siteContainer, 'pt-[clamp(3rem,8vw,7rem)]')}
+        className={cn(siteContainer, 'pt-[var(--space-xl)]')}
       >
         <Link href={localizeHref(lang, '/projects')} className={backLink}>
           <ArrowLeft /> {dictionary.back}

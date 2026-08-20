@@ -52,10 +52,10 @@ export const textLink = [
   'hover:[&>svg]:translate-x-[2px] hover:[&>svg]:-translate-y-[2px]',
 ].join(' ');
 
-export const sectionSpace = 'py-[clamp(5.5rem,10vw,9rem)]';
+export const sectionSpace = 'py-[var(--space-xl)]';
 
 export const sectionHeading =
-  'mb-[clamp(2.5rem,5vw,4.5rem)] flex items-end justify-between gap-8 to-768:items-start';
+  'mb-[var(--space-md)] flex items-end justify-between gap-8 to-768:items-start';
 
 export const sectionHeadingTitle =
   'mt-[0.6rem] font-display text-[clamp(3rem,7vw,6rem)] leading-[0.9] tracking-[-0.055em] to-768:text-[3.2rem]';
@@ -70,9 +70,9 @@ export const projectStatus = [
   'text-[color-mix(in_srgb,var(--project-accent)_82%,hsl(var(--ink)))]',
 ].join(' ');
 
-export const pageTop = 'pb-12 pt-[clamp(4rem,10vw,8.5rem)]';
+export const pageTop = 'pb-[var(--space-sm)] pt-[var(--space-xl)]';
 
-export const archiveHeader = 'mb-[clamp(4rem,9vw,8rem)] max-w-[62rem]';
+export const archiveHeader = 'mb-[var(--space-lg)] max-w-[62rem]';
 
 export const archiveHeaderTitle =
   'mt-6 font-display text-[clamp(5.5rem,15vw,12rem)] leading-[0.72] tracking-[-0.085em] to-520:text-[5.2rem]';
@@ -82,13 +82,13 @@ export const archiveHeaderText =
 
 /** Two-column archive header: title on the left, standfirst on the right. */
 export const archiveHeaderSplit =
-  'mb-[clamp(4rem,9vw,8rem)] grid grid-cols-[1fr_0.72fr] items-end gap-20 to-768:grid-cols-[1fr] to-768:gap-8';
+  'mb-[var(--space-lg)] grid grid-cols-[1fr_0.72fr] items-end gap-20 to-768:grid-cols-[1fr] to-768:gap-8';
 
 export const archiveHeaderSplitText =
   'max-w-[40rem] text-[1.05rem] leading-loose text-muted-foreground to-768:mt-4';
 
 export const backLink = [
-  'mb-[clamp(3rem,7vw,6rem)] inline-flex items-center gap-[0.45rem]',
+  'mb-[var(--space-lg)] inline-flex items-center gap-[0.45rem]',
   'text-[0.7rem] font-bold uppercase tracking-[calc(0.14em*var(--tracking-scale))] text-muted-foreground',
   // width only, matching the original — the arrow keeps its own height
   '[&>svg]:w-[0.9rem]',
@@ -283,8 +283,8 @@ export const articlePagination = [
 ].join(' ');
 
 export const commentsSection = [
-  'mb-[clamp(4rem,8vw,7rem)] mt-[clamp(5rem,10vw,9rem)] max-w-[58rem]',
-  'border-t border-line pt-[clamp(2rem,5vw,3.5rem)]',
+  'mb-[var(--space-lg)] mt-[var(--space-xl)] max-w-[58rem]',
+  'border-t border-line pt-[var(--space-md)]',
 ].join(' ');
 
 export const commentsHeading = [
@@ -333,7 +333,7 @@ export const contactChannel = [
 ].join(' ');
 
 export const contactCardHeading = [
-  'mb-[clamp(2rem,5vw,4rem)] flex items-center justify-between',
+  'mb-[var(--space-md)] flex items-center justify-between',
   '[&>svg]:h-[1.2rem] [&>svg]:w-[1.2rem] [&>svg]:[stroke-width:1.4]',
 ].join(' ');
 
@@ -347,7 +347,7 @@ export const contactDestination = [
 ].join(' ');
 
 export const photoLedger = [
-  'mb-[clamp(3rem,7vw,6rem)] grid grid-cols-[0.65fr_1.35fr] items-end gap-12',
+  'mb-[var(--space-lg)] grid grid-cols-[0.65fr_1.35fr] items-end gap-12',
   'border-y border-line py-5 to-768:grid-cols-[1fr] to-768:gap-6',
   '[&>div]:flex [&>div]:items-baseline [&>div]:justify-between [&>div]:gap-4',
   '[&>div>span]:text-[0.56rem] [&>div>span]:uppercase [&>div>span]:tracking-[0.16em]',
@@ -414,7 +414,7 @@ export const audioPanelTitle = [
 
 /** White paper mount for a QR code, tilted like a pinned card. */
 export const contactQr = [
-  'mx-auto mt-[clamp(2rem,5vw,4rem)] w-[min(100%,22rem)] -rotate-1 bg-white p-[0.65rem]',
+  'mx-auto mt-[var(--space-md)] w-[min(100%,22rem)] -rotate-1 bg-white p-[0.65rem]',
   'shadow-[0_24px_70px_rgba(20,19,15,0.1)]',
   '[&_img]:block [&_img]:h-auto [&_img]:w-full',
 ].join(' ');

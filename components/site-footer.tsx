@@ -14,7 +14,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
   const dictionary = getDictionary(locale).footer;
 
   return (
-    <footer className="mt-28 border-t border-line group-has-[[data-audio-app]]/shell:hidden">
+    <footer className="mt-[var(--space-lg)] border-t border-line group-has-[[data-audio-app]]/shell:hidden">
       <div className={siteContainer}>
         <div className="grid gap-10 py-14 md:grid-cols-[1.3fr_.7fr] md:items-end">
           <div>
