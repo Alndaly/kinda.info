@@ -163,12 +163,12 @@ const zh = {
       {
         title: '智能体与 AI 工作流',
         body: '把模型接进真实流程，而不是停在演示：多步智能体、可编排的自动化工作流、本地优先的检索与问答。判断哪一步该交给模型、哪一步不该，往往比接上模型更重要。',
-        evidence: 'Revornix · OpenStudio',
+        evidence: 'Revornix · Mosael',
       },
       {
         title: '自媒体工作站',
         body: '从素材到分发的一整条链路：剪辑、智能体辅助创作、自动化流程，以及多平台的内容矩阵发布。一个人也能把内容生产跑成流水线。',
-        evidence: 'OpenStudio',
+        evidence: 'Mosael',
       },
       {
         title: '全栈产品与小程序',
@@ -188,7 +188,7 @@ const zh = {
       {
         title: '从零把产品做出来',
         body: '一个人从想法走到可用：定方向、写代码、做设计、写文档、持续维护。做过的都还活着，也都开着源。',
-        evidence: 'OpenStudio · Revornix · UniAPI',
+        evidence: 'Mosael · Revornix · UniAPI',
       },
     ],
     collabIndex: 'Together / 07',
@@ -202,7 +202,7 @@ const zh = {
       { title: '嵌入式软件定制', body: '小型设备上的软件：控制逻辑、通信协议、和云端服务对接。规模不大但要求稳的那一类。' },
       { title: '项目开发', body: '目标和排期清楚的项目可以直接承接：一起把需求理顺，然后交付到能上线。' },
       { title: '产品共建', body: '你有想法和场景，我补上工程与设计。适合早期产品从零到能用的那一段，也可以长期一起做。' },
-      { title: '开源协作', body: 'Revornix、OpenStudio、@kinda/utils 都在持续维护，Issue 和 PR 都欢迎。' },
+      { title: '开源协作', body: 'Revornix、Mosael、@kinda/utils 都在持续维护，Issue 和 PR 都欢迎。' },
     ],
     collabNote: '想聊的话，邮件最直接，写清楚你在做什么就行。',
     elsewhere: '在别处找到我',
@@ -417,12 +417,12 @@ const en = {
       {
         title: 'Agents and AI workflows',
         body: 'Wiring models into real processes rather than demos: multi-step agents, orchestrated automation, local-first retrieval and Q&A. Deciding which step should go to a model — and which should not — usually matters more than the wiring.',
-        evidence: 'Revornix · OpenStudio',
+        evidence: 'Revornix · Mosael',
       },
       {
         title: 'Creator workstations',
         body: 'The whole chain from footage to publishing: editing, agent-assisted creation, automation, and posting across platforms. One person can still run content production like a pipeline.',
-        evidence: 'OpenStudio',
+        evidence: 'Mosael',
       },
       {
         title: 'Full-stack products and mini programs',
@@ -442,7 +442,7 @@ const en = {
       {
         title: 'Taking products from zero',
         body: 'One person from idea to usable: direction, code, design, documentation, and staying with it. Everything I have built is still running, and open.',
-        evidence: 'OpenStudio · Revornix · UniAPI',
+        evidence: 'Mosael · Revornix · UniAPI',
       },
     ],
     collabIndex: 'Together / 07',
@@ -456,7 +456,7 @@ const en = {
       { title: 'Embedded software', body: 'Software for small devices: control logic, communication protocols, and talking to a service in the cloud. The kind that is modest in scale but has to stay up.' },
       { title: 'Project work', body: 'Projects with a clear goal and timeline are welcome: we straighten out the requirements together, then I deliver something you can ship.' },
       { title: 'Building a product together', body: 'You bring the idea and the context; I bring the engineering and design. Best for the stretch from nothing to something usable — and for staying with it.' },
-      { title: 'Open source', body: 'Revornix, OpenStudio and @kinda/utils are all maintained. Issues and pull requests welcome.' },
+      { title: 'Open source', body: 'Revornix, Mosael and @kinda/utils are all maintained. Issues and pull requests welcome.' },
     ],
     collabNote: 'Email is the most direct way in. Just say what you are working on.',
     elsewhere: 'Find me elsewhere',

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
-  <title id="title">OpenStudio project cover</title>
+  <title id="title">Mosael project cover</title>
   <desc id="desc">A cinematic abstract timeline for the AI-native video studio.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -28,7 +28,7 @@
   </g>
   <g font-family="Arial, Helvetica, sans-serif" fill="#f6f1f7">
     <text x="94" y="94" font-size="18" font-weight="700" letter-spacing="7">AI-NATIVE VIDEO STUDIO</text>
-    <text x="88" y="326" font-size="116" font-weight="800" letter-spacing="-6">OPENSTUDIO</text>
+    <text x="88" y="326" font-size="116" font-weight="800" letter-spacing="-5">MOSAEL</text>
     <text x="96" y="382" font-size="22" letter-spacing="5" opacity=".58">CUT · AGENT · WORKFLOW · PUBLISH</text>
   </g>
   <circle cx="1046" cy="654" r="35" fill="url(#lime)"/>

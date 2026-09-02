@@ -24,6 +24,18 @@ const nextConfig = {
         destination: '/en/projects/wesmile',
         permanent: true,
       },
+      // OpenStudio became Mosael and took a name of its own; the old slug is
+      // indexed and linked from elsewhere.
+      {
+        source: '/projects/openstudio',
+        destination: '/projects/mosael',
+        permanent: true,
+      },
+      {
+        source: '/en/projects/openstudio',
+        destination: '/en/projects/mosael',
+        permanent: true,
+      },
     ];
   },
   images: {
