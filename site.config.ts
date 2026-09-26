@@ -12,6 +12,7 @@ export const siteConfig = {
   commentsRepo: 'Alndaly/kinda.info',
   bilibili: 'https://space.bilibili.com/391938956',
   xiaohongshu: 'https://xhslink.cn/m/2gpKCIOPcgc',
+  x: 'https://x.com/KindaHuax',
   wechatQr: '/images/wechat-official-qr.jpg',
   wechatPersonalQr:
     'https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731212638809.JPG',

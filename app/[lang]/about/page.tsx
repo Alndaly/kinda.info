@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowUpRight, Asterisk, BookOpenText, MessageCircle, Play } from 'lucide-react';
+import { ArrowUpRight, Asterisk, AtSign, BookOpenText, MessageCircle, Play } from 'lucide-react';
 import { JsonLd } from '@/components/json-ld';
 import { getDictionary, getLocaleAlternates, hasLocale } from '@/lib/i18n';
 import {
@@ -218,9 +218,10 @@ export default async function AboutPage({ params }: Props) {
         </header>
 
         {/* Personal WeChat leads: it is the channel someone actually reaches me
-            on. The official account keeps its own card beside it, and the two
-            social channels sit underneath. */}
-        <div className="grid grid-cols-2 gap-4 to-768:grid-cols-[1fr]">
+            on. The official account keeps its own card beside it, and the
+            social channels sit underneath — the last one spans the row so an
+            odd count never leaves a half-width orphan. */}
+        <div className="grid grid-cols-2 gap-4 [&>*:last-child:nth-child(odd)]:col-span-2 to-768:grid-cols-[1fr]">
           <article className={cn(contactWechat, 'row-span-1')}>
             <div className={contactCardHeading}>
               <span className={contactKicker}>01</span>
@@ -298,6 +299,29 @@ export default async function AboutPage({ params }: Props) {
             </div>
             <span className={contactDestination}>
               {dictionary.xiaohongshuDestination} <ArrowUpRight aria-hidden="true" />
+            </span>
+          </Link>
+
+          {/* X has no brand mark in lucide, and the other cards use a generic
+              icon for the medium rather than a logo anyway. Its channel colour
+              is the ink token so the rule reads in both themes — the brand is
+              monochrome, and a fixed black bar would vanish in dark mode. */}
+          <Link
+            className={cn(contactChannel, '[--channel-color:var(--ink)]')}
+            href={siteConfig.x}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div className={contactCardHeading}>
+              <span className={contactKicker}>05</span>
+              <AtSign aria-hidden="true" />
+            </div>
+            <div>
+              <span className={contactKicker}>Notes / In Passing</span>
+              <h3>{dictionary.x}</h3>
+            </div>
+            <span className={contactDestination}>
+              {dictionary.xDestination} <ArrowUpRight aria-hidden="true" />
             </span>
           </Link>
         </div>

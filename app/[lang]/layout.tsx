@@ -107,6 +107,7 @@ export default async function RootLayout({ children, params }: Props) {
           `https://github.com/${siteConfig.github}`,
           siteConfig.bilibili,
           siteConfig.xiaohongshu,
+          siteConfig.x,
         ],
         // mirrors the practice section on /about
         knowsAbout: [

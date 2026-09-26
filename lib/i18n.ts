@@ -217,6 +217,8 @@ const zh = {
     bilibili: '哔哩哔哩',
     xiaohongshu: '小红书',
     xiaohongshuDestination: '去看看生活切片',
+    x: 'X',
+    xDestination: '@KindaHuax',
   },
   search: {
     button: '搜索',
@@ -471,6 +473,8 @@ const en = {
     bilibili: 'Bilibili',
     xiaohongshu: 'REDnote',
     xiaohongshuDestination: 'See fragments of daily life',
+    x: 'X',
+    xDestination: '@KindaHuax',
   },
   search: {
     button: 'Search',
