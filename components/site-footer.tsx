@@ -44,6 +44,9 @@ export function SiteFooter({ locale }: { locale: Locale }) {
             <Link className={footerLink} href={siteConfig.xiaohongshu} target="_blank" rel="noreferrer">
               {dictionary.xiaohongshu} <ArrowUpRight />
             </Link>
+            <Link className={footerLink} href={siteConfig.x} target="_blank" rel="noreferrer">
+              X <ArrowUpRight />
+            </Link>
             <Link className={footerLink} href={localizeHref(locale, '/about#contact')}>
               {dictionary.wechat} <ArrowUpRight />
             </Link>
