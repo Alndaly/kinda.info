@@ -14,6 +14,7 @@ const navigation = [
   { href: '/photography', key: 'photography', index: '02' },
   { href: '/projects', key: 'projects', index: '03' },
   { href: '/about', key: 'about', index: '04' },
+  { href: '/hot', key: 'hot', index: '05' },
 ] as const;
 
 export function SiteHeader({ locale }: { locale: Locale }) {

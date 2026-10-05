@@ -51,6 +51,7 @@ const zh = {
       photography: '摄影',
       projects: '作品',
       about: '关于',
+      hot: '热榜',
     },
   },
   speech: {
@@ -145,6 +146,17 @@ const zh = {
       experiment: '实验中',
       archive: '已归档',
     },
+  },
+  hot: {
+    title: '热榜',
+    description: '六个站点此刻排在前面的东西，十分钟取一次。',
+    intro: '把几个我每天都会扫一眼的榜单放在一处。开发者在读什么、中文互联网在吵什么，两边都留着。十分钟抓一次，不做推荐，不替你排序。',
+    kicker: 'Live / 05',
+    updated: '更新于',
+    refreshNote: '每十分钟自动取一次',
+    unavailable: '暂时取不到',
+    openSource: '去原站',
+    empty: '所有信源此刻都取不到。这是公开接口，没有可用性承诺，过一会儿再看。',
   },
   about: {
     metadataTitle: '关于',
@@ -307,6 +319,7 @@ const en = {
       photography: 'Frames',
       projects: 'Work',
       about: 'About',
+      hot: 'Hot',
     },
   },
   speech: {
@@ -401,6 +414,17 @@ const en = {
       experiment: 'Experiment',
       archive: 'Archived',
     },
+  },
+  hot: {
+    title: 'Hot',
+    description: 'What six sites have at the top right now, fetched every ten minutes.',
+    intro: 'The boards I glance at every day, in one place. What developers are reading and what the Chinese internet is arguing about, both kept. Fetched every ten minutes, in each site\u2019s own order \u2014 nothing reranked, nothing recommended.',
+    kicker: 'Live / 05',
+    updated: 'Updated',
+    refreshNote: 'Refetched every ten minutes',
+    unavailable: 'Currently unreachable',
+    openSource: 'Open site',
+    empty: 'Every source is unreachable right now. These are public endpoints with no uptime promise \u2014 try again shortly.',
   },
   about: {
     metadataTitle: 'About',

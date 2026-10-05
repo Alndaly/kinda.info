@@ -27,6 +27,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { href: '/photography', changeFrequency: 'monthly', priority: 0.8, lastModified: lastModifiedFor(['photo']) },
     { href: '/projects', changeFrequency: 'monthly', priority: 0.8, lastModified: lastModifiedFor(['project']) },
     { href: '/about', changeFrequency: 'yearly', priority: 0.6, lastModified: undefined },
+    // the page is stable; what it shows is not, so no lastModified to claim
+    { href: '/hot', changeFrequency: 'hourly', priority: 0.5, lastModified: undefined },
     // a player, not a page anyone should land on from a search result
     { href: '/player', changeFrequency: 'yearly', priority: 0.3, lastModified: undefined },
   ] as const;
