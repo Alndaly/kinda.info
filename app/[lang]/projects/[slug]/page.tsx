@@ -11,6 +11,7 @@ import { Comments } from '@/components/comments';
 import { JsonLd } from '@/components/json-ld';
 import { TiptapContent } from '@/components/tiptap/tiptap-content';
 import { allEntries, getEntry, getEntrySeo } from '@/lib/content';
+import { readableOn } from '@/lib/accent';
 import { getDictionary, hasLocale, localizeHref } from '@/lib/i18n';
 import {
   absoluteUrl,
@@ -26,7 +27,7 @@ import { siteContainer, projectStatus, mdxProse, backLink, detailTitle } from '@
 import { cn } from '@/lib/utils';
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
-type ProjectStyle = CSSProperties & { '--project-accent': string };
+type ProjectStyle = CSSProperties & { '--project-accent': string; '--project-ink': string };
 
 export function generateStaticParams() {
   return Array.from(
@@ -80,8 +81,11 @@ export default async function ProjectPage({ params }: Props) {
   if (!project) notFound();
   const seo = getEntrySeo('project', slug, lang);
   const status = project.status ?? 'active';
+  const projectAccent = project.accent ?? '#e25943';
   const projectStyle: ProjectStyle = {
-    '--project-accent': project.accent ?? '#e25943',
+    '--project-accent': projectAccent,
+    // white fails WCAG AA on every accent in use; see lib/accent.ts
+    '--project-ink': readableOn(projectAccent),
   };
   const canonicalUrl = absoluteUrl(seo.alternates.canonical);
   const projectJsonLd = jsonLdGraph(
@@ -123,7 +127,7 @@ export default async function ProjectPage({ params }: Props) {
         <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-end">
           <div>
             <div className="mb-[1.4rem] flex items-center gap-[0.8rem] [&>p]:m-0 [&>p]:text-[0.62rem] [&>p]:font-bold [&>p]:uppercase [&>p]:tracking-[0.14em] [&>p]:text-muted-foreground">
-              <span className="grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full bg-[var(--project-accent)] font-display text-[1.1rem] font-bold text-white">
+              <span className="grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full bg-[var(--project-accent)] font-display text-[1.1rem] font-bold text-[var(--project-ink)]">
                 {project.mark ?? 'K'}
               </span>
               <p>{project.discipline ?? project.tags.join(' · ')}</p>
@@ -142,7 +146,7 @@ export default async function ProjectPage({ params }: Props) {
               {project.summary}
             </p>
             {project.link && (
-              <Button asChild className="mt-8 rounded-full bg-[var(--project-accent)]! text-white! hover:bg-[color-mix(in_srgb,var(--project-accent)_84%,black)]!">
+              <Button asChild className="mt-8 rounded-full bg-[var(--project-accent)]! text-[var(--project-ink)]! hover:bg-[color-mix(in_srgb,var(--project-accent)_84%,black)]! hover:text-white!">
                 <Link href={project.link} target="_blank">
                   {dictionary.visit} <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Link>

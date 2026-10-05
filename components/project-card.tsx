@@ -4,11 +4,13 @@ import type { CSSProperties } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import type { Entry } from '@/.velite';
 import { Badge } from '@/components/ui/badge';
+import { readableOn } from '@/lib/accent';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { projectStatus } from '@/lib/ui-classes';
 
 type ProjectStyle = CSSProperties & {
   '--project-accent': string;
+  '--project-ink': string;
 };
 
 export function ProjectCard({
@@ -22,15 +24,18 @@ export function ProjectCard({
 }) {
   const dictionary = getDictionary(locale).projects;
   const status = entry.status ?? 'active';
+  const accent = entry.accent ?? '#e25943';
   const style: ProjectStyle = {
-    '--project-accent': entry.accent ?? '#e25943',
+    '--project-accent': accent,
+    // white fails WCAG AA on every accent in use; see lib/accent.ts
+    '--project-ink': readableOn(accent),
   };
 
   return (
     <article className="group relative" style={style}>
       <Link href={entry.href} className="block">
         <div className="mb-[0.8rem] grid grid-cols-[auto_auto_minmax(2rem,1fr)] items-center gap-[0.7rem] text-[0.56rem] uppercase tracking-[0.15em] text-muted-foreground">
-          <span className="grid h-8 min-w-8 place-items-center rounded-full bg-[var(--project-accent)] font-display text-[0.8rem] font-bold tracking-[-0.02em] text-white">{entry.mark ?? String(index + 1).padStart(2, '0')}</span>
+          <span className="grid h-8 min-w-8 place-items-center rounded-full bg-[var(--project-accent)] font-display text-[0.8rem] font-bold tracking-[-0.02em] text-[var(--project-ink)]">{entry.mark ?? String(index + 1).padStart(2, '0')}</span>
           <span>{entry.discipline ?? entry.tags.join(' · ')}</span>
           <i
             aria-hidden="true"

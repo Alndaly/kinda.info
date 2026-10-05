@@ -133,8 +133,11 @@ export default async function HotPage({ params }: Props) {
                           </span>
                           {item.heat || item.tag ? (
                             <span className="mt-[0.2rem] flex flex-wrap items-center gap-2 text-[0.58rem] uppercase tracking-[0.08em] text-muted-foreground">
+                              {/* A neutral tint, not an accent one: tinting the
+                                  ground toward the text colour is what dropped
+                                  this pair to 4.22:1 in dark and 3.11:1 in light. */}
                               {item.tag ? (
-                                <span className="rounded-[0.2rem] bg-accent/[0.12] px-[0.3rem] py-[0.05rem] text-accent">
+                                <span className="rounded-[0.2rem] bg-foreground/[0.08] px-[0.3rem] py-[0.05rem] text-foreground/75">
                                   {item.tag}
                                 </span>
                               ) : null}
