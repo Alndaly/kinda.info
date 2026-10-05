@@ -18,7 +18,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
       <div className={siteContainer}>
         <div className="grid gap-10 py-14 md:grid-cols-[1.3fr_.7fr] md:items-end">
           <div>
-            <Asterisk className="mb-5 h-6 w-6 text-accent" />
+            <Asterisk className="mb-5 h-6 w-6 text-accent-ink" />
             <p className="max-w-xl font-display text-3xl leading-[1.15] tracking-[-0.035em] sm:text-4xl">
               {dictionary.manifesto[0]}
               <br />

@@ -84,6 +84,8 @@ const config = {
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
+          // the accent as a text colour; see --accent-text in globals.css
+          ink: 'hsl(var(--accent-text))',
         },
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',

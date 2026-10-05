@@ -31,7 +31,7 @@ const notesFilter = [
 const notesFilterSummary = [
   'flex min-w-max items-center gap-[0.45rem] pl-[0.35rem] text-[0.66rem] tracking-[0.06em]',
   'group-data-[pinned=true]/filter:hidden to-768:min-w-0',
-  '[&>svg]:w-[0.85rem] [&>svg]:text-accent',
+  '[&>svg]:w-[0.85rem] [&>svg]:text-accent-ink',
   '[&>strong]:text-[0.58rem] [&>strong]:font-semibold [&>strong]:text-muted-foreground',
   'to-520:[&>strong]:hidden',
 ].join(' ');

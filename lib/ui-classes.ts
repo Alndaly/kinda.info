@@ -67,7 +67,10 @@ export const sectionIndex =
 export const projectStatus = [
   'border-[color-mix(in_srgb,var(--project-accent)_55%,hsl(var(--line)))]',
   'bg-[color-mix(in_srgb,var(--project-accent)_10%,transparent)]',
-  'text-[color-mix(in_srgb,var(--project-accent)_82%,hsl(var(--ink)))]',
+  // 82% accent left the lightest brands at 2.63:1 on their own tint in light
+  // mode. Half ink passes both themes (worst 5.06:1 light, 7.43:1 dark) and
+  // --ink flips with the theme, so one ratio serves both.
+  'text-[color-mix(in_srgb,var(--project-accent)_50%,hsl(var(--ink)))]',
 ].join(' ');
 
 export const pageTop = 'pb-[var(--space-sm)] pt-[var(--space-xl)]';
@@ -117,7 +120,7 @@ export const articleAudio = [
   '[&_small_svg]:h-[0.7rem] [&_small_svg]:w-[0.7rem]',
   '[&>time]:mt-[0.45rem] [&>time]:block [&>time]:text-right [&>time]:font-mono',
   '[&>time]:text-[0.52rem] [&>time]:text-muted-foreground',
-  '[&>p]:mt-2 [&>p]:text-left [&>p]:text-[0.62rem] [&>p]:text-accent',
+  '[&>p]:mt-2 [&>p]:text-left [&>p]:text-[0.62rem] [&>p]:text-accent-ink',
 ].join(' ');
 
 export const articleAudioIcon = [
@@ -133,7 +136,7 @@ export const articleAudioIcon = [
 export const translationNotice = [
   'mt-8 grid max-w-[58rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4',
   'border border-memo/[0.72] bg-memo/[0.18] px-[1.15rem] py-4',
-  '[&>svg]:w-4 [&>svg]:text-accent',
+  '[&>svg]:w-4 [&>svg]:text-accent-ink',
   'data-[state=loading]:[&>svg]:animate-[slow-spin_1.4s_linear_infinite]',
   'data-[state=error]:border-accent/50 data-[state=error]:bg-accent/[0.08]',
   '[&_strong]:font-display [&_strong]:text-base',
@@ -149,7 +152,7 @@ export const articleMeta = [
   'tracking-[calc(0.12em*var(--tracking-scale))] text-muted-foreground',
   '[&>span]:inline-flex [&>span]:items-center [&>span]:gap-[0.4rem]',
   '[&>a]:inline-flex [&>a]:items-center [&>a]:gap-[0.4rem] [&>a]:text-inherit [&>a]:no-underline',
-  '[&>a]:transition-colors [&>a]:duration-[180ms] [&>a]:ease-[ease] [&>a:hover]:text-accent',
+  '[&>a]:transition-colors [&>a]:duration-[180ms] [&>a]:ease-[ease] [&>a:hover]:text-accent-ink',
   '[&_svg]:w-[0.85rem]',
 ].join(' ');
 
@@ -216,14 +219,14 @@ export const mdxProse = [
   // body copy
   '[&_:is(p,li)]:text-foreground/[0.88]',
   '[&_strong]:font-bold [&_strong]:text-foreground',
-  '[&_a]:text-accent [&_a]:underline [&_a]:decoration-1 [&_a]:underline-offset-[0.2em]',
+  '[&_a]:text-accent-ink [&_a]:underline [&_a]:decoration-1 [&_a]:underline-offset-[0.2em]',
 
   // lists
   '[&_:is(ul,ol)]:pl-[1.3rem] [&_ul]:list-none [&_ol]:list-decimal',
   '[&_ul_li]:relative',
   "[&_ul_li]:before:absolute [&_ul_li]:before:left-[-1.25rem]",
   '[&_ul_li]:before:top-[var(--mdx-body-font-size)] [&_ul_li]:before:-translate-y-1/2',
-  "[&_ul_li]:before:text-[0.65rem] [&_ul_li]:before:leading-none [&_ul_li]:before:text-accent",
+  "[&_ul_li]:before:text-[0.65rem] [&_ul_li]:before:leading-none [&_ul_li]:before:text-accent-ink",
   "[&_ul_li]:before:content-['✦']",
 
   // quotes, rules, code
@@ -262,7 +265,7 @@ export const mdxProsePhoto = 'text-center text-[1.2rem] leading-loose';
 
 export const articleEndMessage = [
   'text-center',
-  '[&>span]:text-[0.6rem] [&>span]:font-extrabold [&>span]:tracking-[0.2em] [&>span]:text-accent',
+  '[&>span]:text-[0.6rem] [&>span]:font-extrabold [&>span]:tracking-[0.2em] [&>span]:text-accent-ink',
   '[&>p]:mb-6 [&>p]:mt-4 [&>p]:font-display [&>p]:text-2xl',
   '[&>a]:border-b [&>a]:border-current [&>a]:text-[0.7rem]',
 ].join(' ');
@@ -279,7 +282,7 @@ export const articlePagination = [
   '[&_strong]:my-[0.8rem] [&_strong]:max-w-[25rem] [&_strong]:font-display',
   '[&_strong]:text-[clamp(1.25rem,2.6vw,2rem)] [&_strong]:leading-[1.1]',
   '[&>a:last-child_strong]:ml-auto',
-  '[&_svg]:w-4 [&_svg]:text-accent [&>a:last-child_svg]:ml-auto',
+  '[&_svg]:w-4 [&_svg]:text-accent-ink [&>a:last-child_svg]:ml-auto',
 ].join(' ');
 
 export const commentsSection = [
@@ -290,7 +293,7 @@ export const commentsSection = [
 export const commentsHeading = [
   'grid max-w-[38rem] gap-[0.65rem]',
   '[&>span]:flex [&>span]:items-center [&>span]:gap-[0.45rem] [&>span]:text-[0.58rem]',
-  '[&>span]:font-[750] [&>span]:uppercase [&>span]:tracking-[0.16em] [&>span]:text-accent',
+  '[&>span]:font-[750] [&>span]:uppercase [&>span]:tracking-[0.16em] [&>span]:text-accent-ink',
   '[&>span>svg]:w-[0.85rem]',
   '[&>h2]:font-display [&>h2]:text-[clamp(2.2rem,5vw,3.8rem)] [&>h2]:font-[430]',
   '[&>h2]:leading-none [&>h2]:tracking-[-0.045em]',
@@ -353,7 +356,7 @@ export const photoLedger = [
   '[&>div>span]:text-[0.56rem] [&>div>span]:uppercase [&>div>span]:tracking-[0.16em]',
   '[&>div>span]:text-muted-foreground',
   '[&>div>strong]:font-display [&>div>strong]:text-[3.5rem] [&>div>strong]:font-[350]',
-  '[&>div>strong]:leading-[0.8] [&>div>strong]:text-accent',
+  '[&>div>strong]:leading-[0.8] [&>div>strong]:text-accent-ink',
   '[&_dl]:grid [&_dl]:grid-cols-3 [&_dl]:gap-4',
   'to-768:[&_dl]:gap-2 to-520:[&_dl]:grid-cols-2',
   '[&_dl>div]:border-l [&_dl>div]:border-line [&_dl>div]:pl-4',

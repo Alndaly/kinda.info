@@ -898,7 +898,7 @@ export function AudioPlayerPage({
             '[&>div:first-child]:pr-12',
             '[&>div:first-child>span]:text-[0.48rem] [&>div:first-child>span]:font-extrabold',
             '[&>div:first-child>span]:uppercase [&>div:first-child>span]:tracking-[0.16em]',
-            '[&>div:first-child>span]:text-accent',
+            '[&>div:first-child>span]:text-accent-ink',
           )}
           closeLabel={labels.mini.close}
         >

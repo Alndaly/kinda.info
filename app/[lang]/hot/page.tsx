@@ -98,7 +98,7 @@ export default async function HotPage({ params }: Props) {
                     </span>
                   </div>
                   <a
-                    className="inline-flex shrink-0 items-center gap-[0.3rem] text-[0.58rem] uppercase tracking-[0.1em] text-muted-foreground transition-colors duration-[180ms] ease-[ease] hover:text-accent [&>svg]:h-[0.7rem] [&>svg]:w-[0.7rem]"
+                    className="inline-flex shrink-0 items-center gap-[0.3rem] text-[0.58rem] uppercase tracking-[0.1em] text-muted-foreground transition-colors duration-[180ms] ease-[ease] hover:text-accent-ink [&>svg]:h-[0.7rem] [&>svg]:w-[0.7rem]"
                     href={meta.site}
                     target="_blank"
                     rel="noreferrer"
@@ -122,13 +122,13 @@ export default async function HotPage({ params }: Props) {
                         <span
                           className={cn(
                             'font-mono text-[0.7rem] tabular-nums',
-                            item.rank <= 3 ? 'font-bold text-accent' : 'text-muted-foreground',
+                            item.rank <= 3 ? 'font-bold text-accent-ink' : 'text-muted-foreground',
                           )}
                         >
                           {String(item.rank).padStart(2, '0')}
                         </span>
                         <span className="min-w-0">
-                          <span className="block text-[0.85rem] leading-[1.6] text-foreground/90 transition-colors duration-[160ms] ease-[ease] group-hover:text-accent">
+                          <span className="block text-[0.85rem] leading-[1.6] text-foreground/90 transition-colors duration-[160ms] ease-[ease] group-hover:text-accent-ink">
                             {item.title}
                           </span>
                           {item.heat || item.tag ? (

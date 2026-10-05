@@ -35,7 +35,7 @@ export type AudioQueueSheetLabels = {
 
 const sheetKicker = [
   '[&>span]:text-[0.48rem] [&>span]:font-extrabold [&>span]:uppercase',
-  '[&>span]:tracking-[0.16em] [&>span]:text-accent',
+  '[&>span]:tracking-[0.16em] [&>span]:text-accent-ink',
 ].join(' ');
 
 const sheetTabs = [

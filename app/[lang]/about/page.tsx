@@ -112,7 +112,7 @@ export default async function AboutPage({ params }: Props) {
           copy starts at the same left edge as everything else. */}
       <section className="relative mx-auto mt-[var(--space-2xl)] max-w-[58rem]">
         <Asterisk
-          className="absolute -left-12 top-[0.42em] h-6 w-6 text-accent to-1024:static to-1024:mb-6 to-1024:h-7 to-1024:w-7"
+          className="absolute -left-12 top-[0.42em] h-6 w-6 text-accent-ink to-1024:static to-1024:mb-6 to-1024:h-7 to-1024:w-7"
           aria-hidden="true"
         />
         <div>
@@ -147,7 +147,7 @@ export default async function AboutPage({ params }: Props) {
               key={craft.title}
               className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-x-6 gap-y-3 border-b border-line py-8 to-768:grid-cols-[1fr]"
             >
-              <span className="pt-[0.35rem] font-display text-[0.95rem] italic text-accent">
+              <span className="pt-[0.35rem] font-display text-[0.95rem] italic text-accent-ink">
                 {String(index + 1).padStart(2, '0')}
               </span>
               <div>

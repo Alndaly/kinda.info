@@ -36,6 +36,11 @@
     --muted-foreground: 45 5% 39%;
     --accent: var(--accent-raw);
     --accent-foreground: 42 29% 96%;
+    /* The signal red reads 3.63:1 as text on paper — below AA, and it is the
+       colour every in-article link is set in. This is the same hue and
+       saturation pulled down in lightness until it passes, used only where the
+       accent is *printed*; fills, borders and rules keep --accent. */
+    --accent-text: 8 74% 42%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
     --border: var(--line);
@@ -66,6 +71,8 @@
     --muted-foreground: 45 8% 62%;
     --accent: var(--accent-raw);
     --accent-foreground: 0 0% 100%;
+    /* On the dark ground the accent already measures 4.85:1 as text. */
+    --accent-text: var(--accent);
     --border: var(--line);
     --input: var(--line);
     --ring: var(--ink);

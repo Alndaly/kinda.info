@@ -103,7 +103,7 @@ const searchDialog = [
 const searchInput = [
   'grid min-h-[4.4rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[0.8rem]',
   'border-b border-line px-5',
-  '[&>svg]:w-[1.15rem] [&>svg]:text-accent',
+  '[&>svg]:w-[1.15rem] [&>svg]:text-accent-ink',
   '[&_input]:w-full [&_input]:min-w-0 [&_input]:border-0 [&_input]:bg-transparent',
   '[&_input]:font-display [&_input]:text-[clamp(1.2rem,3vw,1.75rem)]',
   '[&_input]:tracking-[-0.02em] [&_input]:outline-0',
@@ -138,7 +138,7 @@ const searchResultRow = [
 ].join(' ');
 
 const searchResultIcon = [
-  'grid h-[2.35rem] w-[2.35rem] place-items-center rounded-full border border-line text-accent',
+  'grid h-[2.35rem] w-[2.35rem] place-items-center rounded-full border border-line text-accent-ink',
   'group-data-[active=true]/result:border-paper/[0.26]',
   '[&>svg]:h-[0.9rem] [&>svg]:w-[0.9rem]',
 ].join(' ');
@@ -158,7 +158,7 @@ const searchResultCopy = [
 
 const searchEmpty = [
   'grid min-h-48 place-items-center content-center gap-3 text-center text-muted-foreground',
-  '[&>svg]:w-6 [&>svg]:text-accent',
+  '[&>svg]:w-6 [&>svg]:text-accent-ink',
   '[&>p]:font-display [&>p]:text-[1.05rem]',
 ].join(' ');
 

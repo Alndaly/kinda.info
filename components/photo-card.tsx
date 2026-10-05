@@ -73,6 +73,9 @@ export function PhotoCard({
               {entry.location}
             </span>
           </div>
+          {/* Keeps --accent rather than the darkened text token: this card also
+              renders on the home page's inverse (dark) band, where the darker
+              red drops to 2.98:1 instead of improving. */}
           {viewLabel ? (
             <span className="inline-flex shrink-0 items-center gap-[0.35rem] border-b border-current pb-[0.22rem] transition-colors duration-[180ms] ease-[ease] group-hover:text-accent to-520:text-[0px] [&>svg]:w-[0.8rem] to-520:[&>svg]:w-4 [&>svg]:transition-transform [&>svg]:duration-[180ms] [&>svg]:ease-[ease] group-hover:[&>svg]:translate-x-[2px] group-hover:[&>svg]:-translate-y-[2px]">
               {viewLabel}

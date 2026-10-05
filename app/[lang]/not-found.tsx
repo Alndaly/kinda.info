@@ -14,7 +14,7 @@ export default function NotFound() {
   return (
     <div className={`${siteContainer} grid min-h-[65svh] place-items-center py-20 text-center`}>
       <div>
-        <Asterisk className="mx-auto mb-7 h-8 w-8 text-accent" />
+        <Asterisk className="mx-auto mb-7 h-8 w-8 text-accent-ink" />
         <p className={sectionIndex}>Error / 404</p>
         <h1 className="mt-4 font-display text-[clamp(5rem,18vw,12rem)] leading-none tracking-[-0.08em]">
           {dictionary.title}

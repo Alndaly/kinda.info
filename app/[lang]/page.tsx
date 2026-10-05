@@ -50,7 +50,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         <div className="grid grid-cols-[minmax(0,1.03fr)_minmax(360px,0.97fr)] gap-[clamp(2rem,6vw,7rem)] to-1024:grid-cols-[1fr]">
           <div className="relative z-[1] flex flex-col justify-between py-4 lg:py-10">
             <div>
-              <Badge className="mb-8 border-accent/25 text-accent">
+              <Badge className="mb-8 border-accent/25 text-accent-ink">
                 <Sparkles className="mr-1.5 h-3 w-3" />
                 {dictionary.archive}
               </Badge>
@@ -70,7 +70,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                 )}
               >
                 {dictionary.wordmark}
-                <span className="-mb-[0.2rem] font-display text-[clamp(1rem,2vw,1.55rem)] leading-none tracking-[0.35em] text-accent [writing-mode:vertical-rl]">
+                <span className="-mb-[0.2rem] font-display text-[clamp(1rem,2vw,1.55rem)] leading-none tracking-[0.35em] text-accent-ink [writing-mode:vertical-rl]">
                   {dictionary.displayName}
                 </span>
               </h1>
@@ -115,7 +115,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </span>
             </div>
             <div
-              className="absolute right-[clamp(1.5rem,3vw,2.25rem)] top-0 z-[2] grid h-32 w-32 animate-slow-spin place-items-center rounded-full border border-accent/45 text-accent after:absolute after:text-[1.1rem] after:content-['✦'] [&>svg]:h-full [&>svg]:w-full [&>svg]:overflow-visible to-768:right-6 to-768:h-24 to-768:w-24"
+              className="absolute right-[clamp(1.5rem,3vw,2.25rem)] top-0 z-[2] grid h-32 w-32 animate-slow-spin place-items-center rounded-full border border-accent/45 text-accent-ink after:absolute after:text-[1.1rem] after:content-['✦'] [&>svg]:h-full [&>svg]:w-full [&>svg]:overflow-visible to-768:right-6 to-768:h-24 to-768:w-24"
               aria-hidden="true"
             >
               <svg viewBox="0 0 120 120" role="presentation">

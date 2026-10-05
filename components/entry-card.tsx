@@ -39,7 +39,7 @@ export function EntryCard({
           {languageLabel ? <span className="rounded-full bg-memo px-[0.55rem] py-[0.3rem] text-[0.52rem] font-extrabold uppercase tracking-[0.08em] text-memo-ink">{languageLabel}</span> : null}
         </div>
         <Link href={entry.href} className="block">
-          <h2 className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.02] tracking-[-0.04em] transition-colors group-hover:text-accent">
+          <h2 className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-[1.02] tracking-[-0.04em] transition-colors group-hover:text-accent-ink">
             {entry.title}
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">

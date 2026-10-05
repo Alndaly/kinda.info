@@ -49,7 +49,7 @@ const audioHeader = [
 const audioKicker = [
   'flex min-w-0 items-center gap-[0.55rem] text-[0.56rem] font-[750] uppercase',
   'tracking-[calc(0.14em*var(--tracking-scale))] text-muted-foreground',
-  '[&>svg]:h-[0.85rem] [&>svg]:w-[0.85rem] [&>svg]:flex-none [&>svg]:text-accent',
+  '[&>svg]:h-[0.85rem] [&>svg]:w-[0.85rem] [&>svg]:flex-none [&>svg]:text-accent-ink',
   'to-520:text-[0.5rem] to-520:tracking-[0.1em]',
 ].join(' ');
 
@@ -116,7 +116,7 @@ const audioTime = [
 
 const audioError = [
   'flex min-w-0 items-center justify-between gap-3 border-t border-accent/[0.28]',
-  'pt-3 font-sans text-[0.65rem] text-accent [grid-area:error]',
+  'pt-3 font-sans text-[0.65rem] text-accent-ink [grid-area:error]',
   '[&>span]:flex [&>span]:items-center [&>span]:gap-[0.4rem]',
   '[&>button]:flex [&>button]:flex-none [&>button]:items-center [&>button]:gap-[0.4rem]',
   '[&>button]:rounded-full [&>button]:border [&>button]:border-accent/45',

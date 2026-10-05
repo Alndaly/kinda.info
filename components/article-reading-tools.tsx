@@ -45,7 +45,7 @@ const readingRailLink = [
   'pl-[0.8rem] text-[0.66rem] leading-[1.45] text-muted-foreground transition-colors duration-[180ms] ease-[ease]',
   'hover:text-ink aria-[current=location]:text-ink',
   '[&>i]:pt-[0.05rem] [&>i]:font-display [&>i]:text-[0.68rem] [&>i]:italic [&>i]:text-muted-foreground/[0.72]',
-  'aria-[current=location]:[&>i]:text-accent',
+  'aria-[current=location]:[&>i]:text-accent-ink',
 ].join(' ');
 
 const mobileToc = [
