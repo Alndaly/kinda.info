@@ -48,6 +48,25 @@ const codeHeader = [
   '[&_button[data-copied=true]]:text-memo',
 ].join(' ');
 
+/**
+ * Mermaid 12 emits `width="100%"` with no height attribute. Inside a grid that
+ * centres its items there is nothing for the height to resolve against, so the
+ * diagram renders correctly and then collapses to zero — an empty panel where
+ * the chart should be. Deriving pixel dimensions from the viewBox restores the
+ * intrinsic ratio; `max-w-full h-auto` on the container scales it back down.
+ */
+function withIntrinsicSize(svg: string) {
+  const viewBox = svg.match(/viewBox="([\d.\-\s]+)"/)?.[1];
+  if (!viewBox) return svg;
+  const [, , width, height] = viewBox.trim().split(/\s+/).map(Number);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || height <= 0) return svg;
+  return svg.replace(
+    /<svg\b([^>]*)>/,
+    (_tag, attrs: string) =>
+      `<svg${attrs.replace(/\s(width|height)="[^"]*"/g, '')} width="${width}" height="${height}">`,
+  );
+}
+
 function MermaidPreview({ source }: { source: string }) {
   const isEnglish = typeof document !== 'undefined' &&
     document.documentElement.lang === 'en';
@@ -70,7 +89,7 @@ function MermaidPreview({ source }: { source: string }) {
         });
         const result = await mermaid.render(id, source);
         if (active) {
-          setSvg(result.svg);
+          setSvg(withIntrinsicSize(result.svg));
           setError('');
         }
       } catch (reason) {

@@ -34,13 +34,25 @@ export type HotState = {
   events: HotEvent[];
 };
 
-export const HOT_SOURCE_META: Record<HotSourceId, { name: string; site: string }> = {
-  hackernews: { name: 'Hacker News', site: 'https://news.ycombinator.com' },
-  github: { name: 'GitHub Trending', site: 'https://github.com/trending' },
-  juejin: { name: '掘金', site: 'https://juejin.cn' },
-  ithome: { name: 'IT 之家', site: 'https://www.ithome.com' },
-  weibo: { name: '微博热搜', site: 'https://s.weibo.com/top/summary' },
-  baidu: { name: '百度热搜', site: 'https://top.baidu.com/board?tab=realtime' },
+/**
+ * A mark per source, in that outlet's own colour.
+ *
+ * Only two of the six expose an image at all, and both are author avatars
+ * rather than anything about the story — a maintainer's face beside a repo
+ * name says nothing. A letter mark is on every row instead, which is what
+ * makes the sources scannable, costs no request, and tells no third party
+ * who is reading.
+ */
+export const HOT_SOURCE_META: Record<
+  HotSourceId,
+  { name: string; site: string; mark: string; colour: string }
+> = {
+  hackernews: { name: 'Hacker News', site: 'https://news.ycombinator.com', mark: 'Y', colour: '#FF6600' },
+  github: { name: 'GitHub Trending', site: 'https://github.com/trending', mark: 'GH', colour: '#8B949E' },
+  juejin: { name: '掘金', site: 'https://juejin.cn', mark: '掘', colour: '#1E80FF' },
+  ithome: { name: 'IT 之家', site: 'https://www.ithome.com', mark: 'IT', colour: '#C2272D' },
+  weibo: { name: '微博热搜', site: 'https://s.weibo.com/top/summary', mark: '微', colour: '#E6162D' },
+  baidu: { name: '百度热搜', site: 'https://top.baidu.com/board?tab=realtime', mark: '百', colour: '#3B5BDB' },
 };
 
 const STATE_URL = `https://raw.githubusercontent.com/${siteConfig.commentsRepo}/hot-data/state.json`;

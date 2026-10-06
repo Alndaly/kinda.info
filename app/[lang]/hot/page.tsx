@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArrowUpRight, Minus, TrendingDown, TrendingUp } from 'lucide-react';
+import { readableOn } from '@/lib/accent';
 import { HOT_SOURCE_META, getHotState, trendOf, type HotEvent } from '@/lib/hot/state';
 import { getDictionary, getLocaleAlternates, hasLocale, localizeHref } from '@/lib/i18n';
 import { siteConfig } from '@/site.config';
@@ -51,12 +52,22 @@ const TREND_TONE = {
 function SourceTrail({ event }: { event: HotEvent }) {
   return (
     <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.58rem] uppercase tracking-[0.08em] text-muted-foreground">
-      {event.sources.map((source) => (
-        <span key={source.id} className="inline-flex items-center gap-[0.3rem]">
-          <span className="font-bold text-foreground/70">{HOT_SOURCE_META[source.id]?.name ?? source.id}</span>
-          <span className="font-mono tabular-nums">#{source.rank}</span>
-        </span>
-      ))}
+      {event.sources.map((source) => {
+        const meta = HOT_SOURCE_META[source.id];
+        return (
+          <span key={source.id} className="inline-flex items-center gap-[0.35rem]">
+            <span
+              aria-hidden="true"
+              className="grid h-[1.05rem] min-w-[1.05rem] place-items-center rounded-[0.25rem] px-[0.2rem] font-sans text-[0.55rem] font-bold tracking-normal"
+              style={{ backgroundColor: meta?.colour, color: readableOn(meta?.colour) }}
+            >
+              {meta?.mark ?? '?'}
+            </span>
+            <span className="font-bold text-foreground/70">{meta?.name ?? source.id}</span>
+            <span className="font-mono tabular-nums">#{source.rank}</span>
+          </span>
+        );
+      })}
     </span>
   );
 }
@@ -153,8 +164,11 @@ export default async function HotPage({ params }: Props) {
                     target="_blank"
                     rel="noreferrer"
                   >
+                    {/* Position in this list, not the event's rank on its own
+                        board — that is already in the trail below, and showing
+                        it here made the column read as badly sorted. */}
                     <span className={cn('font-mono text-[0.8rem] tabular-nums', index < 3 ? 'font-bold text-accent-ink' : 'text-muted-foreground')}>
-                      #{bestRank(event)}
+                      {String(index + 1).padStart(2, '0')}
                     </span>
                     <span className="min-w-0">
                       <span className="block text-[0.95rem] leading-[1.55] text-foreground/90 transition-colors duration-[160ms] ease-[ease] group-hover:text-accent-ink">
