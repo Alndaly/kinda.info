@@ -18,6 +18,8 @@ export type HotEvent = {
   url: string;
   blurb?: string;
   tag?: string;
+  /** The story's own picture, where the page exposed one. */
+  image?: string;
   sources: Array<{ id: HotSourceId; rank: number; url: string; heat?: string }>;
   firstSeen: string;
   lastSeen: string;

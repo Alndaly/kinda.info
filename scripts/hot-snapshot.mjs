@@ -59,6 +59,89 @@ function collectWords(node, found = []) {
   return found;
 }
 
+/* ---------- topic images ---------- */
+
+/** Obvious furniture rather than the story's own picture. */
+const NOT_A_PHOTO = /(logo|icon|favicon|avatar|sprite|placeholder|blank|spacer|loading)/i;
+
+/**
+ * Hosts whose images cannot be shown even when the page offers them.
+ *
+ * Juejin serves article images from a signed CDN that refuses any request it
+ * did not sign: measured in a browser, eight of eight failed to load while
+ * every other host succeeded. Storing those URLs only buys a grey box, so the
+ * story is recorded without a picture instead.
+ */
+const UNUSABLE_IMAGE_HOST = /(byteimg\.com|byteacctimg\.com)/i;
+
+/**
+ * The picture belonging to a story, in the order the web actually provides it.
+ *
+ * Measured across the six boards: Hacker News and GitHub links carry og:image,
+ * while Juejin and IThome publish none and only have the picture in the body.
+ * Weibo and Baidu entries point at a search page and have nothing at all — so
+ * roughly two thirds of events get an image and the rest must look right
+ * without one.
+ */
+function extractImage(html, pageUrl) {
+  const meta = (pattern) => html.match(pattern)?.[1];
+  const tagged =
+    meta(/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)/i) ||
+    meta(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ||
+    meta(/<meta[^>]+name=["']twitter:image(?::src)?["'][^>]+content=["']([^"']+)/i);
+  if (tagged && !UNUSABLE_IMAGE_HOST.test(tagged)) return absolute(tagged, pageUrl);
+
+  for (const match of html.matchAll(/<img[^>]+(?:data-original|data-src|src)=["']([^"']+)["']/gi)) {
+    const src = match[1];
+    if (!/^https?:\/\//i.test(src)) continue;
+    if (NOT_A_PHOTO.test(src) || /\.svg(\?|$)/i.test(src)) continue;
+    if (UNUSABLE_IMAGE_HOST.test(src)) continue;
+    return src;
+  }
+  return undefined;
+}
+
+function absolute(src, pageUrl) {
+  try { return new URL(src, pageUrl).toString(); } catch { return undefined; }
+}
+
+/** Search-result pages never carry a picture of the thing being searched. */
+const IMAGELESS = new Set(['weibo', 'baidu']);
+/** A ceiling so one poll cannot turn into a crawl. */
+const MAX_IMAGE_LOOKUPS = 40;
+
+async function attachImages(events) {
+  const pending = events.filter(
+    (event) =>
+      !event.image &&
+      !event.imageChecked &&
+      !event.sources.every((source) => IMAGELESS.has(source.id)),
+  ).slice(0, MAX_IMAGE_LOOKUPS);
+
+  let found = 0;
+  // Small batches: these are other people's servers.
+  for (let i = 0; i < pending.length; i += 5) {
+    await Promise.allSettled(
+      pending.slice(i, i + 5).map(async (event) => {
+        // Marked either way, so a story without a picture is asked once.
+        event.imageChecked = true;
+        try {
+          const response = await fetch(event.url, {
+            headers: { 'User-Agent': UA, Accept: 'text/html,*/*' },
+            signal: AbortSignal.timeout(10_000),
+            redirect: 'follow',
+          });
+          if (!response.ok) return;
+          const html = (await response.text()).slice(0, 400_000);
+          const image = extractImage(html, response.url || event.url);
+          if (image) { event.image = image; found += 1; }
+        } catch { /* a source being slow is not a failure worth recording */ }
+      }),
+    );
+  }
+  return { looked: pending.length, found };
+}
+
 export const SOURCES = [
   { id: 'hackernews', name: { zh: 'Hacker News', en: 'Hacker News' } },
   { id: 'github',     name: { zh: 'GitHub Trending', en: 'GitHub Trending' } },
@@ -257,6 +340,11 @@ async function main() {
       blurb: cluster.sources.find((s) => s.blurb)?.blurb ?? prior?.blurb,
       tag: cluster.sources.find((s) => s.tag)?.tag,
       sources: cluster.sources.map((s) => ({ id: s.source, rank: s.rank, url: s.url, heat: s.heat })),
+      // Drop anything stored before a host was known to be unusable.
+      image: prior?.image && !UNUSABLE_IMAGE_HOST.test(prior.image) ? prior.image : undefined,
+      imageChecked: prior?.image && UNUSABLE_IMAGE_HOST.test(prior.image)
+        ? false
+        : (prior?.imageChecked ?? false),
       firstSeen: prior?.firstSeen ?? now,
       lastSeen: now,
       polls: (prior?.polls ?? 0) + 1,
@@ -271,8 +359,19 @@ async function main() {
   for (const id of unmatched) {
     const stale = byId.get(id);
     if (hoursBetween(now, stale.lastSeen) > RETAIN_HOURS) continue;
-    events.push({ ...stale, heat: 0, previousHeat: stale.heat });
+    const usable = stale.image && !UNUSABLE_IMAGE_HOST.test(stale.image);
+    events.push({
+      ...stale,
+      heat: 0,
+      previousHeat: stale.heat,
+      // This path copies an event wholesale, so the unusable-host filter has
+      // to be applied here too or old entries keep a picture that never loads.
+      image: usable ? stale.image : undefined,
+      imageChecked: usable ? stale.imageChecked : false,
+    });
   }
+
+  const images = await attachImages(events);
 
   events.sort((a, b) => new Date(b.firstSeen) - new Date(a.firstSeen));
 
@@ -287,7 +386,8 @@ async function main() {
   const fresh = events.filter((e) => e.firstSeen === now).length;
   console.log(
     `[hot] ${events.length} events (${fresh} new), ` +
-    `${SOURCES.length - unavailable.length}/${SOURCES.length} sources` +
+    `${SOURCES.length - unavailable.length}/${SOURCES.length} sources, ` +
+    `${images.found}/${images.looked} images` +
     (unavailable.length ? ` — down: ${unavailable.join(', ')}` : ''),
   );
 }

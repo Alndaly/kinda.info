@@ -49,6 +49,29 @@ const TREND_TONE = {
   gone: 'text-muted-foreground/50',
 } as const;
 
+/**
+ * Loaded straight from whoever published it: a plain <img> rather than
+ * next/image, because the hosts are whatever the boards happen to link to and
+ * cannot be enumerated in remotePatterns. `no-referrer` keeps this site's URLs
+ * out of their logs. Hosts that refuse to serve the image are filtered when it
+ * is recorded, not here — this renders whatever survived that.
+ */
+function Thumb({ event }: { event: HotEvent }) {
+  if (!event.image) return null;
+  return (
+    <span className="hidden h-[3.4rem] w-[5.4rem] shrink-0 overflow-hidden rounded-[0.3rem] border border-line/60 bg-muted sm:block">
+      <img
+        src={event.image}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        className="h-full w-full object-cover transition-transform duration-[320ms] ease-[ease] group-hover:scale-[1.04]"
+      />
+    </span>
+  );
+}
+
 function SourceTrail({ event }: { event: HotEvent }) {
   return (
     <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.58rem] uppercase tracking-[0.08em] text-muted-foreground">
@@ -159,7 +182,7 @@ export default async function HotPage({ params }: Props) {
               return (
                 <li key={event.id}>
                   <a
-                    className="group grid grid-cols-[1.6rem_minmax(0,1fr)_auto] items-baseline gap-4 border-b border-line/60 py-[0.7rem] transition-colors duration-[160ms] ease-[ease] hover:bg-accent/[0.05]"
+                    className="group grid grid-cols-[1.6rem_minmax(0,1fr)_auto_auto] items-center gap-4 border-b border-line/60 py-[0.7rem] transition-colors duration-[160ms] ease-[ease] hover:bg-accent/[0.05]"
                     href={event.url}
                     target="_blank"
                     rel="noreferrer"
@@ -183,6 +206,7 @@ export default async function HotPage({ params }: Props) {
                         ) : null}
                       </span>
                     </span>
+                    <Thumb event={event} />
                     <span className="flex shrink-0 items-center gap-2 text-[0.58rem] uppercase tracking-[0.08em] text-muted-foreground">
                       {dictionary.held.replace('{n}', String(event.polls))}
                       <Icon aria-hidden="true" className={cn('h-[0.85rem] w-[0.85rem]', TREND_TONE[trend])} />
@@ -214,7 +238,7 @@ export default async function HotPage({ params }: Props) {
                 return (
                   <li key={event.id}>
                     <a
-                      className="group grid grid-cols-[3.2rem_minmax(0,1fr)] gap-4 border-b border-line/50 py-[0.85rem] transition-colors duration-[160ms] ease-[ease] hover:bg-accent/[0.05] to-520:grid-cols-[1fr]"
+                      className="group grid grid-cols-[3.2rem_minmax(0,1fr)_auto] gap-4 border-b border-line/50 py-[0.85rem] transition-colors duration-[160ms] ease-[ease] hover:bg-accent/[0.05] to-520:grid-cols-[1fr]"
                       href={event.url}
                       target="_blank"
                       rel="noreferrer"
@@ -249,6 +273,7 @@ export default async function HotPage({ params }: Props) {
                           ) : null}
                         </span>
                       </span>
+                      <Thumb event={event} />
                     </a>
                   </li>
                 );
