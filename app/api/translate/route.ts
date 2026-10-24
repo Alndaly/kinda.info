@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
-import { HttpsProxyAgent } from 'https-proxy-agent';
+import http2 from 'http2-wrapper';
 
 export const runtime = 'nodejs';
 
@@ -59,6 +58,47 @@ function createBatches(texts: string[]) {
   return batches;
 }
 
+function createTranslationAgent(proxyUrl?: string) {
+  if (!proxyUrl) return new http2.Agent();
+
+  const url = new URL(proxyUrl);
+  const ProxyAgent = url.protocol === 'https:'
+    ? http2.proxies.Http2OverHttps
+    : http2.proxies.Http2OverHttp;
+  return new ProxyAgent({ proxyOptions: { url } });
+}
+
+const translationAgent = createTranslationAgent(
+  process.env.HTTPS_PROXY ?? process.env.HTTP_PROXY,
+);
+
+function requestTranslation(url: URL): Promise<unknown> {
+  const { promise, resolve, reject } = Promise.withResolvers<unknown>();
+  const request = http2.get(url, {
+    agent: translationAgent,
+    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Kinda.info/1.0)' },
+    timeout: 15_000,
+  }, (response) => {
+    const chunks: Buffer[] = [];
+    response.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+    response.on('error', reject);
+    response.on('end', () => {
+      if (response.statusCode !== 200) {
+        reject(new Error(`Translation provider returned ${response.statusCode}`));
+        return;
+      }
+      try {
+        resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+  request.on('timeout', () => request.destroy(new Error('Translation provider timed out')));
+  request.on('error', reject);
+  return promise;
+}
+
 async function translateBatch(
   batch: Array<{ index: number; text: string }>,
   sourceLanguage: keyof typeof LANGUAGE_CODES,
@@ -76,15 +116,8 @@ async function translateBatch(
   url.searchParams.set('dt', 't');
   url.searchParams.set('q', html);
 
-  const proxyUrl = process.env.HTTPS_PROXY ?? process.env.HTTP_PROXY;
-  const response = await axios.get(url.toString(), {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Kinda.info/1.0)' },
-    httpsAgent: proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined,
-    proxy: false,
-    timeout: 15_000,
-  });
+  const payload = await requestTranslation(url) as [Array<[string]>];
 
-  const payload = response.data as [Array<[string]>];
   const translatedHtml = payload[0]?.map((segment) => segment[0] ?? '').join('') ?? '';
   const translations = new Map<number, string>();
   const sourceByIndex = new Map(batch.map((item) => [item.index, item.text]));

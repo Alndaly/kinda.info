@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
+import { synthesizeSpeech } from '@/lib/edge-speech';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -11,15 +11,6 @@ const VOICES = {
   en: 'en-US-AriaNeural',
   zh: 'zh-CN-XiaoxiaoNeural',
 } as const;
-
-function escapeSsml(value: string) {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&apos;');
-}
 
 function splitForSpeech(text: string) {
   const sentences = text
@@ -52,19 +43,12 @@ function splitForSpeech(text: string) {
   return chunks;
 }
 
-async function collectAudio(stream: NodeJS.ReadableStream) {
-  const chunks: Buffer[] = [];
-  for await (const chunk of stream) chunks.push(Buffer.from(chunk));
-  return Buffer.concat(chunks);
-}
-
 export async function POST(request: NextRequest) {
   const origin = request.headers.get('origin');
   if (origin && origin !== request.nextUrl.origin) {
     return NextResponse.json({ error: 'Cross-origin speech synthesis is not allowed' }, { status: 403 });
   }
 
-  let tts: MsEdgeTTS | undefined;
   try {
     const body = await request.json() as { text?: unknown; locale?: unknown };
     const text = typeof body.text === 'string' ? body.text.trim() : '';
@@ -74,16 +58,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid speech request' }, { status: 400 });
     }
 
-    tts = new MsEdgeTTS();
-    await tts.setMetadata(
-      VOICES[locale],
-      OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3,
-    );
-
     const audioChunks: Buffer[] = [];
     for (const chunk of splitForSpeech(text)) {
-      const { audioStream } = tts.toStream(escapeSsml(chunk), { rate: '-4%' });
-      audioChunks.push(await collectAudio(audioStream));
+      audioChunks.push(
+        await synthesizeSpeech(chunk, VOICES[locale], locale === 'en' ? 'en-US' : 'zh-CN'),
+      );
     }
     const audio = Buffer.concat(audioChunks);
 
@@ -98,7 +77,5 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Edge speech synthesis failed', error);
     return NextResponse.json({ error: 'Speech synthesis is temporarily unavailable' }, { status: 502 });
-  } finally {
-    tts?.close();
   }
 }
