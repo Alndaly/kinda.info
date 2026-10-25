@@ -13,7 +13,7 @@ Kinda 的个人数字档案：笔记、摄影与独立项目。
 
 ## 媒体存储
 
-远程图片和视频存放在 Cloudflare R2 的 `kinda-info` 桶，通过 `https://media.kinda.info` 公开访问。对象沿用原有 `image/`、`images/` 路径；新增媒体时保持相同目录结构，并在 MDX 或站点配置中引用该域名。
+远程图片和视频存放在 Cloudflare R2 的 `kinda-info` 桶，通过 `https://media.kinda.info` 公开访问。对象统一存放在 `images/` 目录；新增媒体时保持相同目录结构，并在 MDX 或站点配置中引用该域名。
 
 ## 本地开发
 
