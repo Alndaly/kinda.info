@@ -43,17 +43,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'oss.kinda.info',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'alnda-public.oss-cn-hangzhou.aliyuncs.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'qingyon-revornix-public.oss-cn-beijing.aliyuncs.com',
+        hostname: 'media.kinda.info',
         pathname: '/**',
       },
     ],

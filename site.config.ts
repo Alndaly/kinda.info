@@ -15,5 +15,5 @@ export const siteConfig = {
   x: 'https://x.com/KindaHuax',
   wechatQr: '/images/wechat-official-qr.jpg',
   wechatPersonalQr:
-    'https://qingyon-revornix-public.oss-cn-beijing.aliyuncs.com/images/20260731212638809.JPG',
+    'https://media.kinda.info/images/20260731212638809.JPG',
 } as const;

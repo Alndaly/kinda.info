@@ -11,6 +11,10 @@ Kinda 的个人数字档案：笔记、摄影与独立项目。
 
 网站没有远程 CMS。`content/` 中的静态 MDX 文件是唯一内容来源，写作格式和自定义节点请查看 [`content/README.md`](content/README.md)。
 
+## 媒体存储
+
+远程图片和视频存放在 Cloudflare R2 的 `kinda-info` 桶，通过 `https://media.kinda.info` 公开访问。对象沿用原有 `image/`、`images/` 路径；新增媒体时保持相同目录结构，并在 MDX 或站点配置中引用该域名。
+
 ## 本地开发
 
 项目固定使用 Node.js 24 和 pnpm 11。使用 nvm 时可先切换到仓库声明的版本：
