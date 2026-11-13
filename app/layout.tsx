@@ -1,5 +1,3 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import { GlobalAudioProvider } from '@/components/audio/global-audio-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import '@fontsource-variable/newsreader';
@@ -27,8 +25,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               aria-hidden="true"
             />
             {children}
-            <SpeedInsights />
-            <Analytics />
           </GlobalAudioProvider>
         </ThemeProvider>
       </body>

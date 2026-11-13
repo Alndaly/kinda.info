@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import http2 from 'http2-wrapper';
-
-export const runtime = 'nodejs';
 
 const LANGUAGE_CODES = {
   en: 'en',
@@ -58,45 +55,19 @@ function createBatches(texts: string[]) {
   return batches;
 }
 
-function createTranslationAgent(proxyUrl?: string) {
-  if (!proxyUrl) return new http2.Agent();
-
-  const url = new URL(proxyUrl);
-  const ProxyAgent = url.protocol === 'https:'
-    ? http2.proxies.Http2OverHttps
-    : http2.proxies.Http2OverHttp;
-  return new ProxyAgent({ proxyOptions: { url } });
-}
-
-const translationAgent = createTranslationAgent(
-  process.env.HTTPS_PROXY ?? process.env.HTTP_PROXY,
-);
-
-function requestTranslation(url: URL): Promise<unknown> {
-  const { promise, resolve, reject } = Promise.withResolvers<unknown>();
-  const request = http2.get(url, {
-    agent: translationAgent,
+/**
+ * Google's endpoint answers with JSON; HTTP/2 was only ever a transport detail,
+ * and `fetch` negotiates it on the edge network without a client.
+ */
+async function requestTranslation(url: URL): Promise<unknown> {
+  const response = await fetch(url, {
     headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Kinda.info/1.0)' },
-    timeout: 15_000,
-  }, (response) => {
-    const chunks: Buffer[] = [];
-    response.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
-    response.on('error', reject);
-    response.on('end', () => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`Translation provider returned ${response.statusCode}`));
-        return;
-      }
-      try {
-        resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
-      } catch (error) {
-        reject(error);
-      }
-    });
+    signal: AbortSignal.timeout(15_000),
   });
-  request.on('timeout', () => request.destroy(new Error('Translation provider timed out')));
-  request.on('error', reject);
-  return promise;
+  if (response.status !== 200) {
+    throw new Error(`Translation provider returned ${response.status}`);
+  }
+  return response.json();
 }
 
 async function translateBatch(

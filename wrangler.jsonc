@@ -1,0 +1,40 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kinda-info",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-13",
+  "compatibility_flags": [
+    // Node.js APIs (Buffer, node:crypto) used by the content and speech code.
+    "nodejs_compat",
+    // The app fetches public origins (Google Translate, Edge TTS, GitHub)
+    // from inside the Worker.
+    "global_fetch_strictly_public",
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  // The adapter routes internal `fetch` calls (image optimization, ISR) back
+  // through the Worker itself.
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "kinda-info",
+    },
+  ],
+  // `next/image` delegates resizing to Cloudflare Images.
+  "images": {
+    "binding": "IMAGES",
+  },
+  // ISR and the `revalidate: 600` hot board live in R2 instead of per-isolate
+  // memory, so a cache entry survives redeploys and reaches every colo.
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "kinda-info-cache",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+}

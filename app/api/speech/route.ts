@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { concatBytes } from '@/lib/bytes';
 import { synthesizeSpeech } from '@/lib/edge-speech';
 
-export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60;
 
 const MAX_CHARACTERS = 24_000;
 const CHUNK_CHARACTERS = 3_200;
@@ -58,13 +57,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid speech request' }, { status: 400 });
     }
 
-    const audioChunks: Buffer[] = [];
+    const audioChunks: Uint8Array[] = [];
     for (const chunk of splitForSpeech(text)) {
       audioChunks.push(
         await synthesizeSpeech(chunk, VOICES[locale], locale === 'en' ? 'en-US' : 'zh-CN'),
       );
     }
-    const audio = Buffer.concat(audioChunks);
+    const audio = concatBytes(audioChunks);
 
     return new Response(audio, {
       headers: {

@@ -1,0 +1,4 @@
+# Local-only variables for `opennextjs-cloudflare preview` / `wrangler dev`.
+# Copy to .dev.vars (git-ignored); production values live in the Cloudflare
+# dashboard under the Worker's Settings → Variables.
+NEXTJS_ENV=development

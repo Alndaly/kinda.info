@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { generateSecMsGecTokenV2 } from './edge-speech.ts';
+import { generateSecMsGecTokenV2 } from './edge-speech/index.ts';
 
 test('Sec-MS-GEC v2 matches the fixed Edge token vector', () => {
   assert.equal(
