@@ -1,5 +1,3 @@
-import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   agentRules: false,
@@ -53,7 +51,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
-// Gives `next dev` the bindings from wrangler.jsonc (the R2 incremental cache
-// and Cloudflare Images) so development matches what the Worker sees.
-initOpenNextCloudflareForDev();

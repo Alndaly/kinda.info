@@ -10,6 +10,18 @@
     // from inside the Worker.
     "global_fetch_strictly_public",
   ],
+  // Layered over the zone's existing proxied records: the apex and www keep
+  // their DNS entries, and removing these two lines puts the old origin back.
+  "routes": [
+    {
+      "pattern": "kinda.info/*",
+      "zone_name": "kinda.info",
+    },
+    {
+      "pattern": "www.kinda.info/*",
+      "zone_name": "kinda.info",
+    },
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
@@ -22,6 +34,10 @@
       "service": "kinda-info",
     },
   ],
+  // Fallback translator for when Google throttles this Worker's egress.
+  "ai": {
+    "binding": "AI",
+  },
   // `next/image` delegates resizing to Cloudflare Images.
   "images": {
     "binding": "IMAGES",

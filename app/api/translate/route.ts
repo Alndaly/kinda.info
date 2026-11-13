@@ -1,3 +1,4 @@
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { NextRequest, NextResponse } from 'next/server';
 
 const LANGUAGE_CODES = {
@@ -5,28 +6,31 @@ const LANGUAGE_CODES = {
   zh: 'zh-CN',
 } as const;
 
+const ENDPOINT = 'https://translate.googleapis.com/translate_a/single';
+/**
+ * Google throttles this endpoint from Cloudflare's shared egress addresses, so
+ * Workers AI — in the same runtime, no third party — takes over when it does.
+ */
+const AI_MODEL = '@cf/meta/m2m100-1.2b';
+const AI_CONCURRENCY = 4;
+/** The endpoint ignores bot-ish traffic from shared egress IPs; this UA is answered. */
+const USER_AGENT = 'Mozilla/5.0 (compatible; Kinda.info/1.0)';
+const REQUEST_TIMEOUT_MS = 15_000;
+
 const MAX_TEXTS = 240;
 const MAX_TOTAL_CHARACTERS = 48_000;
 const MAX_BATCH_CHARACTERS = 2_800;
 
-function escapeHtml(value: string) {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-}
+const AI_LANGUAGE_CODES = {
+  en: 'en',
+  zh: 'zh',
+} as const;
 
-function decodeHtml(value: string) {
-  return value
-    .replace(/&#(\d+);/g, (_, code: string) => String.fromCodePoint(Number(code)))
-    .replace(/&#x([\da-f]+);/gi, (_, code: string) => String.fromCodePoint(Number.parseInt(code, 16)))
-    .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'")
-    .replaceAll('&lt;', '<')
-    .replaceAll('&gt;', '>')
-    .replaceAll('&amp;', '&');
-}
+type Language = keyof typeof LANGUAGE_CODES;
+
+type AiBinding = {
+  run(model: string, input: Record<string, unknown>): Promise<{ translated_text?: string }>;
+};
 
 function preserveBoundaryWhitespace(source: string, translated: string) {
   const leading = source.match(/^\s+/u)?.[0] ?? '';
@@ -34,75 +38,116 @@ function preserveBoundaryWhitespace(source: string, translated: string) {
   return `${leading}${translated.trim()}${trailing}`;
 }
 
-function createBatches(texts: string[]) {
-  const batches: Array<Array<{ index: number; text: string }>> = [];
-  let current: Array<{ index: number; text: string }> = [];
+function createBatches(items: Array<{ index: number; line: string }>) {
+  const batches: Array<Array<{ index: number; line: string }>> = [];
+  let current: Array<{ index: number; line: string }> = [];
   let currentLength = 0;
 
-  texts.forEach((text, index) => {
-    if (!text.trim()) return;
-    const itemLength = text.length + 48;
+  for (const item of items) {
+    const itemLength = item.line.length + 8;
     if (current.length && currentLength + itemLength > MAX_BATCH_CHARACTERS) {
       batches.push(current);
       current = [];
       currentLength = 0;
     }
-    current.push({ index, text });
+    current.push(item);
     currentLength += itemLength;
-  });
+  }
 
   if (current.length) batches.push(current);
   return batches;
 }
 
 /**
- * Google's endpoint answers with JSON; HTTP/2 was only ever a transport detail,
- * and `fetch` negotiates it on the edge network without a client.
+ * One request for a whole batch. Google answers with sentence segments rather
+ * than one string per query, so the joined segments are split back on the line
+ * breaks it preserved.
  */
-async function requestTranslation(url: URL): Promise<unknown> {
+async function translateLines(lines: string[], source: Language, target: Language) {
+  const url = new URL(ENDPOINT);
+  url.searchParams.set('client', 'gtx');
+  url.searchParams.set('sl', LANGUAGE_CODES[source]);
+  url.searchParams.set('tl', LANGUAGE_CODES[target]);
+  url.searchParams.set('dt', 't');
+  url.searchParams.set('q', lines.join('\n'));
+
   const response = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Kinda.info/1.0)' },
-    signal: AbortSignal.timeout(15_000),
+    headers: { 'User-Agent': USER_AGENT },
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
   if (response.status !== 200) {
     throw new Error(`Translation provider returned ${response.status}`);
   }
-  return response.json();
+
+  const payload = await response.json() as Array<Array<[string]>>;
+  const translated = payload[0]?.map((segment) => segment[0] ?? '').join('') ?? '';
+  const parts = translated.split('\n');
+  if (parts.length === lines.length + 1 && parts.at(-1) === '') parts.pop();
+  if (parts.length !== lines.length) {
+    throw new Error('Translation provider merged or split lines');
+  }
+  return parts;
 }
 
-async function translateBatch(
-  batch: Array<{ index: number; text: string }>,
-  sourceLanguage: keyof typeof LANGUAGE_CODES,
-  targetLanguage: keyof typeof LANGUAGE_CODES,
-) {
-  const html = batch
-    .map(({ index, text }) => (
-      `<span data-kinda-id="${index}">${escapeHtml(text)}</span>`
-    ))
-    .join('');
-  const url = new URL('https://translate.googleapis.com/translate_a/single');
-  url.searchParams.set('client', 'gtx');
-  url.searchParams.set('sl', LANGUAGE_CODES[sourceLanguage]);
-  url.searchParams.set('tl', LANGUAGE_CODES[targetLanguage]);
-  url.searchParams.set('dt', 't');
-  url.searchParams.set('q', html);
+async function translateAll(texts: string[], source: Language, target: Language) {
+  const translations = [...texts];
+  // Inputs travel as lines of one request and come back in that order, so a
+  // translation cannot land on the wrong paragraph. A text spanning lines would
+  // break the alignment, hence the flattening; boundary whitespace is restored
+  // afterwards for callers that rely on it.
+  const pending = texts.flatMap((text, index) => (
+    text.trim() ? [{ index, line: text.replace(/\s+/gu, ' ').trim() }] : []
+  ));
 
-  const payload = await requestTranslation(url) as [Array<[string]>];
+  for (const batch of createBatches(pending)) {
+    try {
+      const parts = await translateLines(batch.map((item) => item.line), source, target);
+      batch.forEach((item, position) => {
+        translations[item.index] = preserveBoundaryWhitespace(texts[item.index], parts[position]);
+      });
+      continue;
+    } catch {
+      // A batch the provider answered out of step is retried one text at a
+      // time, where alignment cannot be lost.
+    }
 
-  const translatedHtml = payload[0]?.map((segment) => segment[0] ?? '').join('') ?? '';
-  const translations = new Map<number, string>();
-  const sourceByIndex = new Map(batch.map((item) => [item.index, item.text]));
-  const pattern = /<span data-kinda-id="(\d+)">([\s\S]*?)<\/span>/g;
-  let match: RegExpExecArray | null;
-
-  while ((match = pattern.exec(translatedHtml))) {
-    const index = Number(match[1]);
-    const source = sourceByIndex.get(index) ?? '';
-    translations.set(
-      index,
-      preserveBoundaryWhitespace(source, decodeHtml(match[2])),
-    );
+    for (const item of batch) {
+      const [part] = await translateLines([item.line], source, target);
+      translations[item.index] = preserveBoundaryWhitespace(texts[item.index], part);
+    }
   }
+
+  return translations;
+}
+
+async function translateWithWorkersAi(texts: string[], source: Language, target: Language) {
+  const { env } = await getCloudflareContext({ async: true });
+  const ai = (env as { AI?: AiBinding }).AI;
+  if (!ai) throw new Error('Workers AI binding is not configured');
+
+  const translations = [...texts];
+  const pending = texts.flatMap((text, index) => (text.trim() ? [{ index, text }] : []));
+  let cursor = 0;
+
+  const translateNext = async () => {
+    while (cursor < pending.length) {
+      const item = pending[cursor];
+      cursor += 1;
+      const result = await ai.run(AI_MODEL, {
+        text: item.text,
+        source_lang: AI_LANGUAGE_CODES[source],
+        target_lang: AI_LANGUAGE_CODES[target],
+      });
+      if (!result.translated_text) {
+        throw new Error(`Workers AI returned nothing for text ${item.index}`);
+      }
+      translations[item.index] = preserveBoundaryWhitespace(item.text, result.translated_text);
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(AI_CONCURRENCY, pending.length) }, () => translateNext()),
+  );
   return translations;
 }
 
@@ -118,8 +163,8 @@ export async function POST(request: NextRequest) {
       targetLanguage?: string;
       texts?: unknown;
     };
-    const sourceLanguage = body.sourceLanguage as keyof typeof LANGUAGE_CODES;
-    const targetLanguage = body.targetLanguage as keyof typeof LANGUAGE_CODES;
+    const sourceLanguage = body.sourceLanguage as Language;
+    const targetLanguage = body.targetLanguage as Language;
     const texts = body.texts;
 
     if (
@@ -134,28 +179,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid translation request' }, { status: 400 });
     }
 
-    const translated = [...texts];
-    const batches = createBatches(texts);
-    const results = [];
-    for (const batch of batches) {
-      const result = await translateBatch(batch, sourceLanguage, targetLanguage);
-      const missing = batch.filter((item) => !result.has(item.index));
-      for (const item of missing) {
-        const retry = await translateBatch([item], sourceLanguage, targetLanguage);
-        const value = retry.get(item.index);
-        if (value !== undefined) result.set(item.index, value);
-        if (!result.has(item.index)) {
-          throw new Error(`Translation provider omitted segment ${item.index}`);
-        }
-      }
-      results.push(result);
-    }
-    for (const result of results) {
-      for (const [index, value] of result) translated[index] = value;
+    let translations: string[];
+    let provider = 'google';
+    try {
+      translations = await translateAll(texts, sourceLanguage, targetLanguage);
+    } catch (error) {
+      console.warn('Google Translate unavailable, falling back to Workers AI', error);
+      translations = await translateWithWorkersAi(texts, sourceLanguage, targetLanguage);
+      provider = 'cloudflare-ai';
     }
 
     return NextResponse.json(
-      { translations: translated, provider: 'google' },
+      { translations, provider },
       { headers: { 'Cache-Control': 'private, max-age=86400' } },
     );
   } catch (error) {
