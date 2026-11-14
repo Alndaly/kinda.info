@@ -53,4 +53,10 @@
   "observability": {
     "enabled": true,
   },
+  // `next-themes` ships its pre-paint script as a `Function#toString()` payload that
+  // the browser re-evaluates, so esbuild's keep-names pass cannot touch it: with
+  // `keep_names` on, esbuild injects `__name(...)` calls into that source and the
+  // inline script dies with `ReferenceError: __name is not defined`. The page then
+  // stays light until hydration, which also left the comment iframe on a light theme.
+  "keep_names": false,
 }

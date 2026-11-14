@@ -22,8 +22,32 @@ type CommentLabels = {
   direct: string;
 };
 
+const UTTERANCES_ORIGIN = 'https://utteranc.es';
+
 function utterancesTheme(theme?: string) {
   return theme === 'dark' ? 'github-dark' : 'github-light';
+}
+
+/**
+ * utterances starts listening for `set-theme` only once its iframe document has
+ * loaded, so a message posted before that is silently dropped. Post on the frame's
+ * first load and remember it, so later switches apply immediately.
+ */
+function pushTheme(frame: HTMLIFrameElement, theme?: string) {
+  const send = () => frame.contentWindow?.postMessage(
+    { type: 'set-theme', theme: utterancesTheme(theme) },
+    UTTERANCES_ORIGIN,
+  );
+
+  if (frame.dataset.listening === 'true') {
+    send();
+    return;
+  }
+
+  frame.addEventListener('load', () => {
+    frame.dataset.listening = 'true';
+    send();
+  }, { once: true });
 }
 
 export function Comments({
@@ -42,12 +66,17 @@ export function Comments({
   const containerRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const themeReady = resolvedTheme !== undefined;
   const issueTerm = `kinda:${type}:${slug}`;
   const discussionUrl = useMemo(() => (
     `https://github.com/${repo}/issues?q=${encodeURIComponent(`is:issue "${issueTerm}"`)}`
   ), [issueTerm, repo]);
 
+  // Built once per thread, seeded with the theme that is live right now. Later theme
+  // switches are pushed into the running iframe: rebuilding it would reload the thread,
+  // so `resolvedTheme` is deliberately absent from the dependency list.
   useEffect(() => {
+    if (!themeReady) return;
     const container = containerRef.current;
     if (!container) return;
     setState('loading');
@@ -64,12 +93,7 @@ export function Comments({
     script.crossOrigin = 'anonymous';
     script.setAttribute('repo', repo);
     script.setAttribute('issue-term', issueTerm);
-    script.setAttribute(
-      'theme',
-      utterancesTheme(
-        document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-      ),
-    );
+    script.setAttribute('theme', utterancesTheme(resolvedTheme));
     script.setAttribute('lang', locale === 'zh' ? 'zh-cn' : 'en');
     script.onerror = () => setState('error');
     container.append(script);
@@ -78,19 +102,13 @@ export function Comments({
       observer.disconnect();
       container.replaceChildren();
     };
-  }, [issueTerm, locale, repo]);
+  }, [issueTerm, locale, repo, themeReady]);
 
   useEffect(() => {
     const frame = containerRef.current?.querySelector<HTMLIFrameElement>(
       'iframe.utterances-frame',
     );
-    frame?.contentWindow?.postMessage(
-      {
-        type: 'set-theme',
-        theme: utterancesTheme(resolvedTheme),
-      },
-      'https://utteranc.es',
-    );
+    if (frame) pushTheme(frame, resolvedTheme);
   }, [resolvedTheme, state]);
 
   return (
